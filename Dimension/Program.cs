@@ -16,7 +16,19 @@ namespace Dimension
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            doLoad();
             Application.Run(new MainForm());
+            doCleanup();
         }
-    }
+        static void doCleanup()
+        {
+            chord.Dispose();
+        }
+        public static Model.Chord chord;
+        public static void doLoad()
+        {
+            chord = new Model.Chord();
+            chord.launch().Wait();
+        }
+        }
 }

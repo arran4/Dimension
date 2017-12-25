@@ -32,8 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LumiSoft.Net">
+      <HintPath>..\Stun\Net\Net\bin\Debug\LumiSoft.Net.dll</HintPath>
+    </Reference>
     <Reference Include="NChordLib">
       <HintPath>..\NChordLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Open.Nat, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f22a6a4582336c76, processorArchitecture=MSIL">
+      <HintPath>..\packages\Open.NAT.2.1.0.0\lib\net45\Open.Nat.dll</HintPath>
     </Reference>
     <Reference Include="RaptorDB, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RaptorDB.2.6\lib\net40\RaptorDB.dll</HintPath>
@@ -54,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Chord.cs" />
     <Compile Include="UI\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
