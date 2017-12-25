@@ -41,6 +41,8 @@ namespace Dimension.Model
             Mapping m = new Mapping(Protocol.Tcp, port, port, Environment.MachineName + " Dimension Chord Mapping");
             await device.CreatePortMapAsync(m);
         }
+        //TODO: Add capability to have a preferred default port
+        //TODO: Add capability to simply disable UPnP
         //FIXME: Gracefully handle LAN environments where STUN and UPnP might not be available
         //FIXME: If a port is already taken on the router but free on this machine, UPnP will crash
         //FIXME: If a port is free for UDP locally but not free on TCP, NChord will crash
