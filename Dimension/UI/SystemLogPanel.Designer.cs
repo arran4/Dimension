@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.contentBox = new System.Windows.Forms.TextBox();
+            this.updateTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // contentBox
@@ -36,20 +38,28 @@
             this.contentBox.BackColor = System.Drawing.SystemColors.Window;
             this.contentBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.contentBox.Location = new System.Drawing.Point(0, 0);
+            this.contentBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.contentBox.Multiline = true;
             this.contentBox.Name = "contentBox";
             this.contentBox.ReadOnly = true;
-            this.contentBox.Size = new System.Drawing.Size(613, 446);
+            this.contentBox.Size = new System.Drawing.Size(460, 362);
             this.contentBox.TabIndex = 0;
             this.contentBox.Text = "System log here.";
             // 
+            // updateTimer
+            // 
+            this.updateTimer.Enabled = true;
+            this.updateTimer.Interval = 250;
+            this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
+            // 
             // SystemLogPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.contentBox);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "SystemLogPanel";
-            this.Size = new System.Drawing.Size(613, 446);
+            this.Size = new System.Drawing.Size(460, 362);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -58,5 +68,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox contentBox;
+        private System.Windows.Forms.Timer updateTimer;
     }
 }

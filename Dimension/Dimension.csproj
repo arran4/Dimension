@@ -68,6 +68,7 @@
     <Compile Include="Model\IncomingConnection.cs" />
     <Compile Include="Model\Peer.cs" />
     <Compile Include="Model\Settings.cs" />
+    <Compile Include="Model\SystemLog.cs" />
     <Compile Include="UI\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>

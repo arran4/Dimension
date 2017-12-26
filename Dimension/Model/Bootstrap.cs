@@ -34,33 +34,36 @@ namespace Dimension.Model
         }
         async Task unMapPorts()
         {
+            SystemLog.addEntry("Cleaning up UPnP mappings...");
             try
             {
                 NatDiscoverer d = new NatDiscoverer();
                 NatDevice device = await d.DiscoverDeviceAsync();
                 foreach (Mapping z in await device.GetAllMappingsAsync())
                     if (z.Description == Environment.MachineName + " Dimension Mapping")
+                    {
                         await device.DeletePortMapAsync(z);
+                        SystemLog.addEntry("Successfully deleted UPnP mapping " + z.Description);
+                    }
             }
             catch
             {
+                SystemLog.addEntry("Failed to delete UPnP mapping.");
                 //UPnP probably not supported
             }
         }
         async Task mapPorts(int internalPort, int externalPort)
         {
-            await unMapPorts();
 
             try
             {
                 NatDiscoverer d = new NatDiscoverer();
                 NatDevice device = await d.DiscoverDeviceAsync();
+                SystemLog.addEntry("Successfully found UPnP device "  +await device.GetExternalIPAsync());
 
                 Mapping m = new Mapping(Protocol.Udp, internalPort, externalPort, Environment.MachineName + " Dimension Mapping");
                 await device.CreatePortMapAsync(m);
-
-                Mapping m2 = new Mapping(Protocol.Udp, internalPort+1, externalPort+1, Environment.MachineName + " Dimension Mapping");
-                await device.CreatePortMapAsync(m2);
+                SystemLog.addEntry("Successfully created UPnP mapping from port " + internalPort.ToString() + " to " +externalPort.ToString());
             }
             catch
             {
@@ -86,43 +89,60 @@ namespace Dimension.Model
         public IPEndPoint publicControlEndPoint;
         public async Task launch()
         {
-            Program.currentLoadState = "Binding UDP sockets";
+            SystemLog.addEntry("Beginning network setup...");
+            await unMapPorts();
+            Program.currentLoadState = "Binding UDP sockets.";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             
             try
             {
                 socket.Bind(new IPEndPoint(IPAddress.Any, Program.settings.getInt("Default Data Port", 0)));
+                SystemLog.addEntry("Successfully bound UDT to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
             }
             catch
             {
+                SystemLog.addEntry("Failed to bind to UDP data port "+ Program.settings.getInt("Default Data Port", 0)+ "; trying random port...");
                 socket.Bind(new IPEndPoint(IPAddress.Any, 0));
+                SystemLog.addEntry("Successfully bound UDT to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
             }
 
             unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", 0));
+            SystemLog.addEntry("Successfully bound to UDP control port " + ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port);
 
             Program.currentLoadState = "STUNning NAT";
-            STUN_Result result = STUN_Client.Query("stun.l.google.com", 19302, unreliableClient.Client);
+            string stunUrl = "stun.l.google.com";
+            STUN_Result result = STUN_Client.Query(stunUrl, 19302, unreliableClient.Client);
+            SystemLog.addEntry("Attempting to STUN control port to " + stunUrl + ".");
             if (result.NetType == STUN_NetType.UdpBlocked)
             {
+                SystemLog.addEntry("STUN failed. Assuming network is LAN-only.");
                 Program.currentLoadState = "STUN failed. Running in LAN mode.";
                 active = false;
                 return;
             }
+            SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
             publicControlEndPoint = result.PublicEndPoint;
 
-            STUN_Result result2 = STUN_Client.Query("stun.l.google.com", 19302, socket);
+            SystemLog.addEntry("Attempting to STUN data port.");
+            STUN_Result result2 = STUN_Client.Query(stunUrl, 19302, socket);
             publicDataEndPoint = result2.PublicEndPoint;
+            SystemLog.addEntry("STUN successful. External data endpoint: " + result2.PublicEndPoint.ToString());
 
             if (Program.settings.getBool("Use UPnP", true))
             {
+                SystemLog.addEntry("UPnP enabled. Attempting to map UPnP ports...");
                 Program.currentLoadState = "Mapping UPnP ports.";
+                SystemLog.addEntry("Creating control UPnP mapping...");
                 await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port);
+                SystemLog.addEntry("Creating data UPnP mapping...");
                 await mapPorts(((IPEndPoint)socket.LocalEndPoint).Port, publicDataEndPoint.Port);
             }
 
             Program.currentLoadState = "Setting up data socket.";
+            SystemLog.addEntry("Binding UDT to data socket.");
             udtSocket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
             udtSocket.Bind(socket);
+            SystemLog.addEntry("Network setup complete.");
         }
     }
 

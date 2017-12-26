@@ -15,6 +15,13 @@ namespace Dimension.UI
         public SystemLogPanel()
         {
             InitializeComponent();
+            contentBox.Text = Model.SystemLog.theLog;
+        }
+
+        private void updateTimer_Tick(object sender, EventArgs e)
+        {
+            if (contentBox.Text != Model.SystemLog.theLog)
+                contentBox.Text = Model.SystemLog.theLog;
         }
     }
 }
