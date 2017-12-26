@@ -25,13 +25,12 @@ namespace Dimension.Model
         public bool active = false;
 
         public int preferredPort = -1;
-        public bool useUPnP = true;
         public Bootstrap()
         {
         }
         public void Dispose()
         {
-            if (useUPnP)
+            if (Program.settings.getBool("Use UPnP", true))
                 unMapPorts().Wait();
         }
         async Task unMapPorts()
@@ -114,7 +113,7 @@ namespace Dimension.Model
             int internalPort = ((IPEndPoint)socket.LocalEndPoint).Port;
             publicEndPoint = result.PublicEndPoint;
 
-            if(useUPnP)
+            if(Program.settings.getBool("Use UPnP", true))
                 await mapPorts(internalPort, publicEndPoint.Port);
 
             udtSocket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);

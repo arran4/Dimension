@@ -9,7 +9,7 @@ namespace Dimension.Model
 {
     public class Settings
     {
-        public RaptorDB.RaptorDB<string> settings;
+        RaptorDB.RaptorDB<string> settings;
 
         public Settings()
         {
@@ -19,5 +19,23 @@ namespace Dimension.Model
             Program.currentLoadState = "Loading Settings...";
             settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);
         }
-    }
+        public void setBool(string name, bool val)
+        {
+
+            settings.Set(name, val.ToString());
+        }
+        public void save()
+        {
+            settings.SaveIndex();
+        }
+
+        public bool getBool(string name, bool def)
+        {
+            string s = def.ToString();
+            settings.Get(name, out s);
+            if (s == "" || s == null)
+                s = def.ToString();
+            return bool.Parse(s);
+        }
+        }
 }
