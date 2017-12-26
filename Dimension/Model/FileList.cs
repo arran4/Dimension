@@ -12,6 +12,7 @@ namespace Dimension.Model
         RaptorDB.RaptorDB<string> fileList;
         RaptorDB.RaptorDB<ulong> quickHashes;
         RaptorDB.RaptorDB<ulong> fullHashes;
+        RaptorDB.RaptorDB<string> downloadQueue;
 
         public FileList()
         {
@@ -23,6 +24,7 @@ namespace Dimension.Model
             Program.currentLoadState = "Loading Hashes...";
             quickHashes = new RaptorDB.RaptorDB<ulong>(Path.Combine(folder, "QuickHashes"), false);
             fullHashes = new RaptorDB.RaptorDB<ulong>(Path.Combine(folder, "FullHashes"), false);
+            downloadQueue = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "DownloadQueue"), false);
         }
     }
 }
