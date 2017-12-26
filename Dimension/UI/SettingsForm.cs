@@ -32,6 +32,7 @@ namespace Dimension.UI
             udpDataPortBox.Value = Program.settings.getInt("Default Data Port", 0);
             udpControlPortBox.Value = Program.settings.getInt("Default Control Port", 0);
             usernameBox.Text = Program.settings.getString("Username", Environment.MachineName);
+            descriptionBox.Text= Program.settings.getString("Description", "");
         }
         void save()
         {
@@ -41,22 +42,20 @@ namespace Dimension.UI
             Program.settings.setInt("Default Control Port", (int)udpControlPortBox.Value);
 
             Program.settings.setString("Username", usernameBox.Text);
+            Program.settings.setString("Description",descriptionBox.Text);
 
             Program.settings.save();
-            this.Close();
-
+            Close();
         }
-
-
+        
         private void saveButton_Click(object sender, EventArgs e)
         {
-
             save();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

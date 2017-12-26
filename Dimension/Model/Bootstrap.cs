@@ -90,6 +90,7 @@ namespace Dimension.Model
         public async Task launch()
         {
             SystemLog.addEntry("Beginning network setup...");
+            Program.currentLoadState = "Deleting old UPnP mappings...";
             await unMapPorts();
             Program.currentLoadState = "Binding UDP sockets.";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -143,6 +144,7 @@ namespace Dimension.Model
             udtSocket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
             udtSocket.Bind(socket);
             SystemLog.addEntry("Network setup complete.");
+            active = true;
         }
     }
 
