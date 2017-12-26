@@ -39,6 +39,9 @@ namespace Dimension
         {
             settings = new Model.Settings();
 
+            string username = settings.getString("Username", Environment.MachineName);
+            settings.setString("Username", username);
+
             currentLoadState = "Setting up NAT...";
             bootstrap = new Model.Bootstrap();
             bootstrap.launch().Wait();

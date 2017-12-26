@@ -32,6 +32,19 @@ namespace Dimension.Model
                 s = def.ToString();
             return bool.Parse(s);
         }
+        public void setString(string name, string val)
+        {
+
+            settings.Set("s" + name, val);
+        }
+        public string getString(string name, string def)
+        {
+            string s = def;
+            settings.Get("s" + name, out s);
+            if (s == "" || s == null)
+                s = def.ToString();
+            return s;
+        }
         public void setInt(string name, int val)
         {
 
