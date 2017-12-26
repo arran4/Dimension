@@ -29,6 +29,11 @@ namespace Dimension.UI
                 UPnPButton.Checked = false;
                 manuallyForwardPortsButton.Checked = true;
             }
+            udpDataPortBox.Value = Program.settings.getInt("Default Data Port", 0);
+            if (udpDataPortBox.Value == 0)
+                udpControlPortBox.Value = 0;
+            else
+                udpControlPortBox.Value = udpDataPortBox.Value + 1;
         }
         void save()
         {

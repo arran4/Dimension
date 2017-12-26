@@ -22,20 +22,33 @@ namespace Dimension.Model
         public void setBool(string name, bool val)
         {
 
-            settings.Set(name, val.ToString());
+            settings.Set("b" + name, val.ToString());
+        }
+        public bool getBool(string name, bool def)
+        {
+            string s = def.ToString();
+            settings.Get("b"+name, out s);
+            if (s == "" || s == null)
+                s = def.ToString();
+            return bool.Parse(s);
+        }
+        public void setInt(string name, int val)
+        {
+
+            settings.Set("i" + name, val.ToString());
+        }
+        public int getInt(string name, int def)
+        {
+            string s = def.ToString();
+            settings.Get("i" + name, out s);
+            if (s == "" || s == null)
+                s = def.ToString();
+            return int.Parse(s);
         }
         public void save()
         {
             settings.SaveIndex();
         }
 
-        public bool getBool(string name, bool def)
-        {
-            string s = def.ToString();
-            settings.Get(name, out s);
-            if (s == "" || s == null)
-                s = def.ToString();
-            return bool.Parse(s);
-        }
         }
 }

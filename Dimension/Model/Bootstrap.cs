@@ -23,8 +23,7 @@ namespace Dimension.Model
         //FIXME: If the unreliable port is already taken, or unavailable on the router, or outside the range of valid ports -- it will crash
 
         public bool active = false;
-
-        public int preferredPort = -1;
+        
         public Bootstrap()
         {
         }
@@ -88,7 +87,9 @@ namespace Dimension.Model
         {
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-            if (preferredPort != -1)
+            int preferredPort = Program.settings.getInt("Default Data Port", 0);
+
+            if (preferredPort != 0)
             {
                 try
                 {

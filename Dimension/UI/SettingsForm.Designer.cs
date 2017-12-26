@@ -32,37 +32,36 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label1 = new System.Windows.Forms.Label();
+            this.descriptionBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.usernameBox = new System.Windows.Forms.TextBox();
-            this.UPnPButton = new System.Windows.Forms.RadioButton();
-            this.manuallyForwardPortsButton = new System.Windows.Forms.RadioButton();
-            this.udpDataPortBox = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label3 = new System.Windows.Forms.Label();
             this.udpControlPortBox = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.udpDataPortBox = new System.Windows.Forms.NumericUpDown();
+            this.manuallyForwardPortsButton = new System.Windows.Forms.RadioButton();
+            this.UPnPButton = new System.Windows.Forms.RadioButton();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.addShareButton = new System.Windows.Forms.Button();
             this.sharesListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.addShareButton = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.descriptionBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.udpDataPortBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udpControlPortBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udpDataPortBox)).BeginInit();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // saveButton
             // 
             this.saveButton.Location = new System.Drawing.Point(404, 306);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(56, 19);
             this.saveButton.TabIndex = 0;
@@ -74,7 +73,7 @@
             // cancelButton
             // 
             this.cancelButton.Location = new System.Drawing.Point(9, 306);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(2);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(56, 19);
             this.cancelButton.TabIndex = 1;
@@ -107,9 +106,42 @@
             this.tabPage1.Text = "User";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // descriptionBox
+            // 
+            this.descriptionBox.Location = new System.Drawing.Point(80, 30);
+            this.descriptionBox.MaxLength = 255;
+            this.descriptionBox.Name = "descriptionBox";
+            this.descriptionBox.Size = new System.Drawing.Size(357, 20);
+            this.descriptionBox.TabIndex = 3;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(17, 31);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(63, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Description:";
+            // 
+            // usernameBox
+            // 
+            this.usernameBox.Location = new System.Drawing.Point(80, 5);
+            this.usernameBox.MaxLength = 16;
+            this.usernameBox.Name = "usernameBox";
+            this.usernameBox.Size = new System.Drawing.Size(355, 20);
+            this.usernameBox.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(22, 7);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Username:";
+            // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.udpControlPortBox);
             this.tabPage2.Controls.Add(this.label2);
@@ -124,33 +156,58 @@
             this.tabPage2.Text = "Network";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // tabPage3
+            // label3
             // 
-            this.tabPage3.Controls.Add(this.addShareButton);
-            this.tabPage3.Controls.Add(this.sharesListView);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(443, 263);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Shares";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(22, 92);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(91, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "UDP Control Port:";
             // 
-            // label1
+            // udpControlPortBox
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(22, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Username:";
+            this.udpControlPortBox.Location = new System.Drawing.Point(116, 90);
+            this.udpControlPortBox.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.udpControlPortBox.Name = "udpControlPortBox";
+            this.udpControlPortBox.Size = new System.Drawing.Size(69, 20);
+            this.udpControlPortBox.TabIndex = 4;
             // 
-            // usernameBox
+            // label2
             // 
-            this.usernameBox.Location = new System.Drawing.Point(80, 5);
-            this.usernameBox.MaxLength = 16;
-            this.usernameBox.Name = "usernameBox";
-            this.usernameBox.Size = new System.Drawing.Size(355, 20);
-            this.usernameBox.TabIndex = 1;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(32, 66);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(81, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "UDP Data Port:";
+            // 
+            // udpDataPortBox
+            // 
+            this.udpDataPortBox.Location = new System.Drawing.Point(116, 64);
+            this.udpDataPortBox.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.udpDataPortBox.Name = "udpDataPortBox";
+            this.udpDataPortBox.Size = new System.Drawing.Size(69, 20);
+            this.udpDataPortBox.TabIndex = 2;
+            // 
+            // manuallyForwardPortsButton
+            // 
+            this.manuallyForwardPortsButton.AutoSize = true;
+            this.manuallyForwardPortsButton.Location = new System.Drawing.Point(17, 41);
+            this.manuallyForwardPortsButton.Name = "manuallyForwardPortsButton";
+            this.manuallyForwardPortsButton.Size = new System.Drawing.Size(135, 17);
+            this.manuallyForwardPortsButton.TabIndex = 1;
+            this.manuallyForwardPortsButton.TabStop = true;
+            this.manuallyForwardPortsButton.Text = "Manually Forward Ports";
+            this.manuallyForwardPortsButton.UseVisualStyleBackColor = true;
             // 
             // UPnPButton
             // 
@@ -164,48 +221,25 @@
             this.UPnPButton.Text = "Use UPnP";
             this.UPnPButton.UseVisualStyleBackColor = true;
             // 
-            // manuallyForwardPortsButton
+            // tabPage3
             // 
-            this.manuallyForwardPortsButton.AutoSize = true;
-            this.manuallyForwardPortsButton.Location = new System.Drawing.Point(17, 41);
-            this.manuallyForwardPortsButton.Name = "manuallyForwardPortsButton";
-            this.manuallyForwardPortsButton.Size = new System.Drawing.Size(135, 17);
-            this.manuallyForwardPortsButton.TabIndex = 1;
-            this.manuallyForwardPortsButton.TabStop = true;
-            this.manuallyForwardPortsButton.Text = "Manually Forward Ports";
-            this.manuallyForwardPortsButton.UseVisualStyleBackColor = true;
+            this.tabPage3.Controls.Add(this.addShareButton);
+            this.tabPage3.Controls.Add(this.sharesListView);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(443, 263);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Shares";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // udpDataPortBox
+            // addShareButton
             // 
-            this.udpDataPortBox.Location = new System.Drawing.Point(116, 64);
-            this.udpDataPortBox.Name = "udpDataPortBox";
-            this.udpDataPortBox.Size = new System.Drawing.Size(69, 20);
-            this.udpDataPortBox.TabIndex = 2;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(32, 66);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(81, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "UDP Data Port:";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(22, 92);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(91, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "UDP Control Port:";
-            // 
-            // udpControlPortBox
-            // 
-            this.udpControlPortBox.Location = new System.Drawing.Point(116, 90);
-            this.udpControlPortBox.Name = "udpControlPortBox";
-            this.udpControlPortBox.Size = new System.Drawing.Size(69, 20);
-            this.udpControlPortBox.TabIndex = 4;
+            this.addShareButton.Location = new System.Drawing.Point(3, 240);
+            this.addShareButton.Name = "addShareButton";
+            this.addShareButton.Size = new System.Drawing.Size(75, 23);
+            this.addShareButton.TabIndex = 1;
+            this.addShareButton.Text = "Add Share";
+            this.addShareButton.UseVisualStyleBackColor = true;
             // 
             // sharesListView
             // 
@@ -238,41 +272,6 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
-            // addShareButton
-            // 
-            this.addShareButton.Location = new System.Drawing.Point(3, 240);
-            this.addShareButton.Name = "addShareButton";
-            this.addShareButton.Size = new System.Drawing.Size(75, 23);
-            this.addShareButton.TabIndex = 1;
-            this.addShareButton.Text = "Add Share";
-            this.addShareButton.UseVisualStyleBackColor = true;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(17, 31);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Description:";
-            // 
-            // descriptionBox
-            // 
-            this.descriptionBox.Location = new System.Drawing.Point(80, 30);
-            this.descriptionBox.MaxLength = 255;
-            this.descriptionBox.Name = "descriptionBox";
-            this.descriptionBox.Size = new System.Drawing.Size(357, 20);
-            this.descriptionBox.TabIndex = 3;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(191, 92);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(193, 13);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "(Must be exactly 1 more than Data port)";
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -282,7 +281,7 @@
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.saveButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsForm";
@@ -293,9 +292,9 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.udpDataPortBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udpControlPortBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udpDataPortBox)).EndInit();
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -324,6 +323,5 @@
         private System.Windows.Forms.Button addShareButton;
         private System.Windows.Forms.TextBox descriptionBox;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
     }
 }
