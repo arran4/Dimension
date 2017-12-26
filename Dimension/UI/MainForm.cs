@@ -83,6 +83,7 @@ namespace Dimension
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Todo: if it's a circle, actually leave it
             if (clickedPage != null)
                 tabControl.TabPages.Remove(clickedPage);
         }
@@ -231,6 +232,7 @@ namespace Dimension
             {
                 if (tabControl.TabPages[i].Controls[0] is UI.ChatPanel)
                 {
+                    //TODO: Actually leave the circles
                     tabControl.TabPages.RemoveAt(i);
                     i--;
                 }
