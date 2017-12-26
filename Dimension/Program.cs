@@ -34,8 +34,11 @@ namespace Dimension
         public static Udt.Socket udtSocket;
         public static Model.Bootstrap bootstrap;
         public static Model.FileList fileList;
+        public static Model.Settings settings;
         public static void doLoad()
         {
+            settings = new Model.Settings();
+
             currentLoadState = "Setting up NAT...";
             bootstrap = new Model.Bootstrap();
             bootstrap.launch().Wait();

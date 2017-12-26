@@ -50,6 +50,7 @@
             this.addShareButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.descriptionBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -108,6 +109,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.udpControlPortBox);
             this.tabPage2.Controls.Add(this.label2);
@@ -262,6 +264,15 @@
             this.descriptionBox.Size = new System.Drawing.Size(357, 20);
             this.descriptionBox.TabIndex = 3;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(191, 92);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(193, 13);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "(Must be exactly 1 more than Data port)";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -313,5 +324,6 @@
         private System.Windows.Forms.Button addShareButton;
         private System.Windows.Forms.TextBox descriptionBox;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
     }
 }

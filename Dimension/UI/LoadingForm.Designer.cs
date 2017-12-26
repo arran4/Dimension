@@ -48,6 +48,7 @@
             // loadTimer
             // 
             this.loadTimer.Enabled = true;
+            this.loadTimer.Interval = 10;
             this.loadTimer.Tick += new System.EventHandler(this.loadTimer_Tick);
             // 
             // LoadingForm
