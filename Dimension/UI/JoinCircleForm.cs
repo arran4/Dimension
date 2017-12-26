@@ -17,18 +17,22 @@ namespace Dimension.UI
             InitializeComponent();
         }
 
-        private void joinButton_Click(object sender, EventArgs e)
+        private void joinButton_Click(object sender, EventArgs e2)
         {
             string s = urlBox.Text;
             this.Close();
             System.Threading.Thread t = new System.Threading.Thread(delegate()
             {
-                Program.bootstrap.join(s);
-            });
+                System.Net.IPEndPoint[] e = Program.bootstrap.join(s);
+                Program.mainForm.Invoke(new Action(delegate ()
+                {
+                    Program.mainForm.addInternetCircle(e, s);
+
+                }));
+                });
             t.Name = "Bootstrap join thread";
             t.IsBackground = true;
             t.Start();
-
         }
     }
 }

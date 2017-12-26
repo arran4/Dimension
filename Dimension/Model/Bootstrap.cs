@@ -18,10 +18,10 @@ namespace Dimension.Model
         //TODO: Gracefully handle web request failing if the bootstrap is down
         //TODO: Have an accumulated list of nodes for direct access if bootstrap is down
         //TODO: Gracefully handle invalid bootstrap response (error codes, or invalid IP/port list, or non-integer ports
-        //TODO: Gracefully handle a node that provides an invalid host/port number through Chord
         //FIXME: Gracefully handle LAN environments where STUN and UPnP might not be available
         //FIXME: If a port is already taken on the router but free on this machine, UPnP will crash
-        //FIXME: If a port is free for UDP locally but not free on TCP, NChord will crash
+        //FIXME: If the unreliable port is already taken, or unavailable on the router, or outside the range of valid ports -- it will crash
+
         public bool active = false;
 
         public int preferredPort = -1;
@@ -60,6 +60,9 @@ namespace Dimension.Model
 
                 Mapping m = new Mapping(Protocol.Udp, internalPort, externalPort, Environment.MachineName + " Dimension Chord Mapping");
                 await device.CreatePortMapAsync(m);
+
+                Mapping m2 = new Mapping(Protocol.Udp, internalPort+1, externalPort+1, Environment.MachineName + " Dimension Chord Mapping");
+                await device.CreatePortMapAsync(m2);
             }
             catch
             {
@@ -68,6 +71,7 @@ namespace Dimension.Model
         }
         public IPEndPoint[] join(string address)
         {
+            //TODO: Gracefully handle URLs that don't exist
             WebRequest r = WebRequest.Create(address + "?port=" + publicEndPoint.Port.ToString());
             string response = (new StreamReader(r.GetResponse().GetResponseStream())).ReadToEnd();
 
@@ -78,6 +82,7 @@ namespace Dimension.Model
 
             return output;
         }
+        public UdpClient unreliableClient;
         public Udt.Socket udtSocket;
         public IPEndPoint publicEndPoint;
         public async Task launch()
@@ -97,6 +102,8 @@ namespace Dimension.Model
             }
             else
                 socket.Bind(new IPEndPoint(IPAddress.Any, 0));
+
+            unreliableClient = new UdpClient(((IPEndPoint)socket.LocalEndPoint).Port + 1);
 
             STUN_Result result = STUN_Client.Query("stun.l.google.com", 19302, socket);
             if (result.NetType == STUN_NetType.UdpBlocked)

@@ -100,7 +100,23 @@ namespace Dimension
             UI.JoinCircleForm j = new UI.JoinCircleForm();
             j.ShowDialog();
         }
-
+        public void addInternetCircle(System.Net.IPEndPoint[] endpoints, string url)
+        {
+            for (int i = 0; i < tabControl.TabPages.Count; i++)
+                if (tabControl.TabPages[i].Controls[0] is UI.ChatPanel)
+                    if (((UI.ChatPanel)tabControl.TabPages[i].Controls[0]).url == url)
+                    {
+                        tabControl.SelectTab(i);
+                        return;
+                    }
+            TabPage p = new TabPage("Internet Circle");
+            UI.ChatPanel c = new UI.ChatPanel(url);
+            c.Dock = DockStyle.Fill;
+            p.Controls.Add(c);
+            p.Tag = "Internet Circle";
+            tabControl.TabPages.Add(p);
+            tabControl.SelectTab(tabControl.TabPages.Count - 1);
+        }
         void showDownloadQueue()
         {
             TabPage p = new TabPage("Download Queue");

@@ -12,6 +12,12 @@ namespace Dimension.UI
 {
     public partial class ChatPanel : UserControl
     {
+        public string url;
+        public ChatPanel(string url)
+        {
+            this.url = url;
+            InitializeComponent();
+        }
         public ChatPanel()
         {
             InitializeComponent();
