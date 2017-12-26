@@ -39,7 +39,7 @@ namespace Dimension.Model
                 NatDiscoverer d = new NatDiscoverer();
                 NatDevice device = await d.DiscoverDeviceAsync();
                 foreach (Mapping z in await device.GetAllMappingsAsync())
-                    if (z.Description == Environment.MachineName + " Dimension Chord Mapping")
+                    if (z.Description == Environment.MachineName + " Dimension Mapping")
                         await device.DeletePortMapAsync(z);
             }
             catch
@@ -56,10 +56,10 @@ namespace Dimension.Model
                 NatDiscoverer d = new NatDiscoverer();
                 NatDevice device = await d.DiscoverDeviceAsync();
 
-                Mapping m = new Mapping(Protocol.Udp, internalPort, externalPort, Environment.MachineName + " Dimension Chord Mapping");
+                Mapping m = new Mapping(Protocol.Udp, internalPort, externalPort, Environment.MachineName + " Dimension Mapping");
                 await device.CreatePortMapAsync(m);
 
-                Mapping m2 = new Mapping(Protocol.Udp, internalPort+1, externalPort+1, Environment.MachineName + " Dimension Chord Mapping");
+                Mapping m2 = new Mapping(Protocol.Udp, internalPort+1, externalPort+1, Environment.MachineName + " Dimension Mapping");
                 await device.CreatePortMapAsync(m2);
             }
             catch
@@ -70,7 +70,7 @@ namespace Dimension.Model
         public IPEndPoint[] join(string address)
         {
             //TODO: Gracefully handle URLs that don't exist
-            WebRequest r = WebRequest.Create(address + "?port=" + publicEndPoint.Port.ToString());
+            WebRequest r = WebRequest.Create(address + "?port=" + publicControlEndPoint.Port.ToString());
             string response = (new StreamReader(r.GetResponse().GetResponseStream())).ReadToEnd();
 
             string[] split = response.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -82,45 +82,42 @@ namespace Dimension.Model
         }
         public UdpClient unreliableClient;
         public Udt.Socket udtSocket;
-        public IPEndPoint publicEndPoint;
+        public IPEndPoint publicDataEndPoint;
+        public IPEndPoint publicControlEndPoint;
         public async Task launch()
         {
             Program.currentLoadState = "Binding UDP sockets";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-            int preferredPort = Program.settings.getInt("Default Data Port", 0);
-
-            if (preferredPort != 0)
+            
+            try
             {
-                try
-                {
-                    socket.Bind(new IPEndPoint(IPAddress.Any, preferredPort));
-                }
-                catch
-                {
-                    socket.Bind(new IPEndPoint(IPAddress.Any, 0));
-                }
+                socket.Bind(new IPEndPoint(IPAddress.Any, Program.settings.getInt("Default Data Port", 0)));
             }
-            else
+            catch
+            {
                 socket.Bind(new IPEndPoint(IPAddress.Any, 0));
+            }
 
-            unreliableClient = new UdpClient(((IPEndPoint)socket.LocalEndPoint).Port + 1);
+            unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", 0));
 
             Program.currentLoadState = "STUNning NAT";
-            STUN_Result result = STUN_Client.Query("stun.l.google.com", 19302, socket);
+            STUN_Result result = STUN_Client.Query("stun.l.google.com", 19302, unreliableClient.Client);
             if (result.NetType == STUN_NetType.UdpBlocked)
             {
                 Program.currentLoadState = "STUN failed. Running in LAN mode.";
                 active = false;
                 return;
             }
-            int internalPort = ((IPEndPoint)socket.LocalEndPoint).Port;
-            publicEndPoint = result.PublicEndPoint;
+            publicControlEndPoint = result.PublicEndPoint;
+
+            STUN_Result result2 = STUN_Client.Query("stun.l.google.com", 19302, socket);
+            publicDataEndPoint = result2.PublicEndPoint;
 
             if (Program.settings.getBool("Use UPnP", true))
             {
                 Program.currentLoadState = "Mapping UPnP ports.";
-                await mapPorts(internalPort, publicEndPoint.Port);
+                await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port);
+                await mapPorts(((IPEndPoint)socket.LocalEndPoint).Port, publicDataEndPoint.Port);
             }
 
             Program.currentLoadState = "Setting up data socket.";

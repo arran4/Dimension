@@ -50,6 +50,7 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label5 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -142,6 +143,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.udpControlPortBox);
             this.tabPage2.Controls.Add(this.label2);
@@ -272,6 +274,16 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(121, 113);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(56, 12);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "(0 = random)";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -323,5 +335,6 @@
         private System.Windows.Forms.Button addShareButton;
         private System.Windows.Forms.TextBox descriptionBox;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
     }
 }

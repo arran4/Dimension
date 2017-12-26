@@ -30,10 +30,7 @@ namespace Dimension.UI
                 manuallyForwardPortsButton.Checked = true;
             }
             udpDataPortBox.Value = Program.settings.getInt("Default Data Port", 0);
-            if (udpDataPortBox.Value == 0)
-                udpControlPortBox.Value = 0;
-            else
-                udpControlPortBox.Value = udpDataPortBox.Value + 1;
+            udpControlPortBox.Value = Program.settings.getInt("Default Control Port", 0);
         }
         void save()
         {
@@ -44,6 +41,10 @@ namespace Dimension.UI
         private void saveButton_Click(object sender, EventArgs e)
         {
             Program.settings.setBool("Use UPnP", UPnPButton.Checked);
+
+            Program.settings.setInt("Default Data Port", (int)udpDataPortBox.Value);
+            Program.settings.setInt("Default Control Port", (int)udpControlPortBox.Value);
+
             Program.settings.save();
             this.Close();
         }
