@@ -146,7 +146,7 @@
             // 
             this.joinLANCircleToolStripMenuItem.Name = "joinLANCircleToolStripMenuItem";
             this.joinLANCircleToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.joinLANCircleToolStripMenuItem.Text = "Join LAN Circle...";
+            this.joinLANCircleToolStripMenuItem.Text = "Join LAN Circle";
             this.joinLANCircleToolStripMenuItem.Click += new System.EventHandler(this.joinLANCircleToolStripMenuItem_Click);
             // 
             // joinInternetCircleToolStripMenuItem
@@ -201,22 +201,22 @@
             // downloadQueueToolStripMenuItem
             // 
             this.downloadQueueToolStripMenuItem.Name = "downloadQueueToolStripMenuItem";
-            this.downloadQueueToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.downloadQueueToolStripMenuItem.Text = "Download Queue...";
+            this.downloadQueueToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.downloadQueueToolStripMenuItem.Text = "Download Queue";
             this.downloadQueueToolStripMenuItem.Click += new System.EventHandler(this.downloadQueueToolStripMenuItem_Click);
             // 
             // finishedUploadsToolStripMenuItem
             // 
             this.finishedUploadsToolStripMenuItem.Name = "finishedUploadsToolStripMenuItem";
-            this.finishedUploadsToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.finishedUploadsToolStripMenuItem.Text = "Finished Uploads...";
+            this.finishedUploadsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.finishedUploadsToolStripMenuItem.Text = "Finished Uploads";
             this.finishedUploadsToolStripMenuItem.Click += new System.EventHandler(this.finishedUploadsToolStripMenuItem_Click);
             // 
             // finishedDownloadsToolStripMenuItem
             // 
             this.finishedDownloadsToolStripMenuItem.Name = "finishedDownloadsToolStripMenuItem";
-            this.finishedDownloadsToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.finishedDownloadsToolStripMenuItem.Text = "Finished Downloads...";
+            this.finishedDownloadsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.finishedDownloadsToolStripMenuItem.Text = "Finished Downloads";
             this.finishedDownloadsToolStripMenuItem.Click += new System.EventHandler(this.finishedDownloadsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
@@ -227,8 +227,8 @@
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.searchToolStripMenuItem.Text = "Search...";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.searchToolStripMenuItem.Text = "Search";
             this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
             // 
             // hashingProgressToolStripMenuItem
