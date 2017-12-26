@@ -37,47 +37,53 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(9, 7);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 17);
+            this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Join Code:";
+            this.label1.Text = "Address:";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(93, 9);
+            this.textBox1.Location = new System.Drawing.Point(70, 7);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(386, 22);
+            this.textBox1.Size = new System.Drawing.Size(290, 20);
             this.textBox1.TabIndex = 1;
+            this.textBox1.Text = "http://www.9thcircle.net/Projects/Dimension/bootstrap.php";
             // 
             // joinButton
             // 
-            this.joinButton.Location = new System.Drawing.Point(404, 51);
+            this.joinButton.Location = new System.Drawing.Point(303, 41);
+            this.joinButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.joinButton.Name = "joinButton";
-            this.joinButton.Size = new System.Drawing.Size(75, 23);
+            this.joinButton.Size = new System.Drawing.Size(56, 19);
             this.joinButton.TabIndex = 2;
             this.joinButton.Text = "Join";
             this.joinButton.UseVisualStyleBackColor = true;
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(15, 51);
+            this.cancelButton.Location = new System.Drawing.Point(11, 41);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.Size = new System.Drawing.Size(56, 19);
             this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
             // JoinCircleForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(491, 86);
+            this.ClientSize = new System.Drawing.Size(368, 70);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.joinButton);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "JoinCircleForm";

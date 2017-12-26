@@ -24,10 +24,10 @@ namespace Dimension
         {
             chord.Dispose();
         }
-        public static Model.Chord chord;
+        public static Model.Bootstrap chord;
         public static void doLoad()
         {
-            chord = new Model.Chord();
+            chord = new Model.Bootstrap();
             chord.launch().Wait();
         }
         }
