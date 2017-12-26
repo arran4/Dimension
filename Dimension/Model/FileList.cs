@@ -10,6 +10,7 @@ namespace Dimension.Model
     public class FileList
     {
         RaptorDB.RaptorDB<string> fileList;
+        RaptorDB.RaptorDB<string> remoteFileLists;
         RaptorDB.RaptorDB<ulong> quickHashes;
         RaptorDB.RaptorDB<ulong> fullHashes;
         RaptorDB.RaptorDB<string> downloadQueue;
@@ -25,6 +26,7 @@ namespace Dimension.Model
             quickHashes = new RaptorDB.RaptorDB<ulong>(Path.Combine(folder, "QuickHashes"), false);
             fullHashes = new RaptorDB.RaptorDB<ulong>(Path.Combine(folder, "FullHashes"), false);
             downloadQueue = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "DownloadQueue"), false);
+            remoteFileLists = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "RemoteFileLists"), false);
         }
     }
 }
