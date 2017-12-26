@@ -35,12 +35,6 @@ namespace Dimension.UI
         }
         void save()
         {
-
-        }
-
-
-        private void saveButton_Click(object sender, EventArgs e)
-        {
             Program.settings.setBool("Use UPnP", UPnPButton.Checked);
 
             Program.settings.setInt("Default Data Port", (int)udpDataPortBox.Value);
@@ -51,7 +45,13 @@ namespace Dimension.UI
             Program.settings.save();
             this.Close();
 
-           
+        }
+
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+
+            save();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
