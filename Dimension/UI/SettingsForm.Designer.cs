@@ -51,6 +51,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -143,6 +144,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.udpControlPortBox);
@@ -284,6 +286,15 @@
             this.label5.TabIndex = 6;
             this.label5.Text = "(0 = random)";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(14, 238);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(317, 13);
+            this.label6.TabIndex = 7;
+            this.label6.Text = "Dimension must be restarted for port/UPnP settings to take effect.";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -336,5 +347,6 @@
         private System.Windows.Forms.TextBox descriptionBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }

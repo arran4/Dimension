@@ -47,6 +47,8 @@ namespace Dimension.UI
 
             Program.settings.save();
             this.Close();
+
+           
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
