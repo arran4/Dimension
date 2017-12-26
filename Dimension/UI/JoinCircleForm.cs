@@ -34,5 +34,10 @@ namespace Dimension.UI
             t.IsBackground = true;
             t.Start();
         }
+
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

@@ -47,7 +47,7 @@
             // urlBox
             // 
             this.urlBox.Location = new System.Drawing.Point(70, 7);
-            this.urlBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.urlBox.Margin = new System.Windows.Forms.Padding(2);
             this.urlBox.Name = "urlBox";
             this.urlBox.Size = new System.Drawing.Size(290, 20);
             this.urlBox.TabIndex = 1;
@@ -56,7 +56,7 @@
             // joinButton
             // 
             this.joinButton.Location = new System.Drawing.Point(303, 41);
-            this.joinButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.joinButton.Margin = new System.Windows.Forms.Padding(2);
             this.joinButton.Name = "joinButton";
             this.joinButton.Size = new System.Drawing.Size(56, 19);
             this.joinButton.TabIndex = 2;
@@ -67,12 +67,13 @@
             // cancelButton
             // 
             this.cancelButton.Location = new System.Drawing.Point(11, 41);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(2);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(56, 19);
             this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // JoinCircleForm
             // 
@@ -84,7 +85,7 @@
             this.Controls.Add(this.urlBox);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "JoinCircleForm";
