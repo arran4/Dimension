@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.urlBox = new System.Windows.Forms.TextBox();
             this.joinButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -44,14 +44,14 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Address:";
             // 
-            // textBox1
+            // urlBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(70, 7);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(290, 20);
-            this.textBox1.TabIndex = 1;
-            this.textBox1.Text = "http://www.9thcircle.net/Projects/Dimension/bootstrap.php";
+            this.urlBox.Location = new System.Drawing.Point(70, 7);
+            this.urlBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.urlBox.Name = "urlBox";
+            this.urlBox.Size = new System.Drawing.Size(290, 20);
+            this.urlBox.TabIndex = 1;
+            this.urlBox.Text = "http://www.9thcircle.net/Projects/Dimension/bootstrap.php";
             // 
             // joinButton
             // 
@@ -62,6 +62,7 @@
             this.joinButton.TabIndex = 2;
             this.joinButton.Text = "Join";
             this.joinButton.UseVisualStyleBackColor = true;
+            this.joinButton.Click += new System.EventHandler(this.joinButton_Click);
             // 
             // cancelButton
             // 
@@ -80,7 +81,7 @@
             this.ClientSize = new System.Drawing.Size(368, 70);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.joinButton);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.urlBox);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -96,7 +97,7 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox urlBox;
         private System.Windows.Forms.Button joinButton;
         private System.Windows.Forms.Button cancelButton;
     }

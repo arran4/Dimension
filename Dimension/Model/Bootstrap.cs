@@ -66,10 +66,17 @@ namespace Dimension.Model
                 //UPnP probably not supported
             }
         }
-        public void join(string address)
+        public IPEndPoint[] join(string address)
         {
             WebRequest r = WebRequest.Create(address + "?port=" + publicEndPoint.Port.ToString());
             string response = (new StreamReader(r.GetResponse().GetResponseStream())).ReadToEnd();
+
+            string[] split = response.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            IPEndPoint[] output = new IPEndPoint[split.Length];
+            for (int i = 0; i < split.Length; i++)
+                output[i] = new IPEndPoint(IPAddress.Parse(split[i].Split(' ')[0]), int.Parse(split[i].Split(' ')[1]));
+
+            return output;
         }
         IPEndPoint publicEndPoint;
         public async Task launch()

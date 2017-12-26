@@ -16,5 +16,18 @@ namespace Dimension.UI
         {
             InitializeComponent();
         }
+
+        private void joinButton_Click(object sender, EventArgs e)
+        {
+            string s = urlBox.Text;
+            this.Close();
+            System.Threading.Thread t = new System.Threading.Thread(delegate()
+            {
+                Program.chord.join(s);
+            });
+            t.IsBackground = true;
+            t.Start();
+
+        }
     }
 }
