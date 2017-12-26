@@ -144,15 +144,16 @@
             // 
             // usernameBox
             // 
-            this.usernameBox.Location = new System.Drawing.Point(80, 4);
+            this.usernameBox.Location = new System.Drawing.Point(80, 5);
             this.usernameBox.MaxLength = 16;
             this.usernameBox.Name = "usernameBox";
-            this.usernameBox.Size = new System.Drawing.Size(185, 20);
+            this.usernameBox.Size = new System.Drawing.Size(355, 20);
             this.usernameBox.TabIndex = 1;
             // 
             // UPnPButton
             // 
             this.UPnPButton.AutoSize = true;
+            this.UPnPButton.Checked = true;
             this.UPnPButton.Location = new System.Drawing.Point(17, 18);
             this.UPnPButton.Name = "UPnPButton";
             this.UPnPButton.Size = new System.Drawing.Size(75, 17);
@@ -256,9 +257,9 @@
             // descriptionBox
             // 
             this.descriptionBox.Location = new System.Drawing.Point(80, 30);
-            this.descriptionBox.MaxLength = 16;
+            this.descriptionBox.MaxLength = 255;
             this.descriptionBox.Name = "descriptionBox";
-            this.descriptionBox.Size = new System.Drawing.Size(185, 20);
+            this.descriptionBox.Size = new System.Drawing.Size(357, 20);
             this.descriptionBox.TabIndex = 3;
             // 
             // SettingsForm
