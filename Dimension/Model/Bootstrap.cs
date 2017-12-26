@@ -29,7 +29,7 @@ namespace Dimension.Model
         }
         public void Dispose()
         {
-            if (Program.settings.getBool("Use UPnP", true))
+            if (Program.settings.getBool("Use UPnP", true) && active)
                 unMapPorts().Wait();
         }
         async Task unMapPorts()
@@ -85,6 +85,7 @@ namespace Dimension.Model
         public IPEndPoint publicEndPoint;
         public async Task launch()
         {
+            Program.currentLoadState = "Binding UDP sockets";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
             int preferredPort = Program.settings.getInt("Default Data Port", 0);
@@ -105,18 +106,24 @@ namespace Dimension.Model
 
             unreliableClient = new UdpClient(((IPEndPoint)socket.LocalEndPoint).Port + 1);
 
+            Program.currentLoadState = "STUNning NAT";
             STUN_Result result = STUN_Client.Query("stun.l.google.com", 19302, socket);
             if (result.NetType == STUN_NetType.UdpBlocked)
             {
+                Program.currentLoadState = "STUN failed. Running in LAN mode.";
                 active = false;
                 return;
             }
             int internalPort = ((IPEndPoint)socket.LocalEndPoint).Port;
             publicEndPoint = result.PublicEndPoint;
 
-            if(Program.settings.getBool("Use UPnP", true))
+            if (Program.settings.getBool("Use UPnP", true))
+            {
+                Program.currentLoadState = "Mapping UPnP ports.";
                 await mapPorts(internalPort, publicEndPoint.Port);
+            }
 
+            Program.currentLoadState = "Setting up data socket.";
             udtSocket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
             udtSocket.Bind(socket);
         }
