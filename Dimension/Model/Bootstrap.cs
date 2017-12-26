@@ -78,7 +78,8 @@ namespace Dimension.Model
 
             return output;
         }
-        IPEndPoint publicEndPoint;
+        public Udt.Socket udtSocket;
+        public IPEndPoint publicEndPoint;
         public async Task launch()
         {
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -108,6 +109,9 @@ namespace Dimension.Model
 
             if(useUPnP)
                 await mapPorts(internalPort, publicEndPoint.Port);
+
+            udtSocket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
+            udtSocket.Bind(socket);
         }
     }
 

@@ -23,8 +23,9 @@ namespace Dimension.UI
             this.Close();
             System.Threading.Thread t = new System.Threading.Thread(delegate()
             {
-                Program.chord.join(s);
+                Program.bootstrap.join(s);
             });
+            t.Name = "Bootstrap join thread";
             t.IsBackground = true;
             t.Start();
 
