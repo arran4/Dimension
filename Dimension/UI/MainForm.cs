@@ -71,6 +71,20 @@ namespace Dimension
         TabPage clickedPage;
         private void tabControl_MouseDown(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Middle)
+            {
+                clickedPage = null;
+                for (int i = 0; i < tabControl.TabPages.Count; i++)
+                    if (tabControl.GetTabRect(i).Contains(tabControl.PointToClient(MousePosition)))
+                        clickedPage = tabControl.TabPages[i];
+                if (clickedPage != null)
+                {
+                    //TODO: if it's a circle, actually leave it
+                    tabControl.TabPages.Remove(clickedPage);
+                }
+
+
+                }
             if (e.Button == MouseButtons.Right)
             {
                 clickedPage = null;
