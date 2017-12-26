@@ -21,7 +21,7 @@ namespace Dimension.UI
         {
             string s = urlBox.Text;
             this.Close();
-            System.Threading.Thread t = new System.Threading.Thread(delegate()
+            var t = new System.Threading.Thread(delegate ()
             {
                 System.Net.IPEndPoint[] e = Program.bootstrap.join(s);
                 Program.mainForm.Invoke(new Action(delegate ()
@@ -29,9 +29,11 @@ namespace Dimension.UI
                     Program.mainForm.addInternetCircle(e, s);
 
                 }));
-                });
-            t.Name = "Bootstrap join thread";
-            t.IsBackground = true;
+            })
+            {
+                Name = "Bootstrap join thread",
+                IsBackground = true
+            };
             t.Start();
         }
 

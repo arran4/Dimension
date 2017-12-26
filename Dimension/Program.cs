@@ -17,7 +17,9 @@ namespace Dimension
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            doLoad();
+
+            Application.Run(new LoadingForm());
+
             mainForm = new MainForm();
             Application.Run(mainForm);
             doCleanup();
@@ -31,8 +33,10 @@ namespace Dimension
         public static System.Net.Sockets.UdpClient udp;
         public static Udt.Socket udtSocket;
         public static Model.Bootstrap bootstrap;
+        public static Model.FileList fileList;
         public static void doLoad()
         {
+            currentLoadState = "Setting up NAT...";
             bootstrap = new Model.Bootstrap();
             bootstrap.launch().Wait();
             udtSocket = bootstrap.udtSocket;
@@ -43,8 +47,10 @@ namespace Dimension
             t.IsBackground = true;
             t.Name = "UDT Accept Loop";
             t.Start();
-
+            fileList = new Model.FileList();
+            doneLoading = true;
         }
+        public static bool doneLoading = false;
 
         static void doReceive()
         {
@@ -60,6 +66,7 @@ namespace Dimension
 
             doReceive();
         }
+        public static string currentLoadState = "";
         public static List<Model.IncomingConnection> incomingConnections = new List<Model.IncomingConnection>();
 
         //TODO: Remove old incoming connections when they're dead
