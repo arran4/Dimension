@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     class RootShare
     {
+        public int index;
         public string fullPath;
         public string name;
         public ulong totalBytes;

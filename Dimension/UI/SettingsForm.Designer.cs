@@ -56,6 +56,7 @@
             this.downloadFolderInput = new System.Windows.Forms.TextBox();
             this.browseDownloadsButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.deleteShareButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -234,6 +235,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.deleteShareButton);
             this.tabPage3.Controls.Add(this.addShareButton);
             this.tabPage3.Controls.Add(this.sharesListView);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -328,6 +330,16 @@
             this.browseDownloadsButton.Text = "Browse";
             this.browseDownloadsButton.UseVisualStyleBackColor = true;
             // 
+            // deleteShareButton
+            // 
+            this.deleteShareButton.Location = new System.Drawing.Point(84, 240);
+            this.deleteShareButton.Name = "deleteShareButton";
+            this.deleteShareButton.Size = new System.Drawing.Size(75, 23);
+            this.deleteShareButton.TabIndex = 2;
+            this.deleteShareButton.Text = "Delete";
+            this.deleteShareButton.UseVisualStyleBackColor = true;
+            this.deleteShareButton.Click += new System.EventHandler(this.deleteShareButton_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -385,5 +397,6 @@
         private System.Windows.Forms.TextBox downloadFolderInput;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.Button deleteShareButton;
     }
 }
