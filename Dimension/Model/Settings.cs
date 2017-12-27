@@ -39,9 +39,18 @@ namespace Dimension.Model
         }
         public string getString(string name, string def)
         {
+            if (def == "")
+                def = " ";
             string s = def;
-            settings.Get("s" + name, out s);
-            if (s == "" || s == null)
+            try
+            {
+                settings.Get("s" + name, out s);
+            }
+            catch
+            {
+                return "";
+            }
+            if (s == " " || s == null)
                 s = def.ToString();
             return s;
         }
