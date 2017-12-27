@@ -329,6 +329,7 @@
             this.browseDownloadsButton.TabIndex = 6;
             this.browseDownloadsButton.Text = "Browse";
             this.browseDownloadsButton.UseVisualStyleBackColor = true;
+            this.browseDownloadsButton.Click += new System.EventHandler(this.browseDownloadsButton_Click);
             // 
             // deleteShareButton
             // 

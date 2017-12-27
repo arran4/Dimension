@@ -34,7 +34,7 @@ namespace Dimension.UI
             usernameBox.Text = Program.settings.getString("Username", Environment.MachineName);
             descriptionBox.Text = Program.settings.getString("Description", "");
 
-
+            downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:/Downloads");
 
             int numShares = Program.fileList.getInt(Program.fileList.fileList, "Root Share Count", 0);
 
@@ -58,6 +58,7 @@ namespace Dimension.UI
 
             Program.settings.setString("Username", usernameBox.Text);
             Program.settings.setString("Description", descriptionBox.Text);
+            Program.settings.setString("Default Download Folder", downloadFolderInput.Text);
 
             Program.settings.save();
             Program.fileList.saveAll();
@@ -164,6 +165,17 @@ namespace Dimension.UI
             }
             foreach (ListViewItem i in toRemove)
                 sharesListView.Items.Remove(i);
+        }
+
+        private void browseDownloadsButton_Click(object sender, EventArgs e)
+        {
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                //add the folder
+                string fullPath = folderBrowserDialog.SelectedPath.Replace('\\', '/');
+                downloadFolderInput.Text = fullPath;
+            }
         }
     }
 }
