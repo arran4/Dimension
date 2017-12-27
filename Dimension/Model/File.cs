@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    public class File : LIsting
+    public class File : FSListing
     {
     }
 }

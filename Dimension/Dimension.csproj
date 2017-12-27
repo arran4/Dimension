@@ -64,8 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Bootstrap.cs" />
+    <Compile Include="Model\File.cs" />
     <Compile Include="Model\FileList.cs" />
+    <Compile Include="Model\Folder.cs" />
     <Compile Include="Model\IncomingConnection.cs" />
+    <Compile Include="Model\FSListing.cs" />
     <Compile Include="Model\Peer.cs" />
     <Compile Include="Model\RootShare.cs" />
     <Compile Include="Model\Settings.cs" />
