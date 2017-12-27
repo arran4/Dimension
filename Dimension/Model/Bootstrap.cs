@@ -22,14 +22,14 @@ namespace Dimension.Model
         //FIXME: If a port is already taken on the router but free on this machine, UPnP will crash
         //FIXME: If the unreliable port is already taken, or unavailable on the router, or outside the range of valid ports -- it will crash
 
-        public bool active = false;
+        public bool UPnPActive = false;
         
         public Bootstrap()
         {
         }
         public void Dispose()
         {
-            if (Program.settings.getBool("Use UPnP", true) && active)
+            if (Program.settings.getBool("Use UPnP", true) && UPnPActive && !LANMode)
                 unMapPorts().Wait();
         }
         async Task unMapPorts()
@@ -44,10 +44,12 @@ namespace Dimension.Model
                     {
                         await device.DeletePortMapAsync(z);
                         SystemLog.addEntry("Successfully deleted UPnP mapping " + z.Description);
+                        UPnPActive = true;
                     }
             }
             catch
             {
+                UPnPActive = false;
                 SystemLog.addEntry("Failed to delete UPnP mapping.");
                 //UPnP probably not supported
             }
@@ -64,9 +66,11 @@ namespace Dimension.Model
                 Mapping m = new Mapping(Protocol.Udp, internalPort, externalPort, Environment.MachineName + " Dimension Mapping");
                 await device.CreatePortMapAsync(m);
                 SystemLog.addEntry("Successfully created UPnP mapping from port " + internalPort.ToString() + " to " +externalPort.ToString());
+                UPnPActive = true;
             }
             catch
             {
+                UPnPActive = false;
                 //UPnP probably not supported
             }
         }
@@ -87,6 +91,7 @@ namespace Dimension.Model
         public Udt.Socket udtSocket;
         public IPEndPoint publicDataEndPoint;
         public IPEndPoint publicControlEndPoint;
+        bool LANMode = false;
         public async Task launch()
         {
             SystemLog.addEntry("Beginning network setup...");
@@ -99,37 +104,48 @@ namespace Dimension.Model
             {
                 socket.Bind(new IPEndPoint(IPAddress.Any, Program.settings.getInt("Default Data Port", 0)));
                 SystemLog.addEntry("Successfully bound UDT to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
+                UPnPActive = true;
             }
             catch
             {
+                UPnPActive = false;
                 SystemLog.addEntry("Failed to bind to UDP data port "+ Program.settings.getInt("Default Data Port", 0)+ "; trying random port...");
                 socket.Bind(new IPEndPoint(IPAddress.Any, 0));
                 SystemLog.addEntry("Successfully bound UDT to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
             }
-
             unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", 0));
             SystemLog.addEntry("Successfully bound to UDP control port " + ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port);
 
             Program.currentLoadState = "STUNning NAT";
-            string stunUrl = "stun.l.google.com";
-            STUN_Result result = STUN_Client.Query(stunUrl, 19302, unreliableClient.Client);
-            SystemLog.addEntry("Attempting to STUN control port to " + stunUrl + ".");
-            if (result.NetType == STUN_NetType.UdpBlocked)
+            try
             {
-                SystemLog.addEntry("STUN failed. Assuming network is LAN-only.");
-                Program.currentLoadState = "STUN failed. Running in LAN mode.";
-                active = false;
-                return;
+                string stunUrl = "stun.l.google.com";
+                STUN_Result result = STUN_Client.Query(stunUrl, 19302, unreliableClient.Client);
+                SystemLog.addEntry("Attempting to STUN control port to " + stunUrl + ".");
+                if (result.NetType == STUN_NetType.UdpBlocked)
+                {
+                    SystemLog.addEntry("STUN failed. Assuming network is LAN-only.");
+                    Program.currentLoadState = "STUN failed. Running in LAN mode.";
+                    UPnPActive = false;
+                    return;
+                }
+                SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
+                publicControlEndPoint = result.PublicEndPoint;
+                SystemLog.addEntry("Attempting to STUN data port.");
+                STUN_Result result2 = STUN_Client.Query(stunUrl, 19302, socket);
+                publicDataEndPoint = result2.PublicEndPoint;
+                SystemLog.addEntry("STUN successful. External data endpoint: " + result2.PublicEndPoint.ToString());
             }
-            SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
-            publicControlEndPoint = result.PublicEndPoint;
+            catch(SocketException)
+            {
+                SystemLog.addEntry("Failed to STUN. Working in LAN mode.");
+                publicControlEndPoint = null;
+                publicDataEndPoint = null;
+                //Stun failed, offline mode
+                LANMode = true;
+            }
 
-            SystemLog.addEntry("Attempting to STUN data port.");
-            STUN_Result result2 = STUN_Client.Query(stunUrl, 19302, socket);
-            publicDataEndPoint = result2.PublicEndPoint;
-            SystemLog.addEntry("STUN successful. External data endpoint: " + result2.PublicEndPoint.ToString());
-
-            if (Program.settings.getBool("Use UPnP", true))
+            if (Program.settings.getBool("Use UPnP", true) && !LANMode && UPnPActive)
             {
                 SystemLog.addEntry("UPnP enabled. Attempting to map UPnP ports...");
                 Program.currentLoadState = "Mapping UPnP ports.";
@@ -144,7 +160,7 @@ namespace Dimension.Model
             udtSocket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
             udtSocket.Bind(socket);
             SystemLog.addEntry("Network setup complete.");
-            active = true;
+            UPnPActive = true;
         }
     }
 
