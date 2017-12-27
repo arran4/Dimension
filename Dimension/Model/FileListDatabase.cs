@@ -42,7 +42,6 @@ namespace Dimension.Model
         }
         public void setString(RaptorDB.RaptorDB<string> db, string name, string val)
         {
-
             db.Set("s" + name, val);
         }
         public string getString(RaptorDB.RaptorDB<string> db, string name, string def)

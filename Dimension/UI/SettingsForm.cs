@@ -99,6 +99,7 @@ namespace Dimension.UI
                 Model.RootShare r = new Model.RootShare();
                 r.name = name;
                 r.fullPath = fullPath;
+                r.id = Program.fileList.allocateId();
 
                 ListViewItem li = new ListViewItem(r.name);
                 li.SubItems.Add(r.fullPath);
