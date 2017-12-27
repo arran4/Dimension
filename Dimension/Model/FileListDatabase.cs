@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Dimension.Model
 {
-    public class FileList
+    public class FileListDatabase
     {
         public RaptorDB.RaptorDB<string> fileList;
         public RaptorDB.RaptorDB<string> remoteFileLists;
@@ -27,7 +27,7 @@ namespace Dimension.Model
         {
             db.SaveIndex();
         }
-        public FileList()
+        public FileListDatabase()
         {
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             folder = Path.Combine(folder, "Dimension");
