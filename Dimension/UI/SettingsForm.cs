@@ -96,6 +96,12 @@ namespace Dimension.UI
                 sharesListView.Items.Add(li);
 
                 Program.fileList.setObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + numShares.ToString(), r);
+                int[] z = Program.fileList.getObject<int[]>(Program.fileList.fileList, "Root Shares Named " + name);
+                if (z == null)
+                    z = new int[0];
+                Array.Resize(ref z, z.Length + 1);
+                z[z.Length - 1] = numShares;
+                Program.fileList.setObject<int[]>(Program.fileList.fileList, "Root Shares Named " + name, z);
 
                 Program.fileList.setInt(Program.fileList.fileList, "Root Share Count", numShares + 1);
             }
