@@ -87,6 +87,14 @@ namespace Dimension.UI
                 if (name.Contains("/"))
                     name = name.Substring(name.LastIndexOf("/") + 1);
 
+                /*int numShares = Program.fileList.getInt(Program.fileList.fileList, "Root Share Count", 0);
+                for (int i = 0; i < numShares; i++)
+                    if (Program.fileList.getObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + i.ToString()).fullPath.ToLower() == fullPath.ToLower())
+                    {
+                        MessageBox.Show("You have already added that share.");
+                        return;
+                    }*/
+
                 Model.RootShare r = new Model.RootShare();
                 r.name = name;
                 r.fullPath = fullPath;
