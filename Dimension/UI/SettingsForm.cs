@@ -57,5 +57,15 @@ namespace Dimension.UI
         {
             Close();
         }
+
+        private void addShareButton_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog.SelectedPath = "";
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                //add the folder
+
+            }
+            }
     }
 }

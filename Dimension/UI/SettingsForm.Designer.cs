@@ -52,6 +52,10 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.downloadFolderInput = new System.Windows.Forms.TextBox();
+            this.browseDownloadsButton = new System.Windows.Forms.Button();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -96,6 +100,9 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.browseDownloadsButton);
+            this.tabPage1.Controls.Add(this.downloadFolderInput);
+            this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.descriptionBox);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.usernameBox);
@@ -110,16 +117,16 @@
             // 
             // descriptionBox
             // 
-            this.descriptionBox.Location = new System.Drawing.Point(80, 30);
+            this.descriptionBox.Location = new System.Drawing.Point(98, 30);
             this.descriptionBox.MaxLength = 255;
             this.descriptionBox.Name = "descriptionBox";
-            this.descriptionBox.Size = new System.Drawing.Size(357, 20);
+            this.descriptionBox.Size = new System.Drawing.Size(339, 20);
             this.descriptionBox.TabIndex = 3;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(17, 31);
+            this.label4.Location = new System.Drawing.Point(33, 33);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(63, 13);
             this.label4.TabIndex = 2;
@@ -127,16 +134,16 @@
             // 
             // usernameBox
             // 
-            this.usernameBox.Location = new System.Drawing.Point(80, 5);
+            this.usernameBox.Location = new System.Drawing.Point(98, 5);
             this.usernameBox.MaxLength = 16;
             this.usernameBox.Name = "usernameBox";
-            this.usernameBox.Size = new System.Drawing.Size(355, 20);
+            this.usernameBox.Size = new System.Drawing.Size(337, 20);
             this.usernameBox.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(22, 7);
+            this.label1.Location = new System.Drawing.Point(38, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 0;
@@ -244,6 +251,7 @@
             this.addShareButton.TabIndex = 1;
             this.addShareButton.Text = "Add Share";
             this.addShareButton.UseVisualStyleBackColor = true;
+            this.addShareButton.Click += new System.EventHandler(this.addShareButton_Click);
             // 
             // sharesListView
             // 
@@ -294,6 +302,31 @@
             this.label6.Size = new System.Drawing.Size(317, 13);
             this.label6.TabIndex = 7;
             this.label6.Text = "Dimension must be restarted for port/UPnP settings to take effect.";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 53);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(90, 13);
+            this.label7.TabIndex = 4;
+            this.label7.Text = "Download Folder:";
+            // 
+            // downloadFolderInput
+            // 
+            this.downloadFolderInput.Location = new System.Drawing.Point(98, 53);
+            this.downloadFolderInput.Name = "downloadFolderInput";
+            this.downloadFolderInput.Size = new System.Drawing.Size(255, 20);
+            this.downloadFolderInput.TabIndex = 5;
+            // 
+            // browseDownloadsButton
+            // 
+            this.browseDownloadsButton.Location = new System.Drawing.Point(359, 53);
+            this.browseDownloadsButton.Name = "browseDownloadsButton";
+            this.browseDownloadsButton.Size = new System.Drawing.Size(75, 23);
+            this.browseDownloadsButton.TabIndex = 6;
+            this.browseDownloadsButton.Text = "Browse";
+            this.browseDownloadsButton.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -348,5 +381,9 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button browseDownloadsButton;
+        private System.Windows.Forms.TextBox downloadFolderInput;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
     }
 }
