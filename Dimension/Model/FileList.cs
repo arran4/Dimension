@@ -53,6 +53,13 @@ namespace Dimension.Model
                 s = def.ToString();
             return s;
         }
+        public ulong allocateId()
+        {
+            ulong u = getULong(fileList, "Current FSListing ID", 0);
+            u++;
+            setULong(fileList, "Current FSListing ID", u);
+            return u;
+        }
         public RootShare[] getRootShares()
         {
             int numShares = getInt(fileList, "Root Share Count", 0);
@@ -80,6 +87,11 @@ namespace Dimension.Model
 
             db.Set("i" + name, val.ToString());
         }
+        public void setULong(RaptorDB.RaptorDB<string> db, string name, ulong val)
+        {
+
+            db.Set("i" + name, val.ToString());
+        }
         public int getInt(RaptorDB.RaptorDB<string> db, string name, int def)
         {
             string s = def.ToString();
@@ -87,6 +99,14 @@ namespace Dimension.Model
             if (s == "" || s == null)
                 s = def.ToString();
             return int.Parse(s);
+        }
+        public ulong getULong(RaptorDB.RaptorDB<string> db, string name, ulong def)
+        {
+            string s = def.ToString();
+            db.Get("i" + name, out s);
+            if (s == "" || s == null)
+                s = def.ToString();
+            return ulong.Parse(s);
         }
     }
 }
