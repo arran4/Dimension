@@ -53,6 +53,15 @@ namespace Dimension.Model
                 s = def.ToString();
             return s;
         }
+        public RootShare[] getRootShares()
+        {
+            int numShares = getInt(fileList, "Root Share Count", 0);
+            RootShare[] output = new RootShare[numShares];
+            for (int i = 0; i < numShares; i++)
+                output[i] = getObject<Model.RootShare>(fileList, "Root Share " + i.ToString());
+            return output;
+        }
+        
         public void setObject<T>(RaptorDB.RaptorDB<string> db, string name, T val)
         {
 

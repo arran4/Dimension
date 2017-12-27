@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class RootShare
+    public class RootShare
     {
         public int index;
         public string fullPath;
