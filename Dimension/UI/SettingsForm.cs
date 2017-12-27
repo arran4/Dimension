@@ -33,6 +33,21 @@ namespace Dimension.UI
             udpControlPortBox.Value = Program.settings.getInt("Default Control Port", 0);
             usernameBox.Text = Program.settings.getString("Username", Environment.MachineName);
             descriptionBox.Text= Program.settings.getString("Description", "");
+
+
+
+            int numShares = Program.fileList.getInt(Program.fileList.fileList, "Root Share Count", 0);
+
+            for (int i = 0; i < numShares; i++)
+            {
+                Model.RootShare r = Program.fileList.getObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + i.ToString());
+
+                ListViewItem li = new ListViewItem(r.name);
+                li.SubItems.Add(r.fullPath);
+                li.Tag = r;
+                sharesListView.Items.Add(li);
+            }
+
         }
         void save()
         {
@@ -45,6 +60,7 @@ namespace Dimension.UI
             Program.settings.setString("Description",descriptionBox.Text);
 
             Program.settings.save();
+            Program.fileList.saveAll();
             Close();
         }
         
@@ -63,9 +79,26 @@ namespace Dimension.UI
             folderBrowserDialog.SelectedPath = "";
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
+                int numShares = Program.fileList.getInt(Program.fileList.fileList, "Root Share Count", 0);
                 //add the folder
+                string fullPath = folderBrowserDialog.SelectedPath.Replace('\\', '/');
+                string name = fullPath;
+                if (name.Contains("/"))
+                    name = name.Substring(name.IndexOf("/") + 1);
 
+                Model.RootShare r = new Model.RootShare();
+                r.name = name;
+                r.fullPath = fullPath;
+
+                ListViewItem li = new ListViewItem(name);
+                li.SubItems.Add(fullPath);
+                li.Tag = r;
+                sharesListView.Items.Add(li);
+
+                Program.fileList.setObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + numShares.ToString(), r);
+
+                Program.fileList.setInt(Program.fileList.fileList, "Root Share Count", numShares + 1);
             }
-            }
+        }
     }
 }

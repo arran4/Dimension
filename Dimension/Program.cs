@@ -28,6 +28,7 @@ namespace Dimension
         static void doCleanup()
         {
             disposed = true;
+            fileList.saveAll();
             bootstrap.Dispose();
         }
         public static System.Net.Sockets.UdpClient udp;
