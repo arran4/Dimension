@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    public class RootShare
+    public class RootShare : Folder
     {
         public int index;
         public string fullPath;
-        public string name;
         public ulong totalBytes;
         public ulong quickHashedBytes;
         public ulong fullHashedBytes;

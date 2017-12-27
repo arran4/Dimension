@@ -64,7 +64,6 @@ namespace Dimension.Model
         
         public void setObject<T>(RaptorDB.RaptorDB<string> db, string name, T val)
         {
-
             db.Set("o" + name, Newtonsoft.Json.JsonConvert.SerializeObject(val));
         }
         public T getObject<T>(RaptorDB.RaptorDB<string> db, string name)
