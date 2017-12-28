@@ -80,6 +80,7 @@
     <Compile Include="UI\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ByteFormatter.cs" />
     <Compile Include="UI\ChatPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -32,11 +32,16 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.browseDownloadsButton = new System.Windows.Forms.Button();
+            this.downloadFolderInput = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.descriptionBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.usernameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.udpControlPortBox = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
@@ -44,19 +49,14 @@
             this.manuallyForwardPortsButton = new System.Windows.Forms.RadioButton();
             this.UPnPButton = new System.Windows.Forms.RadioButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.deleteShareButton = new System.Windows.Forms.Button();
             this.addShareButton = new System.Windows.Forms.Button();
             this.sharesListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.downloadFolderInput = new System.Windows.Forms.TextBox();
-            this.browseDownloadsButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.deleteShareButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -67,10 +67,10 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(404, 306);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(2);
+            this.saveButton.Location = new System.Drawing.Point(539, 377);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(56, 19);
+            this.saveButton.Size = new System.Drawing.Size(75, 23);
             this.saveButton.TabIndex = 0;
             this.saveButton.TabStop = false;
             this.saveButton.Text = "Okay";
@@ -79,10 +79,10 @@
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(9, 306);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(2);
+            this.cancelButton.Location = new System.Drawing.Point(12, 377);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(56, 19);
+            this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -93,10 +93,11 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(9, 12);
+            this.tabControl1.Location = new System.Drawing.Point(12, 15);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(451, 289);
+            this.tabControl1.Size = new System.Drawing.Size(601, 356);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
@@ -108,45 +109,79 @@
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.usernameBox);
             this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(443, 263);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Size = new System.Drawing.Size(593, 327);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // browseDownloadsButton
+            // 
+            this.browseDownloadsButton.Location = new System.Drawing.Point(479, 65);
+            this.browseDownloadsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.browseDownloadsButton.Name = "browseDownloadsButton";
+            this.browseDownloadsButton.Size = new System.Drawing.Size(100, 28);
+            this.browseDownloadsButton.TabIndex = 6;
+            this.browseDownloadsButton.Text = "Browse";
+            this.browseDownloadsButton.UseVisualStyleBackColor = true;
+            this.browseDownloadsButton.Click += new System.EventHandler(this.browseDownloadsButton_Click);
+            // 
+            // downloadFolderInput
+            // 
+            this.downloadFolderInput.Location = new System.Drawing.Point(131, 65);
+            this.downloadFolderInput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.downloadFolderInput.Name = "downloadFolderInput";
+            this.downloadFolderInput.Size = new System.Drawing.Size(339, 22);
+            this.downloadFolderInput.TabIndex = 5;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(8, 65);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(118, 17);
+            this.label7.TabIndex = 4;
+            this.label7.Text = "Download Folder:";
+            // 
             // descriptionBox
             // 
-            this.descriptionBox.Location = new System.Drawing.Point(98, 30);
+            this.descriptionBox.Location = new System.Drawing.Point(131, 37);
+            this.descriptionBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.descriptionBox.MaxLength = 255;
             this.descriptionBox.Name = "descriptionBox";
-            this.descriptionBox.Size = new System.Drawing.Size(339, 20);
+            this.descriptionBox.Size = new System.Drawing.Size(451, 22);
             this.descriptionBox.TabIndex = 3;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(33, 33);
+            this.label4.Location = new System.Drawing.Point(44, 41);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 13);
+            this.label4.Size = new System.Drawing.Size(83, 17);
             this.label4.TabIndex = 2;
             this.label4.Text = "Description:";
             // 
             // usernameBox
             // 
-            this.usernameBox.Location = new System.Drawing.Point(98, 5);
+            this.usernameBox.Location = new System.Drawing.Point(131, 6);
+            this.usernameBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.usernameBox.MaxLength = 16;
             this.usernameBox.Name = "usernameBox";
-            this.usernameBox.Size = new System.Drawing.Size(337, 20);
+            this.usernameBox.Size = new System.Drawing.Size(448, 22);
             this.usernameBox.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(38, 9);
+            this.label1.Location = new System.Drawing.Point(51, 11);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
+            this.label1.Size = new System.Drawing.Size(77, 17);
             this.label1.TabIndex = 0;
             this.label1.Text = "Username:";
             // 
@@ -160,62 +195,89 @@
             this.tabPage2.Controls.Add(this.udpDataPortBox);
             this.tabPage2.Controls.Add(this.manuallyForwardPortsButton);
             this.tabPage2.Controls.Add(this.UPnPButton);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(443, 263);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Size = new System.Drawing.Size(593, 327);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Network";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(19, 293);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(422, 17);
+            this.label6.TabIndex = 7;
+            this.label6.Text = "Dimension must be restarted for port/UPnP settings to take effect.";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(161, 139);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(78, 15);
+            this.label5.TabIndex = 6;
+            this.label5.Text = "(0 = random)";
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(22, 92);
+            this.label3.Location = new System.Drawing.Point(29, 113);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(91, 13);
+            this.label3.Size = new System.Drawing.Size(120, 17);
             this.label3.TabIndex = 5;
             this.label3.Text = "UDP Control Port:";
             // 
             // udpControlPortBox
             // 
-            this.udpControlPortBox.Location = new System.Drawing.Point(116, 90);
+            this.udpControlPortBox.Location = new System.Drawing.Point(155, 111);
+            this.udpControlPortBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.udpControlPortBox.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
             this.udpControlPortBox.Name = "udpControlPortBox";
-            this.udpControlPortBox.Size = new System.Drawing.Size(69, 20);
+            this.udpControlPortBox.Size = new System.Drawing.Size(92, 22);
             this.udpControlPortBox.TabIndex = 4;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(32, 66);
+            this.label2.Location = new System.Drawing.Point(43, 81);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(81, 13);
+            this.label2.Size = new System.Drawing.Size(105, 17);
             this.label2.TabIndex = 3;
             this.label2.Text = "UDP Data Port:";
             // 
             // udpDataPortBox
             // 
-            this.udpDataPortBox.Location = new System.Drawing.Point(116, 64);
+            this.udpDataPortBox.Location = new System.Drawing.Point(155, 79);
+            this.udpDataPortBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.udpDataPortBox.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
             this.udpDataPortBox.Name = "udpDataPortBox";
-            this.udpDataPortBox.Size = new System.Drawing.Size(69, 20);
+            this.udpDataPortBox.Size = new System.Drawing.Size(92, 22);
             this.udpDataPortBox.TabIndex = 2;
             // 
             // manuallyForwardPortsButton
             // 
             this.manuallyForwardPortsButton.AutoSize = true;
-            this.manuallyForwardPortsButton.Location = new System.Drawing.Point(17, 41);
+            this.manuallyForwardPortsButton.Location = new System.Drawing.Point(23, 50);
+            this.manuallyForwardPortsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.manuallyForwardPortsButton.Name = "manuallyForwardPortsButton";
-            this.manuallyForwardPortsButton.Size = new System.Drawing.Size(135, 17);
+            this.manuallyForwardPortsButton.Size = new System.Drawing.Size(177, 21);
             this.manuallyForwardPortsButton.TabIndex = 1;
             this.manuallyForwardPortsButton.TabStop = true;
             this.manuallyForwardPortsButton.Text = "Manually Forward Ports";
@@ -225,9 +287,10 @@
             // 
             this.UPnPButton.AutoSize = true;
             this.UPnPButton.Checked = true;
-            this.UPnPButton.Location = new System.Drawing.Point(17, 18);
+            this.UPnPButton.Location = new System.Drawing.Point(23, 22);
+            this.UPnPButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.UPnPButton.Name = "UPnPButton";
-            this.UPnPButton.Size = new System.Drawing.Size(75, 17);
+            this.UPnPButton.Size = new System.Drawing.Size(94, 21);
             this.UPnPButton.TabIndex = 0;
             this.UPnPButton.TabStop = true;
             this.UPnPButton.Text = "Use UPnP";
@@ -238,18 +301,31 @@
             this.tabPage3.Controls.Add(this.deleteShareButton);
             this.tabPage3.Controls.Add(this.addShareButton);
             this.tabPage3.Controls.Add(this.sharesListView);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(443, 263);
+            this.tabPage3.Size = new System.Drawing.Size(593, 327);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Shares";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // deleteShareButton
+            // 
+            this.deleteShareButton.Location = new System.Drawing.Point(112, 295);
+            this.deleteShareButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deleteShareButton.Name = "deleteShareButton";
+            this.deleteShareButton.Size = new System.Drawing.Size(100, 28);
+            this.deleteShareButton.TabIndex = 2;
+            this.deleteShareButton.Text = "Delete";
+            this.deleteShareButton.UseVisualStyleBackColor = true;
+            this.deleteShareButton.Click += new System.EventHandler(this.deleteShareButton_Click);
+            // 
             // addShareButton
             // 
-            this.addShareButton.Location = new System.Drawing.Point(3, 240);
+            this.addShareButton.Location = new System.Drawing.Point(4, 295);
+            this.addShareButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.addShareButton.Name = "addShareButton";
-            this.addShareButton.Size = new System.Drawing.Size(75, 23);
+            this.addShareButton.Size = new System.Drawing.Size(100, 28);
             this.addShareButton.TabIndex = 1;
             this.addShareButton.Text = "Add Share";
             this.addShareButton.UseVisualStyleBackColor = true;
@@ -262,9 +338,11 @@
             this.columnHeader2,
             this.columnHeader3,
             this.columnHeader4});
-            this.sharesListView.Location = new System.Drawing.Point(3, 3);
+            this.sharesListView.FullRowSelect = true;
+            this.sharesListView.Location = new System.Drawing.Point(4, 4);
+            this.sharesListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.sharesListView.Name = "sharesListView";
-            this.sharesListView.Size = new System.Drawing.Size(437, 234);
+            this.sharesListView.Size = new System.Drawing.Size(581, 287);
             this.sharesListView.TabIndex = 0;
             this.sharesListView.UseCompatibleStateImageBehavior = false;
             this.sharesListView.View = System.Windows.Forms.View.Details;
@@ -281,76 +359,22 @@
             // columnHeader3
             // 
             this.columnHeader3.Text = "Size";
+            this.columnHeader3.Width = 76;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Hashed";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(121, 113);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(56, 12);
-            this.label5.TabIndex = 6;
-            this.label5.Text = "(0 = random)";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(14, 238);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(317, 13);
-            this.label6.TabIndex = 7;
-            this.label6.Text = "Dimension must be restarted for port/UPnP settings to take effect.";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 53);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(90, 13);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "Download Folder:";
-            // 
-            // downloadFolderInput
-            // 
-            this.downloadFolderInput.Location = new System.Drawing.Point(98, 53);
-            this.downloadFolderInput.Name = "downloadFolderInput";
-            this.downloadFolderInput.Size = new System.Drawing.Size(255, 20);
-            this.downloadFolderInput.TabIndex = 5;
-            // 
-            // browseDownloadsButton
-            // 
-            this.browseDownloadsButton.Location = new System.Drawing.Point(359, 53);
-            this.browseDownloadsButton.Name = "browseDownloadsButton";
-            this.browseDownloadsButton.Size = new System.Drawing.Size(75, 23);
-            this.browseDownloadsButton.TabIndex = 6;
-            this.browseDownloadsButton.Text = "Browse";
-            this.browseDownloadsButton.UseVisualStyleBackColor = true;
-            this.browseDownloadsButton.Click += new System.EventHandler(this.browseDownloadsButton_Click);
-            // 
-            // deleteShareButton
-            // 
-            this.deleteShareButton.Location = new System.Drawing.Point(84, 240);
-            this.deleteShareButton.Name = "deleteShareButton";
-            this.deleteShareButton.Size = new System.Drawing.Size(75, 23);
-            this.deleteShareButton.TabIndex = 2;
-            this.deleteShareButton.Text = "Delete";
-            this.deleteShareButton.UseVisualStyleBackColor = true;
-            this.deleteShareButton.Click += new System.EventHandler(this.deleteShareButton_Click);
-            // 
             // SettingsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(467, 334);
+            this.ClientSize = new System.Drawing.Size(623, 411);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.saveButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsForm";

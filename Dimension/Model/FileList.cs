@@ -30,6 +30,7 @@ namespace Dimension.Model
             }
         void updateRootShare(RootShare f, bool urgent)
         {
+            ulong size = 0;
             SystemLog.addEntry("Updating root share " + f.fullPath + "...");
             sw = new System.Diagnostics.Stopwatch();
             sw.Start();
@@ -42,40 +43,42 @@ namespace Dimension.Model
                 invalidated = true;
             if (d.GetFiles().Length + d.GetDirectories().Length != f.folderIds.Length + f.fileIds.Length)
                 invalidated = true;
-            if (!invalidated)
+            
+            string s = "";
+            foreach (System.IO.FileInfo i in d.GetFiles())
             {
-                string s = "";
-                foreach (System.IO.FileInfo i in d.GetFiles())
-                {
-                    s += i.Name + "|" + i.Length.ToString() + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
-                    wait(urgent);
-                }
-                foreach (System.IO.DirectoryInfo i in d.GetDirectories())
-                {
-                    s += i.Name + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
-                    wait(urgent);
-                }
-                string s2 = "";
-                foreach (ulong id in f.fileIds)
-                {
-                    File i = Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
-                    s2 += i.name + "|" + i.size + "|" + i.lastModified.ToString() + Environment.NewLine;
-                    wait(urgent);
-                }
-                foreach (ulong id in f.folderIds)
-                {
-                    Folder i = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
-                    s2 += i.name + "|" + i.lastModified.ToString() + Environment.NewLine;
-                    wait(urgent);
-                }
-                if (s != s2)
-                    invalidated = true;
+                s += i.Name + "|" + i.Length.ToString() + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
+                wait(urgent);
             }
+            foreach (System.IO.DirectoryInfo i in d.GetDirectories())
+            {
+                s += i.Name + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
+                wait(urgent);
+            }
+            string s2 = "";
+            foreach (ulong id in f.fileIds)
+            {
+                File i = Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                size += i.size;
+                s2 += i.name + "|" + i.size + "|" + i.lastModified.ToString() + Environment.NewLine;
+                wait(urgent);
+            }
+            foreach (ulong id in f.folderIds)
+            {
+                Folder i = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                size += i.size;
+                s2 += i.name + "|" + i.lastModified.ToString() + Environment.NewLine;
+                wait(urgent);
+            }
+            if (s != s2)
+                invalidated = true;
+            
             if (invalidated)
             {
                 deleteFolder(f, urgent);
-                loadFolder(f, urgent, path);
+                size = loadFolder(f, urgent, path);
             }
+            f.size = size;
             Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, "Root Share "+f.index.ToString(), f);
             sw.Stop();
             sw.Reset();
@@ -106,7 +109,7 @@ namespace Dimension.Model
                 output.parentId = f.id;
                 output.size = (ulong)z.Length;
                 output.lastModified = z.LastWriteTimeUtc.Ticks;
-                total += f.size;
+                total += output.size;
                 fileChildren[fi] = output;
                 fi++;
                 Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, "FSListing " + output.id.ToString(), output);
