@@ -12,7 +12,7 @@ namespace Dimension.Model
         {
             RootShare[] shares = Program.fileListDatabase.getRootShares();
             foreach (RootShare r in shares)
-                updateFolder(r, urgent);
+                updateRootShare(r, urgent);
         }
         System.Diagnostics.Stopwatch sw;
         void wait(bool urgent)
@@ -23,20 +23,18 @@ namespace Dimension.Model
                 sw.Reset();
             }
             }
-        void updateFolder(Folder f, bool urgent)
+        void updateRootShare(RootShare f, bool urgent)
         {
             sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             string path = "";
-            if (f is RootShare)
-            {
-                path = ((RootShare)f).fullPath;
-            }
+            path = f.fullPath;
+            
             bool invalidated = false;
             System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(path);
             if (d.LastWriteTimeUtc != f.lastModified)
                 invalidated = true;
-            if (d.GetFiles().Length + d.GetDirectories().Length != f.folderChildren.Length + f.fileChildren.Length)
+            if (d.GetFiles().Length + d.GetDirectories().Length != f.folderIds.Length + f.fileIds.Length)
                 invalidated = true;
             if (!invalidated)
             {
@@ -52,13 +50,15 @@ namespace Dimension.Model
                     wait(urgent);
                 }
                 string s2 = "";
-                foreach (File i in f.fileChildren)
+                foreach (ulong id in f.fileIds)
                 {
+                    File i = Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, id.ToString());
                     s2 += i.name + "|" + i.size + "|" + i.lastModified.ToString();
                     wait(urgent);
                 }
-                foreach (Folder i in f.folderChildren)
+                foreach (ulong id in f.folderIds)
                 {
+                    Folder i = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, id.ToString());
                     s2 += i.name + "|" + i.lastModified.ToString();
                     wait(urgent);
                 }
@@ -68,33 +68,83 @@ namespace Dimension.Model
             if (invalidated)
             {
                 deleteFolder(f, urgent);
-                loadFolder(f, urgent);
+                loadFolder(f, urgent, path);
             }
             sw.Stop();
             sw.Reset();
+            Program.fileListDatabase.saveAll();
         }
-        void loadFolder(Folder f, bool urgent)
+        public void startUpdate(bool urgent)
         {
+            System.Threading.Thread t = new System.Threading.Thread(delegate() { update(urgent); });
+            t.IsBackground = true;
+            t.Name = "File list update thread";
+            t.Start();
+        }
+        ulong loadFolder(Folder f, bool urgent, string realLocation)
+        {
+            ulong total = 0;
             wait(urgent);
+            System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(realLocation);
 
+            Folder[] folderChildren = new Folder[d.GetDirectories().Length];
+            File[] fileChildren = new File[d.GetFiles().Length];
+            int fi = 0;
+            foreach (System.IO.FileInfo z in d.GetFiles())
+            {
+                wait(urgent);
+                File output = new File();
+                output.id = Program.fileListDatabase.allocateId();
+                output.name = z.Name;
+                output.parentId = f.id;
+                output.size = f.size;
+                total += f.size;
+                fileChildren[fi] = output;
+                fi++;
+                Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, output.id.ToString(), output);
+            }
+            
+            fi = 0;
+            foreach (System.IO.DirectoryInfo z in d.GetDirectories())
+            {
+                wait(urgent);
+                Folder output = new Folder();
+                output.id = Program.fileListDatabase.allocateId();
+                output.name = z.Name;
+                output.parentId = f.id;
+                output.size = loadFolder(output, urgent, realLocation + "/" + z.Name);
+                total += output.size;
+                folderChildren[fi] = output;
+                fi++;
+                Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, output.id.ToString(), output);
+            }
+            FSListing x = new FSListing();
 
+            f.fileIds = new ulong[fileChildren.Length];
+            for (int i = 0; i < f.fileIds.Length; i++)
+                f.fileIds[i] = fileChildren[i].id;
+            f.folderIds = new ulong[folderChildren.Length];
+            for (int i = 0; i < f.folderIds.Length; i++)
+                f.folderIds[i] = folderChildren[i].id;
+            Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, f.id.ToString(), f);
+            return total;
         }
         void deleteFolder(Folder f, bool urgent)
         {
             wait(urgent);
 
-            foreach (Folder z in f.folderChildren)
+            foreach (ulong id in f.folderIds)
             {
                 wait(urgent);
-                deleteFolder(z, urgent);
+                deleteFolder(Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, id.ToString()), urgent);
             }
 
-            foreach (File z in f.fileChildren)
+            foreach (ulong id in f.fileIds)
             {
                 wait(urgent);
-                Program.fileListDatabase.deleteObject(Program.fileListDatabase.fileList, z.id.ToString());
+                Program.fileListDatabase.deleteObject(Program.fileListDatabase.fileList, id.ToString());
             }
-
+            
             Program.fileListDatabase.deleteObject(Program.fileListDatabase.fileList, f.id.ToString());
         }
     }

@@ -36,9 +36,11 @@ namespace Dimension
         public static Model.Bootstrap bootstrap;
         public static Model.FileListDatabase fileListDatabase;
         public static Model.Settings settings;
+        public static Model.FileList fileList;
         public static void doLoad()
         {
             settings = new Model.Settings();
+
 
             string username = settings.getString("Username", Environment.MachineName);
             settings.setString("Username", username);
@@ -55,6 +57,11 @@ namespace Dimension
             t.Name = "UDT Accept Loop";
             t.Start();
             fileListDatabase = new Model.FileListDatabase();
+
+            fileList = new Model.FileList();
+            
+            fileList.startUpdate(false);
+
             doneLoading = true;
         }
         public static bool doneLoading = false;

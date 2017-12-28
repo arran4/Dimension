@@ -68,6 +68,7 @@ namespace Dimension.UI
         private void saveButton_Click(object sender, EventArgs e)
         {
             save();
+            Program.fileList.startUpdate(false);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

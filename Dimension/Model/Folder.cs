@@ -8,7 +8,7 @@ namespace Dimension.Model
 {
     public class Folder : FSListing
     {
-        public Folder[] folderChildren;
-        public File[] fileChildren;
+        public ulong[] folderIds = new ulong[0];
+        public ulong[] fileIds = new ulong[0];
     }
 }

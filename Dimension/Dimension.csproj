@@ -66,6 +66,7 @@
     <Compile Include="Model\Bootstrap.cs" />
     <Compile Include="Model\File.cs" />
     <Compile Include="Model\FileList.cs" />
+    <Compile Include="Model\FileListDatabase.cs" />
     <Compile Include="Model\Folder.cs" />
     <Compile Include="Model\IncomingConnection.cs" />
     <Compile Include="Model\FSListing.cs" />
