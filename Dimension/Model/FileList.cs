@@ -8,17 +8,39 @@ namespace Dimension.Model
 {
     class FileList
     {
+        Dictionary<string, System.IO.FileSystemWatcher> watchers = new Dictionary<string, System.IO.FileSystemWatcher>();
         //TODO: When updating shares, chew through File IDs less prodigiously
         //TODO: Update bottom-up instead of top-down -- so you don't need to do a complete list rebuild every time you change a file
         public void update(bool urgent)
         {
-            SystemLog.addEntry("Updating all shares" + ( urgent ? " (urgently)" : ""));
-            RootShare[] shares = Program.fileListDatabase.getRootShares();
-            foreach (RootShare r in shares)
-                if(r!=null)
-                    updateRootShare(r, urgent);
+            lock (updateLock)
+            {
+                SystemLog.addEntry("Updating all shares" + (urgent ? " (urgently)" : ""));
+                RootShare[] shares = Program.fileListDatabase.getRootShares();
+                foreach (RootShare r in shares)
+                    if (r != null)
+                    {
+                        updateRootShare(r, urgent);
+                        if (!watchers.ContainsKey(r.fullPath))
+                        {
+                            watchers[r.fullPath] = new System.IO.FileSystemWatcher(r.fullPath);
+                            watchers[r.fullPath].Changed += doUpdate;
+                            watchers[r.fullPath].Created += doUpdate;
+                            watchers[r.fullPath].Deleted += doUpdate;
+                            watchers[r.fullPath].Renamed += doUpdate;
+                            watchers[r.fullPath].IncludeSubdirectories = true;
+                            watchers[r.fullPath].EnableRaisingEvents = true;
+                        }
 
+                    }
+            }
             SystemLog.addEntry("Share update complete.");
+        }
+        object updateLock = new object();
+        void doUpdate(object sender, EventArgs e)
+        {
+            update(false);
+
         }
         System.Diagnostics.Stopwatch sw;
         void wait(bool urgent)
