@@ -35,6 +35,17 @@ namespace Dimension.Model
                         peers[h.id].username = h.username;
                         renamed = true;
                     }
+                    string s1 = "";
+                    string s2 = "";
+                    foreach (int i in peers[h.id].circles)
+                        s1 += i.ToString() + ", ";
+                    foreach (int i in h.myCircles)
+                        s2 += i.ToString() + ", ";
+                    if (s1 != s2)
+                    {
+                        peers[h.id].circles = h.myCircles;
+                        added = true;
+                    }
                 }
                 else
                 {
@@ -43,6 +54,7 @@ namespace Dimension.Model
                     peers[h.id].actualEndpoint = sender;
                     peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
                     peers[h.id].username = h.username;
+                    peers[h.id].circles = h.myCircles;
                     added = true;
                 }
             }

@@ -8,12 +8,18 @@ namespace Dimension.Model
 {
     public class Core : IDisposable
     {
+        public List<string> circles = new List<string>();
         public PeerManager peerManager;
         bool disposed = false;
         public void Dispose()
         {
             disposed = true;
 
+        }
+        public void joinCircle(string s)
+        {
+            lock (circles)
+                circles.Add(s);
         }
         public Core()
         {
@@ -78,6 +84,15 @@ namespace Dimension.Model
                 c.externalDataPort = Program.bootstrap.publicDataEndPoint.Port;
                 c.internalControlPort = Program.bootstrap.internalControlPort;
                 c.internalDataPort = Program.bootstrap.internalDataPort;
+
+                System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+                List<int> circles = new List<int>();
+                foreach (string s in this.circles)
+                {
+                    byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
+                    circles.Add(BitConverter.ToInt32(hash, 0));
+                }
+                c.myCircles = circles.ToArray();
 
                 //too much output!
                 /*var n = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();

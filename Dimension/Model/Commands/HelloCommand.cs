@@ -17,6 +17,7 @@ namespace Dimension.Model.Commands
         public int internalControlPort;
         public int internalDataPort;
         public string externalIP;
+        public int[] myCircles;
         //public string[] internalIPs; //There are too many!
     }
 }

@@ -81,6 +81,7 @@
             this.userListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
             this.userListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.userListView.FullRowSelect = true;
             this.userListView.Location = new System.Drawing.Point(0, 0);
             this.userListView.Name = "userListView";
             this.userListView.Size = new System.Drawing.Size(301, 453);
