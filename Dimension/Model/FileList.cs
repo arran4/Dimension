@@ -37,10 +37,12 @@ namespace Dimension.Model
             SystemLog.addEntry("Share update complete.");
         }
         object updateLock = new object();
-        void doUpdate(object sender, EventArgs e)
+        void doUpdate(object sender, System.IO.FileSystemEventArgs e)
         {
-            update(false);
+            string path = e.FullPath.Replace('\\','/');
+            SystemLog.addEntry("Partial filesystem update to " + path);
 
+            //TODO: Update only that file/folder
         }
         System.Diagnostics.Stopwatch sw;
         void wait(bool urgent)
