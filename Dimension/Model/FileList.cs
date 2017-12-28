@@ -17,11 +17,16 @@ namespace Dimension.Model
         System.Diagnostics.Stopwatch sw;
         void wait(bool urgent)
         {
-
-        }
+            if (!urgent && sw.ElapsedMilliseconds > 50)
+            {
+                System.Threading.Thread.Sleep(3);
+                sw.Reset();
+            }
+            }
         void updateFolder(Folder f, bool urgent)
         {
             sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             string path = "";
             if (f is RootShare)
             {
@@ -65,6 +70,8 @@ namespace Dimension.Model
                 deleteFolder(f, urgent);
                 loadFolder(f, urgent);
             }
+            sw.Stop();
+            sw.Reset();
         }
         void loadFolder(Folder f, bool urgent)
         {
@@ -77,9 +84,18 @@ namespace Dimension.Model
             wait(urgent);
 
             foreach (Folder z in f.folderChildren)
+            {
+                wait(urgent);
                 deleteFolder(z, urgent);
+            }
 
+            foreach (File z in f.fileChildren)
+            {
+                wait(urgent);
+                Program.fileListDatabase.deleteObject(Program.fileListDatabase.fileList, z.id.ToString());
+            }
 
+            Program.fileListDatabase.deleteObject(Program.fileListDatabase.fileList, f.id.ToString());
         }
     }
 }

@@ -67,7 +67,10 @@ namespace Dimension.Model
                 output[i] = getObject<Model.RootShare>(fileList, "Root Share " + i.ToString());
             return output;
         }
-        
+        public void deleteObject(RaptorDB.RaptorDB<string> db, string name)
+        {
+            db.RemoveKey("o" + name);
+        }
         public void setObject<T>(RaptorDB.RaptorDB<string> db, string name, T val)
         {
             db.Set("o" + name, Newtonsoft.Json.JsonConvert.SerializeObject(val));
