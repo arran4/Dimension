@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     class FileList
     {
+        //TODO: When updating shares, chew through File IDs less prodigiously
         public void update(bool urgent)
         {
             SystemLog.addEntry("Updating all shares" + ( urgent ? " (urgently)" : ""));
@@ -46,25 +47,25 @@ namespace Dimension.Model
                 string s = "";
                 foreach (System.IO.FileInfo i in d.GetFiles())
                 {
-                    s += i.Name + "|" + i.Length.ToString() + "|" + i.LastWriteTimeUtc.ToString();
+                    s += i.Name + "|" + i.Length.ToString() + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
                     wait(urgent);
                 }
                 foreach (System.IO.DirectoryInfo i in d.GetDirectories())
                 {
-                    s += i.Name + "|" + i.LastWriteTimeUtc.ToString();
+                    s += i.Name + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
                     wait(urgent);
                 }
                 string s2 = "";
                 foreach (ulong id in f.fileIds)
                 {
                     File i = Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
-                    s2 += i.name + "|" + i.size + "|" + i.lastModified.ToString();
+                    s2 += i.name + "|" + i.size + "|" + i.lastModified.ToString() + Environment.NewLine;
                     wait(urgent);
                 }
                 foreach (ulong id in f.folderIds)
                 {
                     Folder i = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
-                    s2 += i.name + "|" + i.lastModified.ToString();
+                    s2 += i.name + "|" + i.lastModified.ToString() + Environment.NewLine;
                     wait(urgent);
                 }
                 if (s != s2)
@@ -103,7 +104,7 @@ namespace Dimension.Model
                 output.id = Program.fileListDatabase.allocateId();
                 output.name = z.Name;
                 output.parentId = f.id;
-                output.size = f.size;
+                output.size = (ulong)z.Length;
                 output.lastModified = z.LastWriteTimeUtc.Ticks;
                 total += f.size;
                 fileChildren[fi] = output;
