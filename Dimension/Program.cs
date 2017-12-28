@@ -28,13 +28,13 @@ namespace Dimension
         static void doCleanup()
         {
             disposed = true;
-            fileList.saveAll();
+            fileListDatabase.saveAll();
             bootstrap.Dispose();
         }
         public static System.Net.Sockets.UdpClient udp;
         public static Udt.Socket udtSocket;
         public static Model.Bootstrap bootstrap;
-        public static Model.FileListDatabase fileList;
+        public static Model.FileListDatabase fileListDatabase;
         public static Model.Settings settings;
         public static void doLoad()
         {
@@ -54,7 +54,7 @@ namespace Dimension
             t.IsBackground = true;
             t.Name = "UDT Accept Loop";
             t.Start();
-            fileList = new Model.FileListDatabase();
+            fileListDatabase = new Model.FileListDatabase();
             doneLoading = true;
         }
         public static bool doneLoading = false;

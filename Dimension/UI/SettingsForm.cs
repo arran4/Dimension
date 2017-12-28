@@ -36,11 +36,11 @@ namespace Dimension.UI
 
             downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:/Downloads");
 
-            int numShares = Program.fileList.getInt(Program.fileList.fileList, "Root Share Count", 0);
+            int numShares = Program.fileListDatabase.getInt(Program.fileListDatabase.fileList, "Root Share Count", 0);
 
             for (int i = 0; i < numShares; i++)
             {
-                Model.RootShare r = Program.fileList.getObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + i.ToString());
+                Model.RootShare r = Program.fileListDatabase.getObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString());
 
                 ListViewItem li = new ListViewItem(r.name);
                 li.SubItems.Add(r.fullPath);
@@ -61,7 +61,7 @@ namespace Dimension.UI
             Program.settings.setString("Default Download Folder", downloadFolderInput.Text);
 
             Program.settings.save();
-            Program.fileList.saveAll();
+            Program.fileListDatabase.saveAll();
             Close();
         }
 
@@ -99,7 +99,7 @@ namespace Dimension.UI
                 Model.RootShare r = new Model.RootShare();
                 r.name = name;
                 r.fullPath = fullPath;
-                r.id = Program.fileList.allocateId();
+                r.id = Program.fileListDatabase.allocateId();
 
                 ListViewItem li = new ListViewItem(r.name);
                 li.SubItems.Add(r.fullPath);
@@ -111,42 +111,42 @@ namespace Dimension.UI
         }
         void updateSharesNamed(Model.RootShare r, int index)
         {
-            int[] z = Program.fileList.getObject<int[]>(Program.fileList.fileList, "Root Shares Named " + r.name);
+            int[] z = Program.fileListDatabase.getObject<int[]>(Program.fileListDatabase.fileList, "Root Shares Named " + r.name);
             if (z == null)
                 z = new int[0];
             Array.Resize(ref z, z.Length + 1);
             z[z.Length - 1] = index;
-            Program.fileList.setObject<int[]>(Program.fileList.fileList, "Root Shares Named " + r.name, z);
+            Program.fileListDatabase.setObject<int[]>(Program.fileListDatabase.fileList, "Root Shares Named " + r.name, z);
         }
         void removeSharesNamed(string name, int index)
         {
-            List<int> z = new List<int>(Program.fileList.getObject<int[]>(Program.fileList.fileList, "Root Shares Named " + name));
+            List<int> z = new List<int>(Program.fileListDatabase.getObject<int[]>(Program.fileListDatabase.fileList, "Root Shares Named " + name));
 
             if (z.Contains(index))
                 z.Remove(index);
 
-            Program.fileList.setObject<int[]>(Program.fileList.fileList, "Root Shares Named " + name, z.ToArray());
+            Program.fileListDatabase.setObject<int[]>(Program.fileListDatabase.fileList, "Root Shares Named " + name, z.ToArray());
         }
 
 
         void upsertShare(Model.RootShare r)
         {
-            int numShares = Program.fileList.getInt(Program.fileList.fileList, "Root Share Count", 0);
+            int numShares = Program.fileListDatabase.getInt(Program.fileListDatabase.fileList, "Root Share Count", 0);
             for (int i = 0; i < numShares; i++)
             {
-                if (Program.fileList.getObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + i.ToString()) == null)
+                if (Program.fileListDatabase.getObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString()) == null)
                 {
                     r.index = i;
-                    Program.fileList.setObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + i.ToString(), r);
+                    Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString(), r);
                     updateSharesNamed(r, i);
                     return;
                 }
             }
 
             r.index = numShares;
-            Program.fileList.setObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + numShares.ToString(), r);
+            Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + numShares.ToString(), r);
 
-            Program.fileList.setInt(Program.fileList.fileList, "Root Share Count", numShares + 1);
+            Program.fileListDatabase.setInt(Program.fileListDatabase.fileList, "Root Share Count", numShares + 1);
             updateSharesNamed(r, numShares);
 
         }
@@ -160,7 +160,7 @@ namespace Dimension.UI
 
                 Model.RootShare r = (Model.RootShare)i.Tag;
 
-                Program.fileList.setObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + r.index, null);
+                Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + r.index, null);
 
                 removeSharesNamed(r.name, r.index);
             }

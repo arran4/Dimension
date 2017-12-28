@@ -11,5 +11,7 @@ namespace Dimension.Model
         public ulong id;
         public ulong parentId;
         public string name;
+        public ulong size;
+        public DateTime lastModified;
     }
 }
