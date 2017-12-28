@@ -9,7 +9,7 @@ namespace Dimension.Model
 {
     public class Settings
     {
-        RaptorDB.RaptorDB<string> settings;
+        public RaptorDB.RaptorDB<string> settings;
 
         public Settings()
         {

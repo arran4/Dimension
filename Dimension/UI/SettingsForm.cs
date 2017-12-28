@@ -41,7 +41,7 @@ namespace Dimension.UI
 
             for (int i = 0; i < numShares; i++)
             {
-                Model.RootShare r = Program.fileListDatabase.getObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString());
+                Model.RootShare r = Program.fileListDatabase.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString());
 
                 if (r != null)
                 {
@@ -96,7 +96,7 @@ namespace Dimension.UI
 
                 /*int numShares = Program.fileList.getInt(Program.fileList.fileList, "Root Share Count", 0);
                 for (int i = 0; i < numShares; i++)
-                    if (Program.fileList.getObject<Model.RootShare>(Program.fileList.fileList, "Root Share " + i.ToString()).fullPath.ToLower() == fullPath.ToLower())
+                    if (Program.fileList.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString()).fullPath.ToLower() == fullPath.ToLower())
                     {
                         MessageBox.Show("You have already added that share.");
                         return;
@@ -141,11 +141,11 @@ namespace Dimension.UI
             int numShares = Program.fileListDatabase.getInt(Program.fileListDatabase.fileList, "Root Share Count", 0);
             for (int i = 0; i < numShares; i++)
             {
-                Model.RootShare g = Program.fileListDatabase.getObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString());
+                Model.RootShare g = Program.fileListDatabase.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString());
                 if (g == null)
                 {
                     r.index = i;
-                    Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString(), r);
+                    Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString(), r);
                     updateSharesNamed(r, i);
                     return;
                 }
@@ -154,7 +154,7 @@ namespace Dimension.UI
                     if (g.fullPath == r.fullPath)
                     {
 
-                        Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString(), r);
+                        Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString(), r);
                         updateSharesNamed(r, i);
                         return;
 
@@ -164,7 +164,7 @@ namespace Dimension.UI
             }
 
             r.index = numShares;
-            Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + numShares.ToString(), r);
+            Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + numShares.ToString(), r);
 
             Program.fileListDatabase.setInt(Program.fileListDatabase.fileList, "Root Share Count", numShares + 1);
             updateSharesNamed(r, numShares);
@@ -180,7 +180,7 @@ namespace Dimension.UI
 
                 Model.RootShare r = (Model.RootShare)i.Tag;
 
-                Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + r.index, null);
+                Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + r.index, null);
 
                 removeSharesNamed(r.name, r.index);
             }
