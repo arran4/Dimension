@@ -136,12 +136,25 @@ namespace Dimension.UI
             int numShares = Program.fileListDatabase.getInt(Program.fileListDatabase.fileList, "Root Share Count", 0);
             for (int i = 0; i < numShares; i++)
             {
-                if (Program.fileListDatabase.getObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString()) == null)
+                Model.RootShare g = Program.fileListDatabase.getObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString());
+                if (g == null)
                 {
                     r.index = i;
                     Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString(), r);
                     updateSharesNamed(r, i);
                     return;
+                }
+                else
+                {
+                    if (g.fullPath == r.fullPath)
+                    {
+
+                        Program.fileListDatabase.setObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString(), r);
+                        updateSharesNamed(r, i);
+                        return;
+
+
+                    }
                 }
             }
 
