@@ -77,6 +77,15 @@ namespace Dimension.Model
                 c.internalControlPort = Program.bootstrap.internalControlPort;
                 c.internalDataPort = Program.bootstrap.internalDataPort;
 
+                //too much output!
+                /*var n = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
+                List<string> ips = new List<string>();
+                for (int i = 0; i < n.Length; i++)
+                    foreach (var ni in n[i].GetIPProperties().UnicastAddresses)
+                        ips.Add(ni.Address.ToString());
+                c.internalIPs = ips.ToArray();
+                */
+
                 byte[] b = Program.serializer.serialize(c);
 
                 Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
