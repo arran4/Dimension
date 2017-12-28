@@ -136,7 +136,7 @@ namespace Dimension.Model
                 publicDataEndPoint = result2.PublicEndPoint;
                 SystemLog.addEntry("STUN successful. External data endpoint: " + result2.PublicEndPoint.ToString());
             }
-            catch(SocketException)
+            catch (Exception) //STUN can throw generic exceptions :(
             {
                 SystemLog.addEntry("Failed to STUN. Working in LAN mode.");
                 publicControlEndPoint = null;

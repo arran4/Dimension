@@ -31,12 +31,14 @@ namespace Dimension
             fileListDatabase.saveAll();
             bootstrap.Dispose();
         }
+        public static Model.Core theCore;
         public static System.Net.Sockets.UdpClient udp;
         public static Udt.Socket udtSocket;
         public static Model.Bootstrap bootstrap;
         public static Model.FileListDatabase fileListDatabase;
         public static Model.Settings settings;
         public static Model.FileList fileList;
+        public static Model.Serializer serializer;
         public static void doLoad()
         {
             settings = new Model.Settings();
@@ -61,6 +63,9 @@ namespace Dimension
             fileList = new Model.FileList();
             
             fileList.startUpdate(false);
+
+            serializer = new Model.Serializer();
+            theCore = new Model.Core();
 
             doneLoading = true;
         }
