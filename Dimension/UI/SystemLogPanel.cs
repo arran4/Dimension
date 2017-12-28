@@ -13,18 +13,27 @@ namespace Dimension.UI
     public partial class SystemLogPanel : UserControl
     {
 
-        //TODO: Make it scroll down when new entries are added
-        //TODO: But not if we've scrolled up
+        //TODO: Make it not scroll down if you've already gone up
         public SystemLogPanel()
         {
             InitializeComponent();
-            contentBox.Text = Model.SystemLog.theLog;
+
+            update();
         }
 
+        void update()
+        {
+            contentBox.Text = Model.SystemLog.theLog;
+            contentBox.SelectionStart = contentBox.Text.Length;
+            contentBox.SelectionLength = 0;
+            contentBox.ScrollToCaret();
+        }
         private void updateTimer_Tick(object sender, EventArgs e)
         {
             if (contentBox.Text != Model.SystemLog.theLog)
-                contentBox.Text = Model.SystemLog.theLog;
+            {
+                update();
+            }
         }
     }
 }
