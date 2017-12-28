@@ -44,7 +44,7 @@ namespace Dimension.UI
                 Model.RootShare r = Program.fileListDatabase.getObject<Model.RootShare>(Program.fileListDatabase.fileList, "Root Share " + i.ToString());
 
                 ListViewItem li = new ListViewItem(r.name);
-                li.SubItems.Add(r.fullPath.Replace('/','\\'));
+                li.SubItems.Add(r.fullPath.Replace('/', System.IO.Path.DirectorySeparatorChar));
                 li.Tag = r;
                 sharesListView.Items.Add(li);
             }
@@ -104,7 +104,7 @@ namespace Dimension.UI
                 r.id = Program.fileListDatabase.allocateId();
 
                 ListViewItem li = new ListViewItem(r.name);
-                li.SubItems.Add(r.fullPath.Replace('/', '\\'));
+                li.SubItems.Add(r.fullPath.Replace('/', System.IO.Path.DirectorySeparatorChar));
                 li.Tag = r;
                 sharesListView.Items.Add(li);
 
