@@ -77,6 +77,7 @@
     <Compile Include="Model\FSListing.cs" />
     <Compile Include="Model\NetConstants.cs" />
     <Compile Include="Model\Peer.cs" />
+    <Compile Include="Model\PeerManager.cs" />
     <Compile Include="Model\RootShare.cs" />
     <Compile Include="Model\Serializer.cs" />
     <Compile Include="Model\Settings.cs" />
