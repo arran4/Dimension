@@ -12,6 +12,9 @@ namespace Dimension.UI
 {
     public partial class SystemLogPanel : UserControl
     {
+
+        //TODO: Make it scroll down when new entries are added
+        //TODO: But not if we've scrolled up
         public SystemLogPanel()
         {
             InitializeComponent();

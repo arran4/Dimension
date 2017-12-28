@@ -316,5 +316,11 @@ namespace Dimension
         {
             this.Close();
         }
+
+        private void updateLogTimer_Tick(object sender, EventArgs e)
+        {
+            if (logStatus.Text != Model.SystemLog.lastLine)
+                logStatus.Text = Model.SystemLog.lastLine;
+        }
     }
 }

@@ -10,9 +10,12 @@ namespace Dimension.Model
     {
         public void update(bool urgent)
         {
+            SystemLog.addEntry("Updating all shares" + ( urgent ? " (urgently)" : ""));
             RootShare[] shares = Program.fileListDatabase.getRootShares();
             foreach (RootShare r in shares)
                 updateRootShare(r, urgent);
+
+            SystemLog.addEntry("Share update complete.");
         }
         System.Diagnostics.Stopwatch sw;
         void wait(bool urgent)
@@ -25,6 +28,7 @@ namespace Dimension.Model
             }
         void updateRootShare(RootShare f, bool urgent)
         {
+            SystemLog.addEntry("Updating root share " + f.fullPath + "...");
             sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             string path = "";
