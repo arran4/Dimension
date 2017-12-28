@@ -39,10 +39,32 @@ namespace Dimension.Model
         object updateLock = new object();
         void doUpdate(object sender, System.IO.FileSystemEventArgs e)
         {
-            string path = e.FullPath.Replace('\\','/');
+            RootShare[] shares = Program.fileListDatabase.getRootShares();
+            string path = e.FullPath.Replace('\\', '/');
             SystemLog.addEntry("Partial filesystem update to " + path);
 
+            bool isFolder = System.IO.Directory.Exists(path);
+            if (isFolder)
+            {
+                foreach (RootShare r in shares)
+                    if (r != null)
+                    {
+                        if ((path + "/").StartsWith(r.fullPath + "/"))
+                        {
+                            string remaining = path.Substring(r.fullPath.Length + 1);
+                            FSListing f = getFSListing(remaining);
+
+                            //TODO: Update that particular folder
+                        }
+                    }
+            }
             //TODO: Update only that file/folder
+        }
+
+        //TODO: Traverse the path
+        FSListing getFSListing(string path)
+        {
+                return null;
         }
         System.Diagnostics.Stopwatch sw;
         void wait(bool urgent)
