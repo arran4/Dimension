@@ -9,7 +9,7 @@ namespace Dimension.Model
     class Peer
     {
         public System.Net.IPEndPoint publicEndpoint;
-        public System.Net.IPEndPoint localEndpoint;
+        public System.Net.IPEndPoint actualEndpoint;
         public string username;
         public ulong id;
     }

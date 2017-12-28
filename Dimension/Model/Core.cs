@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public class Core : IDisposable
     {
+        PeerManager peerManager;
         bool disposed = false;
         public void Dispose()
         {
@@ -16,6 +17,7 @@ namespace Dimension.Model
         }
         public Core()
         {
+            peerManager = new PeerManager();
             System.Threading.Thread t = new System.Threading.Thread(helloLoop);
             t.IsBackground = true;
             t.Name = "Hello send loop";
@@ -60,7 +62,7 @@ namespace Dimension.Model
             if (c is Commands.HelloCommand)
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
-
+                peerManager.parseHello(h, sender);
             }
         }
         void helloLoop()

@@ -8,6 +8,7 @@ namespace Dimension.Model.Commands
 {
     public class HelloCommand : Command
     {
+        public ulong id;
         public string username;
         public string machineName;
         public int peerCount;
