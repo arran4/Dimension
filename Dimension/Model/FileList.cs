@@ -9,6 +9,7 @@ namespace Dimension.Model
     class FileList
     {
         //TODO: When updating shares, chew through File IDs less prodigiously
+        //TODO: Update bottom-up instead of top-down -- so you don't need to do a complete list rebuild every time you change a file
         public void update(bool urgent)
         {
             SystemLog.addEntry("Updating all shares" + ( urgent ? " (urgently)" : ""));
