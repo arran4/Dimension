@@ -57,7 +57,11 @@ namespace Dimension.Model
         }
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
+            if (c is Commands.HelloCommand)
+            {
+                Commands.HelloCommand h = (Commands.HelloCommand)c;
 
+            }
         }
         void helloLoop()
         {

@@ -8,6 +8,6 @@ namespace Dimension.Model
 {
     public class NetConstants
     {
-        public const int controlPort = 1542;
+        public const int controlPort = 31542;
     }
 }
