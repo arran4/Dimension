@@ -21,8 +21,12 @@ namespace Dimension.Model
             lock (circles)
                 circles.Add(s);
         }
+        ulong id;
         public Core()
         {
+            Random r = new Random();
+            //todo: save ID in settings
+            id = (ulong)r.Next();
             peerManager = new PeerManager();
             System.Threading.Thread t = new System.Threading.Thread(helloLoop);
             t.IsBackground = true;
@@ -76,6 +80,7 @@ namespace Dimension.Model
             while (!disposed)
             {
                 Commands.HelloCommand c = new Commands.HelloCommand();
+                c.id = id;
                 c.username = Program.settings.getString("Username", "Username");
                 c.machineName = Environment.MachineName;
                 c.externalIP = Program.bootstrap.publicControlEndPoint.Address.ToString();
