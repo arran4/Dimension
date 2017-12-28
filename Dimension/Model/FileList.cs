@@ -52,19 +52,56 @@ namespace Dimension.Model
                         if ((path + "/").StartsWith(r.fullPath + "/"))
                         {
                             string remaining = path.Substring(r.fullPath.Length + 1);
-                            FSListing f = getFSListing(remaining);
+                            FSListing f = getFSListing(r, remaining);
 
-                            //TODO: Update that particular folder
+                            if (f is Folder)
+                            {
+                                deleteFolder((Folder)f, false);
+                                loadFolder((Folder)f, false, path); //TODO: Update size of everything above this folder
+                            }
                         }
                     }
             }
-            //TODO: Update only that file/folder
         }
 
-        //TODO: Traverse the path
-        FSListing getFSListing(string path)
+        //TODO: Make this cache in the key-value store instead of just iterating
+        FSListing getFSListing(Folder parent, string path)
         {
-                return null;
+            string[] split = path.Split('/');
+
+            for (int i = 0; i < split.Length; i++)
+            {
+                bool found = false;
+                foreach (ulong id in parent.folderIds)
+                {
+
+                    Folder f = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                    
+                    if (f.name == split[i])
+                    {
+                        if (i == split.Length - 1)
+                            return f;
+                        parent = f;
+                        found = true;
+                        break;
+                    }
+
+                }
+                foreach (ulong id in parent.fileIds)
+                {
+
+                    File f = Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                    if (f.name == split[i] && i == split.Length - 1)
+                    {
+                        return f;
+                    }
+
+                }
+                if (!found)
+                    return null;    //couldn't find it
+            }
+           
+            return null;
         }
         System.Diagnostics.Stopwatch sw;
         void wait(bool urgent)
