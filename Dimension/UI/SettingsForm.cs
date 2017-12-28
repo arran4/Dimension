@@ -12,6 +12,7 @@ namespace Dimension.UI
 {
     public partial class SettingsForm : Form
     {
+        //FIXME: If you change shares then cancel, it'll still save the share changes but won't trigger an update
         public SettingsForm()
         {
             InitializeComponent();
