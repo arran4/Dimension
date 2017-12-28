@@ -89,11 +89,11 @@
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ByteFormatter.cs" />
-    <Compile Include="UI\ChatPanel.cs">
+    <Compile Include="UI\CirclePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\ChatPanel.Designer.cs">
-      <DependentUpon>ChatPanel.cs</DependentUpon>
+    <Compile Include="UI\CirclePanel.Designer.cs">
+      <DependentUpon>CirclePanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\DownloadQueuePanel.cs">
       <SubType>UserControl</SubType>
@@ -172,8 +172,8 @@
     <EmbeddedResource Include="UI\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ChatPanel.resx">
-      <DependentUpon>ChatPanel.cs</DependentUpon>
+    <EmbeddedResource Include="UI\CirclePanel.resx">
+      <DependentUpon>CirclePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DownloadQueuePanel.resx">
       <DependentUpon>DownloadQueuePanel.cs</DependentUpon>

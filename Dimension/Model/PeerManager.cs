@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class PeerManager
+    public class PeerManager
     {
         public Peer[] allPeers
         {
@@ -22,6 +22,8 @@ namespace Dimension.Model
         Dictionary<ulong, Peer> peers = new Dictionary<ulong, Peer>();
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
+            bool renamed = false;
+            bool added = false;
             lock (peers)
             {
                 if (peers.ContainsKey(h.id))
@@ -31,7 +33,7 @@ namespace Dimension.Model
                     if (peers[h.id].username != h.username)
                     {
                         peers[h.id].username = h.username;
-                        peerRenamed?.Invoke(peers[h.id]);
+                        renamed = true;
                     }
                 }
                 else
@@ -41,9 +43,11 @@ namespace Dimension.Model
                     peers[h.id].actualEndpoint = sender;
                     peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
                     peers[h.id].username = h.username;
-                    peerAdded?.Invoke(peers[h.id]);
+                    added = true;
                 }
             }
+            if(renamed)                peerRenamed?.Invoke(peers[h.id]);
+            if(added)                  peerAdded?.Invoke(peers[h.id]);
         }
     }
 }

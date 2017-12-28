@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class Peer
+    public class Peer
     {
         public System.Net.IPAddress publicAddress;
         public System.Net.IPEndPoint actualEndpoint;

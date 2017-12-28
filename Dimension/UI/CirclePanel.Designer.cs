@@ -1,6 +1,6 @@
 ﻿namespace Dimension.UI
 {
-    partial class ChatPanel
+    partial class CirclePanel
     {
         /// <summary> 
         /// Required designer variable.
@@ -87,18 +87,20 @@
             this.userListView.TabIndex = 0;
             this.userListView.UseCompatibleStateImageBehavior = false;
             this.userListView.View = System.Windows.Forms.View.Details;
+            this.userListView.VirtualMode = true;
+            this.userListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.userListView_RetrieveVirtualItem);
             // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "Username";
             this.columnHeader1.Width = 200;
             // 
-            // ChatPanel
+            // CirclePanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
-            this.Name = "ChatPanel";
+            this.Name = "CirclePanel";
             this.Size = new System.Drawing.Size(825, 453);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();

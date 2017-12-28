@@ -61,7 +61,7 @@ namespace Dimension
         void joinLANCircle()
         {
             TabPage p = new TabPage("LAN");
-            UI.ChatPanel c = new UI.ChatPanel();
+            UI.CirclePanel c = new UI.CirclePanel();
             c.Dock = DockStyle.Fill;
             p.Controls.Add(c);
             p.Tag = "LAN Circle";
@@ -118,14 +118,14 @@ namespace Dimension
         public void addInternetCircle(System.Net.IPEndPoint[] endpoints, string url)
         {
             for (int i = 0; i < tabControl.TabPages.Count; i++)
-                if (tabControl.TabPages[i].Controls[0] is UI.ChatPanel)
-                    if (((UI.ChatPanel)tabControl.TabPages[i].Controls[0]).url == url)
+                if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
+                    if (((UI.CirclePanel)tabControl.TabPages[i].Controls[0]).url == url)
                     {
                         tabControl.SelectTab(i);
                         return;
                     }
             TabPage p = new TabPage("Internet Circle");
-            UI.ChatPanel c = new UI.ChatPanel(url);
+            UI.CirclePanel c = new UI.CirclePanel(url);
             c.Dock = DockStyle.Fill;
             p.Controls.Add(c);
             p.Tag = "Internet Circle";
@@ -244,7 +244,7 @@ namespace Dimension
         {
             for (int i = 0; i < tabControl.TabPages.Count; i++)
             {
-                if (tabControl.TabPages[i].Controls[0] is UI.ChatPanel)
+                if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
                 {
                     //TODO: Actually leave the circles
                     tabControl.TabPages.RemoveAt(i);

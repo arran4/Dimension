@@ -8,7 +8,7 @@ namespace Dimension.Model
 {
     public class Core : IDisposable
     {
-        PeerManager peerManager;
+        public PeerManager peerManager;
         bool disposed = false;
         public void Dispose()
         {
