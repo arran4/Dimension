@@ -53,7 +53,6 @@ namespace Dimension
             udtSocket = bootstrap.udtSocket;
             udtSocket.Listen(int.MaxValue);
             udp = bootstrap.unreliableClient;
-            doReceive();
             System.Threading.Thread t = new System.Threading.Thread(acceptLoop);
             t.IsBackground = true;
             t.Name = "UDT Accept Loop";
@@ -71,20 +70,6 @@ namespace Dimension
         }
         public static bool doneLoading = false;
 
-        static void doReceive()
-        {
-            udp.BeginReceive(receiveCallback, null);
-            //TODO: Catch socket exception on receive
-        }
-        static void receiveCallback(IAsyncResult ar)
-        {
-            System.Net.IPEndPoint sender = null;
-            byte[] data = udp.EndReceive(ar, ref sender);
-            //TODO: Parse
-            //TODO: Catch socket exception on receive
-
-            doReceive();
-        }
         public static string currentLoadState = "";
         public static List<Model.IncomingConnection> incomingConnections = new List<Model.IncomingConnection>();
 

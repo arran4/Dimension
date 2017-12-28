@@ -48,10 +48,10 @@ namespace Dimension.Model
             }
             catch
             {
-                return "";
+                return def;
             }
-            if (s == " " || s == null)
-                s = def.ToString();
+            if (s == " " || s=="" || s == null)
+                s = def;
             return s;
         }
         public void setInt(string name, int val)

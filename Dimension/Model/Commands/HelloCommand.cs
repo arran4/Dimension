@@ -11,9 +11,10 @@ namespace Dimension.Model.Commands
         public string username;
         public string machineName;
         public int peerCount;
-        public int commandPort;
-        public int dataPort;
-        public System.Net.IPAddress externalIP;
-        public System.Net.IPAddress internalIP;
+        public int externalControlPort;
+        public int externalDataPort;
+        public int internalControlPort;
+        public int internalDataPort;
+        public string externalIP;
     }
 }

@@ -94,7 +94,7 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(12, 15);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(601, 356);
@@ -110,9 +110,9 @@
             this.tabPage1.Controls.Add(this.usernameBox);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage1.Size = new System.Drawing.Size(593, 327);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
@@ -121,7 +121,7 @@
             // browseDownloadsButton
             // 
             this.browseDownloadsButton.Location = new System.Drawing.Point(479, 65);
-            this.browseDownloadsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.browseDownloadsButton.Margin = new System.Windows.Forms.Padding(4);
             this.browseDownloadsButton.Name = "browseDownloadsButton";
             this.browseDownloadsButton.Size = new System.Drawing.Size(100, 28);
             this.browseDownloadsButton.TabIndex = 6;
@@ -132,7 +132,7 @@
             // downloadFolderInput
             // 
             this.downloadFolderInput.Location = new System.Drawing.Point(131, 65);
-            this.downloadFolderInput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.downloadFolderInput.Margin = new System.Windows.Forms.Padding(4);
             this.downloadFolderInput.Name = "downloadFolderInput";
             this.downloadFolderInput.Size = new System.Drawing.Size(339, 22);
             this.downloadFolderInput.TabIndex = 5;
@@ -150,7 +150,7 @@
             // descriptionBox
             // 
             this.descriptionBox.Location = new System.Drawing.Point(131, 37);
-            this.descriptionBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.descriptionBox.Margin = new System.Windows.Forms.Padding(4);
             this.descriptionBox.MaxLength = 255;
             this.descriptionBox.Name = "descriptionBox";
             this.descriptionBox.Size = new System.Drawing.Size(451, 22);
@@ -169,7 +169,7 @@
             // usernameBox
             // 
             this.usernameBox.Location = new System.Drawing.Point(131, 6);
-            this.usernameBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.usernameBox.Margin = new System.Windows.Forms.Padding(4);
             this.usernameBox.MaxLength = 16;
             this.usernameBox.Name = "usernameBox";
             this.usernameBox.Size = new System.Drawing.Size(448, 22);
@@ -196,9 +196,9 @@
             this.tabPage2.Controls.Add(this.manuallyForwardPortsButton);
             this.tabPage2.Controls.Add(this.UPnPButton);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage2.Size = new System.Drawing.Size(593, 327);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Network";
@@ -218,7 +218,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(161, 139);
+            this.label5.Location = new System.Drawing.Point(255, 83);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(78, 15);
@@ -237,14 +237,16 @@
             // 
             // udpControlPortBox
             // 
+            this.udpControlPortBox.Enabled = false;
             this.udpControlPortBox.Location = new System.Drawing.Point(155, 111);
-            this.udpControlPortBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.udpControlPortBox.Margin = new System.Windows.Forms.Padding(4);
             this.udpControlPortBox.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
             this.udpControlPortBox.Name = "udpControlPortBox";
+            this.udpControlPortBox.ReadOnly = true;
             this.udpControlPortBox.Size = new System.Drawing.Size(92, 22);
             this.udpControlPortBox.TabIndex = 4;
             // 
@@ -261,7 +263,7 @@
             // udpDataPortBox
             // 
             this.udpDataPortBox.Location = new System.Drawing.Point(155, 79);
-            this.udpDataPortBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.udpDataPortBox.Margin = new System.Windows.Forms.Padding(4);
             this.udpDataPortBox.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -275,7 +277,7 @@
             // 
             this.manuallyForwardPortsButton.AutoSize = true;
             this.manuallyForwardPortsButton.Location = new System.Drawing.Point(23, 50);
-            this.manuallyForwardPortsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.manuallyForwardPortsButton.Margin = new System.Windows.Forms.Padding(4);
             this.manuallyForwardPortsButton.Name = "manuallyForwardPortsButton";
             this.manuallyForwardPortsButton.Size = new System.Drawing.Size(177, 21);
             this.manuallyForwardPortsButton.TabIndex = 1;
@@ -288,7 +290,7 @@
             this.UPnPButton.AutoSize = true;
             this.UPnPButton.Checked = true;
             this.UPnPButton.Location = new System.Drawing.Point(23, 22);
-            this.UPnPButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.UPnPButton.Margin = new System.Windows.Forms.Padding(4);
             this.UPnPButton.Name = "UPnPButton";
             this.UPnPButton.Size = new System.Drawing.Size(94, 21);
             this.UPnPButton.TabIndex = 0;
@@ -302,7 +304,7 @@
             this.tabPage3.Controls.Add(this.addShareButton);
             this.tabPage3.Controls.Add(this.sharesListView);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(593, 327);
             this.tabPage3.TabIndex = 2;
@@ -312,7 +314,7 @@
             // deleteShareButton
             // 
             this.deleteShareButton.Location = new System.Drawing.Point(112, 295);
-            this.deleteShareButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deleteShareButton.Margin = new System.Windows.Forms.Padding(4);
             this.deleteShareButton.Name = "deleteShareButton";
             this.deleteShareButton.Size = new System.Drawing.Size(100, 28);
             this.deleteShareButton.TabIndex = 2;
@@ -323,7 +325,7 @@
             // addShareButton
             // 
             this.addShareButton.Location = new System.Drawing.Point(4, 295);
-            this.addShareButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.addShareButton.Margin = new System.Windows.Forms.Padding(4);
             this.addShareButton.Name = "addShareButton";
             this.addShareButton.Size = new System.Drawing.Size(100, 28);
             this.addShareButton.TabIndex = 1;
@@ -340,7 +342,7 @@
             this.columnHeader4});
             this.sharesListView.FullRowSelect = true;
             this.sharesListView.Location = new System.Drawing.Point(4, 4);
-            this.sharesListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.sharesListView.Margin = new System.Windows.Forms.Padding(4);
             this.sharesListView.Name = "sharesListView";
             this.sharesListView.Size = new System.Drawing.Size(581, 287);
             this.sharesListView.TabIndex = 0;

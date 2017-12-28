@@ -91,6 +91,8 @@ namespace Dimension.Model
         public Udt.Socket udtSocket;
         public IPEndPoint publicDataEndPoint;
         public IPEndPoint publicControlEndPoint;
+        public int internalControlPort;
+        public int internalDataPort;
         bool LANMode = false;
         public async Task launch()
         {
@@ -103,18 +105,17 @@ namespace Dimension.Model
             try
             {
                 socket.Bind(new IPEndPoint(IPAddress.Any, Program.settings.getInt("Default Data Port", 0)));
-                SystemLog.addEntry("Successfully bound UDT to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
-                UPnPActive = true;
+                SystemLog.addEntry("Successfully bound to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
             }
             catch
             {
-                UPnPActive = false;
                 SystemLog.addEntry("Failed to bind to UDP data port "+ Program.settings.getInt("Default Data Port", 0)+ "; trying random port...");
                 socket.Bind(new IPEndPoint(IPAddress.Any, 0));
-                SystemLog.addEntry("Successfully bound UDT to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
+                SystemLog.addEntry("Successfully bound to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
             }
-            unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", 0));
-            SystemLog.addEntry("Successfully bound to UDP control port " + ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port);
+            unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", NetConstants.controlPort));
+            internalControlPort = ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port;
+            SystemLog.addEntry("Successfully bound to UDP control port " + internalControlPort);
 
             Program.currentLoadState = "STUNning NAT";
             try
@@ -159,6 +160,7 @@ namespace Dimension.Model
             SystemLog.addEntry("Binding UDT to data socket.");
             udtSocket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
             udtSocket.Bind(socket);
+            internalDataPort = ((IPEndPoint)socket.LocalEndPoint).Port;
             SystemLog.addEntry("Network setup complete.");
             UPnPActive = true;
         }

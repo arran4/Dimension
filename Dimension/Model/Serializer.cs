@@ -20,8 +20,14 @@ namespace Dimension.Model
         {
             System.IO.MemoryStream m = new System.IO.MemoryStream();
             System.IO.BinaryWriter b = new System.IO.BinaryWriter(m);
-            b.Write(c.GetType().FullName);
-            b.Write(Newtonsoft.Json.JsonConvert.SerializeObject(c));
+            string t = c.GetType().FullName;
+            b.Write(t.Length);
+            b.Write(Encoding.UTF8.GetBytes(t));
+
+            string d = Newtonsoft.Json.JsonConvert.SerializeObject(c);
+            b.Write(d.Length);
+            b.Write(Encoding.UTF8.GetBytes(d));
+            b.Flush();
             byte[] output = m.ToArray();
             b.Dispose();
             m.Dispose();
@@ -29,16 +35,17 @@ namespace Dimension.Model
         }
         public Commands.Command deserialize(byte[] b)
         {
-
             System.IO.MemoryStream m = new System.IO.MemoryStream(b);
             System.IO.BinaryReader br = new System.IO.BinaryReader(m);
 
-            string t = br.ReadString();
-            string d = br.ReadString();
+            int tl = br.ReadInt32();
+            string t = Encoding.UTF8.GetString(br.ReadBytes(tl));
+            int dl = br.ReadInt32();
+            string d = Encoding.UTF8.GetString(br.ReadBytes(dl));
 
             if (commandTypes.ContainsKey(t))
                 return (Commands.Command)Newtonsoft.Json.JsonConvert.DeserializeObject(d, commandTypes[t]);
             return null;
         }
-        }
+    }
 }

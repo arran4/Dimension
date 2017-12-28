@@ -31,11 +31,11 @@ namespace Dimension.UI
                 manuallyForwardPortsButton.Checked = true;
             }
             udpDataPortBox.Value = Program.settings.getInt("Default Data Port", 0);
-            udpControlPortBox.Value = Program.settings.getInt("Default Control Port", 0);
+            udpControlPortBox.Value = Program.settings.getInt("Default Control Port", Model.NetConstants.controlPort);
             usernameBox.Text = Program.settings.getString("Username", Environment.MachineName);
             descriptionBox.Text = Program.settings.getString("Description", "");
 
-            downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:/Downloads");
+            downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:\\Downloads");
 
             int numShares = Program.fileListDatabase.getInt(Program.fileListDatabase.fileList, "Root Share Count", 0);
 
