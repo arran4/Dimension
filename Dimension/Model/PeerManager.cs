@@ -31,8 +31,7 @@ namespace Dimension.Model
                     if (peers[h.id].username != h.username)
                     {
                         peers[h.id].username = h.username;
-                        if (peerRenamed != null)
-                            peerRenamed(peers[h.id]);
+                        peerRenamed?.Invoke(peers[h.id]);
                     }
                 }
                 else
@@ -42,8 +41,7 @@ namespace Dimension.Model
                     peers[h.id].actualEndpoint = sender;
                     peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
                     peers[h.id].username = h.username;
-                    if (peerAdded != null)
-                        peerAdded(peers[h.id]);
+                    peerAdded?.Invoke(peers[h.id]);
                 }
             }
         }
