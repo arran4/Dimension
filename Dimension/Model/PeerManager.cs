@@ -16,6 +16,14 @@ namespace Dimension.Model
                     return ((new List<Peer>(peers.Values)).ToArray());
             }
         }
+        public Peer[] allPeersInCircle(ulong id)
+        {
+            List<Peer> output = new List<Peer>();
+            foreach (Peer p in allPeers)
+                if (p.circles.Contains(id))
+                    output.Add(p);
+            return output.ToArray();
+        }
         public delegate void PeerUpdateEvent(Peer p);
         public event PeerUpdateEvent peerRenamed;
         public event PeerUpdateEvent peerAdded;

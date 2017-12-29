@@ -68,6 +68,7 @@
     <Compile Include="Model\Commands\HelloCommand.cs" />
     <Compile Include="Model\Commands\Peer.cs" />
     <Compile Include="Model\Commands\PeerList.cs" />
+    <Compile Include="Model\Commands\RoomChatCommand.cs" />
     <Compile Include="Model\Core.cs" />
     <Compile Include="Model\File.cs" />
     <Compile Include="Model\FileList.cs" />

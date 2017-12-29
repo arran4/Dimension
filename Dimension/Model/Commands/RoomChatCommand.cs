@@ -9,6 +9,7 @@ namespace Dimension.Model.Commands
     public class RoomChatCommand : Command
     {
         public string content;
-        public long sequenceId;
+        public int sequenceId;
+        public ulong roomId;
     }
 }

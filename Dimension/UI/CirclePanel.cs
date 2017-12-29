@@ -18,13 +18,14 @@ namespace Dimension.UI
             this.url = url;
             InitializeComponent();
             setupUserList();
-            
+
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
-            circleHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
+            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
             Program.theCore.joinCircle(url);
+            Program.theCore.chatReceivedEvent += chatReceived;
         }
-        int circleHash;
+        ulong circleHash;
         Model.Peer[] allPeersInCircle
         {
             get
@@ -69,7 +70,8 @@ namespace Dimension.UI
             Program.theCore.joinCircle(url);
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
-            circleHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
+            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
+            Program.theCore.chatReceivedEvent += chatReceived;
         }
         void setupUserList()
         {
@@ -83,6 +85,33 @@ namespace Dimension.UI
             i.Tag = allPeersInCircle[e.ItemIndex];
             i.Text = allPeersInCircle[e.ItemIndex].username;
             e.Item = i;
+        }
+        public void chatReceived(string s, ulong roomId)
+        {
+            if (roomId != this.circleHash)
+                return;
+            if (IsDisposed)
+            {
+                Program.theCore.chatReceivedEvent -= chatReceived;
+                return;
+            }
+            this.Invoke(new Action(delegate ()
+            {
+                historyBox.Text += s + Environment.NewLine;
+                historyBox.SelectionStart = historyBox.Text.Length;
+                historyBox.ScrollToCaret();
+            }));
+            }
+        private void inputBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                Program.theCore.sendChat(inputBox.Text, circleHash);
+                inputBox.Text = "";
+
+            }
         }
     }
 }

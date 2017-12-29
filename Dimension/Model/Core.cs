@@ -76,7 +76,42 @@ namespace Dimension.Model
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
                 peerManager.parseHello(h, sender);
+
             }
+            if (c is Commands.RoomChatCommand)
+            {
+                Commands.RoomChatCommand r = (Commands.RoomChatCommand)c;
+                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                    if (p.actualEndpoint.ToString() == sender.ToString())
+                        p.chatReceived(r);
+
+            }
+            }
+        List<int> usedIds = new List<int>();
+        public void sendChat(string content, ulong hash)
+        {
+            Model.Commands.RoomChatCommand c = new Commands.RoomChatCommand();
+            c.content = content;
+            c.roomId = hash;
+
+            //TODO: Make this more gracefully handle collisions
+            Random r = new Random();
+            int id = r.Next();
+            while (usedIds.Contains(id))
+                id = r.Next();
+            c.sequenceId = id;
+            usedIds.Add(id);
+
+            foreach (Peer p in peerManager.allPeersInCircle(hash))
+            {
+                p.sendCommand(c);
+            }
+        }
+        public delegate void ChatReceivedEvent(string s, ulong id);
+        public event ChatReceivedEvent chatReceivedEvent;
+        public void chatReceived(string s, ulong id)
+        {
+            chatReceivedEvent?.Invoke(s, id);
         }
         void helloLoop()
         {
@@ -109,11 +144,11 @@ namespace Dimension.Model
                 c.internalDataPort = Program.bootstrap.internalDataPort;
 
                 System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
-                List<int> circles = new List<int>();
+                List<ulong> circles = new List<ulong>();
                 foreach (string s in this.circles)
                 {
                     byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
-                    circles.Add(BitConverter.ToInt32(hash, 0));
+                    circles.Add(BitConverter.ToUInt64(hash, 0));
                 }
                 c.myCircles = circles.ToArray();
 
