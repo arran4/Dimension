@@ -11,7 +11,7 @@ namespace Dimension.Model.Commands
         public ulong id;
         public string username;
         public string machineName;
-        public int peerCount;
+        public Dictionary<int, int> peerCount;
         public int externalControlPort;
         public int externalDataPort;
         public int internalControlPort;

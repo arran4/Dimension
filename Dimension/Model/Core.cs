@@ -25,8 +25,11 @@ namespace Dimension.Model
         public Core()
         {
             Random r = new Random();
-            //todo: save ID in settings
-            id = (ulong)r.Next();
+            ulong randomId = (ulong)r.Next();
+            randomId = randomId << 32;
+            randomId |= (uint)r.Next();
+
+            id = (ulong)Program.settings.getULong("ID", randomId);
             peerManager = new PeerManager();
             System.Threading.Thread t = new System.Threading.Thread(helloLoop);
             t.IsBackground = true;
@@ -83,10 +86,25 @@ namespace Dimension.Model
                 c.id = id;
                 c.username = Program.settings.getString("Username", "Username");
                 c.machineName = Environment.MachineName;
-                c.externalIP = Program.bootstrap.publicControlEndPoint.Address.ToString();
-                //todo: set peer count
-                c.externalControlPort = Program.bootstrap.publicControlEndPoint.Port;
-                c.externalDataPort = Program.bootstrap.publicDataEndPoint.Port;
+                Dictionary<int, int> counts = new Dictionary<int, int>();
+                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                {
+                    foreach (int i in p.circles)
+                        if (!counts.ContainsKey(i))
+                            counts[i] = 1;
+                        else
+                            counts[i]++;
+                }
+                c.peerCount = counts;
+                if (Program.bootstrap.publicControlEndPoint != null)
+                {
+                    c.externalIP = Program.bootstrap.publicControlEndPoint.Address.ToString();
+                    c.externalControlPort = Program.bootstrap.publicControlEndPoint.Port;
+                }
+                if (Program.bootstrap.publicDataEndPoint != null)
+                {
+                    c.externalDataPort = Program.bootstrap.publicDataEndPoint.Port;
+                }
                 c.internalControlPort = Program.bootstrap.internalControlPort;
                 c.internalDataPort = Program.bootstrap.internalDataPort;
 

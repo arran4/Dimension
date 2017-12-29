@@ -19,6 +19,15 @@ namespace Dimension.Model
             Program.currentLoadState = "Loading Settings...";
             settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);
         }
+
+        public ulong getULong(string name, ulong def)
+        {
+            string s = def.ToString();
+            settings.Get("i" + name, out s);
+            if (s == "" || s == null)
+                s = def.ToString();
+            return ulong.Parse(s);
+        }
         public void setBool(string name, bool val)
         {
 
