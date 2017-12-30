@@ -66,7 +66,6 @@ namespace Dimension.UI
             Program.settings.setString("Default Download Folder", downloadFolderInput.Text);
 
             Program.settings.save();
-            Program.fileListDatabase.saveAll();
             Close();
         }
 

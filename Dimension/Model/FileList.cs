@@ -167,7 +167,6 @@ namespace Dimension.Model
             }
             sw.Stop();
             sw.Reset();
-            Program.fileListDatabase.saveAll();
         }
         public void startUpdate(bool urgent)
         {

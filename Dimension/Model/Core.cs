@@ -146,6 +146,8 @@ namespace Dimension.Model
             {
                 while (Program.theCore == null && !disposed)
                     System.Threading.Thread.Sleep(10);
+                while (!Program.doneLoading && !disposed)
+                    System.Threading.Thread.Sleep(10);
                 if (disposed)
                     return;
                 Commands.HelloCommand c = new Commands.HelloCommand();

@@ -15,15 +15,15 @@ namespace Dimension.Model
         public RaptorDB.RaptorDB<string> fullHashes;
         public RaptorDB.RaptorDB<string> downloadQueue;
 
-        public void saveAll()
+        public void close()
         {
-            save(fileList);
-            save(remoteFileLists);
-            save(quickHashes);
-            save(fullHashes);
-            save(downloadQueue);
+            close(fileList);
+            close(remoteFileLists);
+            close(quickHashes);
+            close(fullHashes);
+            close(downloadQueue);
         }
-        public void save(RaptorDB.RaptorDB<string> db)
+        public void close(RaptorDB.RaptorDB<string> db)
         {
             db.Dispose();
         }
@@ -105,14 +105,21 @@ namespace Dimension.Model
             {
                 return def;
             }
-                if (s == "" || s == null)
+            if (s == "" || s == null)
                 s = def.ToString();
             return int.Parse(s);
         }
         public ulong getULong(RaptorDB.RaptorDB<string> db, string name, ulong def)
         {
             string s = def.ToString();
-            db.Get("i" + name, out s);
+            try
+            {
+                db.Get("i" + name, out s);
+            }
+            catch
+            {
+                return def;
+            }
             if (s == "" || s == null)
                 s = def.ToString();
             return ulong.Parse(s);

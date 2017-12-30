@@ -28,7 +28,7 @@ namespace Dimension
         static void doCleanup()
         {
             disposed = true;
-            fileListDatabase.saveAll();
+            fileListDatabase.close();
             bootstrap.Dispose();
         }
         public static Model.Core theCore;
