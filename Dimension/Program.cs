@@ -77,6 +77,7 @@ namespace Dimension
         //TODO: Remove old incoming connections when they're dead
         static void acceptLoop()
         {
+            udtSocket.Listen(int.MaxValue);
             while (!disposed)
             {
                 Udt.Socket u = udtSocket.Accept();

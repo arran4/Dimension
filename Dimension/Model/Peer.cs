@@ -25,6 +25,8 @@ namespace Dimension.Model
             get
             {
                 //TODO: Add more conditions
+                if (Program.bootstrap.publicControlEndPoint == null)
+                    return true;
                 if (publicAddress.ToString() == Program.bootstrap.publicControlEndPoint.Address.ToString())
                     return true;
                 return false;
@@ -64,14 +66,14 @@ namespace Dimension.Model
                 if (isLocal)
                 {
                     if (createControl)
-                        controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, localControlPort);
+                        controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, localDataPort);
                     if (createData)
                         controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, localDataPort);
                 }
                 else
                 {
                     if (createControl)
-                        controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalControlPort);
+                        controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalDataPort);
                     if (createData)
                         controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalDataPort);
                 }
