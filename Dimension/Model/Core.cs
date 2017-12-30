@@ -139,13 +139,31 @@ namespace Dimension.Model
                 output.folders = new Commands.FSListing[sizes.Count];
                 int z = 0;
                 foreach (string s in sizes.Keys) {
-                    output.folders[z] = new Commands.FSListing() { isFolder = true, name = s, size =sizes[s] };
+                    output.folders[z] = new Commands.FSListing() { isFolder = true, name = s, size = sizes[s] };
                     z++;
                 }
             }
             else
             {
+                Folder q = (Folder)Program.fileList.getFSListing(path, true);
+                if (q is Folder)
+                {
+                    Folder f = (Folder)q;
+                    output.folders = new Commands.FSListing[f.folderIds.Length];
+                    for (int i = 0; i < f.folderIds.Length; i++)
+                    {
+                        FSListing z = Program.fileList.getFolder(f.folderIds[i]);
+                        output.folders[i] = new Commands.FSListing() { isFolder = true, name = z.name, size = z.size };
+                    }
+                    output.files = new Commands.FSListing[f.fileIds.Length];
 
+                    for (int i = 0; i < f.fileIds.Length; i++)
+                    {
+                        FSListing z = Program.fileList.getFile(f.fileIds[i]);
+                        output.files[i] = new Commands.FSListing() { isFolder = false, name = z.name, size = z.size };
+                    }
+
+                }
             }
             return output;
         }
