@@ -87,6 +87,10 @@ namespace Dimension.Model
                 updateComplete();
         }
         //TODO: Make this cache in the key-value store instead of just iterating
+        public RootShare getRootShare(ulong id)
+        {
+            return Program.fileListDatabase.getObject<RootShare>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+        }
         public FSListing getFolder(ulong id)
         {
             return Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());

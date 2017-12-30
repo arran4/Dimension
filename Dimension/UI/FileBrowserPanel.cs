@@ -145,6 +145,19 @@ namespace Dimension.UI
                         currentPath += "/" + tag.name;
                     p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
                 }
+                else
+                {
+
+                    string s;
+                    if (currentPath == "/")
+                        s = "/" + tag.name;
+                    else
+                        s = currentPath + "/" + tag.name;
+                    /*if (p.udtConnection != null)
+                        p.udtConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
+                    else*/
+                        p.dataConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
+                }
 
                 }
         }

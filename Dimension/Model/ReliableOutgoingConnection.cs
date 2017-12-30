@@ -22,47 +22,49 @@ namespace Dimension.Model
         {
             while (connected)
             {
-                byte[] dataByte = null;
-                try
-                {
-                    byte[] lenByte = new byte[4];
-                    client.GetStream().Read(lenByte, 0, 4);
-                    dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
+                byte[] lenByte = new byte[4];
+                client.GetStream().Read(lenByte, 0, 4);
+                byte[] dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
 
-                    int pos = 0;
-                    int read = 1;
-                    while (read > 0 && pos < dataByte.Length)
+                int pos = 0;
+                int read = 1;
+                while (read > 0 && pos < dataByte.Length)
+                {
+                    read = client.GetStream().Read(dataByte, pos, dataByte.Length - pos);
+                    pos += read;
+                }
+                Commands.Command c = Program.serializer.deserialize(dataByte);
+                if (c is Commands.DataCommand)
+                {
+                    pos = 0;
+                    read = 1;
+                    byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
+                    while (read > 0 && pos < chunk.Length)
                     {
-                        read = client.GetStream().Read(dataByte, pos, dataByte.Length - pos);
+                        read = client.GetStream().Read(chunk, pos, chunk.Length - pos);
                         pos += read;
                     }
+                    ((Commands.DataCommand)c).data = chunk;
                 }
-                catch
-                {
-                    return;
-                }
-                commandReceived?.Invoke(Program.serializer.deserialize(dataByte));
+                commandReceived?.Invoke(c);
             }
         }
-        object sendLock = new object();
+
         System.Net.Sockets.TcpClient client;
+        object sendLock = new object();
         public override void send(Commands.Command c)
         {
+            if (c is Commands.DataCommand)
+                ((Commands.DataCommand)c).dataLength = ((Commands.DataCommand)c).data.Length;
             byte[] b = Program.serializer.serialize(c);
             int len = b.Length;
             lock (sendLock)
             {
-                try
-                {
-                    client.GetStream().Write(BitConverter.GetBytes(len), 0, 4);
-
-                    client.GetStream().Write(b, 0, b.Length);
-                }
-                catch
-                {
-                    return;
-                }
-                }
+                client.GetStream().Write(BitConverter.GetBytes(len), 0, 4);
+                client.GetStream().Write(b, 0, b.Length);
+                if (c is Commands.DataCommand)
+                    client.GetStream().Write(((Commands.DataCommand)c).data, 0, ((Commands.DataCommand)c).data.Length);
+            }
         }
         public override bool connected
         {

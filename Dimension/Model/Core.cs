@@ -151,7 +151,62 @@ namespace Dimension.Model
                 con.lastFolder = ((Commands.GetFileListing)c).path;
                 con.send(generateFileListing(((Commands.GetFileListing)c).path));
             }
-        }
+            if (c is Commands.RequestChunks)
+            {
+                var z = (Commands.RequestChunks)c;
+                FSListing f = Program.fileList.getFSListing(z.path, false);
+                FSListing parent = f;
+                string fullPath = "";
+
+                while (parent != null)
+                {
+                    FSListing p = Program.fileList.getFolder(parent.parentId);
+                    if (p == null)
+                    {
+                        p = Program.fileList.getRootShare(parent.id);
+                        fullPath = ((RootShare)p).fullPath + "/" + fullPath;
+
+                        fullPath = fullPath.Trim('/');
+                        sendCompleteFile(fullPath, z.path, con);
+                    }
+                    else
+                    {
+                        fullPath = parent.name + "/" + fullPath;
+                        parent = p;
+                    }
+                }
+            }
+            }
+        void sendCompleteFile(string realPath, string requestPath, IncomingConnection con)
+        {
+            int chunkSize = 64 * 1024;
+            int pos = 0;
+
+            System.IO.FileInfo f = new System.IO.FileInfo(realPath);
+            System.IO.FileStream s = new System.IO.FileStream(realPath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+
+
+            while (pos < f.Length)
+            {
+                Commands.FileChunk c = new Commands.FileChunk();
+                c.start = pos;
+
+                byte[] buffer = new byte[Math.Min(chunkSize, f.Length - pos)];
+                int x = 0;
+                while (x < buffer.Length)
+                    x += s.Read(buffer, x, buffer.Length - x);
+
+                c.data = buffer;
+                c.path = requestPath;
+                con.send(c);
+                pos += buffer.Length;
+            }
+            s.Dispose();
+
+
+
+
+            }
         Commands.FileListing generateFileListing(string path)
         {
             Commands.FileListing output = new Commands.FileListing();

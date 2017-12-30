@@ -54,12 +54,12 @@ namespace Dimension.Model
         object sendLock = new object();
         public override void send(Commands.Command c)
         {
+            if (c is Commands.DataCommand)
+                ((Commands.DataCommand)c).dataLength = ((Commands.DataCommand)c).data.Length;
             byte[] b = Program.serializer.serialize(c);
             int len = b.Length;
             lock (sendLock)
             {
-                if (c is Commands.DataCommand)
-                    ((Commands.DataCommand)c).dataLength = ((Commands.DataCommand)c).data.Length;
                 client.GetStream().Write(BitConverter.GetBytes(len), 0, 4);
                 client.GetStream().Write(b, 0, b.Length);
                 if (c is Commands.DataCommand)
