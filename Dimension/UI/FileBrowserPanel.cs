@@ -25,18 +25,45 @@ namespace Dimension.UI
             p.createConnection();
             p.controlConnection.send(new Model.Commands.GetFileListing("/"));
         }
+        TreeNode traverse(string path)
+        {
+            TreeNode current;
+            if (foldersView.Nodes.Count == 0)
+            {
+                TreeNode root = new TreeNode("/");
+                root.Name = "/";
+                root.Text = p.username;
+                foldersView.Nodes.Add(root);
+            }
+            current = foldersView.Nodes[0];
+
+            string[] z = path.Split('/');
+            if (z.Length > 1)
+            {
+                for (int i = 1; i < z.Length; i++)
+                {
+                    foreach (TreeNode n in current.Nodes)
+                        if (n.Name == z[i])
+                        {
+                            current = n;
+                            break;
+                        }
+                }
+            }
+            return current;
+        }
         void doUpdate(Model.Commands.FileListing list)
         {
             ignoreReselect = true;
             foldersView.BeginUpdate();
-            foldersView.Nodes.Clear();
-            TreeNode root = new TreeNode("/");
-            root.Name = "/";
-            root.Text = p.username;
-            foldersView.Nodes.Add(root);
+            //foldersView.Nodes.Clear();
+            TreeNode root = traverse(list.path);
+            root.Nodes.Clear();
             foreach (Model.Commands.FSListing i in list.folders)
             {
-                root.Nodes.Add(new TreeNode(i.name));
+                TreeNode t = new TreeNode(i.name);
+                t.Name = i.name;
+                root.Nodes.Add(t);
             }
             foldersView.EndUpdate();
             filesView.BeginUpdate();
@@ -77,7 +104,7 @@ namespace Dimension.UI
             string s = "";
 
             TreeNode t = e.Node;
-            s = e.Node.Name;
+            s = "";
             
             while (t.Parent != null)
             {

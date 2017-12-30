@@ -8,6 +8,8 @@ namespace Dimension.Model
 {
     class FileList : IDisposable
     {
+        public event UpdateCompleteEvent updateComplete;
+        public delegate void UpdateCompleteEvent();
         Dictionary<string, System.IO.FileSystemWatcher> watchers = new Dictionary<string, System.IO.FileSystemWatcher>();
         //TODO: When updating shares, chew through File IDs less prodigiously
         //TODO: Update bottom-up instead of top-down -- so you don't need to do a complete list rebuild every time you change a file
@@ -37,6 +39,8 @@ namespace Dimension.Model
             quitComplete = true;
             quitSemaphore.Release();
             SystemLog.addEntry("Share update complete.");
+            if (updateComplete != null)
+                updateComplete();
         }
         public void Dispose()
         {
@@ -79,6 +83,8 @@ namespace Dimension.Model
                         }
                 }
             }
+            if (updateComplete != null)
+                updateComplete();
         }
         //TODO: Make this cache in the key-value store instead of just iterating
         public FSListing getFolder(ulong id)
@@ -117,7 +123,7 @@ namespace Dimension.Model
         {
             string[] split = path.Split('/');
 
-            for (int i = 0; i < split.Length; i++)
+            for (int i = 2; i < split.Length; i++)
             {
                 bool found = false;
                 foreach (ulong id in parent.folderIds)
@@ -214,9 +220,12 @@ namespace Dimension.Model
                 size = loadFolder(f, urgent, path);
                 f.size = size;
                 toSave["FSListing " + f.id] = f;
-                Program.fileListDatabase.setObject(Program.settings.settings, "Root Share " + f.index.ToString(), f);
-                foreach(string s3 in toSave.Keys)
-                    Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
+                if (!quitting)
+                {
+                    Program.fileListDatabase.setObject(Program.settings.settings, "Root Share " + f.index.ToString(), f);
+                    foreach (string s3 in toSave.Keys)
+                        Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
+                }
                 toSave = null;
             }
             sw.Stop();

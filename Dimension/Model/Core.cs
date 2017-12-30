@@ -21,6 +21,14 @@ namespace Dimension.Model
             lock (circles)
                 circles.Add(s);
         }
+        void updateIncomings()
+        {
+            lock(incomings)
+                foreach(IncomingConnection z in incomings)
+                    if(z.lastFolder != null)
+                        z.send(generateFileListing(z.lastFolder));
+
+        }
         public ulong id;
         public Core()
         {
@@ -36,6 +44,7 @@ namespace Dimension.Model
             t.Name = "Hello send loop";
             t.Start();
             doReceive();
+            Program.fileList.updateComplete += updateIncomings;
         }
 
         void doReceive()
@@ -118,6 +127,7 @@ namespace Dimension.Model
         {
             if (c is Commands.GetFileListing)
             {
+                con.lastFolder = ((Commands.GetFileListing)c).path;
                 con.send(generateFileListing(((Commands.GetFileListing)c).path));
             }
         }
@@ -132,10 +142,13 @@ namespace Dimension.Model
 
                 Dictionary<string, ulong> sizes = new Dictionary<string, ulong>();
                 for (int i = 0; i < m.Length; i++)
-                    if (sizes.ContainsKey(m[i].name))
-                        sizes[m[i].name] += m[i].size;
-                    else
-                        sizes[m[i].name] = m[i].size;
+                    if (m[i] != null)
+                    {
+                        if (sizes.ContainsKey(m[i].name))
+                            sizes[m[i].name] += m[i].size;
+                        else
+                            sizes[m[i].name] = m[i].size;
+                    }
                 output.folders = new Commands.FSListing[sizes.Count];
                 int z = 0;
                 foreach (string s in sizes.Keys) {
@@ -220,7 +233,8 @@ namespace Dimension.Model
 
                 ulong share = 0;
                 foreach (RootShare r in Program.fileListDatabase.getRootShares())
-                    share += r.size;
+                    if(r != null)
+                        share += r.size;
                 c.myShare = share;
 
                 //too much output!
