@@ -64,7 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Bootstrap.cs" />
+    <Compile Include="Model\ClosableTab.cs" />
     <Compile Include="Model\Commands\Command.cs" />
+    <Compile Include="Model\Commands\FSListing.cs" />
+    <Compile Include="Model\Commands\FileListing.cs" />
     <Compile Include="Model\Commands\GetFileListing.cs" />
     <Compile Include="Model\Commands\HelloCommand.cs" />
     <Compile Include="Model\Commands\Peer.cs" />

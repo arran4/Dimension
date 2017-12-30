@@ -116,8 +116,23 @@ namespace Dimension.Model
         }
         void commandReceived(Commands.Command c, IncomingConnection con)
         {
-
-
+            if (c is Commands.GetFileListing)
+            {
+                con.send(generateFileListing(((Commands.GetFileListing)c).path));
+            }
+        }
+        Commands.FileListing generateFileListing(string path)
+        {
+            Commands.FileListing output = new Commands.FileListing();
+            if (path == "/")
+            {
+                RootShare[] m = Program.fileListDatabase.getRootShares();
+                output.folders = new Commands.FSListing[m.Length];
+                output.path = path;
+                for (int i = 0; i < m.Length; i++)
+                    output.folders[i] = new Commands.FSListing() { isFolder = true, name = m[i].name, size = m[i].size };
+            }
+            return output;
         }
         public delegate void ChatReceivedEvent(string s, ulong id);
         public event ChatReceivedEvent chatReceivedEvent;

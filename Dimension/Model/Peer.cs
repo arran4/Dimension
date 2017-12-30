@@ -30,6 +30,12 @@ namespace Dimension.Model
                 return false;
             }
         }
+        public delegate void CommandReceived(Commands.Command c);
+        public event CommandReceived commandReceivedEvent;
+        public void commandReceived(Commands.Command c)
+        {
+            commandReceivedEvent?.Invoke(c);
+        }
         public void sendCommand(Commands.Command c)
         {
             byte[] b = Program.serializer.serialize(c);
@@ -70,6 +76,8 @@ namespace Dimension.Model
                         controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalDataPort);
                 }
             }
+            dataConnection.commandReceived += commandReceived;
+            controlConnection.commandReceived += commandReceived;
         }
         List<int> usedIds = new List<int>();
         public void chatReceived(Commands.RoomChatCommand r)

@@ -80,11 +80,11 @@ namespace Dimension
                 if (clickedPage != null)
                 {
                     //TODO: if it's a circle, actually leave it
+                    if(clickedPage.Controls[0] is Model.ClosableTab)
+                        ((Model.ClosableTab)clickedPage.Controls[0]).close();
                     tabControl.TabPages.Remove(clickedPage);
                 }
-
-
-                }
+            }
             if (e.Button == MouseButtons.Right)
             {
                 clickedPage = null;
@@ -99,7 +99,11 @@ namespace Dimension
         {
             //Todo: if it's a circle, actually leave it
             if (clickedPage != null)
+            {
+                if (clickedPage.Controls[0] is Model.ClosableTab)
+                    ((Model.ClosableTab)clickedPage.Controls[0]).close();
                 tabControl.TabPages.Remove(clickedPage);
+            }
         }
 
         private void joinInternetCircle_Click(object sender, EventArgs e)

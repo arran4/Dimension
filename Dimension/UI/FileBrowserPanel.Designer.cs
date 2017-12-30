@@ -43,6 +43,7 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(2);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -52,16 +53,18 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.filesView);
-            this.splitContainer1.Size = new System.Drawing.Size(150, 150);
-            this.splitContainer1.SplitterDistance = 49;
+            this.splitContainer1.Size = new System.Drawing.Size(714, 485);
+            this.splitContainer1.SplitterDistance = 232;
+            this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 1;
             // 
             // foldersView
             // 
             this.foldersView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.foldersView.Location = new System.Drawing.Point(0, 0);
+            this.foldersView.Margin = new System.Windows.Forms.Padding(2);
             this.foldersView.Name = "foldersView";
-            this.foldersView.Size = new System.Drawing.Size(49, 150);
+            this.foldersView.Size = new System.Drawing.Size(232, 485);
             this.foldersView.TabIndex = 0;
             // 
             // filesView
@@ -71,8 +74,9 @@
             this.columnHeader2});
             this.filesView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.filesView.Location = new System.Drawing.Point(0, 0);
+            this.filesView.Margin = new System.Windows.Forms.Padding(2);
             this.filesView.Name = "filesView";
-            this.filesView.Size = new System.Drawing.Size(97, 150);
+            this.filesView.Size = new System.Drawing.Size(479, 485);
             this.filesView.TabIndex = 0;
             this.filesView.UseCompatibleStateImageBehavior = false;
             this.filesView.View = System.Windows.Forms.View.Details;
@@ -89,10 +93,12 @@
             // 
             // FileBrowserPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FileBrowserPanel";
+            this.Size = new System.Drawing.Size(714, 485);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
