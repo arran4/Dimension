@@ -251,6 +251,14 @@ namespace Dimension.Model
             System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(realLocation);
             toSave["FSListing " + f.id.ToString()]= f;   //save it once here in case the user exits halfway through
 
+            try
+            {
+                d.GetDirectories();
+            }
+            catch
+            {
+                return 0;
+            }
             Folder[] folderChildren = new Folder[d.GetDirectories().Length];
             File[] fileChildren = new File[d.GetFiles().Length];
             int fi = 0;
