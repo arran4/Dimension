@@ -12,8 +12,11 @@ namespace Dimension.UI
 {
     public partial class FileBrowserPanel : UserControl
     {
-        public FileBrowserPanel()
+        Model.Peer p;
+        public FileBrowserPanel(Model.Peer p)
         {
+            this.p = p;
+            p.createConnection();
             InitializeComponent();
         }
     }

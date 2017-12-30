@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    public abstract class OutgoingConnection
+    class LoopbackOutgoingConnection : OutgoingConnection
     {
-        public abstract bool connected
+        public override bool connected
         {
-            get;
+            get
+            {
+                return true;
+            }
+
         }
     }
 }

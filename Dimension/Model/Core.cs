@@ -21,7 +21,7 @@ namespace Dimension.Model
             lock (circles)
                 circles.Add(s);
         }
-        ulong id;
+        public ulong id;
         public Core()
         {
             Random r = new Random();

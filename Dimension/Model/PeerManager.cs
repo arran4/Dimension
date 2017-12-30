@@ -49,6 +49,10 @@ namespace Dimension.Model
                         peers[h.id].share = h.myShare;
                         renamed = true;
                     }
+                    peers[h.id].externalControlPort = h.externalControlPort;
+                    peers[h.id].externalDataPort = h.externalDataPort;
+                    peers[h.id].localControlPort = h.internalControlPort;
+                    peers[h.id].localDataPort = h.internalDataPort;
                     string s1 = "";
                     string s2 = "";
                     foreach (int i in peers[h.id].circles)
@@ -70,6 +74,10 @@ namespace Dimension.Model
                         peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
                     peers[h.id].username = h.username;
                     peers[h.id].circles = h.myCircles;
+                    peers[h.id].externalControlPort = h.externalControlPort;
+                    peers[h.id].externalDataPort = h.externalDataPort;
+                    peers[h.id].localControlPort = h.internalControlPort;
+                    peers[h.id].localDataPort = h.internalDataPort;
                     added = true;
                 }
             }
