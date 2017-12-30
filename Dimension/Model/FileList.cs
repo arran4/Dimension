@@ -106,10 +106,11 @@ namespace Dimension.Model
         System.Diagnostics.Stopwatch sw;
         void wait(bool urgent)
         {
-            if (!urgent && sw.ElapsedMilliseconds > 50)
+            if (!urgent && sw.ElapsedMilliseconds > 25)
             {
-                System.Threading.Thread.Sleep(3);
+                System.Threading.Thread.Sleep(1);
                 sw.Reset();
+                sw.Start();
             }
             }
         void updateRootShare(RootShare f, bool urgent)

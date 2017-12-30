@@ -9,6 +9,7 @@ namespace Dimension.Model.Commands
     public class HelloCommand : Command
     {
         public ulong id;
+        public ulong myShare;
         public string username;
         public string machineName;
         public Dictionary<int, int> peerCount;

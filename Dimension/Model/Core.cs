@@ -117,6 +117,10 @@ namespace Dimension.Model
         {
             while (!disposed)
             {
+                while (Program.theCore == null && !disposed)
+                    System.Threading.Thread.Sleep(10);
+                if (disposed)
+                    return;
                 Commands.HelloCommand c = new Commands.HelloCommand();
                 c.id = id;
                 c.username = Program.settings.getString("Username", "Username");
@@ -151,6 +155,11 @@ namespace Dimension.Model
                     circles.Add(BitConverter.ToUInt64(hash, 0));
                 }
                 c.myCircles = circles.ToArray();
+
+                ulong share = 0;
+                foreach (RootShare r in Program.fileListDatabase.getRootShares())
+                    share += r.size;
+                c.myShare = share;
 
                 //too much output!
                 /*var n = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();

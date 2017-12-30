@@ -8,11 +8,14 @@ namespace Dimension.Model
 {
     public class Peer
     {
+        public OutgoingConnection dataConnection;
+        public OutgoingConnection controlConnection;
         public System.Net.IPAddress publicAddress;
         public System.Net.IPEndPoint actualEndpoint;
         public string username;
         public ulong id;
         public ulong[] circles;
+        public ulong share;
 
         public void sendCommand(Commands.Command c)
         {

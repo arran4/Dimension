@@ -46,7 +46,7 @@ namespace Dimension
         {
             joinLANCircle();
         }
-        void createOrSelect(TabPage p)
+        public void createOrSelect(TabPage p)
         {
             for (int i = 0; i < tabControl.TabPages.Count; i++)
                 if ((string)tabControl.TabPages[i].Tag == (string)p.Tag)

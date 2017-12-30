@@ -84,6 +84,7 @@ namespace Dimension.UI
             ListViewItem i = new ListViewItem();
             i.Tag = allPeersInCircle[e.ItemIndex];
             i.Text = allPeersInCircle[e.ItemIndex].username;
+            i.SubItems.Add(ByteFormatter.formatBytes(allPeersInCircle[e.ItemIndex].share));
             e.Item = i;
         }
         public void chatReceived(string s, ulong roomId)
@@ -113,5 +114,20 @@ namespace Dimension.UI
 
             }
         }
+
+        private void userListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            foreach (int i in userListView.SelectedIndices)
+            {
+                Model.Peer z = allPeersInCircle[i];
+                TabPage p = new TabPage();
+                p.Text = z.username;
+                p.Tag = "Files for " + z.id.ToString();
+                FileBrowserPanel b = new FileBrowserPanel();
+                b.Dock = DockStyle.Fill;
+                p.Controls.Add(b);
+                Program.mainForm.createOrSelect(p);
+            }
+            }
     }
 }

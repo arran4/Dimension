@@ -37,10 +37,16 @@ namespace Dimension.Model
                 if (peers.ContainsKey(h.id))
                 {
                     peers[h.id].actualEndpoint = sender;
-                    peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
+                    if(h.externalIP != null)
+                        peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
                     if (peers[h.id].username != h.username)
                     {
                         peers[h.id].username = h.username;
+                        renamed = true;
+                    }
+                    if (peers[h.id].share != h.myShare)
+                    {
+                        peers[h.id].share = h.myShare;
                         renamed = true;
                     }
                     string s1 = "";
@@ -60,7 +66,8 @@ namespace Dimension.Model
                     peers[h.id] = new Peer();
                     peers[h.id].id = h.id;
                     peers[h.id].actualEndpoint = sender;
-                    peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
+                    if(h.externalIP != null)
+                        peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
                     peers[h.id].username = h.username;
                     peers[h.id].circles = h.myCircles;
                     added = true;
