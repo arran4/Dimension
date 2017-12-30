@@ -27,9 +27,12 @@ namespace Dimension.UI
         }
         void doUpdate(Model.Commands.FileListing list)
         {
+            ignoreReselect = true;
             foldersView.BeginUpdate();
             foldersView.Nodes.Clear();
             TreeNode root = new TreeNode("/");
+            root.Name = "/";
+            root.Text = p.username;
             foldersView.Nodes.Add(root);
             foreach (Model.Commands.FSListing i in list.folders)
             {
@@ -43,11 +46,12 @@ namespace Dimension.UI
             {
                 ListViewItem l = new ListViewItem();
                 l.Text = i.name;
+                l.Name = i.name;
                 l.SubItems.Add(ByteFormatter.formatBytes(i.size));
                 filesView.Items.Add(l);
-
             }
-                filesView.EndUpdate();
+            filesView.EndUpdate();
+            ignoreReselect = false;
         }
         string currentPath = "/";
         void commandReceived(Model.Commands.Command c)
@@ -63,6 +67,31 @@ namespace Dimension.UI
                         doUpdate(f);
                 }
 
+            }
+        }
+        bool ignoreReselect = false;
+        private void foldersView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (ignoreReselect)
+                return;
+            string s = "";
+
+            TreeNode t = e.Node;
+            s = e.Node.Name;
+            
+            while (t.Parent != null)
+            {
+                if(s == "")
+                    s = t.Text;
+                else
+                    s = t.Text + "/" + s;
+                t = t.Parent;
+            }
+            if(s != "/") s = "/" + s;
+            if (s != currentPath)
+            {
+                currentPath = s;
+                p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
             }
         }
     }

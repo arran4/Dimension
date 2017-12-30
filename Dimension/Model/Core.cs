@@ -124,13 +124,18 @@ namespace Dimension.Model
         Commands.FileListing generateFileListing(string path)
         {
             Commands.FileListing output = new Commands.FileListing();
+            output.path = path;
+
             if (path == "/")
             {
                 RootShare[] m = Program.fileListDatabase.getRootShares();
                 output.folders = new Commands.FSListing[m.Length];
-                output.path = path;
                 for (int i = 0; i < m.Length; i++)
                     output.folders[i] = new Commands.FSListing() { isFolder = true, name = m[i].name, size = m[i].size };
+            }
+            else
+            {
+
             }
             return output;
         }

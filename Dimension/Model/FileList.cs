@@ -65,7 +65,7 @@ namespace Dimension.Model
         }
 
         //TODO: Make this cache in the key-value store instead of just iterating
-        FSListing getFSListing(Folder parent, string path)
+        public FSListing getFSListing(Folder parent, string path)
         {
             string[] split = path.Split('/');
 

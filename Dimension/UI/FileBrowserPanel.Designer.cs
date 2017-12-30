@@ -66,6 +66,7 @@
             this.foldersView.Name = "foldersView";
             this.foldersView.Size = new System.Drawing.Size(232, 485);
             this.foldersView.TabIndex = 0;
+            this.foldersView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.foldersView_AfterSelect);
             // 
             // filesView
             // 
