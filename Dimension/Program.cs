@@ -78,7 +78,7 @@ namespace Dimension
             while (!disposed)
             {
                 System.Net.Sockets.TcpClient u = listener.AcceptTcpClient();
-                Model.IncomingConnection c = new Model.UdtIncomingConnection(u);
+                Model.IncomingConnection c = new Model.ReliableIncomingConnection(u);
                 theCore.addIncomingConnection(c);
             }
         }

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class UdtOutgoingConnection : OutgoingConnection
+    class ReliableOutgoingConnection : OutgoingConnection
     {
         public override event CommandReceived commandReceived;
-        public UdtOutgoingConnection(System.Net.IPAddress addr, int port)
+        public ReliableOutgoingConnection(System.Net.IPAddress addr, int port)
         {
             client = new System.Net.Sockets.TcpClient();
             client.Connect(addr, port);
@@ -22,16 +22,24 @@ namespace Dimension.Model
         {
             while (connected)
             {
-                byte[] lenByte = new byte[4];
-                client.GetStream().Read(lenByte, 0, 4);
-                byte[] dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
-
-                int pos = 0;
-                int read = 1;
-                while (read > 0 && pos < dataByte.Length)
+                byte[] dataByte = null;
+                try
                 {
-                    read = client.GetStream().Read(dataByte, pos, dataByte.Length-pos);
-                    pos += read;
+                    byte[] lenByte = new byte[4];
+                    client.GetStream().Read(lenByte, 0, 4);
+                    dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
+
+                    int pos = 0;
+                    int read = 1;
+                    while (read > 0 && pos < dataByte.Length)
+                    {
+                        read = client.GetStream().Read(dataByte, pos, dataByte.Length - pos);
+                        pos += read;
+                    }
+                }
+                catch
+                {
+                    return;
                 }
                 commandReceived?.Invoke(Program.serializer.deserialize(dataByte));
             }
@@ -44,11 +52,17 @@ namespace Dimension.Model
             int len = b.Length;
             lock (sendLock)
             {
-                client.GetStream().Write(BitConverter.GetBytes(len), 0, 4);
-                
-                client.GetStream().Write(b, 0, b.Length);
-                
-            }
+                try
+                {
+                    client.GetStream().Write(BitConverter.GetBytes(len), 0, 4);
+
+                    client.GetStream().Write(b, 0, b.Length);
+                }
+                catch
+                {
+                    return;
+                }
+                }
         }
         public override bool connected
         {

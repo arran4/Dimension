@@ -66,16 +66,16 @@ namespace Dimension.Model
                 if (isLocal)
                 {
                     if (createControl)
-                        controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, localDataPort);
+                        controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
                     if (createData)
-                        dataConnection = new UdtOutgoingConnection(actualEndpoint.Address, localDataPort);
+                        dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
                 }
                 else
                 {
                     if (createControl)
-                        controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                        controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
                     if (createData)
-                        dataConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                        dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
                 }
             }
             dataConnection.commandReceived += commandReceived;
