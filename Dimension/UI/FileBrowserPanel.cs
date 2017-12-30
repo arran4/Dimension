@@ -75,6 +75,16 @@ namespace Dimension.UI
                 l.Text = i.name;
                 l.Name = i.name;
                 l.SubItems.Add(ByteFormatter.formatBytes(i.size));
+                l.Tag = i;
+                filesView.Items.Add(l);
+            }
+            foreach (Model.Commands.FSListing i in list.files)
+            {
+                ListViewItem l = new ListViewItem();
+                l.Text = i.name;
+                l.Name = i.name;
+                l.SubItems.Add(ByteFormatter.formatBytes(i.size));
+                l.Tag = i;
                 filesView.Items.Add(l);
             }
             filesView.EndUpdate();
@@ -120,6 +130,23 @@ namespace Dimension.UI
                 currentPath = s;
                 p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
             }
+        }
+
+        private void filesView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (filesView.SelectedItems.Count > 0)
+            {
+                Model.Commands.FSListing tag = (Model.Commands.FSListing)filesView.SelectedItems[0].Tag;
+                if (tag.isFolder)
+                {
+                    if (currentPath == "/")
+                        currentPath += tag.name;
+                    else
+                        currentPath += "/" + tag.name;
+                    p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
+                }
+
+                }
         }
     }
 }

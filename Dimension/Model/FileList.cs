@@ -199,16 +199,22 @@ namespace Dimension.Model
             {
                 File i = Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
 
-                size += i.size;
-                s2 += i.name + "|" + i.size + "|" + i.lastModified.ToString() + Environment.NewLine;
+                if (i != null)
+                {
+                    size += i.size;
+                    s2 += i.name + "|" + i.size + "|" + i.lastModified.ToString() + Environment.NewLine;
+                }
                 wait(urgent);
             }
             foreach (ulong id in f.folderIds)
             {
                 Folder i = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
 
-                size += i.size;
-                s2 += i.name + "|" + i.lastModified.ToString() + Environment.NewLine;
+                if (i != null)
+                {
+                    size += i.size;
+                    s2 += i.name + "|" + i.lastModified.ToString() + Environment.NewLine;
+                }
                 wait(urgent);
             }
             if (s != s2)

@@ -74,6 +74,7 @@
             this.columnHeader1,
             this.columnHeader2});
             this.filesView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.filesView.FullRowSelect = true;
             this.filesView.Location = new System.Drawing.Point(0, 0);
             this.filesView.Margin = new System.Windows.Forms.Padding(2);
             this.filesView.Name = "filesView";
@@ -81,6 +82,7 @@
             this.filesView.TabIndex = 0;
             this.filesView.UseCompatibleStateImageBehavior = false;
             this.filesView.View = System.Windows.Forms.View.Details;
+            this.filesView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.filesView_MouseDoubleClick);
             // 
             // columnHeader1
             // 
