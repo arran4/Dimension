@@ -129,9 +129,19 @@ namespace Dimension.Model
             if (path == "/")
             {
                 RootShare[] m = Program.fileListDatabase.getRootShares();
-                output.folders = new Commands.FSListing[m.Length];
+
+                Dictionary<string, ulong> sizes = new Dictionary<string, ulong>();
                 for (int i = 0; i < m.Length; i++)
-                    output.folders[i] = new Commands.FSListing() { isFolder = true, name = m[i].name, size = m[i].size };
+                    if (sizes.ContainsKey(m[i].name))
+                        sizes[m[i].name] += m[i].size;
+                    else
+                        sizes[m[i].name] = m[i].size;
+                output.folders = new Commands.FSListing[sizes.Count];
+                int z = 0;
+                foreach (string s in sizes.Keys) {
+                    output.folders[z] = new Commands.FSListing() { isFolder = true, name = s, size =sizes[s] };
+                    z++;
+                }
             }
             else
             {

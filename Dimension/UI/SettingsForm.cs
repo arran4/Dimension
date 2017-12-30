@@ -37,7 +37,7 @@ namespace Dimension.UI
 
             downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:\\Downloads");
 
-            int numShares = Program.fileListDatabase.getInt(Program.fileListDatabase.fileList, "Root Share Count", 0);
+            int numShares = Program.fileListDatabase.getInt(Program.settings.settings, "Root Share Count", 0);
 
             for (int i = 0; i < numShares; i++)
             {
@@ -93,7 +93,7 @@ namespace Dimension.UI
                 if (name.Contains("/"))
                     name = name.Substring(name.LastIndexOf("/") + 1);
 
-                /*int numShares = Program.fileList.getInt(Program.fileList.fileList, "Root Share Count", 0);
+                /*int numShares = Program.fileList.getInt(Program.settings.settings, "Root Share Count", 0);
                 for (int i = 0; i < numShares; i++)
                     if (Program.fileList.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString()).fullPath.ToLower() == fullPath.ToLower())
                     {
@@ -137,7 +137,7 @@ namespace Dimension.UI
 
         void upsertShare(Model.RootShare r)
         {
-            int numShares = Program.fileListDatabase.getInt(Program.fileListDatabase.fileList, "Root Share Count", 0);
+            int numShares = Program.fileListDatabase.getInt(Program.settings.settings, "Root Share Count", 0);
             for (int i = 0; i < numShares; i++)
             {
                 Model.RootShare g = Program.fileListDatabase.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString());
@@ -165,7 +165,7 @@ namespace Dimension.UI
             r.index = numShares;
             Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + numShares.ToString(), r);
 
-            Program.fileListDatabase.setInt(Program.fileListDatabase.fileList, "Root Share Count", numShares + 1);
+            Program.fileListDatabase.setInt(Program.settings.settings, "Root Share Count", numShares + 1);
             updateSharesNamed(r, numShares);
 
         }
