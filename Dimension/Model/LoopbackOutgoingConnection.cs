@@ -8,6 +8,11 @@ namespace Dimension.Model
 {
     class LoopbackOutgoingConnection : OutgoingConnection
     {
+        public override event CommandReceived commandReceived;
+        public override void send(Commands.Command c)
+        {
+
+        }
         public override bool connected
         {
             get

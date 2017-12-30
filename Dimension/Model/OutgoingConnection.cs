@@ -8,6 +8,9 @@ namespace Dimension.Model
 {
     public abstract class OutgoingConnection
     {
+        public delegate void CommandReceived(Commands.Command c);
+        public abstract event CommandReceived commandReceived;
+        public abstract void send(Commands.Command c);
         public abstract bool connected
         {
             get;

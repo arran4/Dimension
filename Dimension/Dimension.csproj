@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Model\Bootstrap.cs" />
     <Compile Include="Model\Commands\Command.cs" />
+    <Compile Include="Model\Commands\GetFileListing.cs" />
     <Compile Include="Model\Commands\HelloCommand.cs" />
     <Compile Include="Model\Commands\Peer.cs" />
     <Compile Include="Model\Commands\PeerList.cs" />

@@ -17,6 +17,7 @@ namespace Dimension.UI
         {
             this.p = p;
             p.createConnection();
+            p.controlConnection.send(new Model.Commands.GetFileListing("/"));
             InitializeComponent();
         }
     }

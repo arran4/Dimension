@@ -8,7 +8,14 @@ namespace Dimension.Model
 {
     class UdtOutgoingConnection : OutgoingConnection
     {
+        public override event CommandReceived commandReceived;
         public UdtOutgoingConnection(System.Net.IPAddress addr, int port)
+        {
+
+        }
+
+
+        public override void send(Commands.Command c)
         {
 
         }
