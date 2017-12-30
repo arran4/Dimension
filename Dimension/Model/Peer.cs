@@ -10,6 +10,7 @@ namespace Dimension.Model
     {
         public OutgoingConnection dataConnection;
         public OutgoingConnection controlConnection;
+        public OutgoingConnection udtConnection;
         public System.Net.IPAddress publicAddress;
         public System.Net.IPEndPoint actualEndpoint;
         public string username;
@@ -20,6 +21,7 @@ namespace Dimension.Model
         public int externalControlPort;
         public int localDataPort;
         public int localControlPort;
+        public int localUDTPort;
         bool isLocal
         {
             get
@@ -53,18 +55,24 @@ namespace Dimension.Model
             if (controlConnection != null)
                 if (controlConnection.connected)
                     createControl = false;
+            bool createUdt = true;
+            if (udtConnection != null)
+                if (udtConnection.connected)
+                    createUdt = false;
             if (id == Program.theCore.id)
             {
                 if (createControl)
                     controlConnection = new LoopbackOutgoingConnection();
                 if (createData)
                     dataConnection = new LoopbackOutgoingConnection();
-
+                createUdt = false;
             }
             else
             {
                 if (isLocal)
                 {
+                    if (createUdt)
+                        udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
                     if (createControl)
                         controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
                     if (createData)
@@ -72,14 +80,21 @@ namespace Dimension.Model
                 }
                 else
                 {
+
+                    createUdt = false;
                     if (createControl)
                         controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
                     if (createData)
                         dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
                 }
+
             }
-            dataConnection.commandReceived += commandReceived;
-            controlConnection.commandReceived += commandReceived;
+            if (createData)
+                dataConnection.commandReceived += commandReceived;
+            if (createControl)
+                controlConnection.commandReceived += commandReceived;
+            if (createUdt)
+                udtConnection.commandReceived += commandReceived;
         }
         List<int> usedIds = new List<int>();
         public void chatReceived(Commands.RoomChatCommand r)

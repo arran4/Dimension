@@ -78,6 +78,7 @@ namespace Dimension.Model
                     peers[h.id].externalDataPort = h.externalDataPort;
                     peers[h.id].localControlPort = h.internalControlPort;
                     peers[h.id].localDataPort = h.internalDataPort;
+                    peers[h.id].localUDTPort = h.internalUdtPort;
                     added = true;
                 }
             }

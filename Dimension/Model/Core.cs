@@ -37,6 +37,10 @@ namespace Dimension.Model
             randomId = randomId << 32;
             randomId |= (uint)r.Next();
 
+            udtListener = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+            udtListener.Bind(System.Net.IPAddress.Any, 0);
+            udtListener.Listen(1000);
+
             id = (ulong)Program.settings.getULong("ID", randomId);
             peerManager = new PeerManager();
             System.Threading.Thread t = new System.Threading.Thread(helloLoop);
@@ -45,8 +49,25 @@ namespace Dimension.Model
             t.Start();
             doReceive();
             Program.fileList.updateComplete += updateIncomings;
+
+            t = new System.Threading.Thread(udtAcceptLoop);
+            t.IsBackground = true;
+            t.Name = "UDT Accept Loop";
+            t.Start();
         }
 
+        void udtAcceptLoop()
+        {
+            while (!disposed)
+            {
+                Udt.Socket s = udtListener.Accept();
+                var p = new UdtIncomingConnection(s);
+                addIncomingConnection(p);
+            }
+
+
+            }
+        Udt.Socket udtListener;
         void doReceive()
         {
             while (!disposed)
@@ -221,6 +242,7 @@ namespace Dimension.Model
                 }
                 c.internalControlPort = Program.bootstrap.internalControlPort;
                 c.internalDataPort = Program.bootstrap.internalDataPort;
+                c.internalUdtPort = udtListener.LocalEndPoint.Port;
 
                 System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
                 List<ulong> circles = new List<ulong>();
