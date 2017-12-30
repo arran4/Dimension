@@ -92,6 +92,18 @@ namespace Dimension.UI
                     name = name.Substring(0, name.IndexOf(":"));
                 if (name.Contains("/"))
                     name = name.Substring(name.LastIndexOf("/") + 1);
+                bool clear = false;
+                while (!clear)
+                {
+                    clear = true;
+                    foreach (Model.RootShare q in Program.fileListDatabase.getRootShares())
+                        if(q != null)
+                            if (q.name == name)
+                                clear = false;
+                    if (!clear)
+                        name = name + " (2)";
+
+                }
 
                 /*int numShares = Program.fileList.getInt(Program.settings.settings, "Root Share Count", 0);
                 for (int i = 0; i < numShares; i++)
@@ -117,21 +129,9 @@ namespace Dimension.UI
         }
         void updateSharesNamed(Model.RootShare r, int index)
         {
-            int[] z = Program.fileListDatabase.getObject<int[]>(Program.fileListDatabase.fileList, "Root Shares Named " + r.name);
-            if (z == null)
-                z = new int[0];
-            Array.Resize(ref z, z.Length + 1);
-            z[z.Length - 1] = index;
-            Program.fileListDatabase.setObject<int[]>(Program.fileListDatabase.fileList, "Root Shares Named " + r.name, z);
         }
         void removeSharesNamed(string name, int index)
         {
-            List<int> z = new List<int>(Program.fileListDatabase.getObject<int[]>(Program.fileListDatabase.fileList, "Root Shares Named " + name));
-
-            if (z.Contains(index))
-                z.Remove(index);
-
-            Program.fileListDatabase.setObject<int[]>(Program.fileListDatabase.fileList, "Root Shares Named " + name, z.ToArray());
         }
 
 
