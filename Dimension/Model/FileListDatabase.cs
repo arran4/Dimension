@@ -25,7 +25,7 @@ namespace Dimension.Model
         }
         public void save(RaptorDB.RaptorDB<string> db)
         {
-            db.SaveIndex();
+            db.Dispose();
         }
         public FileListDatabase()
         {
@@ -97,8 +97,15 @@ namespace Dimension.Model
         public int getInt(RaptorDB.RaptorDB<string> db, string name, int def)
         {
             string s = def.ToString();
-            db.Get("i" + name, out s);
-            if (s == "" || s == null)
+            try
+            {
+                db.Get("i" + name, out s);
+            }
+            catch
+            {
+                return def;
+            }
+                if (s == "" || s == null)
                 s = def.ToString();
             return int.Parse(s);
         }

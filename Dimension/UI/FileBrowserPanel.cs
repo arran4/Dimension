@@ -29,11 +29,25 @@ namespace Dimension.UI
         {
             foldersView.BeginUpdate();
             foldersView.Nodes.Clear();
+            TreeNode root = new TreeNode("/");
+            foldersView.Nodes.Add(root);
             foreach (Model.Commands.FSListing i in list.folders)
             {
-                foldersView.Nodes.Add(new TreeNode(i.name));
+                root.Nodes.Add(new TreeNode(i.name));
             }
             foldersView.EndUpdate();
+            filesView.BeginUpdate();
+            filesView.Items.Clear();
+
+            foreach (Model.Commands.FSListing i in list.folders)
+            {
+                ListViewItem l = new ListViewItem();
+                l.Text = i.name;
+                l.SubItems.Add(ByteFormatter.formatBytes(i.size));
+                filesView.Items.Add(l);
+
+            }
+                filesView.EndUpdate();
         }
         string currentPath = "/";
         void commandReceived(Model.Commands.Command c)

@@ -162,9 +162,9 @@ namespace Dimension.Model
             {
                 deleteFolder(f, urgent);
                 size = loadFolder(f, urgent, path);
+                f.size = size;
+                Program.fileListDatabase.setObject(Program.settings.settings, "Root Share " + f.index.ToString(), f);
             }
-            f.size = size;
-            Program.fileListDatabase.setObject(Program.settings.settings, "Root Share "+f.index.ToString(), f);
             sw.Stop();
             sw.Reset();
             Program.fileListDatabase.saveAll();
