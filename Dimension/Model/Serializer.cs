@@ -21,11 +21,11 @@ namespace Dimension.Model
             System.IO.MemoryStream m = new System.IO.MemoryStream();
             System.IO.BinaryWriter b = new System.IO.BinaryWriter(m);
             string t = c.GetType().FullName;
-            b.Write(t.Length);
+            b.Write(Encoding.UTF8.GetByteCount(t));
             b.Write(Encoding.UTF8.GetBytes(t));
 
             string d = Newtonsoft.Json.JsonConvert.SerializeObject(c);
-            b.Write(d.Length);
+            b.Write(Encoding.UTF8.GetByteCount(d));
             b.Write(Encoding.UTF8.GetBytes(d));
             b.Flush();
             byte[] output = m.ToArray();

@@ -68,14 +68,14 @@ namespace Dimension.Model
                     if (createControl)
                         controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, localDataPort);
                     if (createData)
-                        controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, localDataPort);
+                        dataConnection = new UdtOutgoingConnection(actualEndpoint.Address, localDataPort);
                 }
                 else
                 {
                     if (createControl)
                         controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalDataPort);
                     if (createData)
-                        controlConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                        dataConnection = new UdtOutgoingConnection(actualEndpoint.Address, externalDataPort);
                 }
             }
             dataConnection.commandReceived += commandReceived;

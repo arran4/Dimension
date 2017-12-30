@@ -34,7 +34,7 @@ namespace Dimension
         }
         public static Model.Core theCore;
         public static System.Net.Sockets.UdpClient udp;
-        public static Udt.Socket udtSocket;
+        public static System.Net.Sockets.TcpListener listener;
         public static Model.Bootstrap bootstrap;
         public static Model.FileListDatabase fileListDatabase;
         public static Model.Settings settings;
@@ -51,8 +51,7 @@ namespace Dimension
             currentLoadState = "Setting up NAT...";
             bootstrap = new Model.Bootstrap();
             bootstrap.launch().Wait();
-            udtSocket = bootstrap.udtSocket;
-            udtSocket.Listen(int.MaxValue);
+            listener = bootstrap.listener;
             udp = bootstrap.unreliableClient;
             System.Threading.Thread t = new System.Threading.Thread(acceptLoop);
             t.IsBackground = true;
@@ -72,21 +71,16 @@ namespace Dimension
         public static bool doneLoading = false;
 
         public static string currentLoadState = "";
-        public static List<Model.IncomingConnection> incomingConnections = new List<Model.IncomingConnection>();
-
+        
         //TODO: Remove old incoming connections when they're dead
         static void acceptLoop()
         {
-            udtSocket.Listen(int.MaxValue);
             while (!disposed)
             {
-                Udt.Socket u = udtSocket.Accept();
+                System.Net.Sockets.TcpClient u = listener.AcceptTcpClient();
                 Model.IncomingConnection c = new Model.UdtIncomingConnection(u);
-                lock (incomingConnections)
-                    incomingConnections.Add(c);
+                theCore.addIncomingConnection(c);
             }
-
-
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Dimension.Model
                 //UPnP probably not supported
             }
         }
-        async Task mapPorts(int internalPort, int externalPort)
+        async Task mapPorts(int internalPort, int externalPort, bool tcp)
         {
 
             try
@@ -63,7 +63,7 @@ namespace Dimension.Model
                 NatDevice device = await d.DiscoverDeviceAsync();
                 SystemLog.addEntry("Successfully found UPnP device "  +await device.GetExternalIPAsync());
 
-                Mapping m = new Mapping(Protocol.Udp, internalPort, externalPort, Environment.MachineName + " Dimension Mapping");
+                Mapping m = new Mapping(tcp ? Protocol.Tcp : Protocol.Udp, internalPort, externalPort, Environment.MachineName + " Dimension Mapping");
                 await device.CreatePortMapAsync(m);
                 SystemLog.addEntry("Successfully created UPnP mapping from port " + internalPort.ToString() + " to " +externalPort.ToString());
                 UPnPActive = true;
@@ -88,7 +88,7 @@ namespace Dimension.Model
             return output;
         }
         public UdpClient unreliableClient;
-        public Udt.Socket udtSocket;
+        public TcpListener listener;
         public IPEndPoint publicDataEndPoint;
         public IPEndPoint publicControlEndPoint;
         public int internalControlPort;
@@ -101,18 +101,9 @@ namespace Dimension.Model
             await unMapPorts();
             Program.currentLoadState = "Binding UDP sockets.";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            
-            try
-            {
-                socket.Bind(new IPEndPoint(IPAddress.Any, Program.settings.getInt("Default Data Port", 0)));
-                SystemLog.addEntry("Successfully bound to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
-            }
-            catch
-            {
-                SystemLog.addEntry("Failed to bind to UDP data port "+ Program.settings.getInt("Default Data Port", 0)+ "; trying random port...");
-                socket.Bind(new IPEndPoint(IPAddress.Any, 0));
-                SystemLog.addEntry("Successfully bound to UDP data port " + ((IPEndPoint)socket.LocalEndPoint).Port);
-            }
+
+            listener = new TcpListener(IPAddress.Any,Program.settings.getInt("Default Data Port", 0));
+    
             unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", NetConstants.controlPort));
             internalControlPort = ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port;
             SystemLog.addEntry("Successfully bound to UDP control port " + internalControlPort);
@@ -132,10 +123,6 @@ namespace Dimension.Model
                 }
                 SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
                 publicControlEndPoint = result.PublicEndPoint;
-                SystemLog.addEntry("Attempting to STUN data port.");
-                STUN_Result result2 = STUN_Client.Query(stunUrl, 19302, socket);
-                publicDataEndPoint = result2.PublicEndPoint;
-                SystemLog.addEntry("STUN successful. External data endpoint: " + result2.PublicEndPoint.ToString());
             }
             catch (Exception) //STUN can throw generic exceptions :(
             {
@@ -151,16 +138,13 @@ namespace Dimension.Model
                 SystemLog.addEntry("UPnP enabled. Attempting to map UPnP ports...");
                 Program.currentLoadState = "Mapping UPnP ports.";
                 SystemLog.addEntry("Creating control UPnP mapping...");
-                await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port);
+                await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port, false);
                 SystemLog.addEntry("Creating data UPnP mapping...");
-                await mapPorts(((IPEndPoint)socket.LocalEndPoint).Port, publicDataEndPoint.Port);
+                await mapPorts(((IPEndPoint)socket.LocalEndPoint).Port, publicDataEndPoint.Port, true);
             }
 
-            Program.currentLoadState = "Setting up data socket.";
-            SystemLog.addEntry("Binding UDT to data socket.");
-            udtSocket = new Udt.Socket(AddressFamily.InterNetwork, SocketType.Stream);
-            udtSocket.Bind(socket);
-            internalDataPort = ((IPEndPoint)socket.LocalEndPoint).Port;
+            listener.Start();
+            internalDataPort = ((IPEndPoint)listener.Server.LocalEndPoint).Port;
             SystemLog.addEntry("Network setup complete.");
             UPnPActive = true;
         }
