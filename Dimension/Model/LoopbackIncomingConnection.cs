@@ -6,22 +6,21 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class LoopbackOutgoingConnection : OutgoingConnection
+    class LoopbackIncomingConnection : IncomingConnection
     {
         public override event CommandReceived commandReceived;
-        LoopbackIncomingConnection c;
-        public LoopbackOutgoingConnection()
+        LoopbackOutgoingConnection o;
+        public LoopbackIncomingConnection(LoopbackOutgoingConnection o)
         {
-            c = new LoopbackIncomingConnection(this);
-            Program.theCore.addIncomingConnection(c);
+            this.o = o;
         }
         public override void send(Commands.Command c)
         {
-            this.c.received(c);
+            o.received(c);
         }
         public void received(Commands.Command c)
         {
-            commandReceived?.Invoke(c);
+            commandReceived?.Invoke(c, this);
         }
         public override bool connected
         {

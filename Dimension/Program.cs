@@ -79,7 +79,7 @@ namespace Dimension
             while (!disposed)
             {
                 Udt.Socket u = udtSocket.Accept();
-                Model.IncomingConnection c = new Model.IncomingConnection(u);
+                Model.IncomingConnection c = new Model.UdtIncomingConnection(u);
                 lock (incomingConnections)
                     incomingConnections.Add(c);
             }

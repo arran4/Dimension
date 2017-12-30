@@ -107,6 +107,18 @@ namespace Dimension.Model
                 p.sendCommand(c);
             }
         }
+        List<IncomingConnection> incomings = new List<IncomingConnection>();
+        public void addIncomingConnection(IncomingConnection c)
+        {
+            lock (incomings)
+                incomings.Add(c);
+            c.commandReceived += commandReceived;
+        }
+        void commandReceived(Commands.Command c, IncomingConnection con)
+        {
+
+
+        }
         public delegate void ChatReceivedEvent(string s, ulong id);
         public event ChatReceivedEvent chatReceivedEvent;
         public void chatReceived(string s, ulong id)

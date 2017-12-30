@@ -6,30 +6,25 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class LoopbackOutgoingConnection : OutgoingConnection
+    class UdtIncomingConnection : IncomingConnection
     {
         public override event CommandReceived commandReceived;
-        LoopbackIncomingConnection c;
-        public LoopbackOutgoingConnection()
+        public UdtIncomingConnection(Udt.Socket s)
         {
-            c = new LoopbackIncomingConnection(this);
-            Program.theCore.addIncomingConnection(c);
+
         }
+
+
         public override void send(Commands.Command c)
         {
-            this.c.received(c);
-        }
-        public void received(Commands.Command c)
-        {
-            commandReceived?.Invoke(c);
+
         }
         public override bool connected
         {
             get
             {
-                return true;
+                return false;
             }
-
         }
     }
 }

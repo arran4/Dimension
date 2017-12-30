@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class IncomingConnection
+    public abstract class IncomingConnection
     {
-        Udt.Socket socket;
-        public IncomingConnection(Udt.Socket socket)
+        public delegate void CommandReceived(Commands.Command c, IncomingConnection con);
+        public abstract event CommandReceived commandReceived;
+        public abstract void send(Commands.Command c);
+        public abstract bool connected
         {
-            this.socket = socket;
+            get;
         }
-        }
+    }
 }
