@@ -123,7 +123,7 @@ namespace Dimension.UI
 
                 ListViewItem li = new ListViewItem(r.name);
                 li.SubItems.Add(r.fullPath.Replace('/', System.IO.Path.DirectorySeparatorChar));
-                li.SubItems.Add(ByteFormatter.formatBytes(r.size));
+                li.SubItems.Add("");
                 li.Tag = r;
                 sharesListView.Items.Add(li);
 
