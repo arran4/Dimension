@@ -37,6 +37,7 @@ namespace Dimension.UI
 
             downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:\\Downloads");
 
+            useUDTBox.Checked = Program.settings.getBool("Use UDT", true);
             int numShares = Program.fileListDatabase.getInt(Program.settings.settings, "Root Share Count", 0);
 
             for (int i = 0; i < numShares; i++)
@@ -64,6 +65,8 @@ namespace Dimension.UI
             Program.settings.setString("Username", usernameBox.Text);
             Program.settings.setString("Description", descriptionBox.Text);
             Program.settings.setString("Default Download Folder", downloadFolderInput.Text);
+
+            Program.settings.setBool("Use UDT", useUDTBox.Checked);
 
             Program.settings.save();
             Close();

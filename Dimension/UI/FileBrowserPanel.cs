@@ -153,9 +153,9 @@ namespace Dimension.UI
                         s = "/" + tag.name;
                     else
                         s = currentPath + "/" + tag.name;
-                    /*if (p.udtConnection != null)
+                    if (p.udtConnection != null && p.useUDT && Program.settings.getBool("Use UDT", true))
                         p.udtConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
-                    else*/
+                    else
                         p.dataConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
                 }
 

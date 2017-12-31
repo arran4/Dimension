@@ -276,6 +276,8 @@ namespace Dimension.Model
                 c.id = id;
                 c.username = Program.settings.getString("Username", "Username");
                 c.machineName = Environment.MachineName;
+                c.useUDT = Program.settings.getBool("Use UDT", true);
+
                 Dictionary<int, int> counts = new Dictionary<int, int>();
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
                 {

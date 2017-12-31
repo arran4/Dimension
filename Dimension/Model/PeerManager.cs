@@ -36,6 +36,7 @@ namespace Dimension.Model
             {
                 if (peers.ContainsKey(h.id))
                 {
+                    peers[h.id].useUDT = h.useUDT;
                     peers[h.id].actualEndpoint = sender;
                     if(h.externalIP != null)
                         peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);

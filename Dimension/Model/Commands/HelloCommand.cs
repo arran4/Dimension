@@ -20,6 +20,7 @@ namespace Dimension.Model.Commands
         public int internalUdtPort;
         public string externalIP;
         public ulong[] myCircles;
+        public bool useUDT;
         //public string[] internalIPs; //There are too many!
     }
 }

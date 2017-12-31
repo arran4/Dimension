@@ -22,6 +22,7 @@ namespace Dimension.Model
         public int localDataPort;
         public int localControlPort;
         public int localUDTPort;
+        public bool useUDT;
         bool isLocal
         {
             get
@@ -73,6 +74,8 @@ namespace Dimension.Model
             if (udtConnection != null)
                 if (udtConnection.connected)
                     createUdt = false;
+            if (!useUDT || !Program.settings.getBool("Use UDT", true))
+                createUdt = false;
             if (id == Program.theCore.id)
             {
                 if (createControl)
