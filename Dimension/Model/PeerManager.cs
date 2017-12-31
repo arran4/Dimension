@@ -18,10 +18,18 @@ namespace Dimension.Model
         }
         public Peer[] allPeersInCircle(ulong id)
         {
+            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+            ulong lanHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes("LAN")), 0);
+
             List<Peer> output = new List<Peer>();
             foreach (Peer p in allPeers)
                 if (p.circles.Contains(id))
-                    output.Add(p);
+                    if (id == lanHash)
+                    {
+                        if (p.isLocal)
+                            output.Add(p);
+                    }else
+                        output.Add(p);
             return output.ToArray();
         }
         public delegate void PeerUpdateEvent(Peer p);

@@ -23,7 +23,7 @@ namespace Dimension.Model
         public int localControlPort;
         public int localUDTPort;
         public bool useUDT;
-        bool isLocal
+        public bool isLocal
         {
             get
             {
