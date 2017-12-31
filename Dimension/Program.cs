@@ -28,6 +28,7 @@ namespace Dimension
         static void doCleanup()
         {
             disposed = true;
+            theCore.Dispose();
             fileList.Dispose();
             fileListDatabase.close();
             bootstrap.Dispose();

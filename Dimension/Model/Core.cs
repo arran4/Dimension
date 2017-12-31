@@ -14,7 +14,11 @@ namespace Dimension.Model
         public void Dispose()
         {
             disposed = true;
-
+            Commands.Quitting c = new Commands.Quitting();
+            c.id = Program.theCore.id;
+            byte[] b = Program.serializer.serialize(c);
+            foreach (Peer p in peerManager.allPeers)
+                Program.udp.Send(b, b.Length, p.actualEndpoint);
         }
         public void joinCircle(string s)
         {
@@ -157,6 +161,16 @@ namespace Dimension.Model
                     if (p.actualEndpoint.ToString() == sender.ToString())
                         p.chatReceived(r);
 
+            }
+            if (c is Commands.Quitting)
+            {
+                Commands.Quitting r = (Commands.Quitting)c;
+                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                    if (p.id == r.id)
+                    {
+                        p.quit = true;
+                        Program.theCore.peerManager.doPeerRemoved(p);
+                    }
             }
             }
         List<int> usedIds = new List<int>();

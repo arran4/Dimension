@@ -23,7 +23,7 @@ namespace Dimension.Model
 
             List<Peer> output = new List<Peer>();
             foreach (Peer p in allPeers)
-                if (p.circles.Contains(id))
+                if (p.circles.Contains(id) && !p.quit)
                     if (id == lanHash)
                     {
                         if (p.isLocal)
@@ -32,9 +32,14 @@ namespace Dimension.Model
                         output.Add(p);
             return output.ToArray();
         }
+        public void doPeerRemoved(Peer p)
+        {
+            peerRemoved?.Invoke(p);
+        }
         public delegate void PeerUpdateEvent(Peer p);
         public event PeerUpdateEvent peerRenamed;
         public event PeerUpdateEvent peerAdded;
+        public event PeerUpdateEvent peerRemoved;
         Dictionary<ulong, Peer> peers = new Dictionary<ulong, Peer>();
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
@@ -44,6 +49,7 @@ namespace Dimension.Model
             {
                 if (peers.ContainsKey(h.id))
                 {
+                    peers[h.id].quit = false;
                     peers[h.id].useUDT = h.useUDT;
                     peers[h.id].actualEndpoint = sender;
                     if(h.externalIP != null)

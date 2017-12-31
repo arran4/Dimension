@@ -64,6 +64,26 @@ namespace Dimension.UI
         void updateUserList(Model.Peer p)
         {
             var items = allPeersInCircle;
+            if (items.Length == 0)
+                return;
+            if (items.Length < userListView.VirtualListSize)
+            {
+                if (this.InvokeRequired)
+                {
+                    Invoke(new Action(delegate ()
+                    {
+                        userListView.VirtualListSize = items.Length;
+                        userListView.RedrawItems(0, items.Length-1, false);
+
+                    }));
+                }
+                else
+                {
+                    userListView.VirtualListSize = items.Length;
+                    userListView.RedrawItems(0, items.Length-1, false);
+                }
+                return;
+            }
             if (p != null)
                 for (int i = 0; i < items.Length; i++)
                     if (items[i].id == p.id)
@@ -99,6 +119,7 @@ namespace Dimension.UI
         void setupUserList()
         {
             updateUserList(null);
+            Program.theCore.peerManager.peerRemoved += updateUserList;
             Program.theCore.peerManager.peerAdded += updateUserList;
             Program.theCore.peerManager.peerRenamed += updateUserList;
         }

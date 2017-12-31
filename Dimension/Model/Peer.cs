@@ -36,6 +36,7 @@ namespace Dimension.Model
             }
         }
         public Transfer t;
+        public bool quit = false;
         public delegate void CommandReceived(Commands.Command c);
         public event CommandReceived commandReceivedEvent;
         public void commandReceived(Commands.Command c)

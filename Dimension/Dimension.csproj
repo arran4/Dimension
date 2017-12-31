@@ -76,6 +76,7 @@
     <Compile Include="Model\Commands\KeepAlive.cs" />
     <Compile Include="Model\Commands\Peer.cs" />
     <Compile Include="Model\Commands\PeerList.cs" />
+    <Compile Include="Model\Commands\Quitting.cs" />
     <Compile Include="Model\Commands\RequestChunks.cs" />
     <Compile Include="Model\Commands\ReverseConnectionType.cs" />
     <Compile Include="Model\Commands\RoomChatCommand.cs" />
