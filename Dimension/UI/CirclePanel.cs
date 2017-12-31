@@ -58,12 +58,7 @@ namespace Dimension.UI
         {
             get
             {
-                var startList = Program.theCore.peerManager.allPeers;
-                List<Model.Peer> output = new List<Model.Peer>();
-                foreach (var v in startList)
-                    if (v.circles.Contains(circleHash))
-                        output.Add(v);
-                return output.ToArray();
+                return Program.theCore.peerManager.allPeersInCircle(circleHash);
             }
         }
         void updateUserList(Model.Peer p)
