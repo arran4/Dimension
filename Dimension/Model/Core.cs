@@ -54,8 +54,35 @@ namespace Dimension.Model
             t.IsBackground = true;
             t.Name = "UDT Accept Loop";
             t.Start();
+            t = new System.Threading.Thread(keepAliveLoop);
+            t.IsBackground = true;
+            t.Name = "Reliable Keep Alive Loop";
+            t.Start();
         }
 
+        void keepAliveLoop()
+        {
+            while (!disposed)
+            {
+                Commands.KeepAlive k = new Commands.KeepAlive();
+                lock (incomings)
+                    foreach (IncomingConnection c in incomings)
+                        c.send(k);
+                foreach (Peer p in peerManager.allPeers)
+                {
+                    if (p.udtConnection != null)
+                        if(p.udtConnection.connected)
+                            p.udtConnection.send(k);
+                    if (p.dataConnection != null)
+                        if (p.dataConnection.connected)
+                            p.dataConnection.send(k);
+                    if (p.controlConnection != null)
+                        if (p.controlConnection.connected)
+                            p.controlConnection.send(k);
+                }
+                System.Threading.Thread.Sleep(5000);
+            }
+        }
         void udtAcceptLoop()
         {
             while (!disposed)
