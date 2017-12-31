@@ -97,6 +97,11 @@ namespace Dimension.UI
             filesView.BeginUpdate();
             filesView.Items.Clear();
 
+            if (list.path != "/")
+            {
+                filesView.Items.Add(new ListViewItem(".."));
+            }
+
             foreach (Model.Commands.FSListing i in list.folders)
             {
                 ListViewItem l = new ListViewItem();
@@ -166,6 +171,15 @@ namespace Dimension.UI
                 return;
             if (filesView.SelectedItems.Count > 0)
             {
+                if (filesView.SelectedItems[0].Text == "..")
+                {
+                    currentPath = currentPath.TrimEnd('/');
+                    currentPath = currentPath.Substring(0, currentPath.LastIndexOf('/'));
+                    if (currentPath == "")
+                        currentPath = "/";
+                    p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
+                    return;
+                }
                 Model.Commands.FSListing tag = (Model.Commands.FSListing)filesView.SelectedItems[0].Tag;
                 if (tag.isFolder)
                 {
