@@ -41,22 +41,24 @@ namespace Dimension.UI
 
             for (int i = 0; i < z.Length; i++)
             {
-                string[] w = new string[8];
+                string[] w = new string[7];
                 w[0] = z[i].filename;
                 if (z[i].download)
                     w[1] = "Downloading";
                 else
                     w[1] = "Uploading";
-                w[2] = "User";
-                w[3] = "TimeLeft";
-                w[4] = ByteFormatter.formatBytes(z[i].rate()) + "/s";
-                w[5] = ByteFormatter.formatBytes(z[i].completed);
-                w[6] = ByteFormatter.formatBytes(z[i].size);
-                w[7] = z[i].protocol;
+                w[2] = z[i].username;
+
+                string percent = ((int)((100.0 * z[i].completed) / z[i].size)).ToString() + "%";
+
+                w[3] = ByteFormatter.formatBytes(z[i].rate()) + "/s";
+                w[4] = ByteFormatter.formatBytes(z[i].completed) + " ("+percent+")";
+                w[5] = ByteFormatter.formatBytes(z[i].size);
+                w[6] = z[i].protocol;
 
                 while (listView.Items[i].SubItems.Count < w.Length)
                     listView.Items[i].SubItems.Add("");
-                for (int x = 0; x < 8; x++)
+                for (int x = 0; x < 7; x++)
                     if (listView.Items[i].SubItems[x].Text != w[x])
                         listView.Items[i].SubItems[x].Text = w[x];
             }

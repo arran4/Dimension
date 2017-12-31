@@ -161,6 +161,7 @@ namespace Dimension.UI
                     {
 
                         p.t = new Model.Transfer();
+                        p.t.username = p.username;
                         p.t.filename = tag.name;
                         p.t.download = true;
                         p.t.size = tag.size;

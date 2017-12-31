@@ -214,6 +214,7 @@ namespace Dimension.Model
             System.IO.FileInfo f = new System.IO.FileInfo(realPath);
             System.IO.FileStream s = new System.IO.FileStream(realPath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
             Transfer t = new Transfer();
+            t.username = "(Uploading)";
             t.size = (ulong)f.Length;
             t.filename = realPath.Substring(realPath.LastIndexOf("/") + 1);
             t.download = false;

@@ -13,6 +13,7 @@ namespace Dimension.Model
         public string filename;
         public ulong size;
         public ulong completed;
+        public string username = "";
 
         List<DateTime> dataAdded = new List<DateTime>();
         List<ulong> dataAmount = new List<ulong>();
