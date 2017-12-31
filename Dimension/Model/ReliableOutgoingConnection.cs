@@ -22,29 +22,49 @@ namespace Dimension.Model
         {
             while (connected)
             {
-                byte[] lenByte = new byte[4];
-                client.GetStream().Read(lenByte, 0, 4);
-                byte[] dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
+                byte[] dataByte;
+                Commands.Command c;
 
-                int pos = 0;
-                int read = 1;
-                while (read > 0 && pos < dataByte.Length)
+                try
                 {
-                    read = client.GetStream().Read(dataByte, pos, dataByte.Length - pos);
-                    pos += read;
-                }
-                Commands.Command c = Program.serializer.deserialize(dataByte);
-                if (c is Commands.DataCommand)
-                {
-                    pos = 0;
-                    read = 1;
-                    byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
-                    while (read > 0 && pos < chunk.Length)
+                    byte[] lenByte = new byte[4];
+                    client.GetStream().Read(lenByte, 0, 4);
+                    dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
+
+                    if (dataByte.Length == 0)
+                        return;
+                    int pos = 0;
+                    int read = 1;
+                    while (read > 0 && pos < dataByte.Length)
                     {
-                        read = client.GetStream().Read(chunk, pos, chunk.Length - pos);
+                        read = client.GetStream().Read(dataByte, pos, dataByte.Length - pos);
                         pos += read;
                     }
-                    ((Commands.DataCommand)c).data = chunk;
+                    
+                }
+                catch
+                {
+                    return;
+                }
+                c = Program.serializer.deserialize(dataByte);
+                try
+                {
+                    if (c is Commands.DataCommand)
+                    {
+                        int pos = 0;
+                        int read = 1;
+                        byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
+                        while (read > 0 && pos < chunk.Length)
+                        {
+                            read = client.GetStream().Read(chunk, pos, chunk.Length - pos);
+                            pos += read;
+                        }
+                        ((Commands.DataCommand)c).data = chunk;
+                    }
+                }
+                catch
+                {
+                    return;
                 }
                 commandReceived?.Invoke(c);
             }
@@ -60,10 +80,17 @@ namespace Dimension.Model
             int len = b.Length;
             lock (sendLock)
             {
-                client.GetStream().Write(BitConverter.GetBytes(len), 0, 4);
-                client.GetStream().Write(b, 0, b.Length);
-                if (c is Commands.DataCommand)
-                    client.GetStream().Write(((Commands.DataCommand)c).data, 0, ((Commands.DataCommand)c).data.Length);
+                try
+                {
+                    client.GetStream().Write(BitConverter.GetBytes(len), 0, 4);
+                    client.GetStream().Write(b, 0, b.Length);
+                    if (c is Commands.DataCommand)
+                        client.GetStream().Write(((Commands.DataCommand)c).data, 0, ((Commands.DataCommand)c).data.Length);
+                }
+                catch
+                {
+                    return;
+                }
             }
         }
         public override bool connected

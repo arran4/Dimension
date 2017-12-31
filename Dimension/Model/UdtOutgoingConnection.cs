@@ -32,6 +32,9 @@ namespace Dimension.Model
                     byte[] lenByte = new byte[4];
                     socket.Receive(lenByte);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
+                    
+                    if (dataByte.Length == 0)
+                        return;
 
                     while (read > 0 && pos < dataByte.Length)
                     {
