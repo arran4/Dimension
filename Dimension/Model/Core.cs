@@ -275,12 +275,19 @@ namespace Dimension.Model
                 {
                     if (!con.connected)
                         return;
-                    x += s.Read(buffer, x, buffer.Length - x);
-                    t.addData((ulong)x);
+                    int w = s.Read(buffer, x, buffer.Length - x);
+                    x += w;
                 }
                 c.data = buffer;
                 c.path = requestPath;
+
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
                 con.send(c);
+                sw.Stop();
+                t.completed += (ulong)buffer.Length;
+                t.rate = (ulong)(1000*buffer.Length) / (ulong)sw.ElapsedMilliseconds;
+
                 pos += buffer.Length;
             }
             s.Dispose();

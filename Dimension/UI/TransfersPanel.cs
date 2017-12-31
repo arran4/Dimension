@@ -51,7 +51,7 @@ namespace Dimension.UI
 
                 string percent = ((int)((100.0 * z[i].completed) / z[i].size)).ToString() + "%";
 
-                w[3] = ByteFormatter.formatBytes(z[i].rate()) + "/s";
+                w[3] = ByteFormatter.formatBytes(z[i].rate) + "/s";
                 w[4] = ByteFormatter.formatBytes(z[i].completed) + " ("+percent+")";
                 w[5] = ByteFormatter.formatBytes(z[i].size);
                 w[6] = z[i].protocol;
