@@ -51,6 +51,8 @@ namespace Dimension.Model
                 {
                     pos = 0;
                     read = 1;
+                    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                    sw.Start();
                     byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                     while (read > 0 && pos < chunk.Length)
                     {
@@ -58,6 +60,9 @@ namespace Dimension.Model
                         pos += read;
                     }
                     ((Commands.DataCommand)c).data = chunk;
+                    sw.Stop();
+
+                    rate = (ulong)((chunk.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
                 }
                 commandReceived?.Invoke(c);
             }

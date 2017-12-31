@@ -61,6 +61,8 @@ namespace Dimension.Model
                     {
                         int pos = 0;
                         int read = 1;
+                        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                        sw.Start();
                         byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                         while (read > 0 && pos < chunk.Length)
                         {
@@ -68,6 +70,8 @@ namespace Dimension.Model
                             pos += read;
                         }
                         ((Commands.DataCommand)c).data = chunk;
+                        sw.Stop();
+                        rate = (ulong)((chunk.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
                     }
                 }
                 catch
@@ -77,7 +81,6 @@ namespace Dimension.Model
                 commandReceived?.Invoke(c);
             }
         }
-
         System.Net.Sockets.TcpClient client;
         object sendLock = new object();
         public override void send(Commands.Command c)

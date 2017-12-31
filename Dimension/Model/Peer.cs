@@ -55,13 +55,27 @@ namespace Dimension.Model
                 f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
                 f.Write(chunk.data, 0, chunk.data.Length);
                 f.Close();
+                t.completed += (ulong)chunk.dataLength;
                 if (t.completed >= t.size)
+                {
                     lock (Transfer.transfers)
                     {
                         Transfer.transfers.Remove(t);
                         t = null;
                     }
-            }
+                }
+                else
+                {
+                    if (udtConnection != null)
+                        if (udtConnection.connected)
+                            if (udtConnection.rate > 0)
+                                t.rate = udtConnection.rate;
+                    if (dataConnection != null)
+                        if (dataConnection.connected)
+                            if (dataConnection.rate > 0)
+                                t.rate = dataConnection.rate;
+                }
+                }
         }
 
         public void sendCommand(Commands.Command c)

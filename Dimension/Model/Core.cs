@@ -269,6 +269,8 @@ namespace Dimension.Model
                 Commands.FileChunk c = new Commands.FileChunk();
                 c.start = pos;
 
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
                 byte[] buffer = new byte[Math.Min(chunkSize, f.Length - pos)];
                 int x = 0;
                 while (x < buffer.Length)
@@ -281,12 +283,10 @@ namespace Dimension.Model
                 c.data = buffer;
                 c.path = requestPath;
 
-                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
                 con.send(c);
                 sw.Stop();
                 t.completed += (ulong)buffer.Length;
-                t.rate = (ulong)(1000*buffer.Length) / (ulong)sw.ElapsedMilliseconds;
+                t.rate = (ulong)((buffer.Length) / (sw.ElapsedTicks/(double)System.Diagnostics.Stopwatch.Frequency));
 
                 pos += buffer.Length;
             }
