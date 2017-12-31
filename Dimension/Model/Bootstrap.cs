@@ -22,7 +22,7 @@ namespace Dimension.Model
         //FIXME: If a port is already taken on the router but free on this machine, UPnP will crash
         //FIXME: If the unreliable port is already taken, or unavailable on the router, or outside the range of valid ports -- it will crash
 
-        public bool UPnPActive = false;
+        public bool UPnPActive = true;
         
         public Bootstrap()
         {
@@ -103,7 +103,8 @@ namespace Dimension.Model
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
             listener = new TcpListener(IPAddress.Any,Program.settings.getInt("Default Data Port", 0));
-    
+
+            listener.Start();
             unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", NetConstants.controlPort));
             internalControlPort = ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port;
             SystemLog.addEntry("Successfully bound to UDP control port " + internalControlPort);
@@ -123,6 +124,7 @@ namespace Dimension.Model
                 }
                 SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
                 publicControlEndPoint = result.PublicEndPoint;
+                publicDataEndPoint = new  IPEndPoint(result.PublicEndPoint.Address, ((IPEndPoint)listener.Server.LocalEndPoint).Port);
             }
             catch (Exception) //STUN can throw generic exceptions :(
             {
@@ -140,11 +142,9 @@ namespace Dimension.Model
                 SystemLog.addEntry("Creating control UPnP mapping...");
                 await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port, false);
                 SystemLog.addEntry("Creating data UPnP mapping...");
-                await mapPorts(((IPEndPoint)socket.LocalEndPoint).Port, publicDataEndPoint.Port, true);
-                await mapPorts(((IPEndPoint)socket.LocalEndPoint).Port, publicDataEndPoint.Port, false);
+                await mapPorts(((IPEndPoint)listener.Server.LocalEndPoint).Port, publicDataEndPoint.Port, true);
             }
 
-            listener.Start();
             internalDataPort = ((IPEndPoint)listener.Server.LocalEndPoint).Port;
             SystemLog.addEntry("Network setup complete.");
             UPnPActive = true;
