@@ -74,11 +74,13 @@ namespace Dimension.Model
             int port = externalDataPort;
             if (isLocal)
                 port = localDataPort;
+
             var t = new System.Net.Sockets.TcpClient();
             t.Connect(new System.Net.IPEndPoint(actualEndpoint.Address, port));
             ReliableIncomingConnection c = new ReliableIncomingConnection(t);
             c.send(new Commands.ReverseConnectionType() { makeControl = true, id = Program.theCore.id });
             Program.theCore.addIncomingConnection(c);
+
             t = new System.Net.Sockets.TcpClient();
             t.Connect(new System.Net.IPEndPoint(actualEndpoint.Address, port));
             c = new ReliableIncomingConnection(t);
@@ -135,6 +137,7 @@ namespace Dimension.Model
                     {
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
                         Program.udp.Send(b, b.Length, this.actualEndpoint);
+                        return;
                     }
                 }
 

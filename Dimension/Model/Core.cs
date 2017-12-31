@@ -138,10 +138,10 @@ namespace Dimension.Model
             {
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
                     if (p.actualEndpoint.ToString() == sender.ToString())
+                    {
                         p.reverseConnect();
-
-
-
+                        return;
+                    }
             }
             if (c is Commands.HelloCommand)
             {

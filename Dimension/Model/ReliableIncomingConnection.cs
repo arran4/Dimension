@@ -68,7 +68,6 @@ namespace Dimension.Model
                 if (c is Commands.ReverseConnectionType)
                 {
                     Commands.ReverseConnectionType r = (Commands.ReverseConnectionType)c;
-                    Program.theCore.removeIncomingConnection(this);
                     foreach (Peer p in Program.theCore.peerManager.allPeers)
                         if (p.id == r.id)
                         {
@@ -82,6 +81,7 @@ namespace Dimension.Model
                                 p.dataConnection = new ReliableOutgoingConnection(client);
                                 p.dataConnection.commandReceived += p.commandReceived;
                             }
+                            Program.theCore.removeIncomingConnection(this);
                             return;
                         }
 
