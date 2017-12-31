@@ -122,9 +122,10 @@ namespace Dimension.Model
                     UPnPActive = false;
                     return;
                 }
+                Random r = new Random();
                 SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
-                publicControlEndPoint = result.PublicEndPoint;
-                publicDataEndPoint = new  IPEndPoint(result.PublicEndPoint.Address, ((IPEndPoint)listener.Server.LocalEndPoint).Port);
+                publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, r.Next(short.MaxValue-1000)+1000);
+                publicDataEndPoint = new  IPEndPoint(result.PublicEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
             }
             catch (Exception) //STUN can throw generic exceptions :(
             {
