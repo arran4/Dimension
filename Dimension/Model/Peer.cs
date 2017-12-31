@@ -35,6 +35,7 @@ namespace Dimension.Model
                 return false;
             }
         }
+        public Transfer t;
         public delegate void CommandReceived(Commands.Command c);
         public event CommandReceived commandReceivedEvent;
         public void commandReceived(Commands.Command c)
@@ -44,14 +45,22 @@ namespace Dimension.Model
             if (c is Commands.FileChunk)
             {
                 var chunk = (Commands.FileChunk)c;
+                
                 string s = Program.settings.getString("Default Download Folder", "C:\\Downloads");
                 if (!System.IO.Directory.Exists(s))
                     System.IO.Directory.CreateDirectory(s);
+                t.completed += (ulong)chunk.data.Length;
+                
                 System.IO.FileStream f = new System.IO.FileStream(s + "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1), System.IO.FileMode.OpenOrCreate);
                 f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
                 f.Write(chunk.data, 0, chunk.data.Length);
                 f.Close();
-
+                if (t.completed >= t.size)
+                    lock (Transfer.transfers)
+                    {
+                        Transfer.transfers.Remove(t);
+                        t = null;
+                    }
             }
         }
 

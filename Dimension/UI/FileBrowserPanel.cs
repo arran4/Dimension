@@ -153,10 +153,39 @@ namespace Dimension.UI
                         s = "/" + tag.name;
                     else
                         s = currentPath + "/" + tag.name;
+                    bool useUDT = false;
+
                     if (p.udtConnection != null && p.useUDT && Program.settings.getBool("Use UDT", true))
-                        p.udtConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
-                    else
-                        p.dataConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
+                        useUDT = true;
+                    if (p.t == null)
+                    {
+
+                        p.t = new Model.Transfer();
+                        p.t.filename = tag.name;
+                        p.t.download = true;
+                        p.t.size = tag.size;
+                        p.t.completed = 0;
+                        if (p.dataConnection is Model.LoopbackOutgoingConnection)
+                            p.t.protocol = "Loopback";
+                        else
+                            if (useUDT)
+                                p.t.protocol = "UDT";
+                            else
+                                p.t.protocol = "TCP";
+
+                        lock (Model.Transfer.transfers)
+                            Model.Transfer.transfers.Add(p.t);
+                    }
+                    System.Threading.Thread t = new System.Threading.Thread(delegate ()
+                    {
+                        if (useUDT)
+                            p.udtConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
+                        else
+                            p.dataConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
+                    });
+                    t.IsBackground = true;
+                    t.Name = "Download request thread";
+                    t.Start();
                 }
 
                 }

@@ -207,12 +207,25 @@ namespace Dimension.Model
             }
         void sendCompleteFile(string realPath, string requestPath, IncomingConnection con)
         {
+            
             int chunkSize = 64 * 1024;
             int pos = 0;
 
             System.IO.FileInfo f = new System.IO.FileInfo(realPath);
             System.IO.FileStream s = new System.IO.FileStream(realPath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
-
+            Transfer t = new Transfer();
+            t.size = (ulong)f.Length;
+            t.filename = realPath.Substring(realPath.LastIndexOf("/") + 1);
+            t.download = false;
+            if (con is LoopbackIncomingConnection)
+                t.protocol = "Loopback";
+            else
+                if (con is UdtIncomingConnection)
+                    t.protocol = "UDT";
+                else
+                    t.protocol = "TCP";
+            lock (Transfer.transfers)
+                Transfer.transfers.Add(t);
 
             while (pos < f.Length)
             {
@@ -222,8 +235,10 @@ namespace Dimension.Model
                 byte[] buffer = new byte[Math.Min(chunkSize, f.Length - pos)];
                 int x = 0;
                 while (x < buffer.Length)
+                {
                     x += s.Read(buffer, x, buffer.Length - x);
-
+                    t.completed += (ulong)x;
+                }
                 c.data = buffer;
                 c.path = requestPath;
                 con.send(c);
@@ -232,9 +247,10 @@ namespace Dimension.Model
             s.Dispose();
 
 
-
-
-            }
+            lock (Transfer.transfers)
+                Transfer.transfers.Remove(t);
+            
+        }
         Commands.FileListing generateFileListing(string path)
         {
             Commands.FileListing output = new Commands.FileListing();

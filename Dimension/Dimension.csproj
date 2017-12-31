@@ -96,6 +96,7 @@
     <Compile Include="Model\LoopbackOutgoingConnection.cs" />
     <Compile Include="Model\ReliableIncomingConnection.cs" />
     <Compile Include="Model\ReliableOutgoingConnection.cs" />
+    <Compile Include="Model\Transfer.cs" />
     <Compile Include="Model\UdtIncomingConnection.cs" />
     <Compile Include="Model\UdtOutgoingConnection.cs" />
     <Compile Include="UI\AboutForm.cs">
@@ -110,6 +111,9 @@
     </Compile>
     <Compile Include="UI\CirclePanel.Designer.cs">
       <DependentUpon>CirclePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DoubleBufferedListView.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\DownloadQueuePanel.cs">
       <SubType>UserControl</SubType>
