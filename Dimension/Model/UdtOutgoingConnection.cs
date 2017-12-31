@@ -15,6 +15,7 @@ namespace Dimension.Model
             socket= new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
             socket.Connect(addr, port);
 
+            send(Program.theCore.generateHello());
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
             t.IsBackground = true;
             t.Name = "UDT receive loop";

@@ -87,9 +87,10 @@ namespace Dimension.Model
 
                         }
                 commandReceived?.Invoke(c, this);
+                if (c is Commands.HelloCommand)
+                    hello = (Commands.HelloCommand)c;
             }
         }
-        
         System.Net.Sockets.TcpClient client;
         object sendLock = new object();
         public override void send(Commands.Command c)

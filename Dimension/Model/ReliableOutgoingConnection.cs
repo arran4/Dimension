@@ -12,6 +12,7 @@ namespace Dimension.Model
         public ReliableOutgoingConnection(System.Net.Sockets.TcpClient client)
         {
             this.client = client;
+            send(Program.theCore.generateHello());
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
             t.IsBackground = true;
             t.Name = "UDT receive loop";
@@ -21,6 +22,8 @@ namespace Dimension.Model
         {
             client = new System.Net.Sockets.TcpClient();
             client.Connect(addr, port);
+
+            send(Program.theCore.generateHello());
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
             t.IsBackground = true;
             t.Name = "UDT receive loop";

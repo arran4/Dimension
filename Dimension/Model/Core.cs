@@ -282,12 +282,13 @@ namespace Dimension.Model
                 }
                 c.data = buffer;
                 c.path = requestPath;
-
+                
                 con.send(c);
                 sw.Stop();
                 t.completed += (ulong)buffer.Length;
                 t.rate = (ulong)((buffer.Length) / (sw.ElapsedTicks/(double)System.Diagnostics.Stopwatch.Frequency));
-
+                if (con.hello != null)
+                    t.username = con.hello.username;    //TODO: Get ID and get latest username
                 pos += buffer.Length;
             }
             s.Dispose();
@@ -352,6 +353,64 @@ namespace Dimension.Model
         {
             chatReceivedEvent?.Invoke(s, id);
         }
+        public Commands.HelloCommand generateHello()
+        {
+
+            Commands.HelloCommand c = new Commands.HelloCommand();
+            c.id = id;
+            c.username = Program.settings.getString("Username", "Username");
+            c.machineName = Environment.MachineName;
+            c.useUDT = Program.settings.getBool("Use UDT", true);
+
+
+            Dictionary<int, int> counts = new Dictionary<int, int>();
+            foreach (Peer p in Program.theCore.peerManager.allPeers)
+            {
+                foreach (int i in p.circles)
+                    if (!counts.ContainsKey(i))
+                        counts[i] = 1;
+                    else
+                        counts[i]++;
+            }
+            c.peerCount = counts;
+            if (Program.bootstrap.publicControlEndPoint != null)
+            {
+                c.externalIP = Program.bootstrap.publicControlEndPoint.Address.ToString();
+                c.externalControlPort = Program.bootstrap.publicControlEndPoint.Port;
+            }
+            if (Program.bootstrap.publicDataEndPoint != null)
+            {
+                c.externalDataPort = Program.bootstrap.publicDataEndPoint.Port;
+            }
+            c.internalControlPort = Program.bootstrap.internalControlPort;
+            c.internalDataPort = Program.bootstrap.internalDataPort;
+            c.internalUdtPort = udtListener.LocalEndPoint.Port;
+
+            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+            List<ulong> circles = new List<ulong>();
+            foreach (string s in this.circles)
+            {
+                byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
+                circles.Add(BitConverter.ToUInt64(hash, 0));
+            }
+            c.myCircles = circles.ToArray();
+
+            ulong share = 0;
+            foreach (RootShare r in Program.fileListDatabase.getRootShares())
+                if (r != null)
+                    share += r.size;
+            c.myShare = share;
+
+            //too much output!
+            /*var n = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
+            List<string> ips = new List<string>();
+            for (int i = 0; i < n.Length; i++)
+                foreach (var ni in n[i].GetIPProperties().UnicastAddresses)
+                    ips.Add(ni.Address.ToString());
+            c.internalIPs = ips.ToArray();
+            */
+            return c;
+        }
         void helloLoop()
         {
             while (!disposed)
@@ -362,61 +421,8 @@ namespace Dimension.Model
                     System.Threading.Thread.Sleep(10);
                 if (disposed)
                     return;
-                Commands.HelloCommand c = new Commands.HelloCommand();
-                c.id = id;
-                c.username = Program.settings.getString("Username", "Username");
-                c.machineName = Environment.MachineName;
-                c.useUDT = Program.settings.getBool("Use UDT", true);
 
-
-                Dictionary<int, int> counts = new Dictionary<int, int>();
-                foreach (Peer p in Program.theCore.peerManager.allPeers)
-                {
-                    foreach (int i in p.circles)
-                        if (!counts.ContainsKey(i))
-                            counts[i] = 1;
-                        else
-                            counts[i]++;
-                }
-                c.peerCount = counts;
-                if (Program.bootstrap.publicControlEndPoint != null)
-                {
-                    c.externalIP = Program.bootstrap.publicControlEndPoint.Address.ToString();
-                    c.externalControlPort = Program.bootstrap.publicControlEndPoint.Port;
-                }
-                if (Program.bootstrap.publicDataEndPoint != null)
-                {
-                    c.externalDataPort = Program.bootstrap.publicDataEndPoint.Port;
-                }
-                c.internalControlPort = Program.bootstrap.internalControlPort;
-                c.internalDataPort = Program.bootstrap.internalDataPort;
-                c.internalUdtPort = udtListener.LocalEndPoint.Port;
-
-                System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
-                List<ulong> circles = new List<ulong>();
-                foreach (string s in this.circles)
-                {
-                    byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
-                    circles.Add(BitConverter.ToUInt64(hash, 0));
-                }
-                c.myCircles = circles.ToArray();
-
-                ulong share = 0;
-                foreach (RootShare r in Program.fileListDatabase.getRootShares())
-                    if(r != null)
-                        share += r.size;
-                c.myShare = share;
-
-                //too much output!
-                /*var n = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
-                List<string> ips = new List<string>();
-                for (int i = 0; i < n.Length; i++)
-                    foreach (var ni in n[i].GetIPProperties().UnicastAddresses)
-                        ips.Add(ni.Address.ToString());
-                c.internalIPs = ips.ToArray();
-                */
-
-                byte[] b = Program.serializer.serialize(c);
+                byte[] b = Program.serializer.serialize(generateHello());
 
                 Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 

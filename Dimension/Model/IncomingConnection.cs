@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public abstract class IncomingConnection
     {
+        public Commands.HelloCommand hello;
         public string lastFolder;
         public delegate void CommandReceived(Commands.Command c, IncomingConnection con);
         public abstract event CommandReceived commandReceived;

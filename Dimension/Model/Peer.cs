@@ -66,15 +66,20 @@ namespace Dimension.Model
                 }
                 else
                 {
+                    OutgoingConnection c3 = null;
                     if (udtConnection != null)
                         if (udtConnection.connected)
-                            if (udtConnection.rate > 0)
-                                t.rate = udtConnection.rate;
+                                c3 = udtConnection;
                     if (dataConnection != null)
                         if (dataConnection.connected)
                             if (dataConnection.rate > 0)
-                                t.rate = dataConnection.rate;
-                }
+                                c3 = dataConnection;
+                    if (c3 != null)
+                    {
+                        if (c3.rate > 0)
+                            t.rate = c3.rate;
+                    }
+                    }
                 }
         }
 

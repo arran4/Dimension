@@ -57,6 +57,8 @@ namespace Dimension.Model
                     }
                     ((Commands.DataCommand)c).data = chunk;
                 }
+                if (c is Commands.HelloCommand)
+                    hello = (Commands.HelloCommand)c;
                 commandReceived?.Invoke(c, this);
             }
         }
