@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 using LumiSoft.Net.STUN.Client;
-using NChordLib;
 using System.IO;
 using Open.Nat;
 
@@ -98,7 +97,26 @@ namespace Dimension.Model
         {
             SystemLog.addEntry("Beginning network setup...");
             Program.currentLoadState = "Deleting old UPnP mappings...";
-            await unMapPorts();
+            if (Program.settings.getBool("Use UPnP", true))
+            {
+
+                bool done = false;
+                System.Threading.Semaphore s = new System.Threading.Semaphore(0, 1);
+                System.Threading.Thread t = new System.Threading.Thread(async delegate ()
+                {
+                    await unMapPorts();
+                    s.Release();
+                    done = true;
+                });
+                t.IsBackground = true;
+                t.Name = "UPnP test thread";
+                t.Start();
+
+                if (!done)
+                    s.WaitOne(10000);
+                if (!done)
+                    Program.settings.setBool("Use UPnP", false);
+            }
             Program.currentLoadState = "Binding UDP sockets.";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 

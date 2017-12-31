@@ -104,7 +104,8 @@ namespace Dimension.Model
             c.send(new Commands.ReverseConnectionType() { makeData = true, id = Program.theCore.id });
             Program.theCore.addIncomingConnection(c);
         }
-        public void createConnection()
+        public delegate void MessageResponseDelegate(string s);
+        public void createConnection(MessageResponseDelegate response = null)
         {
             bool createData = true;
             if (dataConnection != null)
@@ -122,6 +123,7 @@ namespace Dimension.Model
                 createUdt = false;
             if (id == Program.theCore.id)
             {
+                response?.Invoke("Loopback peer found, creating loopback connection...");
                 if (createControl)
                     controlConnection = new LoopbackOutgoingConnection();
                 if (createData)
@@ -132,12 +134,23 @@ namespace Dimension.Model
             {
                 if (isLocal)
                 {
+                    response?.Invoke("Local peer found.");
                     if (createUdt)
+                    {
+                        response?.Invoke("Creating UDT connection to "+ actualEndpoint.Address.ToString()+":"+localUDTPort.ToString());
                         udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
+                    }
                     if (createControl)
+                    {
+                        response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
                         controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
+                    }
                     if (createData)
+                    {
+                        response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
                         dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
+
+                    }
                 }
                 else
                 {
@@ -146,12 +159,21 @@ namespace Dimension.Model
                     try
                     {
                         if (createControl)
+                        {
+                            response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + externalDataPort.ToString());
                             controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                        }
                         if (createData)
+                        {
+                            response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + externalDataPort.ToString());
                             dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                        }
                     }
-                    catch (System.Net.Sockets.SocketException)
+                    catch (System.Net.Sockets.SocketException s)
                     {
+                        response?.Invoke("Error: " + s.Message + ".");
+                        response?.Invoke("Attempting to initiate reverse connection.");
+
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
                         Program.udp.Send(b, b.Length, this.actualEndpoint);
                         return;

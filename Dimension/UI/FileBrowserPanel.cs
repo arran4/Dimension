@@ -22,16 +22,35 @@ namespace Dimension.UI
             InitializeComponent();
             this.p = p;
             p.commandReceivedEvent += commandReceived;
+            displayMessage("Attempting TCP connection to " + p.actualEndpoint.Address.ToString());
             System.Threading.Thread t = new System.Threading.Thread(delegate ()
             {
-                p.createConnection();
+                p.createConnection(displayMessage);
                 while (p.controlConnection == null)
                     System.Threading.Thread.Sleep(10);
+                displayMessage("Successfully set up connection.");
                 p.controlConnection.send(new Model.Commands.GetFileListing("/"));
             });
             t.Name = "Create connection thread";
             t.IsBackground = true;
             t.Start();
+        }
+        bool connected = false;
+        void displayMessage(string s)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(delegate ()
+                {
+                    ListViewItem i = new ListViewItem(s);
+                    filesView.Items.Add(i);
+                }));
+            }
+            else
+            {
+                ListViewItem i = new ListViewItem(s);
+                filesView.Items.Add(i);
+            }
         }
         TreeNode traverse(string path)
         {
@@ -62,6 +81,7 @@ namespace Dimension.UI
         }
         void doUpdate(Model.Commands.FileListing list)
         {
+            connected = true;
             ignoreReselect = true;
             foldersView.BeginUpdate();
             //foldersView.Nodes.Clear();
@@ -142,6 +162,8 @@ namespace Dimension.UI
 
         private void filesView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            if (!connected)
+                return;
             if (filesView.SelectedItems.Count > 0)
             {
                 Model.Commands.FSListing tag = (Model.Commands.FSListing)filesView.SelectedItems[0].Tag;
