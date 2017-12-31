@@ -237,7 +237,7 @@ namespace Dimension.Model
                 while (x < buffer.Length)
                 {
                     x += s.Read(buffer, x, buffer.Length - x);
-                    t.completed += (ulong)x;
+                    t.addData((ulong)x);
                 }
                 c.data = buffer;
                 c.path = requestPath;

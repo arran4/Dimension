@@ -49,7 +49,7 @@ namespace Dimension.UI
                     w[1] = "Uploading";
                 w[2] = "User";
                 w[3] = "TimeLeft";
-                w[4] = "Speed";
+                w[4] = ByteFormatter.formatBytes(z[i].rate()) + "/s";
                 w[5] = ByteFormatter.formatBytes(z[i].completed);
                 w[6] = ByteFormatter.formatBytes(z[i].size);
                 w[7] = z[i].protocol;

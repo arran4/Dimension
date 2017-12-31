@@ -49,7 +49,7 @@ namespace Dimension.Model
                 string s = Program.settings.getString("Default Download Folder", "C:\\Downloads");
                 if (!System.IO.Directory.Exists(s))
                     System.IO.Directory.CreateDirectory(s);
-                t.completed += (ulong)chunk.data.Length;
+                t.addData((ulong)chunk.data.Length);
                 
                 System.IO.FileStream f = new System.IO.FileStream(s + "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1), System.IO.FileMode.OpenOrCreate);
                 f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
