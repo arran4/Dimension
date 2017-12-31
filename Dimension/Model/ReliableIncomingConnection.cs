@@ -65,6 +65,27 @@ namespace Dimension.Model
                 {
                     return;
                 }
+                if (c is Commands.ReverseConnectionType)
+                {
+                    Commands.ReverseConnectionType r = (Commands.ReverseConnectionType)c;
+                    Program.theCore.removeIncomingConnection(this);
+                    foreach (Peer p in Program.theCore.peerManager.allPeers)
+                        if (p.id == r.id)
+                        {
+                            if (r.makeControl)
+                            {
+                                p.controlConnection = new ReliableOutgoingConnection(client);
+                                p.controlConnection.commandReceived += p.commandReceived;
+                            }
+                            if (r.makeData)
+                            {
+                                p.dataConnection = new ReliableOutgoingConnection(client);
+                                p.dataConnection.commandReceived += p.commandReceived;
+                            }
+                            return;
+                        }
+
+                        }
                 commandReceived?.Invoke(c, this);
             }
         }

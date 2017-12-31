@@ -21,12 +21,16 @@ namespace Dimension.UI
                 System.Net.IPEndPoint[] e = Program.bootstrap.join(url);
 
                 foreach (var z in e)
-                    if (!haveAdded.Contains(e.ToString()))
+                {
+                    string s = z.Address.ToString() + ":" + z.Port;
+                    if (!haveAdded.Contains(s))
                     {
-                        haveAdded.Add(e.ToString());
+                        haveAdded.Add(s);
                         Program.theCore.addPeer(z);
 
                     }
+                }
+
                 System.Threading.Thread.Sleep(10000);
                     }
             }

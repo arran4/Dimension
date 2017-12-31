@@ -66,6 +66,7 @@
     <Compile Include="Model\Bootstrap.cs" />
     <Compile Include="Model\ClosableTab.cs" />
     <Compile Include="Model\Commands\Command.cs" />
+    <Compile Include="Model\Commands\ConnectToMe.cs" />
     <Compile Include="Model\Commands\DataCommand.cs" />
     <Compile Include="Model\Commands\FileChunk.cs" />
     <Compile Include="Model\Commands\FSListing.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Model\Commands\Peer.cs" />
     <Compile Include="Model\Commands\PeerList.cs" />
     <Compile Include="Model\Commands\RequestChunks.cs" />
+    <Compile Include="Model\Commands\ReverseConnectionType.cs" />
     <Compile Include="Model\Commands\RoomChatCommand.cs" />
     <Compile Include="Model\Core.cs" />
     <Compile Include="Model\File.cs" />

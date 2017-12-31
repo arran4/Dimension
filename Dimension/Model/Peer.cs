@@ -69,6 +69,22 @@ namespace Dimension.Model
             byte[] b = Program.serializer.serialize(c);
             Program.udp.Send(b, b.Length, actualEndpoint);
         }
+        public void reverseConnect()
+        {
+            int port = externalDataPort;
+            if (isLocal)
+                port = localDataPort;
+            var t = new System.Net.Sockets.TcpClient();
+            t.Connect(new System.Net.IPEndPoint(actualEndpoint.Address, port));
+            ReliableIncomingConnection c = new ReliableIncomingConnection(t);
+            c.send(new Commands.ReverseConnectionType() { makeControl = true, id = Program.theCore.id });
+            Program.theCore.addIncomingConnection(c);
+            t = new System.Net.Sockets.TcpClient();
+            t.Connect(new System.Net.IPEndPoint(actualEndpoint.Address, port));
+            c = new ReliableIncomingConnection(t);
+            c.send(new Commands.ReverseConnectionType() { makeData = true, id = Program.theCore.id });
+            Program.theCore.addIncomingConnection(c);
+        }
         public void createConnection()
         {
             bool createData = true;
@@ -108,10 +124,18 @@ namespace Dimension.Model
                 {
 
                     createUdt = false;
-                    if (createControl)
-                        controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
-                    if (createData)
-                        dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                    try
+                    {
+                        if (createControl)
+                            controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                        if (createData)
+                            dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                    }
+                    catch (System.Net.Sockets.SocketException)
+                    {
+                        byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
+                        Program.udp.Send(b, b.Length, this.actualEndpoint);
+                    }
                 }
 
             }
@@ -125,7 +149,7 @@ namespace Dimension.Model
         List<int> usedIds = new List<int>();
         public void chatReceived(Commands.RoomChatCommand r)
         {
-            if (usedIds.Contains(r.sequenceId))
+             if (usedIds.Contains(r.sequenceId))
                 return;
             usedIds.Add(r.sequenceId);
 

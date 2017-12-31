@@ -9,6 +9,14 @@ namespace Dimension.Model
     class ReliableOutgoingConnection : OutgoingConnection
     {
         public override event CommandReceived commandReceived;
+        public ReliableOutgoingConnection(System.Net.Sockets.TcpClient client)
+        {
+            this.client = client;
+            System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
+            t.IsBackground = true;
+            t.Name = "UDT receive loop";
+            t.Start();
+        }
         public ReliableOutgoingConnection(System.Net.IPAddress addr, int port)
         {
             client = new System.Net.Sockets.TcpClient();

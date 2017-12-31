@@ -134,6 +134,15 @@ namespace Dimension.Model
         }
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
+            if (c is Commands.ConnectToMe)
+            {
+                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                    if (p.actualEndpoint.ToString() == sender.ToString())
+                        p.reverseConnect();
+
+
+
+            }
             if (c is Commands.HelloCommand)
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
@@ -176,6 +185,12 @@ namespace Dimension.Model
             lock (incomings)
                 incomings.Add(c);
             c.commandReceived += commandReceived;
+        }
+        public void removeIncomingConnection(IncomingConnection c)
+        {
+            lock (incomings)
+                incomings.Remove(c);
+            c.commandReceived -= commandReceived;
         }
         void commandReceived(Commands.Command c, IncomingConnection con)
         {
@@ -386,6 +401,8 @@ namespace Dimension.Model
                     foreach (System.Net.IPEndPoint p in toHello)
                         Program.udp.Send(b, b.Length, p);
 
+                foreach (Peer p in peerManager.allPeers)
+                    Program.udp.Send(b, b.Length, p.actualEndpoint);
                 System.Threading.Thread.Sleep(1000);
             }
         }

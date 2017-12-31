@@ -22,8 +22,16 @@ namespace Dimension.UI
             InitializeComponent();
             this.p = p;
             p.commandReceivedEvent += commandReceived;
-            p.createConnection();
-            p.controlConnection.send(new Model.Commands.GetFileListing("/"));
+            System.Threading.Thread t = new System.Threading.Thread(delegate ()
+            {
+                p.createConnection();
+                while (p.controlConnection == null)
+                    System.Threading.Thread.Sleep(10);
+                p.controlConnection.send(new Model.Commands.GetFileListing("/"));
+            });
+            t.Name = "Create connection thread";
+            t.IsBackground = true;
+            t.Start();
         }
         TreeNode traverse(string path)
         {
