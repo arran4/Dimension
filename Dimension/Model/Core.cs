@@ -168,6 +168,7 @@ namespace Dimension.Model
 
                         fullPath = fullPath.Trim('/');
                         sendCompleteFile(fullPath, z.path, con);
+                        return;
                     }
                     else
                     {
