@@ -141,6 +141,7 @@ namespace Dimension.Model
                 await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port, false);
                 SystemLog.addEntry("Creating data UPnP mapping...");
                 await mapPorts(((IPEndPoint)socket.LocalEndPoint).Port, publicDataEndPoint.Port, true);
+                await mapPorts(((IPEndPoint)socket.LocalEndPoint).Port, publicDataEndPoint.Port, false);
             }
 
             listener.Start();
