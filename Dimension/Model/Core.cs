@@ -127,13 +127,19 @@ namespace Dimension.Model
                 parse(Program.serializer.deserialize(data), sender);
             doReceive();
         }
+        List<System.Net.IPEndPoint> toHello = new List<System.Net.IPEndPoint>();
+        public void addPeer(System.Net.IPEndPoint p)
+        {
+            toHello.Add(p);
+        }
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
             if (c is Commands.HelloCommand)
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
                 peerManager.parseHello(h, sender);
-
+                if (toHello.Contains(sender))
+                    toHello.Remove(sender);
             }
             if (c is Commands.RoomChatCommand)
             {
@@ -323,6 +329,7 @@ namespace Dimension.Model
                 c.machineName = Environment.MachineName;
                 c.useUDT = Program.settings.getBool("Use UDT", true);
 
+
                 Dictionary<int, int> counts = new Dictionary<int, int>();
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
                 {
@@ -373,6 +380,11 @@ namespace Dimension.Model
                 byte[] b = Program.serializer.serialize(c);
 
                 Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
+
+
+                lock(toHello)
+                    foreach (System.Net.IPEndPoint p in toHello)
+                        Program.udp.Send(b, b.Length, p);
 
                 System.Threading.Thread.Sleep(1000);
             }

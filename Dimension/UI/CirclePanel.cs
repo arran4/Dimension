@@ -12,6 +12,24 @@ namespace Dimension.UI
 {
     public partial class CirclePanel : UserControl
     {
+        List<string> haveAdded = new List<string>();
+        void joinLoop()
+        {
+            while (true)
+            {
+
+                System.Net.IPEndPoint[] e = Program.bootstrap.join(url);
+
+                foreach (var z in e)
+                    if (!haveAdded.Contains(e.ToString()))
+                    {
+                        haveAdded.Add(e.ToString());
+                        Program.theCore.addPeer(z);
+
+                    }
+                System.Threading.Thread.Sleep(10000);
+                    }
+            }
         public string url;
         public CirclePanel(string url)
         {
@@ -24,6 +42,12 @@ namespace Dimension.UI
             circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
             Program.theCore.joinCircle(url);
             Program.theCore.chatReceivedEvent += chatReceived;
+
+
+            System.Threading.Thread t = new System.Threading.Thread(joinLoop);
+            t.IsBackground = true;
+            t.Name = "Circle join loop";
+            t.Start();
         }
         ulong circleHash;
         Model.Peer[] allPeersInCircle
