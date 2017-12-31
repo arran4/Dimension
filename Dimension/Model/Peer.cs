@@ -77,13 +77,29 @@ namespace Dimension.Model
                 port = localDataPort;
 
             var t = new System.Net.Sockets.TcpClient();
-            t.Connect(new System.Net.IPEndPoint(actualEndpoint.Address, port));
-            ReliableIncomingConnection c = new ReliableIncomingConnection(t);
+            try
+            {
+                t.Connect(new System.Net.IPEndPoint(actualEndpoint.Address, port));
+            }
+            catch
+            {
+                SystemLog.addEntry("Error reverse connecting to " + actualEndpoint.Address + ":" + port.ToString());
+                return;
+            }
+                ReliableIncomingConnection c = new ReliableIncomingConnection(t);
             c.send(new Commands.ReverseConnectionType() { makeControl = true, id = Program.theCore.id });
             Program.theCore.addIncomingConnection(c);
 
             t = new System.Net.Sockets.TcpClient();
-            t.Connect(new System.Net.IPEndPoint(actualEndpoint.Address, port));
+            try
+            {
+                t.Connect(new System.Net.IPEndPoint(actualEndpoint.Address, port));
+            }
+            catch
+            {
+                SystemLog.addEntry("Error reverse connecting to " + actualEndpoint.Address + ":" + port.ToString());
+                return;
+            }
             c = new ReliableIncomingConnection(t);
             c.send(new Commands.ReverseConnectionType() { makeData = true, id = Program.theCore.id });
             Program.theCore.addIncomingConnection(c);

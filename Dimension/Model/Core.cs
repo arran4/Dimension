@@ -46,6 +46,7 @@ namespace Dimension.Model
             udtListener.Listen(1000);
 
             id = (ulong)Program.settings.getULong("ID", randomId);
+            Program.settings.setULong("ID", randomId);
             peerManager = new PeerManager();
             System.Threading.Thread t = new System.Threading.Thread(helloLoop);
             t.IsBackground = true;
@@ -272,6 +273,8 @@ namespace Dimension.Model
                 int x = 0;
                 while (x < buffer.Length)
                 {
+                    if (!con.connected)
+                        return;
                     x += s.Read(buffer, x, buffer.Length - x);
                     t.addData((ulong)x);
                 }

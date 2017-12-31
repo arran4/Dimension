@@ -63,6 +63,11 @@ namespace Dimension.Model
                 s = def;
             return s;
         }
+        public void setULong(string name, ulong val)
+        {
+
+            settings.Set("i" + name, val.ToString());
+        }
         public void setInt(string name, int val)
         {
 
