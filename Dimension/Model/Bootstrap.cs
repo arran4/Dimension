@@ -115,7 +115,7 @@ namespace Dimension.Model
                 if (!done)
                     s.WaitOne(10000);
                 if (!done)
-                    Program.settings.setBool("Use UPnP", false);
+                    UPnPActive = false;
             }
             Program.currentLoadState = "Binding UDP sockets.";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -123,6 +123,8 @@ namespace Dimension.Model
             listener = new TcpListener(IPAddress.Any,Program.settings.getInt("Default Data Port", 0));
 
             listener.Start();
+            internalDataPort = ((IPEndPoint)listener.Server.LocalEndPoint).Port;
+            SystemLog.addEntry("Binding to TCP port " + internalDataPort.ToString());
             unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", NetConstants.controlPort));
             internalControlPort = ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port;
             SystemLog.addEntry("Successfully bound to UDP control port " + internalControlPort);
@@ -135,6 +137,9 @@ namespace Dimension.Model
                 string stunUrl = "stun.l.google.com";
                 STUN_Result result = STUN_Client.Query(stunUrl, 19302, unreliableClient.Client);
                 SystemLog.addEntry("Attempting to STUN control port to " + stunUrl + ".");
+                publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, internalControlPort);
+                publicDataEndPoint = new IPEndPoint(result.PublicEndPoint.Address, internalDataPort);
+
                 if (result.NetType == STUN_NetType.UdpBlocked)
                 {
                     SystemLog.addEntry("STUN failed. Assuming network is LAN-only.");
@@ -144,10 +149,9 @@ namespace Dimension.Model
                 }
                 else
                 {
-                    Random r = new Random();
                     SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
-                    publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
-                    publicDataEndPoint = new IPEndPoint(result.PublicEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
+                    SystemLog.addEntry("External data endpoint: " + publicDataEndPoint.ToString());
+
                 }
             }
             catch (Exception) //STUN can throw generic exceptions :(
@@ -157,19 +161,22 @@ namespace Dimension.Model
                 LANMode = true;
             }
 
+            Random r = new Random();
             if (Program.settings.getBool("Use UPnP", true) && !LANMode && UPnPActive)
             {
                 SystemLog.addEntry("UPnP enabled. Attempting to map UPnP ports...");
                 Program.currentLoadState = "Mapping UPnP ports.";
-                SystemLog.addEntry("Creating control UPnP mapping...");
+
+                publicControlEndPoint = new IPEndPoint(publicControlEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
+                publicDataEndPoint = new IPEndPoint(publicControlEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
+
+                SystemLog.addEntry("Creating control UPnP mapping (random external port)...");
                 await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port, false);
-                SystemLog.addEntry("Creating data UPnP mapping...");
+                SystemLog.addEntry("Creating data UPnP mapping (random external port)...");
                 await mapPorts(((IPEndPoint)listener.Server.LocalEndPoint).Port, publicDataEndPoint.Port, true);
             }
 
-            internalDataPort = ((IPEndPoint)listener.Server.LocalEndPoint).Port;
             SystemLog.addEntry("Network setup complete.");
-            UPnPActive = true;
         }
     }
 

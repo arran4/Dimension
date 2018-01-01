@@ -55,31 +55,34 @@ namespace Dimension.Model
                 f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
                 f.Write(chunk.data, 0, chunk.data.Length);
                 f.Close();
-                t.completed += (ulong)chunk.dataLength;
-                if (t.completed >= t.size)
+                if (t != null)
                 {
-                    lock (Transfer.transfers)
+                    t.completed += (ulong)chunk.dataLength;
+                    if (t.completed >= t.size)
                     {
-                        Transfer.transfers.Remove(t);
-                        t = null;
+                        lock (Transfer.transfers)
+                        {
+                            Transfer.transfers.Remove(t);
+                            t = null;
+                        }
+                    }
+                    else
+                    {
+                        OutgoingConnection c3 = null;
+                        if (udtConnection != null)
+                            if (udtConnection.connected)
+                                c3 = udtConnection;
+                        if (dataConnection != null)
+                            if (dataConnection.connected)
+                                if (dataConnection.rate > 0)
+                                    c3 = dataConnection;
+                        if (c3 != null)
+                        {
+                            if (c3.rate > 0)
+                                t.rate = c3.rate;
+                        }
                     }
                 }
-                else
-                {
-                    OutgoingConnection c3 = null;
-                    if (udtConnection != null)
-                        if (udtConnection.connected)
-                                c3 = udtConnection;
-                    if (dataConnection != null)
-                        if (dataConnection.connected)
-                            if (dataConnection.rate > 0)
-                                c3 = dataConnection;
-                    if (c3 != null)
-                    {
-                        if (c3.rate > 0)
-                            t.rate = c3.rate;
-                    }
-                    }
                 }
         }
 
