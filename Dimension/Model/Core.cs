@@ -46,7 +46,7 @@ namespace Dimension.Model
             udtListener.Listen(1000);
 
             id = (ulong)Program.settings.getULong("ID", randomId);
-            Program.settings.setULong("ID", randomId);
+            Program.settings.setULong("ID", id);
             peerManager = new PeerManager();
             System.Threading.Thread t = new System.Threading.Thread(helloLoop);
             t.IsBackground = true;
