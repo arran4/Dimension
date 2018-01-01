@@ -127,6 +127,8 @@ namespace Dimension.Model
             internalControlPort = ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port;
             SystemLog.addEntry("Successfully bound to UDP control port " + internalControlPort);
 
+            publicControlEndPoint = (IPEndPoint)unreliableClient.Client.LocalEndPoint;
+            publicDataEndPoint = (IPEndPoint)listener.Server.LocalEndPoint;
             Program.currentLoadState = "STUNning NAT";
             try
             {
@@ -137,19 +139,20 @@ namespace Dimension.Model
                 {
                     SystemLog.addEntry("STUN failed. Assuming network is LAN-only.");
                     Program.currentLoadState = "STUN failed. Running in LAN mode.";
+                    LANMode = true;
                     UPnPActive = false;
-                    return;
                 }
-                Random r = new Random();
-                SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
-                publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, r.Next(short.MaxValue-1000)+1000);
-                publicDataEndPoint = new  IPEndPoint(result.PublicEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
+                else
+                {
+                    Random r = new Random();
+                    SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
+                    publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
+                    publicDataEndPoint = new IPEndPoint(result.PublicEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
+                }
             }
             catch (Exception) //STUN can throw generic exceptions :(
             {
                 SystemLog.addEntry("Failed to STUN. Working in LAN mode.");
-                publicControlEndPoint = null;
-                publicDataEndPoint = null;
                 //Stun failed, offline mode
                 LANMode = true;
             }

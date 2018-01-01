@@ -276,7 +276,11 @@ namespace Dimension.Model
                 while (x < buffer.Length)
                 {
                     if (!con.connected)
+                    {
+                        lock (Transfer.transfers)
+                            Transfer.transfers.Remove(t);
                         return;
+                    }
                     int w = s.Read(buffer, x, buffer.Length - x);
                     x += w;
                 }

@@ -18,12 +18,27 @@ namespace Dimension
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(new LoadingForm());
+#if DEBUG
+#else
+            try
+            {
+#endif
+                Application.Run(new LoadingForm());
 
-            mainForm = new MainForm();
-            Application.Run(mainForm);
-            doCleanup();
-        }
+                mainForm = new MainForm();
+                Application.Run(mainForm);
+                doCleanup();
+#if DEBUG
+#else
+            }
+            catch (Exception e)
+            {
+                Model.SystemLog.addEntry("Exception!");
+                Model.SystemLog.addEntry(e.Message);
+                Model.SystemLog.addEntry(e.StackTrace);
+            }
+#endif
+            }
         static bool disposed = false;
         static void doCleanup()
         {
@@ -32,6 +47,7 @@ namespace Dimension
             fileList.Dispose();
             fileListDatabase.close();
             bootstrap.Dispose();
+            Model.SystemLog.writer.Close();
         }
         public static Model.Core theCore;
         public static System.Net.Sockets.UdpClient udp;
@@ -43,6 +59,11 @@ namespace Dimension
         public static Model.Serializer serializer;
         public static void doLoad()
         {
+#if DEBUG
+#else
+            try
+            {
+#endif
             settings = new Model.Settings();
 
 
@@ -68,6 +89,16 @@ namespace Dimension
             theCore = new Model.Core();
 
             doneLoading = true;
+#if DEBUG
+#else
+            }
+            catch (Exception e)
+            {
+                Model.SystemLog.addEntry("Exception!");
+                Model.SystemLog.addEntry(e.Message);
+                Model.SystemLog.addEntry(e.StackTrace);
+            }
+#endif
         }
         public static bool doneLoading = false;
 
