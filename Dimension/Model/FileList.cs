@@ -23,17 +23,27 @@ namespace Dimension.Model
                     if (r != null)
                     {
                         updateRootShare(r, urgent);
-                        if (!watchers.ContainsKey(r.fullPath))
+                        if (System.IO.Directory.Exists(r.fullPath))
                         {
-                            watchers[r.fullPath] = new System.IO.FileSystemWatcher(r.fullPath);
-                            watchers[r.fullPath].Changed += partialUpdate;
-                            watchers[r.fullPath].Created += partialUpdate;
-                            watchers[r.fullPath].Deleted += partialUpdate;
-                            watchers[r.fullPath].Renamed += partialUpdate;
-                            watchers[r.fullPath].IncludeSubdirectories = true;
-                            watchers[r.fullPath].EnableRaisingEvents = true;
-                        }
+                            try
+                            {
+                                if (!watchers.ContainsKey(r.fullPath))
+                                {
+                                    watchers[r.fullPath] = new System.IO.FileSystemWatcher(r.fullPath);
+                                    watchers[r.fullPath].Changed += partialUpdate;
+                                    watchers[r.fullPath].Created += partialUpdate;
+                                    watchers[r.fullPath].Deleted += partialUpdate;
+                                    watchers[r.fullPath].Renamed += partialUpdate;
+                                    watchers[r.fullPath].IncludeSubdirectories = true;
+                                    watchers[r.fullPath].EnableRaisingEvents = true;
+                                }
+                            }
+                            catch (NotImplementedException)
+                            {
+                                //probably on mono, do nothing
+                            }
 
+                        }
                     }
             }
             quitComplete = true;
@@ -250,6 +260,8 @@ namespace Dimension.Model
         }
         ulong loadFolder(Folder f, bool urgent, string realLocation)
         {
+            if (!System.IO.Directory.Exists(realLocation))
+                return 0;   //no such folder
             ulong total = 0;
             wait(urgent);
             System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(realLocation);
