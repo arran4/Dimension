@@ -26,6 +26,7 @@ namespace Dimension.UI
                 }
                 else if(circleType == JoinCircleForm.CircleType.kademlia)
                 {
+                    Program.kademlia.announce(url.ToLower().Trim());
                     e = Program.kademlia.doLookup(url.ToLower().Trim());
                 }
                 foreach (var z in e)

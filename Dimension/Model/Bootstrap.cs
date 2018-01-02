@@ -90,8 +90,10 @@ namespace Dimension.Model
         public TcpListener listener;
         public IPEndPoint publicDataEndPoint;
         public IPEndPoint publicControlEndPoint;
+        public int publicDHTPort;
         public int internalControlPort;
         public int internalDataPort;
+        public int internalDHTPort;
         bool LANMode = false;
         public async Task launch()
         {
@@ -119,6 +121,7 @@ namespace Dimension.Model
             }
             Program.currentLoadState = "Binding UDP sockets.";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
 
             listener = new TcpListener(IPAddress.Any,Program.settings.getInt("Default Data Port", 0));
 
@@ -162,6 +165,10 @@ namespace Dimension.Model
             }
 
             Random r = new Random();
+            internalDHTPort = Program.settings.getInt("Default DHT Port", 0);
+            if (internalDHTPort == 0)
+                internalDHTPort = r.Next(short.MaxValue - 1000) + 1000;
+            publicDHTPort = internalDHTPort;
             if (Program.settings.getBool("Use UPnP", true) && !LANMode && UPnPActive)
             {
                 SystemLog.addEntry("UPnP enabled. Attempting to map UPnP ports...");
@@ -169,11 +176,15 @@ namespace Dimension.Model
 
                 publicControlEndPoint = new IPEndPoint(publicControlEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
                 publicDataEndPoint = new IPEndPoint(publicControlEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
+                publicDHTPort = r.Next(short.MaxValue - 1000) + 1000;
 
                 SystemLog.addEntry("Creating control UPnP mapping (random external port)...");
                 await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port, false);
                 SystemLog.addEntry("Creating data UPnP mapping (random external port)...");
                 await mapPorts(((IPEndPoint)listener.Server.LocalEndPoint).Port, publicDataEndPoint.Port, true);
+                SystemLog.addEntry("Creating DJT UPnP mapping (random external port)...");
+                await mapPorts(internalDHTPort, publicDHTPort, false);
+                
             }
 
             SystemLog.addEntry("Network setup complete.");

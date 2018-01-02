@@ -43,6 +43,7 @@ namespace Dimension
         static void doCleanup()
         {
             disposed = true;
+            kademlia.Dispose();
             theCore.Dispose();
             fileList.Dispose();
             fileListDatabase.close();

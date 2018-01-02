@@ -31,6 +31,7 @@ namespace Dimension.UI
                 manuallyForwardPortsButton.Checked = true;
             }
             udpDataPortBox.Value = Program.settings.getInt("Default Data Port", 0);
+            dhtPortBox.Value = Program.settings.getInt("Default DHT Port", 0);
             udpControlPortBox.Value = Program.settings.getInt("Default Control Port", Model.NetConstants.controlPort);
             usernameBox.Text = Program.settings.getString("Username", Environment.MachineName);
             descriptionBox.Text = Program.settings.getString("Description", "");
@@ -61,6 +62,7 @@ namespace Dimension.UI
 
             Program.settings.setInt("Default Data Port", (int)udpDataPortBox.Value);
             Program.settings.setInt("Default Control Port", (int)udpControlPortBox.Value);
+            Program.settings.setInt("Default DHT Port", (int)dhtPortBox.Value);
 
             Program.settings.setString("Username", usernameBox.Text);
             Program.settings.setString("Description", descriptionBox.Text);
