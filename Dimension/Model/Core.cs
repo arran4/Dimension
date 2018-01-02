@@ -227,9 +227,11 @@ namespace Dimension.Model
                     if (p == null)
                     {
                         p = Program.fileList.getRootShare(parent.id);
-                        fullPath = ((RootShare)p).fullPath + "/" + fullPath;
-
-                        fullPath = fullPath.Trim('/');
+                        if (((RootShare)p).fullPath.StartsWith("//"))
+                            fullPath = "\\\\" + ((RootShare)p).fullPath.Substring(2).Replace('/', '\\') + "\\" + fullPath.Replace('/','\\');
+                        else
+                            fullPath = ((RootShare)p).fullPath + "/" + fullPath;
+                        fullPath = fullPath.Trim('/').TrimEnd('\\');
                         sendCompleteFile(fullPath, z.path, con);
                         return;
                     }

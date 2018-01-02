@@ -116,10 +116,10 @@ namespace Dimension
         }
         void doJoinInternetCircle()
         {
-            UI.JoinCircleForm j = new UI.JoinCircleForm();
+            UI.JoinCircleForm j = new UI.JoinCircleForm(UI.JoinCircleForm.CircleType.bootstrap);
             j.ShowDialog();
         }
-        public void addInternetCircle(System.Net.IPEndPoint[] endpoints, string url)
+        public void addInternetCircle(System.Net.IPEndPoint[] endpoints, string url, UI.JoinCircleForm.CircleType circleType)
         {
             for (int i = 0; i < tabControl.TabPages.Count; i++)
                 if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
@@ -129,7 +129,7 @@ namespace Dimension
                         return;
                     }
             TabPage p = new TabPage("Internet Circle");
-            UI.CirclePanel c = new UI.CirclePanel(url);
+            UI.CirclePanel c = new UI.CirclePanel(url, circleType);
             c.Dock = DockStyle.Fill;
             p.Controls.Add(c);
             p.Tag = "Internet Circle";
@@ -325,6 +325,12 @@ namespace Dimension
         {
             if (logStatus.Text != Model.SystemLog.lastLine)
                 logStatus.Text = Model.SystemLog.lastLine;
+        }
+
+        private void joinKademliaCircleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UI.JoinCircleForm j = new UI.JoinCircleForm(UI.JoinCircleForm.CircleType.kademlia);
+            j.ShowDialog();
         }
     }
 }

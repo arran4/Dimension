@@ -17,9 +17,17 @@ namespace Dimension.UI
         {
             while (true)
             {
+                System.Net.IPEndPoint[] e = null;
 
-                System.Net.IPEndPoint[] e = Program.bootstrap.join(url);
+                if (circleType == JoinCircleForm.CircleType.bootstrap)
+                {
+                    e = Program.bootstrap.join(url);
 
+                }
+                else if(circleType == JoinCircleForm.CircleType.kademlia)
+                {
+                    e = Program.kademlia.doLookup(url.ToLower().Trim());
+                }
                 foreach (var z in e)
                 {
                     string s = z.Address.ToString() + ":" + z.Port;
@@ -35,8 +43,10 @@ namespace Dimension.UI
                     }
             }
         public string url;
-        public CirclePanel(string url)
+        UI.JoinCircleForm.CircleType circleType;
+        public CirclePanel(string url, UI.JoinCircleForm.CircleType circleType)
         {
+            this.circleType = circleType;
             this.url = url;
             InitializeComponent();
             setupUserList();

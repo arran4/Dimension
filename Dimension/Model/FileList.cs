@@ -119,15 +119,18 @@ namespace Dimension.Model
 
                 RootShare[] shares = Program.fileListDatabase.getRootShares();
                 foreach (RootShare r in shares)
-                    if (r.name == split[1])
+                    if (r != null)
                     {
-                        if (split.Length == 2)
-                            if (folder)
-                                return getFolder(r.id);
+                        if (r.name == split[1])
+                        {
+                            if (split.Length == 2)
+                                if (folder)
+                                    return getFolder(r.id);
+                                else
+                                    return getFile(r.id);
                             else
-                                return getFile(r.id);
-                        else
-                            return getFSListing(r, path);
+                                return getFSListing(r, path);
+                        }
                     }
 
             }

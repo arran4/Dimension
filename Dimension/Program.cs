@@ -49,6 +49,7 @@ namespace Dimension
             bootstrap.Dispose();
             Model.SystemLog.writer.Close();
         }
+        public static Model.Kademlia kademlia;
         public static Model.Core theCore;
         public static System.Net.Sockets.UdpClient udp;
         public static System.Net.Sockets.TcpListener listener;
@@ -87,6 +88,15 @@ namespace Dimension
 
             serializer = new Model.Serializer();
             theCore = new Model.Core();
+
+            t = new System.Threading.Thread(delegate ()
+            {
+                kademlia = new Model.Kademlia();
+                kademlia.initialize();
+            });
+            t.IsBackground = true;
+            t.Name = "Kademlia Init Thread";
+            t.Start();
 
             doneLoading = true;
 #if DEBUG

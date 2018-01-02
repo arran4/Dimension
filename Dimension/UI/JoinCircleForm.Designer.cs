@@ -28,10 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.urlBox = new System.Windows.Forms.TextBox();
             this.joinButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.kadInitLabel = new System.Windows.Forms.Label();
+            this.kadInitLabelTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // label1
@@ -75,11 +78,27 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // kadInitLabel
+            // 
+            this.kadInitLabel.AutoSize = true;
+            this.kadInitLabel.Location = new System.Drawing.Point(54, 26);
+            this.kadInitLabel.Name = "kadInitLabel";
+            this.kadInitLabel.Size = new System.Drawing.Size(275, 13);
+            this.kadInitLabel.TabIndex = 4;
+            this.kadInitLabel.Text = "Kademlia is initializing, this might take up to 30 seconds...";
+            this.kadInitLabel.Visible = false;
+            // 
+            // kadInitLabelTimer
+            // 
+            this.kadInitLabelTimer.Enabled = true;
+            this.kadInitLabelTimer.Tick += new System.EventHandler(this.kadInitLabelTimer_Tick);
+            // 
             // JoinCircleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(368, 70);
+            this.Controls.Add(this.kadInitLabel);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.joinButton);
             this.Controls.Add(this.urlBox);
@@ -101,5 +120,7 @@
         private System.Windows.Forms.TextBox urlBox;
         private System.Windows.Forms.Button joinButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Label kadInitLabel;
+        private System.Windows.Forms.Timer kadInitLabelTimer;
     }
 }
