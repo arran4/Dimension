@@ -30,9 +30,7 @@ namespace Dimension.Model
                 dht.Start(System.IO.File.ReadAllBytes(peerCachePath));
             else
                 dht.Start();
-
-            dht.Start();
-
+            
             dhtWait.WaitOne();
 
             
