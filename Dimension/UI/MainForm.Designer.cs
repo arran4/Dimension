@@ -182,6 +182,7 @@
             // 
             // joinKademliaCircleToolStripMenuItem
             // 
+            this.joinKademliaCircleToolStripMenuItem.Enabled = false;
             this.joinKademliaCircleToolStripMenuItem.Name = "joinKademliaCircleToolStripMenuItem";
             this.joinKademliaCircleToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.joinKademliaCircleToolStripMenuItem.Text = "Join Kademlia Circle...";
@@ -460,7 +461,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tabControl);
             this.splitContainer1.Size = new System.Drawing.Size(724, 326);
-            this.splitContainer1.SplitterDistance = 192;
+            this.splitContainer1.SplitterDistance = 193;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -472,7 +473,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 192);
+            this.tabControl.Size = new System.Drawing.Size(724, 193);
             this.tabControl.TabIndex = 0;
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
             // 
@@ -482,7 +483,7 @@
             this.systemLogStartingPage.Margin = new System.Windows.Forms.Padding(2);
             this.systemLogStartingPage.Name = "systemLogStartingPage";
             this.systemLogStartingPage.Padding = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 166);
+            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 167);
             this.systemLogStartingPage.TabIndex = 0;
             this.systemLogStartingPage.Text = "System Log";
             this.systemLogStartingPage.UseVisualStyleBackColor = true;
