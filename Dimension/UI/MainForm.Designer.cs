@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.logStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.kadReadyLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.speedLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,7 +77,7 @@
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogTimer = new System.Windows.Forms.Timer(this.components);
-            this.kadReadyLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.transferRateTimer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -94,24 +95,42 @@
             this.logStatus,
             this.kadReadyLabel,
             this.speedLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 379);
+            this.statusStrip.Location = new System.Drawing.Point(0, 377);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
-            this.statusStrip.Size = new System.Drawing.Size(724, 22);
+            this.statusStrip.Size = new System.Drawing.Size(724, 24);
             this.statusStrip.TabIndex = 0;
             this.statusStrip.Text = "statusStrip1";
             // 
             // logStatus
             // 
+            this.logStatus.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.logStatus.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenInner;
             this.logStatus.Name = "logStatus";
-            this.logStatus.Size = new System.Drawing.Size(190, 17);
+            this.logStatus.Size = new System.Drawing.Size(194, 19);
             this.logStatus.Text = "Successfully started up Dimension.";
+            // 
+            // kadReadyLabel
+            // 
+            this.kadReadyLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.kadReadyLabel.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenInner;
+            this.kadReadyLabel.Name = "kadReadyLabel";
+            this.kadReadyLabel.Size = new System.Drawing.Size(98, 19);
+            this.kadReadyLabel.Text = "Kademlia Ready.";
+            this.kadReadyLabel.Visible = false;
             // 
             // speedLabel
             // 
+            this.speedLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.speedLabel.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenInner;
             this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(398, 17);
-            this.speedLabel.Spring = true;
+            this.speedLabel.Size = new System.Drawing.Size(234, 19);
             this.speedLabel.Text = "0B/s up; 0B/s down. Total 0B up, 0B down.";
             this.speedLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -440,8 +459,8 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tabControl);
-            this.splitContainer1.Size = new System.Drawing.Size(724, 328);
-            this.splitContainer1.SplitterDistance = 193;
+            this.splitContainer1.Size = new System.Drawing.Size(724, 326);
+            this.splitContainer1.SplitterDistance = 192;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -453,7 +472,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 193);
+            this.tabControl.Size = new System.Drawing.Size(724, 192);
             this.tabControl.TabIndex = 0;
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
             // 
@@ -463,7 +482,7 @@
             this.systemLogStartingPage.Margin = new System.Windows.Forms.Padding(2);
             this.systemLogStartingPage.Name = "systemLogStartingPage";
             this.systemLogStartingPage.Padding = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 167);
+            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 166);
             this.systemLogStartingPage.TabIndex = 0;
             this.systemLogStartingPage.Text = "System Log";
             this.systemLogStartingPage.UseVisualStyleBackColor = true;
@@ -488,12 +507,11 @@
             this.updateLogTimer.Enabled = true;
             this.updateLogTimer.Tick += new System.EventHandler(this.updateLogTimer_Tick);
             // 
-            // kadReadyLabel
+            // transferRateTimer
             // 
-            this.kadReadyLabel.Name = "kadReadyLabel";
-            this.kadReadyLabel.Size = new System.Drawing.Size(94, 17);
-            this.kadReadyLabel.Text = "Kademlia Ready.";
-            this.kadReadyLabel.Visible = false;
+            this.transferRateTimer.Enabled = true;
+            this.transferRateTimer.Interval = 1000;
+            this.transferRateTimer.Tick += new System.EventHandler(this.transferRateTimer_Tick);
             // 
             // MainForm
             // 
@@ -575,6 +593,7 @@
         private System.Windows.Forms.Timer updateLogTimer;
         private System.Windows.Forms.ToolStripMenuItem joinKademliaCircleToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel kadReadyLabel;
+        private System.Windows.Forms.Timer transferRateTimer;
     }
 }
 

@@ -50,14 +50,17 @@ namespace Dimension.Model
                 string s = Program.settings.getString("Default Download Folder", "C:\\Downloads");
                 if (!System.IO.Directory.Exists(s))
                     System.IO.Directory.CreateDirectory(s);
-                
+
+                System.Diagnostics.Stopwatch loopbackWatch = new System.Diagnostics.Stopwatch();
+                loopbackWatch.Start();
                 System.IO.FileStream f = new System.IO.FileStream(s + "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1), System.IO.FileMode.OpenOrCreate);
                 f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
                 f.Write(chunk.data, 0, chunk.data.Length);
                 f.Close();
+                loopbackWatch.Stop();
                 if (t != null)
                 {
-                    t.completed += (ulong)chunk.dataLength;
+                    t.completed += (ulong)chunk.data.Length;
                     if (t.completed >= t.size)
                     {
                         lock (Transfer.transfers)
@@ -76,6 +79,11 @@ namespace Dimension.Model
                             if (dataConnection.connected)
                                 if (dataConnection.rate > 0)
                                     c3 = dataConnection;
+                        if (id == Program.theCore.id)
+                        {
+                            t.rate = ((LoopbackOutgoingConnection)dataConnection).downCounter.frontBuffer;
+                            t.username = username;
+                        }
                         if (c3 != null)
                         {
                             if (c3.rate > 0)
@@ -90,6 +98,7 @@ namespace Dimension.Model
         {
             byte[] b = Program.serializer.serialize(c);
             Program.udp.Send(b, b.Length, actualEndpoint);
+            Program.globalUpCounter.addBytes(b.Length);
         }
         public void reverseConnect()
         {
@@ -197,6 +206,7 @@ namespace Dimension.Model
 
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
                         Program.udp.Send(b, b.Length, this.actualEndpoint);
+                        Program.globalUpCounter.addBytes(b.Length);
                         return;
                     }
                 }

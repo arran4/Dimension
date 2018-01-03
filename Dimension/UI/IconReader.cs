@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
+//This file is of apocryphal origin. Might need to track down licensing.
 namespace Dimension.UI
 {
 

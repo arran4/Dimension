@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Bootstrap.cs" />
+    <Compile Include="Model\ByteCounter.cs" />
     <Compile Include="Model\ClosableTab.cs" />
     <Compile Include="Model\Commands\Command.cs" />
     <Compile Include="Model\Commands\ConnectToMe.cs" />

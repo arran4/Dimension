@@ -15,7 +15,7 @@ namespace Dimension.Model
             send(Program.theCore.generateHello());
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
             t.IsBackground = true;
-            t.Name = "UDT receive loop";
+            t.Name = "TCP receive loop";
             t.Start();
         }
         public ReliableOutgoingConnection(System.Net.IPAddress addr, int port)
@@ -26,7 +26,7 @@ namespace Dimension.Model
             send(Program.theCore.generateHello());
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
             t.IsBackground = true;
-            t.Name = "UDT receive loop";
+            t.Name = "TCP receive loop";
             t.Start();
         }
         void receiveLoop()
@@ -40,6 +40,7 @@ namespace Dimension.Model
                 {
                     byte[] lenByte = new byte[4];
                     client.GetStream().Read(lenByte, 0, 4);
+                    Program.globalDownCounter.addBytes((ulong)4);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
 
                     if (dataByte.Length == 0)
@@ -49,6 +50,7 @@ namespace Dimension.Model
                     while (read > 0 && pos < dataByte.Length)
                     {
                         read = client.GetStream().Read(dataByte, pos, dataByte.Length - pos);
+                        Program.globalDownCounter.addBytes((ulong)read);
                         pos += read;
                     }
                     
@@ -70,6 +72,7 @@ namespace Dimension.Model
                         while (read > 0 && pos < chunk.Length)
                         {
                             read = client.GetStream().Read(chunk, pos, chunk.Length - pos);
+                            Program.globalDownCounter.addBytes((ulong)read);
                             pos += read;
                         }
                         ((Commands.DataCommand)c).data = chunk;
@@ -97,9 +100,14 @@ namespace Dimension.Model
                 try
                 {
                     client.GetStream().Write(BitConverter.GetBytes(len), 0, 4);
+                    Program.globalUpCounter.addBytes((ulong)4);
                     client.GetStream().Write(b, 0, b.Length);
+                    Program.globalUpCounter.addBytes((ulong)b.Length);
                     if (c is Commands.DataCommand)
+                    {
                         client.GetStream().Write(((Commands.DataCommand)c).data, 0, ((Commands.DataCommand)c).data.Length);
+                        Program.globalUpCounter.addBytes((ulong)((Commands.DataCommand)c).data.Length);
+                    }
                 }
                 catch
                 {

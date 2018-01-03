@@ -114,9 +114,16 @@ namespace Dimension.UI
                 l.Tag = i;
                 filesView.Items.Add(l);
 
-                if (!iconCache.Images.ContainsKey("Folder"))
-                    iconCache.Images.Add("Folder", IconReader.GetFolderIcon(IconReader.IconSize.Small, IconReader.FolderType.Closed));
-                l.ImageKey = "Folder";
+                try
+                {
+                    if (!iconCache.Images.ContainsKey("Folder"))
+                        iconCache.Images.Add("Folder", IconReader.GetFolderIcon(IconReader.IconSize.Small, IconReader.FolderType.Closed));
+                    l.ImageKey = "Folder";
+                }
+                catch
+                {
+                    //don't care
+                }
             }
             foreach (Model.Commands.FSListing i in list.files)
             {
@@ -131,9 +138,16 @@ namespace Dimension.UI
                 if (i.name.Contains("."))
                     s = s.Substring(s.LastIndexOf(".") + 1);
 
-                if (!iconCache.Images.ContainsKey(s))
-                    iconCache.Images.Add(s, IconReader.GetFileIcon("filename." + s, IconReader.IconSize.Small, false));
-                l.ImageKey = s;
+                try
+                {
+                    if (!iconCache.Images.ContainsKey(s))
+                        iconCache.Images.Add(s, IconReader.GetFileIcon("filename." + s, IconReader.IconSize.Small, false));
+                    l.ImageKey = s;
+                }
+                catch
+                {
+                    //don't care
+                }
             }
             filesView.EndUpdate();
             ignoreReselect = false;

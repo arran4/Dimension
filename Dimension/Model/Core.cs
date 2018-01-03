@@ -18,7 +18,10 @@ namespace Dimension.Model
             c.id = Program.theCore.id;
             byte[] b = Program.serializer.serialize(c);
             foreach (Peer p in peerManager.allPeers)
+            {
                 Program.udp.Send(b, b.Length, p.actualEndpoint);
+                Program.globalUpCounter.addBytes(b.Length);
+            }
         }
         public void joinCircle(string s)
         {
@@ -128,7 +131,8 @@ namespace Dimension.Model
                 doReceive();
                 return;
             }
-            if(data.Length > 32) //Ignore extraneous STUN info
+            Program.globalDownCounter.addBytes(data.Length);
+            if (data.Length > 32) //Ignore extraneous STUN info
                 parse(Program.serializer.deserialize(data), sender);
             doReceive();
         }
@@ -291,8 +295,16 @@ namespace Dimension.Model
                 
                 con.send(c);
                 sw.Stop();
+                if (con is LoopbackIncomingConnection)
+                {
+                    t.rate = ((LoopbackIncomingConnection)con).upCounter.frontBuffer;
+                    t.username = Program.settings.getString("Username", "Username");
+                }
+                else
+                {
+                    t.rate = (ulong)((buffer.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
+                }
                 t.completed += (ulong)buffer.Length;
-                t.rate = (ulong)((buffer.Length) / (sw.ElapsedTicks/(double)System.Diagnostics.Stopwatch.Frequency));
                 if (con.hello != null)
                     t.username = con.hello.username;    //TODO: Get ID and get latest username
                 pos += buffer.Length;
@@ -432,13 +444,20 @@ namespace Dimension.Model
 
                 Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 
+                Program.globalUpCounter.addBytes(b.Length);
 
-                lock(toHello)
+                lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)
+                    {
                         Program.udp.Send(b, b.Length, p);
+                        Program.globalUpCounter.addBytes(b.Length);
+                    }
 
                 foreach (Peer p in peerManager.allPeers)
+                {
                     Program.udp.Send(b, b.Length, p.actualEndpoint);
+                    Program.globalUpCounter.addBytes(b.Length);
+                }
                 System.Threading.Thread.Sleep(1000);
             }
         }

@@ -32,6 +32,7 @@ namespace Dimension.Model
                 {
                     byte[] lenByte = new byte[4];
                     socket.Receive(lenByte);
+                    Program.globalDownCounter.addBytes((ulong)lenByte.Length);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
                     
                     if (dataByte.Length == 0)
@@ -41,6 +42,7 @@ namespace Dimension.Model
                     {
                         read = socket.Receive(dataByte, pos, dataByte.Length - pos);
                         pos += read;
+                        Program.globalDownCounter.addBytes((ulong)read);
                     }
                 }
                 catch
@@ -59,6 +61,7 @@ namespace Dimension.Model
                     {
                         read = socket.Receive(chunk, pos, chunk.Length - pos);
                         pos += read;
+                        Program.globalDownCounter.addBytes((ulong)read);
                     }
                     ((Commands.DataCommand)c).data = chunk;
                     sw.Stop();
@@ -80,13 +83,15 @@ namespace Dimension.Model
                 try
                 {
                     socket.Send(BitConverter.GetBytes(len));
-                    
+                    Program.globalUpCounter.addBytes(4);
+
                     int pos = 0;
                     int read = 1;
                     while (read > 0 && pos < b.Length)
                     {
                         read = socket.Send(b, pos, b.Length - pos);
                         pos += read;
+                        Program.globalUpCounter.addBytes((ulong)read);
                     }
                     if (c is Commands.DataCommand)
                     {
@@ -96,6 +101,7 @@ namespace Dimension.Model
                         while (read > 0 && pos < b.Length)
                         {
                             read = socket.Send(b, pos, b.Length - pos);
+                            Program.globalUpCounter.addBytes((ulong)read);
                             pos += read;
                         }
                     }

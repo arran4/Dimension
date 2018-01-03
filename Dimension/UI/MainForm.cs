@@ -345,5 +345,13 @@ namespace Dimension
             UI.JoinCircleForm j = new UI.JoinCircleForm(UI.JoinCircleForm.CircleType.kademlia);
             j.ShowDialog();
         }
+
+        private void transferRateTimer_Tick(object sender, EventArgs e)
+        {
+            speedLabel.Text = UI.ByteFormatter.formatBytes(Program.globalUpCounter.frontBuffer) + "/s up; " +
+                UI.ByteFormatter.formatBytes(Program.globalDownCounter.frontBuffer) + "/s down. Total " +
+                 UI.ByteFormatter.formatBytes(Program.globalUpCounter.totalBytes) + " up; " +
+                UI.ByteFormatter.formatBytes(Program.globalDownCounter.totalBytes) + " down.";
+        }
     }
 }

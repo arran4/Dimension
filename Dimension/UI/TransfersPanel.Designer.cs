@@ -34,10 +34,11 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.updateTimer = new System.Windows.Forms.Timer(this.components);
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.updateTimer = new System.Windows.Forms.Timer(this.components);
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // listView
@@ -48,12 +49,15 @@
             this.columnHeader3,
             this.columnHeader5,
             this.columnHeader7,
+            this.columnHeader4,
             this.columnHeader6,
             this.columnHeader8});
             this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView.FullRowSelect = true;
             this.listView.Location = new System.Drawing.Point(0, 0);
+            this.listView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(777, 347);
+            this.listView.Size = new System.Drawing.Size(583, 282);
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
@@ -78,10 +82,19 @@
             this.columnHeader5.Text = "Speed";
             this.columnHeader5.Width = 84;
             // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "Progress";
+            this.columnHeader7.Width = 80;
+            // 
             // columnHeader6
             // 
             this.columnHeader6.Text = "Size";
             this.columnHeader6.Width = 105;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "Protocol";
             // 
             // updateTimer
             // 
@@ -89,22 +102,18 @@
             this.updateTimer.Interval = 250;
             this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
             // 
-            // columnHeader7
+            // columnHeader4
             // 
-            this.columnHeader7.Text = "Progress";
-            this.columnHeader7.Width = 80;
-            // 
-            // columnHeader8
-            // 
-            this.columnHeader8.Text = "Protocol";
+            this.columnHeader4.Text = "%";
             // 
             // TransfersPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.listView);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "TransfersPanel";
-            this.Size = new System.Drawing.Size(777, 347);
+            this.Size = new System.Drawing.Size(583, 282);
             this.ResumeLayout(false);
 
         }
@@ -120,5 +129,6 @@
         private System.Windows.Forms.Timer updateTimer;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }

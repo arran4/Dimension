@@ -9,6 +9,8 @@ namespace Dimension
     static class Program
     {
         public static MainForm mainForm;
+        public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
+        public static Model.ByteCounter globalDownCounter = new Model.ByteCounter();
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
