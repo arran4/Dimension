@@ -15,8 +15,15 @@ namespace Dimension
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            using(System.Threading.Mutex mutex = new System.Threading.Mutex(false, "Global\\DimensionMutex"))
+            {
+                if (!mutex.WaitOne(0, false))
+                {
+                    MessageBox.Show("Dimension is already running. Please check your task manager to make sure you've closed it fully before running.");
+                    return;
+                }
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
 
 #if DEBUG
 #else
@@ -39,6 +46,7 @@ namespace Dimension
             }
 #endif
             }
+        }
         static bool disposed = false;
         static void doCleanup()
         {

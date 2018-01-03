@@ -129,6 +129,17 @@ namespace Dimension
                         return;
                     }
             TabPage p = new TabPage("Internet Circle");
+            if (url.StartsWith("#"))
+                p.Text = url;
+            else
+            {
+                string s = url;
+                if (s.Contains("//"))
+                    s = s.Substring(s.IndexOf("//") + 2);
+                if (s.Contains("/"))
+                    s = s.Substring(0, s.IndexOf("/"));
+                p.Text = s;
+            }
             UI.CirclePanel c = new UI.CirclePanel(url, circleType);
             c.Dock = DockStyle.Fill;
             p.Controls.Add(c);
