@@ -213,36 +213,44 @@ namespace Dimension.Model
         }
         void commandReceived(Commands.Command c, IncomingConnection con)
         {
+            lock(con){
             if (c is Commands.GetFileListing)
             {
                 con.lastFolder = ((Commands.GetFileListing)c).path;
                 con.send(generateFileListing(((Commands.GetFileListing)c).path));
             }
-            if (c is Commands.RequestChunks)
-            {
-                var z = (Commands.RequestChunks)c;
-                FSListing f = Program.fileList.getFSListing(z.path, false);
-                FSListing parent = f;
-                string fullPath = "";
-
-                while (parent != null)
+                if (c is Commands.RequestChunks)
                 {
-                    FSListing p = Program.fileList.getFolder(parent.parentId);
-                    if (p == null)
+                    var z = (Commands.RequestChunks)c;
+                    FSListing f = Program.fileList.getFSListing(z.path, false);
+                    FSListing parent = f;
+                    string fullPath = "";
+
+                    while (parent != null)
                     {
-                        p = Program.fileList.getRootShare(parent.id);
-                        if (((RootShare)p).fullPath.StartsWith("//"))
-                            fullPath = "\\\\" + ((RootShare)p).fullPath.Substring(2).Replace('/', '\\') + "\\" + fullPath.Replace('/','\\');
+                        FSListing p = Program.fileList.getFolder(parent.parentId);
+                        if (p == null)
+                        {
+                            p = Program.fileList.getRootShare(parent.id);
+                            if (((RootShare)p).fullPath.StartsWith("//"))
+                                fullPath = "\\\\" + ((RootShare)p).fullPath.Substring(2).Replace('/', '\\') + "\\" + fullPath.Replace('/', '\\');
+                            else
+                                fullPath = ((RootShare)p).fullPath + "/" + fullPath;
+                            fullPath = fullPath.Trim('/').TrimEnd('\\');
+                            System.Threading.Thread t = new System.Threading.Thread(delegate ()
+                            {
+                                sendCompleteFile(fullPath, z.path, con);
+                            });
+                            t.Name = "Upload thread";
+                            t.IsBackground = true;
+                            t.Start();
+                            return;
+                        }
                         else
-                            fullPath = ((RootShare)p).fullPath + "/" + fullPath;
-                        fullPath = fullPath.Trim('/').TrimEnd('\\');
-                        sendCompleteFile(fullPath, z.path, con);
-                        return;
-                    }
-                    else
-                    {
-                        fullPath = parent.name + "/" + fullPath;
-                        parent = p;
+                        {
+                            fullPath = parent.name + "/" + fullPath;
+                            parent = p;
+                        }
                     }
                 }
             }
@@ -279,39 +287,42 @@ namespace Dimension.Model
                 Commands.FileChunk c = new Commands.FileChunk();
                 c.start = pos;
 
-                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
-                byte[] buffer = new byte[Math.Min(chunkSize, f.Length - pos)];
-                int x = 0;
-                while (x < buffer.Length)
+                lock (con)
                 {
-                    if (!con.connected)
+                    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                    sw.Start();
+                    byte[] buffer = new byte[Math.Min(chunkSize, f.Length - pos)];
+                    int x = 0;
+                    while (x < buffer.Length)
                     {
-                        lock (Transfer.transfers)
-                            Transfer.transfers.Remove(t);
-                        return;
+                        if (!con.connected)
+                        {
+                            lock (Transfer.transfers)
+                                Transfer.transfers.Remove(t);
+                            return;
+                        }
+                        int w = s.Read(buffer, x, buffer.Length - x);
+                        x += w;
                     }
-                    int w = s.Read(buffer, x, buffer.Length - x);
-                    x += w;
+                    c.data = buffer;
+                    c.path = requestPath;
+
+                    con.send(c);
+                    sw.Stop();
+                    if (con is LoopbackIncomingConnection)
+                    {
+                        t.rate = ((LoopbackIncomingConnection)con).upCounter.frontBuffer;
+                        t.username = Program.settings.getString("Username", "Username");
+                    }
+                    else
+                    {
+                        t.rate = (ulong)((buffer.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
+                    }
+                    t.completed += (ulong)buffer.Length;
+                    if (con.hello != null)
+                        t.username = con.hello.username;    //TODO: Get ID and get latest username
+                    pos += buffer.Length;
                 }
-                c.data = buffer;
-                c.path = requestPath;
-                
-                con.send(c);
-                sw.Stop();
-                if (con is LoopbackIncomingConnection)
-                {
-                    t.rate = ((LoopbackIncomingConnection)con).upCounter.frontBuffer;
-                    t.username = Program.settings.getString("Username", "Username");
-                }
-                else
-                {
-                    t.rate = (ulong)((buffer.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
-                }
-                t.completed += (ulong)buffer.Length;
-                if (con.hello != null)
-                    t.username = con.hello.username;    //TODO: Get ID and get latest username
-                pos += buffer.Length;
             }
             s.Dispose();
 

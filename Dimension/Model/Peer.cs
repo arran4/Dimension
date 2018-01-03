@@ -35,7 +35,7 @@ namespace Dimension.Model
                 return false;
             }
         }
-        public Transfer t;
+        public Dictionary<string, Transfer> transfers = new Dictionary<string, Transfer>();
         public bool quit = false;
         public delegate void CommandReceived(Commands.Command c);
         public event CommandReceived commandReceivedEvent;
@@ -58,36 +58,40 @@ namespace Dimension.Model
                 f.Write(chunk.data, 0, chunk.data.Length);
                 f.Close();
                 loopbackWatch.Stop();
-                if (t != null)
-                {
-                    t.completed += (ulong)chunk.data.Length;
-                    if (t.completed >= t.size)
+                if(transfers.ContainsKey(chunk.path)){
+                    Transfer t = transfers[chunk.path];
+                    if (t != null)
                     {
-                        lock (Transfer.transfers)
+                        t.completed += (ulong)chunk.data.Length;
+                        if (t.completed >= t.size)
                         {
-                            Transfer.transfers.Remove(t);
-                            t = null;
+                            lock (Transfer.transfers)
+                            {
+                                transfers.Remove(chunk.path);
+                                Transfer.transfers.Remove(t);
+                                t = null;
+                            }
                         }
-                    }
-                    else
-                    {
-                        OutgoingConnection c3 = null;
-                        if (udtConnection != null)
-                            if (udtConnection.connected)
-                                c3 = udtConnection;
-                        if (dataConnection != null)
-                            if (dataConnection.connected)
-                                if (dataConnection.rate > 0)
-                                    c3 = dataConnection;
-                        if (id == Program.theCore.id)
+                        else
                         {
-                            t.rate = ((LoopbackOutgoingConnection)dataConnection).downCounter.frontBuffer;
-                            t.username = username;
-                        }
-                        if (c3 != null)
-                        {
-                            if (c3.rate > 0)
-                                t.rate = c3.rate;
+                            OutgoingConnection c3 = null;
+                            if (udtConnection != null)
+                                if (udtConnection.connected)
+                                    c3 = udtConnection;
+                            if (dataConnection != null)
+                                if (dataConnection.connected)
+                                    if (dataConnection.rate > 0)
+                                        c3 = dataConnection;
+                            if (id == Program.theCore.id)
+                            {
+                                t.rate = ((LoopbackOutgoingConnection)dataConnection).downCounter.frontBuffer;
+                                t.username = username;
+                            }
+                            if (c3 != null)
+                            {
+                                if (c3.rate > 0)
+                                    t.rate = c3.rate;
+                            }
                         }
                     }
                 }

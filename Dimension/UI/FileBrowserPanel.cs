@@ -230,36 +230,38 @@ namespace Dimension.UI
 
                     if (p.udtConnection != null && p.useUDT && Program.settings.getBool("Use UDT", true))
                         useUDT = true;
-                    if (p.t == null)
+                    Model.Transfer t = new Model.Transfer();
+                    p.transfers[s] = t;
+                    if (t == null)
                     {
 
-                        p.t = new Model.Transfer();
-                        p.t.username = p.username;
-                        p.t.filename = tag.name;
-                        p.t.download = true;
-                        p.t.size = tag.size;
-                        p.t.completed = 0;
+                        t = new Model.Transfer();
+                        t.username = p.username;
+                        t.filename = tag.name;
+                        t.download = true;
+                        t.size = tag.size;
+                        t.completed = 0;
                         if (p.dataConnection is Model.LoopbackOutgoingConnection)
-                            p.t.protocol = "Loopback";
+                            t.protocol = "Loopback";
                         else
                             if (useUDT)
-                                p.t.protocol = "UDT";
+                                t.protocol = "UDT";
                             else
-                                p.t.protocol = "TCP";
+                                t.protocol = "TCP";
 
                         lock (Model.Transfer.transfers)
-                            Model.Transfer.transfers.Add(p.t);
+                            Model.Transfer.transfers.Add(t);
                     }
-                    System.Threading.Thread t = new System.Threading.Thread(delegate ()
+                    System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
                     {
                         if (useUDT)
                             p.udtConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
                         else
                             p.dataConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
                     });
-                    t.IsBackground = true;
-                    t.Name = "Download request thread";
-                    t.Start();
+                    t2.IsBackground = true;
+                    t2.Name = "Download request thread";
+                    t2.Start();
                 }
 
                 }
