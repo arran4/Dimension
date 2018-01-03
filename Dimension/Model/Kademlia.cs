@@ -15,21 +15,24 @@ namespace Dimension.Model
             dht.Stop();
             dht.Dispose();
         }
+        
         OctoTorrent.Dht.DhtEngine dht;
         System.Threading.Semaphore dhtWait = new System.Threading.Semaphore(0, 1);
         string peerCachePath = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dimension"),"DHT Peer Cache.bin");
         public void initialize()
         {
             //c.Close();
+            //OctoTorrent.Client.ClientEngine client = new OctoTorrent.Client.ClientEngine(new OctoTorrent.Client.EngineSettings(), Program.theCore.id.ToString());
             OctoTorrent.Dht.Listeners.DhtListener dhtl = new OctoTorrent.Dht.Listeners.DhtListener(new IPEndPoint(IPAddress.Any, Program.bootstrap.internalDHTPort));
             dht = new OctoTorrent.Dht.DhtEngine(dhtl);
+           
             dht.PeersFound += peersFound;
             dht.StateChanged += stateChanged;
             dhtl.Start();
-            if (System.IO.File.Exists(peerCachePath))
+            /*if (System.IO.File.Exists(peerCachePath))
                 dht.Start(System.IO.File.ReadAllBytes(peerCachePath));
-            else
-                dht.Start();
+            else*/
+            dht.Start();
             
             dhtWait.WaitOne();
 
@@ -48,7 +51,7 @@ namespace Dimension.Model
             }
         }
         object lookupLock = new object();
-        Dictionary<string, IPEndPoint[]> results = new Dictionary<string, IPEndPoint[]>();
+        Dictionary<string, List<IPEndPoint>> results = new Dictionary<string, List<IPEndPoint>>();
 
         byte[] doHash(string s)
         {
@@ -79,7 +82,7 @@ namespace Dimension.Model
 
                 if (!results.ContainsKey(hash.ToString()))
                     return new IPEndPoint[] { };
-                IPEndPoint[] output = results[hash.ToString()];
+                IPEndPoint[] output = results[hash.ToString()].ToArray();
 
                 return output;
             }
@@ -87,9 +90,19 @@ namespace Dimension.Model
         void peersFound(object sender, OctoTorrent.PeersFoundEventArgs results)
         {
             IPEndPoint[] output = new IPEndPoint[results.Peers.Count];
-            //for (int i = 0; i < output.Length; i++)
-            //    output[i] = results.Peers[i].ConnectionUri;
-            this.results[results.InfoHash.ToArray().ToString()] = output;
+            for (int i = 0; i < output.Length; i++)
+                output[i] = new IPEndPoint(IPAddress.Parse(results.Peers[i].ConnectionUri.Host), results.Peers[i].ConnectionUri.Port);
+            if (!this.results.ContainsKey(results.InfoHash.ToArray().ToString()))
+                this.results[results.InfoHash.ToArray().ToString()] = new List<IPEndPoint>();
+            foreach (IPEndPoint z in output)
+            {
+                bool already = false;
+                foreach (IPEndPoint w in this.results[results.InfoHash.ToArray().ToString()])
+                    if (w.Address.ToString() == z.Address.ToString() && w.Port == z.Port)
+                        already = true;
+                if (!already)
+                    this.results[results.InfoHash.ToArray().ToString()].AddRange(output);
+            }
             try
             {
                 dhtWait.Release();

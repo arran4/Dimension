@@ -27,16 +27,20 @@ namespace Dimension.UI
                 else if(circleType == JoinCircleForm.CircleType.kademlia)
                 {
                     Program.kademlia.announce(url.ToLower().Trim());
+                    System.Threading.Thread.Sleep(10000);
                     e = Program.kademlia.doLookup(url.ToLower().Trim());
                 }
                 foreach (var z in e)
                 {
-                    string s = z.Address.ToString() + ":" + z.Port;
-                    if (!haveAdded.Contains(s))
+                    if (z != null)
                     {
-                        haveAdded.Add(s);
-                        Program.theCore.addPeer(z);
+                        string s = z.Address.ToString() + ":" + z.Port;
+                        if (!haveAdded.Contains(s))
+                        {
+                            haveAdded.Add(s);
+                            Program.theCore.addPeer(z);
 
+                        }
                     }
                 }
 
@@ -151,12 +155,19 @@ namespace Dimension.UI
                 Program.theCore.chatReceivedEvent -= chatReceived;
                 return;
             }
-            this.Invoke(new Action(delegate ()
+            try
             {
-                historyBox.Text += s + Environment.NewLine;
-                historyBox.SelectionStart = historyBox.Text.Length;
-                historyBox.ScrollToCaret();
-            }));
+                this.Invoke(new Action(delegate ()
+                {
+                    historyBox.Text += s + Environment.NewLine;
+                    historyBox.SelectionStart = historyBox.Text.Length;
+                    historyBox.ScrollToCaret();
+                }));
+            }
+            catch (ObjectDisposedException)
+            {
+
+            }
             }
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {

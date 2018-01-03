@@ -325,6 +325,8 @@ namespace Dimension
         {
             if (logStatus.Text != Model.SystemLog.lastLine)
                 logStatus.Text = Model.SystemLog.lastLine;
+            if (Program.kademlia.ready)
+                kadReadyLabel.Visible = true;
         }
 
         private void joinKademliaCircleToolStripMenuItem_Click(object sender, EventArgs e)

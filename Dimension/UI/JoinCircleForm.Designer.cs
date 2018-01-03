@@ -81,11 +81,11 @@
             // kadInitLabel
             // 
             this.kadInitLabel.AutoSize = true;
-            this.kadInitLabel.Location = new System.Drawing.Point(54, 26);
+            this.kadInitLabel.Location = new System.Drawing.Point(43, 26);
             this.kadInitLabel.Name = "kadInitLabel";
-            this.kadInitLabel.Size = new System.Drawing.Size(275, 13);
+            this.kadInitLabel.Size = new System.Drawing.Size(285, 13);
             this.kadInitLabel.TabIndex = 4;
-            this.kadInitLabel.Text = "Kademlia is initializing, this might take up to 30 seconds...";
+            this.kadInitLabel.Text = "Kademlia is initializing, this might take a couple of minutes...";
             this.kadInitLabel.Visible = false;
             // 
             // kadInitLabelTimer
