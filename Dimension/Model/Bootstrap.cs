@@ -89,7 +89,14 @@ namespace Dimension.Model
             string[] split = response.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             IPEndPoint[] output = new IPEndPoint[split.Length];
             for (int i = 0; i < split.Length; i++)
-                output[i] = new IPEndPoint(IPAddress.Parse(split[i].Split(' ')[0]), int.Parse(split[i].Split(' ')[1]));
+                try
+                {
+                    output[i] = new IPEndPoint(IPAddress.Parse(split[i].Split(' ')[0]), int.Parse(split[i].Split(' ')[1]));
+                }
+                catch (FormatException)
+                {
+                    output[i] = null;
+                }
 
             return output;
         }
@@ -147,8 +154,6 @@ namespace Dimension.Model
                 string stunUrl = "stun.l.google.com";
                 STUN_Result result = STUN_Client.Query(stunUrl, 19302, unreliableClient.Client);
                 SystemLog.addEntry("Attempting to STUN control port to " + stunUrl + ".");
-                publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, internalControlPort);
-                publicDataEndPoint = new IPEndPoint(result.PublicEndPoint.Address, internalDataPort);
 
                 if (result.NetType == STUN_NetType.UdpBlocked)
                 {
@@ -159,6 +164,8 @@ namespace Dimension.Model
                 }
                 else
                 {
+                    publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, result.PublicEndPoint.Port);
+                    publicDataEndPoint = new IPEndPoint(result.PublicEndPoint.Address, internalDataPort);
                     SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
                     SystemLog.addEntry("External data endpoint: " + publicDataEndPoint.ToString());
 
@@ -189,7 +196,7 @@ namespace Dimension.Model
                 await mapPorts(((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port, publicControlEndPoint.Port, false);
                 SystemLog.addEntry("Creating data UPnP mapping (random external port)...");
                 await mapPorts(((IPEndPoint)listener.Server.LocalEndPoint).Port, publicDataEndPoint.Port, true);
-                SystemLog.addEntry("Creating DJT UPnP mapping (random external port)...");
+                SystemLog.addEntry("Creating DHT UPnP mapping (random external port)...");
                 await mapPorts(internalDHTPort, publicDHTPort, false);
                 
             }

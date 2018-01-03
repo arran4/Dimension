@@ -182,7 +182,6 @@
             // 
             // joinKademliaCircleToolStripMenuItem
             // 
-            this.joinKademliaCircleToolStripMenuItem.Enabled = false;
             this.joinKademliaCircleToolStripMenuItem.Name = "joinKademliaCircleToolStripMenuItem";
             this.joinKademliaCircleToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.joinKademliaCircleToolStripMenuItem.Text = "Join Kademlia Circle...";
