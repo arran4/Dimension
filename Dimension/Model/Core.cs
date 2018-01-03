@@ -256,10 +256,14 @@ namespace Dimension.Model
             System.IO.FileInfo f = new System.IO.FileInfo(realPath);
             System.IO.FileStream s = new System.IO.FileStream(realPath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
             Transfer t = new Transfer();
-            t.username = "(Uploading)";
-            t.size = (ulong)f.Length;
+            
+            if (con is LoopbackIncomingConnection)
+                t.username = Program.settings.getString("Username", "Username");
+            else
+                t.username = "(Uploading)";
             t.filename = realPath.Substring(realPath.LastIndexOf("/") + 1);
             t.download = false;
+            t.size = (ulong)f.Length;
             if (con is LoopbackIncomingConnection)
                 t.protocol = "Loopback";
             else
