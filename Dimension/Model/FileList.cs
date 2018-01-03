@@ -362,6 +362,8 @@ namespace Dimension.Model
             if (f is RootShare)
             {
                 var x= Program.fileListDatabase.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + ((RootShare)f).index.ToString());
+                if (x == null)
+                    return;
                 x.totalBytes = 0;
                 x.fileIds = new ulong[] { };
                 x.folderIds = new ulong[] { };

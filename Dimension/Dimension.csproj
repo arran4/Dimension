@@ -183,6 +183,7 @@
     <Compile Include="UI\HashProgressForm.Designer.cs">
       <DependentUpon>HashProgressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\IconReader.cs" />
     <Compile Include="UI\JoinCircleForm.cs">
       <SubType>Form</SubType>
     </Compile>

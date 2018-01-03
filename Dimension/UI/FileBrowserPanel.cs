@@ -20,6 +20,7 @@ namespace Dimension.UI
         public FileBrowserPanel(Model.Peer p)
         {
             InitializeComponent();
+            filesView.SmallImageList = iconCache;
             this.p = p;
             p.commandReceivedEvent += commandReceived;
             displayMessage("Attempting TCP connection to " + p.actualEndpoint.Address.ToString());
@@ -35,6 +36,8 @@ namespace Dimension.UI
             t.IsBackground = true;
             t.Start();
         }
+        static ImageList iconCache = new ImageList();
+
         bool connected = false;
         void displayMessage(string s)
         {
@@ -110,6 +113,10 @@ namespace Dimension.UI
                 l.SubItems.Add(ByteFormatter.formatBytes(i.size));
                 l.Tag = i;
                 filesView.Items.Add(l);
+
+                if (!iconCache.Images.ContainsKey("Folder"))
+                    iconCache.Images.Add("Folder", IconReader.GetFolderIcon(IconReader.IconSize.Small, IconReader.FolderType.Closed));
+                l.ImageKey = "Folder";
             }
             foreach (Model.Commands.FSListing i in list.files)
             {
@@ -119,6 +126,14 @@ namespace Dimension.UI
                 l.SubItems.Add(ByteFormatter.formatBytes(i.size));
                 l.Tag = i;
                 filesView.Items.Add(l);
+
+                string s = i.name;
+                if (i.name.Contains("."))
+                    s = s.Substring(s.LastIndexOf(".") + 1);
+
+                if (!iconCache.Images.ContainsKey(s))
+                    iconCache.Images.Add(s, IconReader.GetFileIcon("filename." + s, IconReader.IconSize.Small, false));
+                l.ImageKey = s;
             }
             filesView.EndUpdate();
             ignoreReselect = false;
