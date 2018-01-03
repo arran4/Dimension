@@ -55,6 +55,7 @@
             this.urlBox.Size = new System.Drawing.Size(290, 20);
             this.urlBox.TabIndex = 1;
             this.urlBox.Text = "http://www.9thcircle.net/Projects/Dimension/bootstrap.php";
+            this.urlBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.urlBox_KeyDown);
             // 
             // joinButton
             // 

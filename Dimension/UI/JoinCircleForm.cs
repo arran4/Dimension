@@ -36,14 +36,32 @@ namespace Dimension.UI
 
         private void joinButton_Click(object sender, EventArgs e2)
         {
+            doJoin();
+        }
+
+        void doJoin()
+        {
+            joinButton.Enabled = false;
             string s = urlBox.Text;
-            this.Close();
             var t = new System.Threading.Thread(delegate ()
             {
-            System.Net.IPEndPoint[] e;
+                System.Net.IPEndPoint[] e;
                 if (circleType == CircleType.bootstrap)
                 {
-                    e = Program.bootstrap.join(s);
+                    try
+                    {
+                        e = Program.bootstrap.join(s);
+                    }
+                    catch (System.Net.WebException e3)
+                    {
+                        MessageBox.Show("Error connecting to bootstrap - " + e3.Message);
+
+                        this.Invoke(new Action(delegate ()
+                        {
+                            this.Close();
+                        }));
+                        return;
+                    }
                 }
                 else
                 {
@@ -56,6 +74,10 @@ namespace Dimension.UI
                     Program.mainForm.addInternetCircle(e, s, circleType);
 
                 }));
+                this.Invoke(new Action(delegate ()
+                {
+                    this.Close();
+                }));
             })
             {
                 Name = "Bootstrap join thread",
@@ -63,7 +85,6 @@ namespace Dimension.UI
             };
             t.Start();
         }
-
         private void cancelButton_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -78,6 +99,18 @@ namespace Dimension.UI
                 {
                     joinButton.Enabled =true;
                     kadInitLabel.Visible = false;
+                }
+            }
+        }
+
+        private void urlBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (joinButton.Enabled)
+                {
+                    e.SuppressKeyPress = true;
+                    doJoin();
                 }
             }
         }

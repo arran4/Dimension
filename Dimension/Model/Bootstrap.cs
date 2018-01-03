@@ -75,10 +75,17 @@ namespace Dimension.Model
         }
         public IPEndPoint[] join(string address)
         {
-            //TODO: Gracefully handle URLs that don't exist
-            WebRequest r = WebRequest.Create(address + "?port=" + publicControlEndPoint.Port.ToString());
-            string response = (new StreamReader(r.GetResponse().GetResponseStream())).ReadToEnd();
-
+            string response;
+            try
+            {
+                //TODO: Gracefully handle URLs that don't exist
+                WebRequest r = WebRequest.Create(address + "?port=" + publicControlEndPoint.Port.ToString());
+                response = (new StreamReader(r.GetResponse().GetResponseStream())).ReadToEnd();
+            }
+            catch(Exception e)
+            {
+                throw new WebException(e.Message);
+            }
             string[] split = response.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             IPEndPoint[] output = new IPEndPoint[split.Length];
             for (int i = 0; i < split.Length; i++)
