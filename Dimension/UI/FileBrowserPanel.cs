@@ -230,12 +230,13 @@ namespace Dimension.UI
 
                     if (p.udtConnection != null && p.useUDT && Program.settings.getBool("Use UDT", true))
                         useUDT = true;
-                    Model.Transfer t = new Model.Transfer();
-                    p.transfers[s] = t;
-                    if (t == null)
+                    Model.Transfer t;
+                    if (!p.transfers.ContainsKey(s))
                     {
-
                         t = new Model.Transfer();
+                        t.thePeer = p;
+                        p.transfers[s] = t;
+                        t.path = s;
                         t.username = p.username;
                         t.filename = tag.name;
                         t.download = true;
@@ -245,26 +246,35 @@ namespace Dimension.UI
                             t.protocol = "Loopback";
                         else
                             if (useUDT)
-                                t.protocol = "UDT";
-                            else
-                                t.protocol = "TCP";
+                            t.protocol = "UDT";
+                        else
+                            t.protocol = "TCP";
 
+                        p.transfers[t.path] = t;
                         lock (Model.Transfer.transfers)
                             Model.Transfer.transfers.Add(t);
                     }
+                    else
+                        t = p.transfers[s];
                     System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
                     {
                         if (useUDT)
+                        {
+                            t.con = p.udtConnection;
                             p.udtConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
+                        }
                         else
+                        {
+                            t.con = p.dataConnection;
                             p.dataConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
+                        }
                     });
                     t2.IsBackground = true;
                     t2.Name = "Download request thread";
                     t2.Start();
                 }
 
-                }
+            }
         }
     }
 }

@@ -211,14 +211,20 @@ namespace Dimension.Model
                 incomings.Remove(c);
             c.commandReceived -= commandReceived;
         }
+        List<string> toCancel = new List<string>();
         void commandReceived(Commands.Command c, IncomingConnection con)
         {
             lock(con){
-            if (c is Commands.GetFileListing)
-            {
-                con.lastFolder = ((Commands.GetFileListing)c).path;
-                con.send(generateFileListing(((Commands.GetFileListing)c).path));
-            }
+
+                if (c is Commands.CancelCommand)
+                {
+                    toCancel.Add(((Commands.CancelCommand)c).path);
+                }
+                if (c is Commands.GetFileListing)
+                {
+                    con.lastFolder = ((Commands.GetFileListing)c).path;
+                    con.send(generateFileListing(((Commands.GetFileListing)c).path));
+                }
                 if (c is Commands.RequestChunks)
                 {
                     var z = (Commands.RequestChunks)c;
@@ -272,6 +278,8 @@ namespace Dimension.Model
             t.filename = realPath.Substring(realPath.LastIndexOf("/") + 1);
             t.download = false;
             t.size = (ulong)f.Length;
+            t.con = con;
+            t.path = requestPath;
             if (con is LoopbackIncomingConnection)
                 t.protocol = "Loopback";
             else
@@ -289,6 +297,14 @@ namespace Dimension.Model
 
                 lock (con)
                 {
+                    if (toCancel.Contains(requestPath))
+                    {
+                        toCancel.Remove(requestPath);
+
+                        lock (Transfer.transfers)
+                            Transfer.transfers.Remove(t);
+                        return;
+                    }
                     System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                     sw.Start();
                     byte[] buffer = new byte[Math.Min(chunkSize, f.Length - pos)];

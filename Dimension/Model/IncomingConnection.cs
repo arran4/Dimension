@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    public abstract class IncomingConnection
+    public abstract class IncomingConnection : Connection
     {
         public Commands.HelloCommand hello;
         public string lastFolder;

@@ -8,6 +8,9 @@ namespace Dimension.Model
 {
     public class Transfer
     {
+        public string path;
+        public Peer thePeer;
+        public Connection con;
         public bool download;
         public string protocol;
         public string filename;

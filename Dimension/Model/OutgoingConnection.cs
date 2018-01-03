@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    public abstract class OutgoingConnection
+    public abstract class OutgoingConnection : Connection
     {
         public ulong rate;
         public delegate void CommandReceived(Commands.Command c);

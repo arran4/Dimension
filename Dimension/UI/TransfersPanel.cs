@@ -22,6 +22,8 @@ namespace Dimension.UI
                 listView.Columns.Add(x.Columns[i].Text,x.Columns[i].Width);
             listView.View = View.Details;
             listView.Dock = DockStyle.Fill;
+            listView.MouseUp += listView_MouseUp;
+            listView.FullRowSelect = true;
             Controls.Add(listView);
         }
 
@@ -62,10 +64,36 @@ namespace Dimension.UI
                 for (int x = 0; x < 8; x++)
                     if (listView.Items[i].SubItems[x].Text != w[x])
                         listView.Items[i].SubItems[x].Text = w[x];
+                listView.Items[i].Tag = z[i];
             }
 
 
             listView.EndUpdate();
         }
+
+        private void listView_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && listView.SelectedItems.Count > 0)
+            {
+                contextMenuStrip1.Show(Cursor.Position);
+
+            }
+            }
+
+        private void cancelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem i in listView.SelectedItems)
+            {
+                Model.Transfer t = (Model.Transfer)i.Tag;
+                if (t.thePeer != null)
+                {
+                    lock(t.thePeer.transfers)
+                        t.thePeer.transfers.Remove(t.path);
+                }
+                lock(Model.Transfer.transfers)
+                    Model.Transfer.transfers.Remove(t);
+                t.con.send(new Model.Commands.CancelCommand() { path = t.path });
+            }
+            }
     }
 }

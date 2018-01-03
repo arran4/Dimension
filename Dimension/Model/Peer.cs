@@ -43,6 +43,20 @@ namespace Dimension.Model
         {
             commandReceivedEvent?.Invoke(c);
 
+            if (c is Commands.CancelCommand)
+            {
+                OutgoingConnection c3 = null;
+                if (udtConnection != null)
+                    if (udtConnection.connected)
+                        c3 = udtConnection;
+                if (dataConnection != null)
+                    if (dataConnection.connected)
+                        c3 = dataConnection;
+                string s = (((Commands.CancelCommand)c).path);
+                Transfer.transfers.Remove(transfers[s]);
+                transfers.Remove(s);
+                c3.send(c);
+            }
             if (c is Commands.FileChunk)
             {
                 var chunk = (Commands.FileChunk)c;
@@ -62,6 +76,7 @@ namespace Dimension.Model
                     Transfer t = transfers[chunk.path];
                     if (t != null)
                     {
+                        t.path = chunk.path;
                         t.completed += (ulong)chunk.data.Length;
                         if (t.completed >= t.size)
                         {
