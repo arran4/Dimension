@@ -173,17 +173,17 @@ namespace Dimension.UI
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
             {
-                if (inputBox.Text.Trim() != "")
+                if (inputBox.Text.Trim() != "" && e.Modifiers != Keys.Shift)
                 {
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     Program.theCore.sendChat(inputBox.Text, circleHash);
                     inputBox.Text = "";
+                    inputBox.Height = 22;
                 }
 
             }
         }
-
         private void userListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             foreach (int i in userListView.SelectedIndices)
@@ -197,6 +197,11 @@ namespace Dimension.UI
                 p.Controls.Add(b);
                 Program.mainForm.createOrSelect(p);
             }
+        }
+
+        private void inputBox_TextChanged(object sender, EventArgs e)
+        {
+            inputBox.Height = Math.Min(100, inputBox.Font.Height * (inputBox.Text.Split('\n').Length+1));
         }
     }
 }
