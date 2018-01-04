@@ -38,6 +38,7 @@ namespace Dimension.Model
             {
                 NatDiscoverer d = new NatDiscoverer();
                 NatDevice device = await d.DiscoverDeviceAsync();
+                externalIPFromUPnP = await device.GetExternalIPAsync();
                 foreach (Mapping z in await device.GetAllMappingsAsync())
                     if (z.Description == Environment.MachineName + " Dimension Mapping")
                     {
@@ -53,6 +54,7 @@ namespace Dimension.Model
                 //UPnP probably not supported
             }
         }
+        IPAddress externalIPFromUPnP;
         async Task mapPorts(int internalPort, int externalPort, bool tcp)
         {
 
@@ -60,6 +62,7 @@ namespace Dimension.Model
             {
                 NatDiscoverer d = new NatDiscoverer();
                 NatDevice device = await d.DiscoverDeviceAsync();
+                externalIPFromUPnP = await device.GetExternalIPAsync();
                 SystemLog.addEntry("Successfully found UPnP device "  +await device.GetExternalIPAsync());
 
                 Mapping m = new Mapping(tcp ? Protocol.Tcp : Protocol.Udp, internalPort, externalPort, Environment.MachineName + " Dimension Mapping");
@@ -211,6 +214,8 @@ namespace Dimension.Model
                 SystemLog.addEntry("Creating DHT UPnP mapping (random external port)...");
                 await mapPorts(internalDHTPort, publicDHTPort, false);
                 
+                publicControlEndPoint = new IPEndPoint(externalIPFromUPnP, publicControlEndPoint.Port);
+                publicDataEndPoint = new IPEndPoint(externalIPFromUPnP, publicDataEndPoint.Port);
             }
 
             SystemLog.addEntry("Network setup complete.");
