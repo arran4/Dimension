@@ -173,10 +173,13 @@ namespace Dimension.UI
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
             {
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-                Program.theCore.sendChat(inputBox.Text, circleHash);
-                inputBox.Text = "";
+                if (inputBox.Text.Trim() != "")
+                {
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    Program.theCore.sendChat(inputBox.Text, circleHash);
+                    inputBox.Text = "";
+                }
 
             }
         }

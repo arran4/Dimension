@@ -67,10 +67,22 @@ namespace Dimension.Model
 
                 System.Diagnostics.Stopwatch loopbackWatch = new System.Diagnostics.Stopwatch();
                 loopbackWatch.Start();
-                System.IO.FileStream f = new System.IO.FileStream(s + "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1), System.IO.FileMode.OpenOrCreate);
-                f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
-                f.Write(chunk.data, 0, chunk.data.Length);
-                f.Close();
+                int attempts = 0;
+                tryAgain:
+                try
+                {
+                    System.IO.FileStream f = new System.IO.FileStream(s + "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1), System.IO.FileMode.OpenOrCreate);
+                    f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
+                    f.Write(chunk.data, 0, chunk.data.Length);
+                    f.Close();
+                }
+                catch(Exception e)
+                {
+                    if (attempts > 5)
+                        throw e;
+                    attempts++;
+                    goto tryAgain;
+                }
                 loopbackWatch.Stop();
                 if(transfers.ContainsKey(chunk.path)){
                     Transfer t = transfers[chunk.path];

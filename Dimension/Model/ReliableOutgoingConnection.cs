@@ -39,14 +39,21 @@ namespace Dimension.Model
                 try
                 {
                     byte[] lenByte = new byte[4];
-                    client.GetStream().Read(lenByte, 0, 4);
+
+                    int pos = 0;
+                    int read = 1;
+                    while (pos < 4 && read > 0)
+                    {
+                        read = client.GetStream().Read(lenByte, pos, 4-pos);
+                        pos += read;
+                    }
                     Program.globalDownCounter.addBytes((ulong)4);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
 
                     if (dataByte.Length == 0)
                         return;
-                    int pos = 0;
-                    int read = 1;
+                    pos = 0;
+                    read = 1;
                     while (read > 0 && pos < dataByte.Length)
                     {
                         read = client.GetStream().Read(dataByte, pos, dataByte.Length - pos);
