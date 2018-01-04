@@ -215,7 +215,10 @@ namespace Dimension.Model
         void commandReceived(Commands.Command c, IncomingConnection con)
         {
             lock(con){
-
+                if (c is Commands.PrivateChatCommand)
+                {
+                    //todo: pass it on to the correct user
+                }
                 if (c is Commands.CancelCommand)
                 {
                     toCancel.Add(((Commands.CancelCommand)c).path);

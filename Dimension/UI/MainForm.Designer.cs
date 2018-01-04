@@ -53,8 +53,6 @@
             this.hashingProgressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllCirclesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.closeAllPrivateMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.closeAllOfflinePrivateMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllFileListsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllSearchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -274,8 +272,6 @@
             // 
             this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeAllCirclesToolStripMenuItem,
-            this.closeAllPrivateMessagesToolStripMenuItem,
-            this.closeAllOfflinePrivateMessagesToolStripMenuItem,
             this.closeAllFileListsToolStripMenuItem,
             this.closeAllSearchesToolStripMenuItem});
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
@@ -285,35 +281,21 @@
             // closeAllCirclesToolStripMenuItem
             // 
             this.closeAllCirclesToolStripMenuItem.Name = "closeAllCirclesToolStripMenuItem";
-            this.closeAllCirclesToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.closeAllCirclesToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.closeAllCirclesToolStripMenuItem.Text = "Close All Circles";
             this.closeAllCirclesToolStripMenuItem.Click += new System.EventHandler(this.closeAllCirclesToolStripMenuItem_Click);
-            // 
-            // closeAllPrivateMessagesToolStripMenuItem
-            // 
-            this.closeAllPrivateMessagesToolStripMenuItem.Name = "closeAllPrivateMessagesToolStripMenuItem";
-            this.closeAllPrivateMessagesToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-            this.closeAllPrivateMessagesToolStripMenuItem.Text = "Close All Private Messages";
-            this.closeAllPrivateMessagesToolStripMenuItem.Click += new System.EventHandler(this.closeAllPrivateMessagesToolStripMenuItem_Click);
-            // 
-            // closeAllOfflinePrivateMessagesToolStripMenuItem
-            // 
-            this.closeAllOfflinePrivateMessagesToolStripMenuItem.Name = "closeAllOfflinePrivateMessagesToolStripMenuItem";
-            this.closeAllOfflinePrivateMessagesToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-            this.closeAllOfflinePrivateMessagesToolStripMenuItem.Text = "Close All Offline Private Messages";
-            this.closeAllOfflinePrivateMessagesToolStripMenuItem.Click += new System.EventHandler(this.closeAllOfflinePrivateMessagesToolStripMenuItem_Click);
             // 
             // closeAllFileListsToolStripMenuItem
             // 
             this.closeAllFileListsToolStripMenuItem.Name = "closeAllFileListsToolStripMenuItem";
-            this.closeAllFileListsToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.closeAllFileListsToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.closeAllFileListsToolStripMenuItem.Text = "Close All File Lists";
             this.closeAllFileListsToolStripMenuItem.Click += new System.EventHandler(this.closeAllFileListsToolStripMenuItem_Click);
             // 
             // closeAllSearchesToolStripMenuItem
             // 
             this.closeAllSearchesToolStripMenuItem.Name = "closeAllSearchesToolStripMenuItem";
-            this.closeAllSearchesToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.closeAllSearchesToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.closeAllSearchesToolStripMenuItem.Text = "Close All Searches";
             this.closeAllSearchesToolStripMenuItem.Click += new System.EventHandler(this.closeAllSearchesToolStripMenuItem_Click);
             // 
@@ -460,7 +442,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tabControl);
             this.splitContainer1.Size = new System.Drawing.Size(724, 326);
-            this.splitContainer1.SplitterDistance = 193;
+            this.splitContainer1.SplitterDistance = 194;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -472,7 +454,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 193);
+            this.tabControl.Size = new System.Drawing.Size(724, 194);
             this.tabControl.TabIndex = 0;
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
             // 
@@ -482,7 +464,7 @@
             this.systemLogStartingPage.Margin = new System.Windows.Forms.Padding(2);
             this.systemLogStartingPage.Name = "systemLogStartingPage";
             this.systemLogStartingPage.Padding = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 167);
+            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 168);
             this.systemLogStartingPage.TabIndex = 0;
             this.systemLogStartingPage.Text = "System Log";
             this.systemLogStartingPage.UseVisualStyleBackColor = true;
@@ -564,8 +546,6 @@
         private System.Windows.Forms.ToolStripMenuItem hashingProgressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeAllCirclesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem closeAllPrivateMessagesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem closeAllOfflinePrivateMessagesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeAllFileListsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeAllSearchesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;

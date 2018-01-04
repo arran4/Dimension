@@ -124,6 +124,7 @@
     <Compile Include="Model\Commands\KeepAlive.cs" />
     <Compile Include="Model\Commands\Peer.cs" />
     <Compile Include="Model\Commands\PeerList.cs" />
+    <Compile Include="Model\Commands\PrivateChatCommand.cs" />
     <Compile Include="Model\Commands\Quitting.cs" />
     <Compile Include="Model\Commands\RequestChunks.cs" />
     <Compile Include="Model\Commands\ReverseConnectionType.cs" />
@@ -213,12 +214,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\PrivateMessagePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\PrivateMessagePanel.Designer.cs">
-      <DependentUpon>PrivateMessagePanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\SearchPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -280,9 +275,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="UI\PrivateMessagePanel.resx">
-      <DependentUpon>PrivateMessagePanel.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\SearchPanel.resx">
       <DependentUpon>SearchPanel.cs</DependentUpon>
     </EmbeddedResource>

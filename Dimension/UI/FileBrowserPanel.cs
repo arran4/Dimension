@@ -155,6 +155,17 @@ namespace Dimension.UI
         string currentPath = "/";
         void commandReceived(Model.Commands.Command c)
         {
+
+            if (c is Model.Commands.PrivateChatCommand)
+            {
+                Model.Commands.PrivateChatCommand chat = (Model.Commands.PrivateChatCommand)c;
+
+
+                if (this.InvokeRequired)
+                    this.Invoke(new Action(delegate () { addLine(chat.content); }));
+                else
+                    addLine(chat.content);
+            }
             if (c is Model.Commands.FileListing)
             {
                 Model.Commands.FileListing f = (Model.Commands.FileListing)c;
@@ -167,6 +178,12 @@ namespace Dimension.UI
                 }
 
             }
+        }
+        void addLine(string s)
+        {
+            historyBox.Text = s + Environment.NewLine;
+            historyBox.SelectionStart = historyBox.Text.Length;
+            historyBox.ScrollToCaret();
         }
         bool ignoreReselect = false;
         private void foldersView_AfterSelect(object sender, TreeViewEventArgs e)
@@ -275,6 +292,27 @@ namespace Dimension.UI
                 }
 
             }
+        }
+
+        private void inputBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
+            {
+                if (inputBox.Text.Trim() != "" && e.Modifiers != Keys.Shift)
+                {
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    p.controlConnection.send(new Model.Commands.PrivateChatCommand() {  content = inputBox.Text});
+                    inputBox.Text = "";
+                    inputBox.Height = 22;
+                }
+
+            }
+        }
+
+        private void inputBox_TextChanged(object sender, EventArgs e)
+        {
+            inputBox.Height = Math.Min(100, inputBox.Font.Height * (inputBox.Text.Split('\n').Length + 1));
         }
     }
 }

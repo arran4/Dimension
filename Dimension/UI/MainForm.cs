@@ -267,34 +267,7 @@ namespace Dimension
                 }
                 }
         }
-
-        private void closeAllPrivateMessagesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
-            {
-                if (tabControl.TabPages[i].Controls[0] is UI.PrivateMessagePanel)
-                {
-                    tabControl.TabPages.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-
-        private void closeAllOfflinePrivateMessagesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
-            {
-                if (tabControl.TabPages[i].Controls[0] is UI.PrivateMessagePanel)
-                {
-                    tabControl.TabPages.RemoveAt(i);
-                    i--;
-                }
-            }
-
-        }
-
+        
         private void closeAllFileListsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
