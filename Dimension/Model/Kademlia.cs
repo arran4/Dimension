@@ -39,7 +39,6 @@ namespace Dimension.Model
             
             System.IO.File.WriteAllBytes(peerCachePath, dht.SaveNodes());
             
-            ready = true;
         }
 
         public bool ready = false;

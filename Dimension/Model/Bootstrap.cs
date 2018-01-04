@@ -87,6 +87,11 @@ namespace Dimension.Model
                 throw new WebException(e.Message);
             }
             string[] split = response.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            List<string> nonDuplicates = new List<string>();
+            foreach (string s in split)
+                if (!nonDuplicates.Contains(s))
+                    nonDuplicates.Add(s);
+            split = nonDuplicates.ToArray();
             IPEndPoint[] output = new IPEndPoint[split.Length];
             for (int i = 0; i < split.Length; i++)
                 try
@@ -121,8 +126,8 @@ namespace Dimension.Model
                 System.Threading.Thread t = new System.Threading.Thread(async delegate ()
                 {
                     await unMapPorts();
-                    s.Release();
                     done = true;
+                    s.Release();
                 });
                 t.IsBackground = true;
                 t.Name = "UPnP test thread";
@@ -131,7 +136,10 @@ namespace Dimension.Model
                 if (!done)
                     s.WaitOne(10000);
                 if (!done)
+                {
+                    SystemLog.addEntry("Failed to find UPnP router in a timely fashion. Disabling UPnP...");
                     UPnPActive = false;
+                }
             }
             Program.currentLoadState = "Binding UDP sockets.";
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -148,34 +156,38 @@ namespace Dimension.Model
 
             publicControlEndPoint = (IPEndPoint)unreliableClient.Client.LocalEndPoint;
             publicDataEndPoint = (IPEndPoint)listener.Server.LocalEndPoint;
-            Program.currentLoadState = "STUNning NAT";
-            try
-            {
-                string stunUrl = "stun.l.google.com";
-                STUN_Result result = STUN_Client.Query(stunUrl, 19302, unreliableClient.Client);
-                SystemLog.addEntry("Attempting to STUN control port to " + stunUrl + ".");
 
-                if (result.NetType == STUN_NetType.UdpBlocked)
+            if (Program.settings.getBool("Use UPnP", true) == false || LANMode || !UPnPActive)
+            {
+                Program.currentLoadState = "STUNning NAT";
+                try
                 {
-                    SystemLog.addEntry("STUN failed. Assuming network is LAN-only.");
-                    Program.currentLoadState = "STUN failed. Running in LAN mode.";
+                    string stunUrl = "stun.l.google.com";
+                    STUN_Result result = STUN_Client.Query(stunUrl, 19302, unreliableClient.Client);
+                    SystemLog.addEntry("Attempting to STUN control port to " + stunUrl + ".");
+
+                    if (result.NetType == STUN_NetType.UdpBlocked)
+                    {
+                        SystemLog.addEntry("STUN failed. Assuming network is LAN-only.");
+                        Program.currentLoadState = "STUN failed. Running in LAN mode.";
+                        LANMode = true;
+                        UPnPActive = false;
+                    }
+                    else
+                    {
+                        publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, result.PublicEndPoint.Port);
+                        publicDataEndPoint = new IPEndPoint(result.PublicEndPoint.Address, internalDataPort);
+                        SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
+                        SystemLog.addEntry("External data endpoint: " + publicDataEndPoint.ToString());
+
+                    }
+                }
+                catch (Exception) //STUN can throw generic exceptions :(
+                {
+                    SystemLog.addEntry("Failed to STUN. Working in LAN mode.");
+                    //Stun failed, offline mode
                     LANMode = true;
-                    UPnPActive = false;
                 }
-                else
-                {
-                    publicControlEndPoint = new IPEndPoint(result.PublicEndPoint.Address, result.PublicEndPoint.Port);
-                    publicDataEndPoint = new IPEndPoint(result.PublicEndPoint.Address, internalDataPort);
-                    SystemLog.addEntry("STUN successful. External control endpoint: " + result.PublicEndPoint.ToString());
-                    SystemLog.addEntry("External data endpoint: " + publicDataEndPoint.ToString());
-
-                }
-            }
-            catch (Exception) //STUN can throw generic exceptions :(
-            {
-                SystemLog.addEntry("Failed to STUN. Working in LAN mode.");
-                //Stun failed, offline mode
-                LANMode = true;
             }
 
             Random r = new Random();
