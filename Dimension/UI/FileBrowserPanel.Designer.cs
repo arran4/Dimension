@@ -140,6 +140,7 @@
             // 
             this.historyBox.BackColor = System.Drawing.SystemColors.Window;
             this.historyBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.historyBox.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.historyBox.Location = new System.Drawing.Point(3, 3);
             this.historyBox.Margin = new System.Windows.Forms.Padding(2);
             this.historyBox.Multiline = true;

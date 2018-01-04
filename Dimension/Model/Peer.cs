@@ -12,7 +12,18 @@ namespace Dimension.Model
         public OutgoingConnection controlConnection;
         public OutgoingConnection udtConnection;
         public System.Net.IPAddress publicAddress;
-        public System.Net.IPEndPoint actualEndpoint;
+        System.Net.IPAddress _actualAddr;
+        public System.Net.IPEndPoint actualEndpoint
+        {
+            get
+            {
+                return new System.Net.IPEndPoint(_actualAddr, isLocal ? localControlPort : externalControlPort);
+            }
+            set
+            {
+                _actualAddr = value.Address;
+            }
+        }
         public string username;
         public ulong id;
         public ulong[] circles;
@@ -236,7 +247,7 @@ namespace Dimension.Model
                         response?.Invoke("Attempting to initiate reverse connection.");
 
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
-                        Program.udp.Send(b, b.Length, this.actualEndpoint);
+                        Program.udp.Send(b, b.Length, actualEndpoint);
                         Program.globalUpCounter.addBytes(b.Length);
                         return;
                     }

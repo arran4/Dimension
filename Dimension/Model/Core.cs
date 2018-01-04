@@ -479,6 +479,10 @@ namespace Dimension.Model
                 Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 
                 Program.globalUpCounter.addBytes(b.Length);
+                
+                Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
+
+                Program.globalUpCounter.addBytes(b.Length);
 
                 lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)

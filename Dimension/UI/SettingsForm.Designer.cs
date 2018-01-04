@@ -40,6 +40,8 @@
             this.usernameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.dhtPortBox = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
             this.useUDTBox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -58,21 +60,19 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.label8 = new System.Windows.Forms.Label();
-            this.dhtPortBox = new System.Windows.Forms.NumericUpDown();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dhtPortBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udpControlPortBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udpDataPortBox)).BeginInit();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dhtPortBox)).BeginInit();
             this.SuspendLayout();
             // 
             // saveButton
             // 
             this.saveButton.Location = new System.Drawing.Point(404, 306);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(56, 19);
             this.saveButton.TabIndex = 0;
@@ -84,7 +84,7 @@
             // cancelButton
             // 
             this.cancelButton.Location = new System.Drawing.Point(9, 306);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(2);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(56, 19);
             this.cancelButton.TabIndex = 1;
@@ -114,7 +114,7 @@
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(443, 263);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
@@ -195,11 +195,32 @@
             this.tabPage2.Controls.Add(this.UPnPButton);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(443, 263);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Network";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // dhtPortBox
+            // 
+            this.dhtPortBox.Location = new System.Drawing.Point(117, 116);
+            this.dhtPortBox.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.dhtPortBox.Name = "dhtPortBox";
+            this.dhtPortBox.Size = new System.Drawing.Size(69, 20);
+            this.dhtPortBox.TabIndex = 10;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(30, 118);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(81, 13);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "UDP DHT Port:";
             // 
             // useUDTBox
             // 
@@ -241,7 +262,6 @@
             // 
             // udpControlPortBox
             // 
-            this.udpControlPortBox.Enabled = false;
             this.udpControlPortBox.Location = new System.Drawing.Point(116, 90);
             this.udpControlPortBox.Maximum = new decimal(new int[] {
             32767,
@@ -249,7 +269,6 @@
             0,
             0});
             this.udpControlPortBox.Name = "udpControlPortBox";
-            this.udpControlPortBox.ReadOnly = true;
             this.udpControlPortBox.Size = new System.Drawing.Size(69, 20);
             this.udpControlPortBox.TabIndex = 4;
             // 
@@ -362,27 +381,6 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(30, 118);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(81, 13);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "UDP DHT Port:";
-            // 
-            // dhtPortBox
-            // 
-            this.dhtPortBox.Location = new System.Drawing.Point(117, 116);
-            this.dhtPortBox.Maximum = new decimal(new int[] {
-            32767,
-            0,
-            0,
-            0});
-            this.dhtPortBox.Name = "dhtPortBox";
-            this.dhtPortBox.Size = new System.Drawing.Size(69, 20);
-            this.dhtPortBox.TabIndex = 10;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -392,7 +390,7 @@
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.saveButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsForm";
@@ -403,10 +401,10 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dhtPortBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udpControlPortBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udpDataPortBox)).EndInit();
             this.tabPage3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dhtPortBox)).EndInit();
             this.ResumeLayout(false);
 
         }
