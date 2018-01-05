@@ -58,12 +58,15 @@ namespace Dimension.UI
         }
         void save()
         {
+            if (usernameBox.Text.Trim() == "")
+                usernameBox.Text = Environment.MachineName;
+
             Program.settings.setBool("Use UPnP", UPnPButton.Checked);
 
             Program.settings.setInt("Default Data Port", (int)udpDataPortBox.Value);
             Program.settings.setInt("Default Control Port", (int)udpControlPortBox.Value);
             Program.settings.setInt("Default DHT Port", (int)dhtPortBox.Value);
-
+    
             Program.settings.setString("Username", usernameBox.Text);
             Program.settings.setString("Description", descriptionBox.Text);
             Program.settings.setString("Default Download Folder", downloadFolderInput.Text);
