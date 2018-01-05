@@ -43,8 +43,15 @@ namespace Dimension.Model
             int dl = br.ReadInt32();
             string d = Encoding.UTF8.GetString(br.ReadBytes(dl));
 
-            if (commandTypes.ContainsKey(t))
-                return (Commands.Command)Newtonsoft.Json.JsonConvert.DeserializeObject(d, commandTypes[t]);
+            try
+            {
+                if (commandTypes.ContainsKey(t))
+                    return (Commands.Command)Newtonsoft.Json.JsonConvert.DeserializeObject(d, commandTypes[t]);
+            }
+            catch (Newtonsoft.Json.JsonSerializationException)
+            {
+                return null;    //invalid data, ignore
+            }
             return null;
         }
     }

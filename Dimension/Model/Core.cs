@@ -36,6 +36,60 @@ namespace Dimension.Model
                         z.send(generateFileListing(z.lastFolder));
 
         }
+        void sendGossip(ulong circleId, System.Net.IPEndPoint target, bool requestingResponse)
+        {
+            Peer[] allPeers = peerManager.allPeersInCircle(circleId);
+            Commands.GossipPeer[] peers = new Commands.GossipPeer[allPeers.Length];
+            for (int i = 0; i < peers.Length; i++)
+            {
+                peers[i] = new Commands.GossipPeer()
+                {
+                    publicAddress = allPeers[i].publicAddress.ToString(),
+                    publicControlPort = allPeers[i].externalControlPort,
+                    internalAddress = allPeers[i].internalAddress.ToString(),
+                    internalControlPort = allPeers[i].localControlPort
+                };
+            }
+            byte[] b = Program.serializer.serialize(new Commands.GossipCommand()
+            {
+                 peers = peers,
+                 requestingGossipBack = requestingResponse,
+                 circleId = circleId
+            });
+            Program.udp.Send(b, b.Length, target);
+        }
+
+        void gossipLoop()
+        {
+            while (!disposed)
+            {
+                System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+                lock (circles)
+                {
+                    foreach (string s in circles)
+                    {
+                        byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
+                        ulong circleId = (BitConverter.ToUInt64(hash, 0));
+
+                        List<Peer> potentials = new List<Peer>();
+
+                        Peer[] allPeers = peerManager.allPeersInCircle(circleId);
+
+                        Random r = new Random();
+                        foreach (Peer p in allPeers)
+                            if (p.peerCount.ContainsKey(circleId))
+                                if (p.peerCount[circleId] != peerManager.allPeersInCircle(circleId).Length)
+                                    potentials.Insert(r.Next(0, potentials.Count + 1), p);
+
+                        if (potentials.Count > 0)
+                            sendGossip(circleId, potentials[0].actualEndpoint, true);
+
+                        System.Threading.Thread.Sleep(1000);
+                    }
+                }
+            }
+
+            }
         public ulong id;
         public Core()
         {
@@ -65,6 +119,10 @@ namespace Dimension.Model
             t = new System.Threading.Thread(keepAliveLoop);
             t.IsBackground = true;
             t.Name = "Reliable Keep Alive Loop";
+            t.Start();
+            t = new System.Threading.Thread(gossipLoop);
+            t.IsBackground = true;
+            t.Name = "Gossip Loop";
             t.Start();
         }
 
@@ -161,6 +219,23 @@ namespace Dimension.Model
         }
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
+            if (c is Commands.GossipCommand)
+            {
+                var h = generateHello();
+                byte[] b = Program.serializer.serialize(h);
+                Commands.GossipCommand g = (Commands.GossipCommand)c;
+                foreach (Commands.GossipPeer p in g.peers)
+                {
+                    if (!peerManager.havePeerWithAddress(System.Net.IPAddress.Parse(p.internalAddress), System.Net.IPAddress.Parse(p.publicAddress)))
+                    {
+                        //send it to both, whatever
+                        Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
+                        Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
+                    }
+                }
+                if (g.requestingGossipBack)
+                    sendGossip(g.circleId, sender, false);
+            }
             if (c is Commands.ConnectToMe)
             {
                 foreach (Peer p in Program.theCore.peerManager.allPeers)

@@ -36,6 +36,24 @@ namespace Dimension.Model
         {
             peerRemoved?.Invoke(p);
         }
+        public bool havePeerWithAddress(System.Net.IPAddress i, System.Net.IPAddress e)
+        {
+            if (e.ToString() == Program.bootstrap.publicControlEndPoint.Address.ToString())
+            {
+                //they're local
+                foreach (Peer p in allPeers)
+                    if (p.internalAddress.ToString() == i.ToString())
+                        return true;
+            }
+            else
+            {
+                foreach (Peer p in allPeers)
+                    if (p.publicAddress.ToString() == e.ToString())
+                        return true;
+
+            }
+            return false;
+        }
         public delegate void PeerUpdateEvent(Peer p);
         public event PeerUpdateEvent peerRenamed;
         public event PeerUpdateEvent peerAdded;
@@ -49,6 +67,15 @@ namespace Dimension.Model
             {
                 if (peers.ContainsKey(h.id))
                 {
+                    try
+                    {
+                        peers[h.id].internalAddress = System.Net.IPAddress.Parse(h.internalIPs[0]);
+                    }
+                    catch
+                    {
+                        //whatever
+                        peers[h.id].internalAddress = null;
+                    }
                     peers[h.id].buildNumber = h.buildNumber;
                     peers[h.id].quit = false;
                     peers[h.id].useUDT = h.useUDT;
@@ -65,6 +92,8 @@ namespace Dimension.Model
                         peers[h.id].share = h.myShare;
                         renamed = true;
                     }
+
+                    peers[h.id].peerCount = h.peerCount;
                     peers[h.id].externalControlPort = h.externalControlPort;
                     peers[h.id].externalDataPort = h.externalDataPort;
                     peers[h.id].localControlPort = h.internalControlPort;

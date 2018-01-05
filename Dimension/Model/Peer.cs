@@ -8,10 +8,12 @@ namespace Dimension.Model
 {
     public class Peer
     {
+        public Dictionary<ulong, int> peerCount = new Dictionary<ulong, int>();
         public OutgoingConnection dataConnection;
         public OutgoingConnection controlConnection;
         public OutgoingConnection udtConnection;
         public System.Net.IPAddress publicAddress;
+        public System.Net.IPAddress internalAddress;
         public int buildNumber;
         System.Net.IPAddress _actualAddr;
         public System.Net.IPEndPoint actualEndpoint

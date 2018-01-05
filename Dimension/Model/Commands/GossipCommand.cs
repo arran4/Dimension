@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model.Commands
 {
-    public class Peer
+    public class GossipCommand : Command
     {
+        public GossipPeer[] peers;
+        public bool requestingGossipBack;
+        public ulong circleId;
     }
 }
