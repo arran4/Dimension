@@ -453,13 +453,22 @@ namespace Dimension.Model
             c.myShare = share;
 
             //too much output!
-            /*var n = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
+            var n = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
             List<string> ips = new List<string>();
             for (int i = 0; i < n.Length; i++)
                 foreach (var ni in n[i].GetIPProperties().UnicastAddresses)
-                    ips.Add(ni.Address.ToString());
+                    if(ni.Address.ToString() != System.Net.IPAddress.Loopback.ToString() && ni.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+                        if(ni.IsDnsEligible)
+                            ips.Add(ni.Address.ToString());
+            if (ips.Count == 0)
+            {
+                for (int i = 0; i < n.Length; i++)
+                    foreach (var ni in n[i].GetIPProperties().UnicastAddresses)
+                        if (ni.Address.ToString() != System.Net.IPAddress.Loopback.ToString() && ni.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+                            ips.Add(ni.Address.ToString());
+            }
             c.internalIPs = ips.ToArray();
-            */
+            
             return c;
         }
         void helloLoop()
