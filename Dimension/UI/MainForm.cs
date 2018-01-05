@@ -358,5 +358,20 @@ namespace Dimension
 
             createOrSelect(p);
         }
+        void openDownloadFolder()
+        {
+            string s = Program.settings.getString("Default Download Folder", "C:\\Downloads");
+            if (System.IO.Directory.Exists(s))
+                System.Diagnostics.Process.Start(s);
+        }
+        private void openDownloadsFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openDownloadFolder();
+        }
+
+        private void openDownloadsFolderButton_Click(object sender, EventArgs e)
+        {
+            openDownloadFolder();
+        }
     }
 }

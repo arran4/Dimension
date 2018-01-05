@@ -198,6 +198,7 @@
             this.openDownloadsFolderToolStripMenuItem.Name = "openDownloadsFolderToolStripMenuItem";
             this.openDownloadsFolderToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.openDownloadsFolderToolStripMenuItem.Text = "Open Downloads Folder...";
+            this.openDownloadsFolderToolStripMenuItem.Click += new System.EventHandler(this.openDownloadsFolderToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -389,6 +390,7 @@
             this.openDownloadsFolderButton.Name = "openDownloadsFolderButton";
             this.openDownloadsFolderButton.Size = new System.Drawing.Size(24, 24);
             this.openDownloadsFolderButton.Text = "Open Downloads Folder";
+            this.openDownloadsFolderButton.Click += new System.EventHandler(this.openDownloadsFolderButton_Click);
             // 
             // downloadQueueButton
             // 
