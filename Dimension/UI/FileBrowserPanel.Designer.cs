@@ -153,6 +153,7 @@
             // inputBox
             // 
             this.inputBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.inputBox.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.inputBox.Location = new System.Drawing.Point(3, 434);
             this.inputBox.Margin = new System.Windows.Forms.Padding(2);
             this.inputBox.Multiline = true;

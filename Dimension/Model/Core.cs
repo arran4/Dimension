@@ -411,7 +411,6 @@ namespace Dimension.Model
             Commands.HelloCommand c = new Commands.HelloCommand();
             c.id = id;
             c.username = Program.settings.getString("Username", "Username");
-            c.machineName = Environment.MachineName;
             c.useUDT = Program.settings.getBool("Use UDT", true);
 
 
