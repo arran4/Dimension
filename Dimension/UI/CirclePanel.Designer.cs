@@ -34,6 +34,7 @@
             this.userListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -91,6 +92,7 @@
             // 
             this.userListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
+            this.columnHeader3,
             this.columnHeader2});
             this.userListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.userListView.FullRowSelect = true;
@@ -113,6 +115,10 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Share";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Build";
             // 
             // CirclePanel
             // 
@@ -139,5 +145,6 @@
         private System.Windows.Forms.ListView userListView;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }

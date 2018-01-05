@@ -8,6 +8,7 @@ namespace Dimension
 {
     static class Program
     {
+        public const int buildNumber = 30;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
         public static Model.ByteCounter globalDownCounter = new Model.ByteCounter();

@@ -21,5 +21,6 @@ namespace Dimension.Model.Commands
         public ulong[] myCircles;
         public bool useUDT;
         public string[] internalIPs;
+        public int buildNumber;
     }
 }

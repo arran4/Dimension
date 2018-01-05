@@ -15,6 +15,7 @@ namespace Dimension
         public MainForm()
         {
             InitializeComponent();
+            Text = "Dimension Private Alpha #" + Program.buildNumber.ToString();
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

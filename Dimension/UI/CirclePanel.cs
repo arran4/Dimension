@@ -143,6 +143,7 @@ namespace Dimension.UI
             ListViewItem i = new ListViewItem();
             i.Tag = allPeersInCircle[e.ItemIndex];
             i.Text = allPeersInCircle[e.ItemIndex].username;
+            i.SubItems.Add(allPeersInCircle[e.ItemIndex].buildNumber.ToString());
             i.SubItems.Add(ByteFormatter.formatBytes(allPeersInCircle[e.ItemIndex].share));
             e.Item = i;
         }

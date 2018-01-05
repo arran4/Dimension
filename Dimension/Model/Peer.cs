@@ -12,6 +12,7 @@ namespace Dimension.Model
         public OutgoingConnection controlConnection;
         public OutgoingConnection udtConnection;
         public System.Net.IPAddress publicAddress;
+        public int buildNumber;
         System.Net.IPAddress _actualAddr;
         public System.Net.IPEndPoint actualEndpoint
         {

@@ -49,6 +49,7 @@ namespace Dimension.Model
             {
                 if (peers.ContainsKey(h.id))
                 {
+                    peers[h.id].buildNumber = h.buildNumber;
                     peers[h.id].quit = false;
                     peers[h.id].useUDT = h.useUDT;
                     peers[h.id].actualEndpoint = sender;

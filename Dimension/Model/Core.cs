@@ -436,6 +436,7 @@ namespace Dimension.Model
             c.internalControlPort = Program.bootstrap.internalControlPort;
             c.internalDataPort = Program.bootstrap.internalDataPort;
             c.internalUdtPort = udtListener.LocalEndPoint.Port;
+            c.buildNumber = Program.buildNumber;
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
             List<ulong> circles = new List<ulong>();
