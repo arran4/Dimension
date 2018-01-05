@@ -580,6 +580,7 @@ namespace Dimension.Model
             internalIPs = ips2.ToArray();
             return c;
         }
+        string lastHelloHash;
         void helloLoop()
         {
             while (!disposed)
@@ -592,6 +593,8 @@ namespace Dimension.Model
                     return;
 
                 byte[] b = Program.serializer.serialize(generateHello());
+                var sha = new System.Security.Cryptography.SHA512Managed();
+                string helloHash = Convert.ToBase64String(sha.ComputeHash(b));
 
                 Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 
@@ -611,12 +614,17 @@ namespace Dimension.Model
 
                 foreach (Peer p in peerManager.allPeers)
                 {
-                    if (p.id != Program.theCore.id)
+                    if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)
                     {
-                        Program.udp.Send(b, b.Length, p.actualEndpoint);
-                        Program.globalUpCounter.addBytes(b.Length);
+                        if (p.id != Program.theCore.id && !p.quit)
+                        {
+                            Program.udp.Send(b, b.Length, p.actualEndpoint);
+                            Program.globalUpCounter.addBytes(b.Length);
+                            p.lastTimeHelloSent = DateTime.Now;
+                        }
                     }
                 }
+                lastHelloHash = helloHash;
                 System.Threading.Thread.Sleep(1000);
             }
         }
