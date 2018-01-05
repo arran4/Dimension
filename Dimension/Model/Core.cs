@@ -597,7 +597,8 @@ namespace Dimension.Model
 
                 Program.globalUpCounter.addBytes(b.Length);
                 
-                Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
+                if(((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port != NetConstants.controlPort)
+                    Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
 
                 Program.globalUpCounter.addBytes(b.Length);
 
