@@ -57,6 +57,7 @@ namespace Dimension.Model
                  circleId = circleId
             });
             Program.udp.Send(b, b.Length, target);
+            Program.globalUpCounter.addBytes(b.Length);
         }
 
         void gossipLoop()
