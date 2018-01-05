@@ -56,6 +56,9 @@ namespace Dimension.UI
             InitializeComponent();
             setupUserList();
 
+            if (Program.settings.getString("Username", "Username").ToLower().Trim() == "zardoz")
+                historyBox.Font = new Font("Comic Sans MS", 14);
+
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
             circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
