@@ -125,7 +125,7 @@ namespace Dimension.Model
                 }
             }
         }
-        public int udpCommandsNotFromUs = 0;
+        public long udpCommandsNotFromUs = 0;
         void receiveCallback(IAsyncResult ar)
         {
             System.Net.IPEndPoint sender = null;

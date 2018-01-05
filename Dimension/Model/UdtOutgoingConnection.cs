@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     class UdtOutgoingConnection : OutgoingConnection
     {
+        public static int successfulConnections = 0;
         Udt.Socket socket;
         public override event CommandReceived commandReceived;
         public UdtOutgoingConnection(System.Net.IPAddress addr, int port)
@@ -16,6 +17,7 @@ namespace Dimension.Model
             socket.Connect(addr, port);
 
             send(Program.theCore.generateHello());
+            successfulConnections++;
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
             t.IsBackground = true;
             t.Name = "UDT receive loop";

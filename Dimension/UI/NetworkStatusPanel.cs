@@ -49,6 +49,8 @@ namespace Dimension.UI
             s += "Successful UDP command receives from other machines: " + Program.theCore.udpCommandsNotFromUs.ToString() + Environment.NewLine;
             s += "Successful incoming TCP connections: " + Program.theCore.incomingTcpConnections.ToString() + Environment.NewLine;
             s += "Successful incoming UDT connections: " + Program.theCore.incomingUdtConnections.ToString() + Environment.NewLine;
+            s += "Successful outgoing TCP connections: " + Model.ReliableOutgoingConnection.successfulConnections + Environment.NewLine;
+            s += "Successful outgoing UDT connections: " + Model.UdtOutgoingConnection.successfulConnections.ToString() + Environment.NewLine;
 
 
             eventsBox.Text = s;

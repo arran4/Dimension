@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     class ReliableOutgoingConnection : OutgoingConnection
     {
+        public static int successfulConnections = 0;
         public override event CommandReceived commandReceived;
         public ReliableOutgoingConnection(System.Net.Sockets.TcpClient client)
         {
@@ -22,6 +23,7 @@ namespace Dimension.Model
         {
             client = new System.Net.Sockets.TcpClient();
             client.Connect(addr, port);
+            successfulConnections++;
 
             send(Program.theCore.generateHello());
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
