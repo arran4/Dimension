@@ -439,10 +439,10 @@ namespace Dimension.Model
             c.useUDT = Program.settings.getBool("Use UDT", true);
 
 
-            Dictionary<int, int> counts = new Dictionary<int, int>();
+            Dictionary<ulong, int> counts = new Dictionary<ulong, int>();
             foreach (Peer p in Program.theCore.peerManager.allPeers)
             {
-                foreach (int i in p.circles)
+                foreach (ulong i in p.circles)
                     if (!counts.ContainsKey(i))
                         counts[i] = 1;
                     else
