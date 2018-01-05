@@ -76,6 +76,9 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogTimer = new System.Windows.Forms.Timer(this.components);
             this.transferRateTimer = new System.Windows.Forms.Timer(this.components);
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.networkStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.systemLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -223,7 +226,10 @@
             this.finishedDownloadsToolStripMenuItem,
             this.toolStripMenuItem3,
             this.searchToolStripMenuItem,
-            this.hashingProgressToolStripMenuItem});
+            this.hashingProgressToolStripMenuItem,
+            this.toolStripMenuItem4,
+            this.networkStatusToolStripMenuItem,
+            this.systemLogToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -442,7 +448,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tabControl);
             this.splitContainer1.Size = new System.Drawing.Size(724, 326);
-            this.splitContainer1.SplitterDistance = 194;
+            this.splitContainer1.SplitterDistance = 195;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -454,7 +460,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 194);
+            this.tabControl.Size = new System.Drawing.Size(724, 195);
             this.tabControl.TabIndex = 0;
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
             // 
@@ -464,7 +470,7 @@
             this.systemLogStartingPage.Margin = new System.Windows.Forms.Padding(2);
             this.systemLogStartingPage.Name = "systemLogStartingPage";
             this.systemLogStartingPage.Padding = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 168);
+            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 169);
             this.systemLogStartingPage.TabIndex = 0;
             this.systemLogStartingPage.Text = "System Log";
             this.systemLogStartingPage.UseVisualStyleBackColor = true;
@@ -494,6 +500,25 @@
             this.transferRateTimer.Enabled = true;
             this.transferRateTimer.Interval = 1000;
             this.transferRateTimer.Tick += new System.EventHandler(this.transferRateTimer_Tick);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(177, 6);
+            // 
+            // networkStatusToolStripMenuItem
+            // 
+            this.networkStatusToolStripMenuItem.Name = "networkStatusToolStripMenuItem";
+            this.networkStatusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.networkStatusToolStripMenuItem.Text = "Network Status";
+            this.networkStatusToolStripMenuItem.Click += new System.EventHandler(this.networkStatusToolStripMenuItem_Click);
+            // 
+            // systemLogToolStripMenuItem
+            // 
+            this.systemLogToolStripMenuItem.Name = "systemLogToolStripMenuItem";
+            this.systemLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.systemLogToolStripMenuItem.Text = "System Log";
+            this.systemLogToolStripMenuItem.Click += new System.EventHandler(this.systemLogToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -574,6 +599,9 @@
         private System.Windows.Forms.ToolStripMenuItem joinKademliaCircleToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel kadReadyLabel;
         private System.Windows.Forms.Timer transferRateTimer;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem networkStatusToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem systemLogToolStripMenuItem;
     }
 }
 

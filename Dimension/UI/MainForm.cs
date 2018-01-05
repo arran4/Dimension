@@ -32,11 +32,19 @@ namespace Dimension
         {
             var p = new UI.SystemLogPanel();
             p.Dock = DockStyle.Fill;
+            systemLogStartingPage.Tag = "System Log";
             systemLogStartingPage.Controls.Add(p);
 
             var t = new UI.TransfersPanel();
             t.Dock = DockStyle.Fill;
             splitContainer1.Panel2.Controls.Add(t);
+
+            var z = new UI.NetworkStatusPanel();
+            z.Dock = DockStyle.Fill;
+            TabPage w = new TabPage("Network Status");
+            w.Tag = "Network Status";
+            w.Controls.Add(z);
+            tabControl.TabPages.Add(w);
         }
 
         private void joinLANButton_Click(object sender, EventArgs e)
@@ -326,6 +334,29 @@ namespace Dimension
                 UI.ByteFormatter.formatBytes(Program.globalDownCounter.frontBuffer) + "/s down. Total " +
                  UI.ByteFormatter.formatBytes(Program.globalUpCounter.totalBytes) + " up; " +
                 UI.ByteFormatter.formatBytes(Program.globalDownCounter.totalBytes) + " down.";
+        }
+
+        private void systemLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UI.SystemLogPanel s = new UI.SystemLogPanel();
+            TabPage p = new TabPage("System Log");
+            s.Dock = DockStyle.Fill;
+            p.Controls.Add(s);
+            p.Tag = "System Log";
+
+            createOrSelect(p);
+        }
+
+        private void networkStatusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            UI.NetworkStatusPanel s = new UI.NetworkStatusPanel();
+            TabPage p = new TabPage("Network Status");
+            s.Dock = DockStyle.Fill;
+            p.Controls.Add(s);
+            p.Tag = "Network Status";
+
+            createOrSelect(p);
         }
     }
 }

@@ -30,9 +30,9 @@ namespace Dimension.Model
         }
         void updateIncomings()
         {
-            lock(incomings)
-                foreach(IncomingConnection z in incomings)
-                    if(z.lastFolder != null)
+            lock (incomings)
+                foreach (IncomingConnection z in incomings)
+                    if (z.lastFolder != null)
                         z.send(generateFileListing(z.lastFolder));
 
         }
@@ -79,7 +79,7 @@ namespace Dimension.Model
                 foreach (Peer p in peerManager.allPeers)
                 {
                     if (p.udtConnection != null)
-                        if(p.udtConnection.connected)
+                        if (p.udtConnection.connected)
                             p.udtConnection.send(k);
                     if (p.dataConnection != null)
                         if (p.dataConnection.connected)
@@ -101,8 +101,15 @@ namespace Dimension.Model
             }
 
 
-            }
+        }
         Udt.Socket udtListener;
+        public int udtInternalPort
+        {
+            get
+            {
+                return udtListener.LocalEndPoint.Port;
+            }
+        }
         void doReceive()
         {
             while (!disposed)
@@ -118,6 +125,7 @@ namespace Dimension.Model
                 }
             }
         }
+        public int udpCommandsNotFromUs = 0;
         void receiveCallback(IAsyncResult ar)
         {
             System.Net.IPEndPoint sender = null;
@@ -131,6 +139,16 @@ namespace Dimension.Model
                 doReceive();
                 return;
             }
+            bool notFromUs = true;
+            foreach (System.Net.IPAddress a in internalIPs)
+                if (sender.Address.ToString() == a.ToString())
+                    notFromUs = false;
+            if (Program.bootstrap.publicControlEndPoint.Address.ToString() == sender.Address.ToString())
+                notFromUs = false;
+            if (notFromUs)
+                udpCommandsNotFromUs++;
+
+
             Program.globalDownCounter.addBytes(data.Length);
             if (data.Length > 32) //Ignore extraneous STUN info
                 parse(Program.serializer.deserialize(data), sender);
@@ -198,9 +216,15 @@ namespace Dimension.Model
                 p.sendCommand(c);
             }
         }
+        public int incomingTcpConnections = 0;
+        public int incomingUdtConnections = 0;
         List<IncomingConnection> incomings = new List<IncomingConnection>();
         public void addIncomingConnection(IncomingConnection c)
         {
+            if (c is ReliableIncomingConnection)
+                incomingTcpConnections++;
+            if (c is UdtIncomingConnection)
+                incomingUdtConnections++;
             lock (incomings)
                 incomings.Add(c);
             c.commandReceived += commandReceived;
@@ -405,6 +429,7 @@ namespace Dimension.Model
         {
             chatReceivedEvent?.Invoke(s, id);
         }
+        public System.Net.IPAddress[] internalIPs = new System.Net.IPAddress[] { };
         public Commands.HelloCommand generateHello()
         {
 
@@ -456,20 +481,27 @@ namespace Dimension.Model
             //too much output!
             var n = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
             List<string> ips = new List<string>();
+            List<System.Net.IPAddress> ips2 = new List<System.Net.IPAddress>();
             for (int i = 0; i < n.Length; i++)
                 foreach (var ni in n[i].GetIPProperties().UnicastAddresses)
-                    if(ni.Address.ToString() != System.Net.IPAddress.Loopback.ToString() && ni.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
-                        if(ni.IsDnsEligible)
+                    if (ni.Address.ToString() != System.Net.IPAddress.Loopback.ToString() && ni.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+                        if (ni.IsDnsEligible)
+                        {
+                            ips2.Add(ni.Address);
                             ips.Add(ni.Address.ToString());
+                        }
             if (ips.Count == 0)
             {
                 for (int i = 0; i < n.Length; i++)
                     foreach (var ni in n[i].GetIPProperties().UnicastAddresses)
                         if (ni.Address.ToString() != System.Net.IPAddress.Loopback.ToString() && ni.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+                        {
+                            ips2.Add(ni.Address);
                             ips.Add(ni.Address.ToString());
+                        }
             }
             c.internalIPs = ips.ToArray();
-            
+            internalIPs = ips2.ToArray();
             return c;
         }
         void helloLoop()
