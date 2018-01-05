@@ -74,7 +74,7 @@ namespace Dimension.Model
                     catch
                     {
                         //whatever
-                        peers[h.id].internalAddress = null;
+                        peers[h.id].internalAddress = System.Net.IPAddress.Loopback;
                     }
                     peers[h.id].buildNumber = h.buildNumber;
                     peers[h.id].quit = false;
