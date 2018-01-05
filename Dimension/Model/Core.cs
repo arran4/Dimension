@@ -611,8 +611,11 @@ namespace Dimension.Model
 
                 foreach (Peer p in peerManager.allPeers)
                 {
-                    Program.udp.Send(b, b.Length, p.actualEndpoint);
-                    Program.globalUpCounter.addBytes(b.Length);
+                    if (p.id != Program.theCore.id)
+                    {
+                        Program.udp.Send(b, b.Length, p.actualEndpoint);
+                        Program.globalUpCounter.addBytes(b.Length);
+                    }
                 }
                 System.Threading.Thread.Sleep(1000);
             }
