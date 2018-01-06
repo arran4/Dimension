@@ -132,9 +132,7 @@ namespace Dimension.UI
 
             circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
             Program.theCore.chatReceivedEvent += chatReceived;
-            created = DateTime.Now;
         }
-        DateTime created;
         void setupUserList()
         {
             updateUserList(null);
@@ -142,12 +140,12 @@ namespace Dimension.UI
             Program.theCore.peerManager.peerRemoved += updateUserList;
             Program.theCore.peerManager.peerAdded += updateUserList;
             Program.theCore.peerManager.peerAdded += peerJoined;
-            Program.theCore.peerManager.peerRenamed += updateUserList;
+            Program.theCore.peerManager.peerUpdated += updateUserList;
             Program.theCore.peerManager.peerRenamed += peerRenamed;
         }
-        void peerRenamed(Model.Peer p)
+        void peerRenamed(string oldName, Model.Peer p)
         {
-
+            chatReceived("*** " + oldName + " changed name to " + p.username + " at " + DateTime.Now.ToShortTimeString(), circleHash);
         }
         void peerLeft(Model.Peer p)
         {
@@ -156,10 +154,8 @@ namespace Dimension.UI
         }
         void peerJoined(Model.Peer p)
         {
-            if (created.Subtract(DateTime.Now).TotalSeconds > 5)
-            {
-                chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash);
-            }
+            chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash);
+            
         }
         private void userListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
