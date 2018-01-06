@@ -31,13 +31,17 @@ namespace Dimension.Model
             if (Program.settings.getBool("Use UPnP", true) && UPnPActive && !LANMode)
                 unMapPorts().Wait();
         }
+        static NatDevice device = null;
         async Task unMapPorts()
         {
             SystemLog.addEntry("Cleaning up UPnP mappings...");
             try
             {
-                NatDiscoverer d = new NatDiscoverer();
-                NatDevice device = await d.DiscoverDeviceAsync();
+                if (device == null)
+                {
+                    NatDiscoverer d = new NatDiscoverer();
+                    device = await d.DiscoverDeviceAsync();
+                }
                 externalIPFromUPnP = await device.GetExternalIPAsync();
                 foreach (Mapping z in await device.GetAllMappingsAsync())
                     if (z.Description == Environment.MachineName + " Dimension Mapping")
@@ -60,8 +64,11 @@ namespace Dimension.Model
 
             try
             {
-                NatDiscoverer d = new NatDiscoverer();
-                NatDevice device = await d.DiscoverDeviceAsync();
+                if (device == null)
+                {
+                    NatDiscoverer d = new NatDiscoverer();
+                    device = await d.DiscoverDeviceAsync();
+                }
                 externalIPFromUPnP = await device.GetExternalIPAsync();
                 SystemLog.addEntry("Successfully found UPnP device "  +await device.GetExternalIPAsync());
 
