@@ -384,7 +384,7 @@ namespace Dimension.Model
         {
             
             int chunkSize = 64 * 1024;
-            int pos = 0;
+            long pos = 0;
 
             System.IO.FileInfo f = new System.IO.FileInfo(realPath);
             System.IO.FileStream s = new System.IO.FileStream(realPath, System.IO.FileMode.Open, System.IO.FileAccess.Read);

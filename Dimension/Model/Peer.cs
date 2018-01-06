@@ -93,8 +93,9 @@ namespace Dimension.Model
                 }
                 catch(Exception e)
                 {
-                    if (attempts > 5)
-                        throw e;
+                    //if (attempts > 10)
+                        //throw e;
+                    System.Threading.Thread.Sleep(50);
                     attempts++;
                     goto tryAgain;
                 }

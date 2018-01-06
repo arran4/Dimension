@@ -8,7 +8,7 @@ namespace Dimension.Model.Commands
 {
     public class FileChunk : DataCommand
     {
-        public int start;
+        public long start;
         public string path;
     }
 }
