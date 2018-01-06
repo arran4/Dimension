@@ -55,41 +55,53 @@ namespace Dimension.Model
             }
             return false;
         }
-        public delegate void PeerRenameEvent(string oldName, Peer p);
         public delegate void PeerUpdateEvent(Peer p);
-        public event PeerRenameEvent peerRenamed;
+        public event PeerUpdateEvent peerRenamed;
         public event PeerUpdateEvent peerAdded;
-        public event PeerUpdateEvent peerUpdated;
         public event PeerUpdateEvent peerRemoved;
         Dictionary<ulong, Peer> peers = new Dictionary<ulong, Peer>();
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
-            string oldName = "";
             bool renamed = false;
-            bool updated = false;
             bool added = false;
             lock (peers)
             {
                 if (peers.ContainsKey(h.id))
                 {
-                    oldName = peers[h.id].username;
-                    if (peers[h.id].quit)
-                        added = true;
+                    try
+                    {
+                        System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
+                        for (int i = 0; i < ips.Length; i++)
+                            ips[i] = System.Net.IPAddress.Parse(h.internalIPs[i]);
+                        peers[h.id].internalAddress = ips;
+                    }
+                    catch
+                    {
+                        //whatever
+                        peers[h.id].internalAddress = new System.Net.IPAddress[] { System.Net.IPAddress.Loopback };
+                    }
+                    peers[h.id].buildNumber = h.buildNumber;
                     peers[h.id].quit = false;
-                    
+                    peers[h.id].useUDT = h.useUDT;
+                    peers[h.id].actualEndpoint = sender;
+                    if(h.externalIP != null)
+                        peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
                     if (peers[h.id].username != h.username)
                     {
+                        peers[h.id].username = h.username;
                         renamed = true;
                     }
                     if (peers[h.id].share != h.myShare)
                     {
-                        updated = true;
-                    }
-                    if (peers[h.id].buildNumber != h.buildNumber)
-                    {
-                        updated = true;
+                        peers[h.id].share = h.myShare;
+                        renamed = true;
                     }
 
+                    peers[h.id].peerCount = h.peerCount;
+                    peers[h.id].externalControlPort = h.externalControlPort;
+                    peers[h.id].externalDataPort = h.externalDataPort;
+                    peers[h.id].localControlPort = h.internalControlPort;
+                    peers[h.id].localDataPort = h.internalDataPort;
                     string s1 = "";
                     string s2 = "";
                     foreach (int i in peers[h.id].circles)
@@ -98,48 +110,28 @@ namespace Dimension.Model
                         s2 += i.ToString() + ", ";
                     if (s1 != s2)
                     {
+                        peers[h.id].circles = h.myCircles;
                         added = true;
                     }
                 }
                 else
                 {
                     peers[h.id] = new Peer();
+                    peers[h.id].id = h.id;
+                    peers[h.id].actualEndpoint = sender;
+                    if(h.externalIP != null)
+                        peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
+                    peers[h.id].username = h.username;
+                    peers[h.id].circles = h.myCircles;
+                    peers[h.id].externalControlPort = h.externalControlPort;
+                    peers[h.id].externalDataPort = h.externalDataPort;
+                    peers[h.id].localControlPort = h.internalControlPort;
+                    peers[h.id].localDataPort = h.internalDataPort;
+                    peers[h.id].localUDTPort = h.internalUdtPort;
                     added = true;
                 }
-                try
-                {
-                    System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
-                    for (int i = 0; i < ips.Length; i++)
-                        ips[i] = System.Net.IPAddress.Parse(h.internalIPs[i]);
-                    peers[h.id].internalAddress = ips;
-                }
-                catch
-                {
-                    //whatever
-                    peers[h.id].internalAddress = new System.Net.IPAddress[] { System.Net.IPAddress.Loopback };
-                }
-                peers[h.id].circles = h.myCircles;
-                peers[h.id].username = h.username;
-                peers[h.id].share = h.myShare;
-
-                peers[h.id].externalControlPort = h.externalControlPort;
-                peers[h.id].externalDataPort = h.externalDataPort;
-                peers[h.id].localControlPort = h.internalControlPort;
-                peers[h.id].localDataPort = h.internalDataPort;
-                peers[h.id].localUDTPort = h.internalUdtPort;
-
-                peers[h.id].id = h.id;
-                peers[h.id].actualEndpoint = sender;
-                if (h.externalIP != null)
-                    peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
-                peers[h.id].peerCount = h.peerCount;
-                peers[h.id].useUDT = h.useUDT;
-                peers[h.id].actualEndpoint = sender;
-                peers[h.id].buildNumber = h.buildNumber;
-                peers[h.id].lastTimeCommandReceived = DateTime.Now;
             }
-            if (updated)                peerUpdated?.Invoke(peers[h.id]);
-            if (renamed)                peerRenamed?.Invoke(oldName, peers[h.id]);
+            if(renamed)                peerRenamed?.Invoke(peers[h.id]);
             if(added)                  peerAdded?.Invoke(peers[h.id]);
         }
     }

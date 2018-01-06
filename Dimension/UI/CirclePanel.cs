@@ -142,13 +142,12 @@ namespace Dimension.UI
             Program.theCore.peerManager.peerRemoved += updateUserList;
             Program.theCore.peerManager.peerAdded += updateUserList;
             Program.theCore.peerManager.peerAdded += peerJoined;
-            Program.theCore.peerManager.peerUpdated += updateUserList;
+            Program.theCore.peerManager.peerRenamed += updateUserList;
             Program.theCore.peerManager.peerRenamed += peerRenamed;
         }
-        void peerRenamed(string oldName, Model.Peer p)
+        void peerRenamed(Model.Peer p)
         {
-            chatReceived("*** " + oldName + " renamed to " + p.username + " at " + DateTime.Now.ToShortTimeString(), circleHash);
-            updateUserList(p);
+
         }
         void peerLeft(Model.Peer p)
         {
@@ -157,27 +156,19 @@ namespace Dimension.UI
         }
         void peerJoined(Model.Peer p)
         {
-            if (DateTime.Now.Subtract(created).TotalSeconds > 5)
+            if (created.Subtract(DateTime.Now).TotalSeconds > 5)
             {
                 chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash);
             }
         }
         private void userListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            var peers = allPeersInCircle;
-            if (e.ItemIndex < peers.Length)
-            {
-                ListViewItem i = new ListViewItem();
-                i.Tag = peers[e.ItemIndex];
-                i.Text = peers[e.ItemIndex].username;
-                i.SubItems.Add(peers[e.ItemIndex].buildNumber.ToString());
-                i.SubItems.Add(ByteFormatter.formatBytes(peers[e.ItemIndex].share));
-                e.Item = i;
-            }
-            else
-            {
-                userListView.VirtualListSize = peers.Length;
-            }
+            ListViewItem i = new ListViewItem();
+            i.Tag = allPeersInCircle[e.ItemIndex];
+            i.Text = allPeersInCircle[e.ItemIndex].username;
+            i.SubItems.Add(allPeersInCircle[e.ItemIndex].buildNumber.ToString());
+            i.SubItems.Add(ByteFormatter.formatBytes(allPeersInCircle[e.ItemIndex].share));
+            e.Item = i;
         }
         public void chatReceived(string s, ulong roomId)
         {
