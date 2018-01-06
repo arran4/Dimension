@@ -101,7 +101,7 @@ namespace Dimension.Model
                 {
                     output[i] = new IPEndPoint(IPAddress.Parse(split[i].Split(' ')[0]), int.Parse(split[i].Split(' ')[1]));
                 }
-                catch (FormatException)
+                catch
                 {
                     output[i] = null;
                 }
