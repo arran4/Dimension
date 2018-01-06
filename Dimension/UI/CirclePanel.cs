@@ -176,13 +176,16 @@ namespace Dimension.UI
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
             {
-                if (inputBox.Text.Trim() != "" && e.Modifiers != Keys.Shift)
+                if (e.Modifiers != Keys.Shift)
                 {
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    Program.theCore.sendChat(inputBox.Text, circleHash);
-                    inputBox.Text = "";
-                    inputBox.Height = 22;
+                    if (inputBox.Text.Trim() != "")
+                    {
+                        Program.theCore.sendChat(inputBox.Text, circleHash);
+                        inputBox.Text = "";
+                        inputBox.Height = 22;
+                    }
                 }
 
             }

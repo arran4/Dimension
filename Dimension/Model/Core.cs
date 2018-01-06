@@ -275,6 +275,22 @@ namespace Dimension.Model
         List<int> usedIds = new List<int>();
         public void sendChat(string content, ulong hash)
         {
+            if (content.StartsWith("/"))
+            {
+                if (content.ToLower().StartsWith("/nick "))
+                {
+                    string s = content.Substring("/nick ".Length);
+                    if (s.Trim() != "")
+                    {
+                        if (s.Length > 16)
+                            s = s.Substring(0, 16);
+                        Program.settings.setString("Username", s);
+                        return;
+                    }
+                    }
+
+
+                }
             Model.Commands.RoomChatCommand c = new Commands.RoomChatCommand();
             c.content = content;
             c.roomId = hash;
