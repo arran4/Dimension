@@ -289,7 +289,7 @@ namespace Dimension.Model
 
             foreach (string s in r.content.Split('\n'))
             {
-                Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s.Trim(), r.roomId);
+                Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s.Trim('\r'), r.roomId);
             }
 
         }
