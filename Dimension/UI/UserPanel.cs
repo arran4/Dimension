@@ -203,16 +203,16 @@ namespace Dimension.UI
 
             TreeNode t = e.Node;
             s = "";
-            
+
             while (t.Parent != null)
             {
-                if(s == "")
+                if (s == "")
                     s = t.Text;
                 else
                     s = t.Text + "/" + s;
                 t = t.Parent;
             }
-            if(s != "/") s = "/" + s;
+            if (s != "/") s = "/" + s;
             if (s != currentPath)
             {
                 currentPath = s;
@@ -252,55 +252,70 @@ namespace Dimension.UI
                         s = "/" + tag.name;
                     else
                         s = currentPath + "/" + tag.name;
-                    bool useUDT = false;
-
-                    if (p.udtConnection != null && p.useUDT && Program.settings.getBool("Use UDT", true))
-                        useUDT = true;
-                    Model.Transfer t;
-                    if (!p.transfers.ContainsKey(s))
-                    {
-                        t = new Model.Transfer();
-                        t.thePeer = p;
-                        p.transfers[s] = t;
-                        t.path = s;
-                        t.username = p.username;
-                        t.filename = tag.name;
-                        t.download = true;
-                        t.size = tag.size;
-                        t.completed = 0;
-                        if (p.dataConnection is Model.LoopbackOutgoingConnection)
-                            t.protocol = "Loopback";
-                        else
-                            if (useUDT)
-                            t.protocol = "UDT";
-                        else
-                            t.protocol = "TCP";
-
-                        p.transfers[t.path] = t;
-                        lock (Model.Transfer.transfers)
-                            Model.Transfer.transfers.Add(t);
-                    }
-                    else
-                        t = p.transfers[s];
-                    System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
-                    {
-                        if (useUDT)
-                        {
-                            t.con = p.udtConnection;
-                            p.udtConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
-                        }
-                        else
-                        {
-                            t.con = p.dataConnection;
-                            p.dataConnection.send(new Model.Commands.RequestChunks() { allChunks = true, path = s });
-                        }
-                    });
-                    t2.IsBackground = true;
-                    t2.Name = "Download request thread";
-                    t2.Start();
+                    downloadElement(s, tag);
                 }
-
             }
+
+        }
+
+        void downloadElement(string s, Model.Commands.FSListing tag)
+        {
+
+            bool useUDT = false;
+
+            if (p.udtConnection != null && p.useUDT && Program.settings.getBool("Use UDT", true))
+                useUDT = true;
+            Model.Transfer t;
+            if (!p.transfers.ContainsKey(s))
+            {
+                t = new Model.Transfer();
+                t.thePeer = p;
+                p.transfers[s] = t;
+                t.path = s;
+                t.username = p.username;
+                t.filename = tag.name;
+                t.download = true;
+                t.size = tag.size;
+                t.completed = 0;
+                if (p.dataConnection is Model.LoopbackOutgoingConnection)
+                    t.protocol = "Loopback";
+                else
+                    if (useUDT)
+                    t.protocol = "UDT";
+                else
+                    t.protocol = "TCP";
+
+                p.transfers[t.path] = t;
+                lock (Model.Transfer.transfers)
+                    Model.Transfer.transfers.Add(t);
+            }
+            else
+                t = p.transfers[s];
+            System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
+            {
+                Model.Commands.Command c;
+                if (tag.isFolder)
+                {
+                    c = new Model.Commands.RequestFolderContents {  path = s };
+                }
+                else
+                {
+                    c = new Model.Commands.RequestChunks() { allChunks = true, path = s };
+                }
+                if (useUDT)
+                {
+                    t.con = p.udtConnection;
+                    p.udtConnection.send(c);
+                }
+                else
+                {
+                    t.con = p.dataConnection;
+                    p.dataConnection.send(c);
+                }
+            });
+            t2.IsBackground = true;
+            t2.Name = "Download request thread";
+            t2.Start();
         }
 
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
@@ -344,6 +359,28 @@ namespace Dimension.UI
         private void FileBrowserPanel_ParentChanged(object sender, EventArgs e)
         {
             updateFont();
+        }
+
+        private void filesView_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && filesView.SelectedItems.Count > 0)
+            {
+                contextMenuStrip1.Show(Cursor.Position);
+            }
+        }
+
+        private void downloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem i in filesView.SelectedItems)
+            {
+                Model.Commands.FSListing tag = (Model.Commands.FSListing)i.Tag;
+                string s;
+                if (currentPath == "/")
+                    s = "/" + tag.name;
+                else
+                    s = currentPath + "/" + tag.name;
+                downloadElement(s, tag);
+            }
         }
     }
 }

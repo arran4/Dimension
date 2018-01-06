@@ -48,7 +48,7 @@ namespace Dimension
             {
 #endif
                 Application.Run(new LoadingForm());
-
+                
                 mainForm = new MainForm();
                 Application.Run(mainForm);
                 doCleanup();

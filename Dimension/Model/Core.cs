@@ -216,7 +216,7 @@ namespace Dimension.Model
 
 
             Program.globalDownCounter.addBytes(data.Length);
-            if (data.Length > 32) //Ignore extraneous STUN info
+            if (data.Length > 32 && Program.theCore != null) //Ignore extraneous STUN info
                 parse(Program.serializer.deserialize(data), sender);
             doReceive();
         }
@@ -347,7 +347,8 @@ namespace Dimension.Model
         {
             if (con is LoopbackIncomingConnection && con.hello == null)
                 con.hello = Program.theCore.generateHello();
-            lock (con){
+            lock (con)
+            {
                 if (c is Commands.PrivateChatCommand)
                 {
                     if (con.hello != null)
@@ -366,10 +367,14 @@ namespace Dimension.Model
                     con.lastFolder = ((Commands.GetFileListing)c).path;
                     con.send(generateFileListing(((Commands.GetFileListing)c).path));
                 }
-                if (c is Commands.RequestChunks)
+                if (c is Commands.RequestChunks || c is Commands.RequestFolderContents)
                 {
-                    var z = (Commands.RequestChunks)c;
-                    FSListing f = Program.fileList.getFSListing(z.path, false);
+                    string path = "";
+                    if (c is Commands.RequestChunks)
+                        path = ((Commands.RequestChunks)c).path;
+                    if (c is Commands.RequestFolderContents)
+                        path = ((Commands.RequestFolderContents)c).path;
+                    FSListing f = Program.fileList.getFSListing(path, false);
                     FSListing parent = f;
                     string fullPath = "";
 
@@ -386,7 +391,10 @@ namespace Dimension.Model
                             fullPath = fullPath.Trim('/').TrimEnd('\\');
                             System.Threading.Thread t = new System.Threading.Thread(delegate ()
                             {
-                                sendCompleteFile(fullPath, z.path, con);
+                                if (c is Commands.RequestChunks)
+                                    sendCompleteFile(fullPath, path, path, con);
+                                if (c is Commands.RequestFolderContents)
+                                    sendCompleteFolder(fullPath, path, path, con);
                             });
                             t.Name = "Upload thread";
                             t.IsBackground = true;
@@ -401,8 +409,21 @@ namespace Dimension.Model
                     }
                 }
             }
+        }
+        void sendCompleteFolder(string realPath, string requestPath, string originalPath, IncomingConnection con)
+        {
+            System.IO.DirectoryInfo f = new System.IO.DirectoryInfo(realPath);
+            foreach (System.IO.DirectoryInfo z in f.GetDirectories())
+            {
+                sendCompleteFolder(z.FullName, requestPath.TrimEnd('/') + "/" + z.Name, originalPath, con);
             }
-        void sendCompleteFile(string realPath, string requestPath, IncomingConnection con)
+            foreach (System.IO.FileInfo z in f.GetFiles())
+            {
+                sendCompleteFile(z.FullName, requestPath.TrimEnd('/') + "/" + z.Name, originalPath, con);
+            }
+
+        }
+        void sendCompleteFile(string realPath, string requestPath, string originalPath, IncomingConnection con)
         {
             
             int chunkSize = 64 * 1024;
@@ -435,6 +456,7 @@ namespace Dimension.Model
             {
                 Commands.FileChunk c = new Commands.FileChunk();
                 c.start = pos;
+                c.originalPath = originalPath;
 
                 lock (con)
                 {
@@ -553,7 +575,7 @@ namespace Dimension.Model
 
 
             Dictionary<ulong, int> counts = new Dictionary<ulong, int>();
-            foreach (Peer p in Program.theCore.peerManager.allPeers)
+            foreach (Peer p in peerManager.allPeers)
             {
                 foreach (ulong i in p.circles)
                     if (!counts.ContainsKey(i))

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model.Commands
 {
-    public class FileChunk : DataCommand
+    public class RequestFolderContents : Command
     {
-        public long start;
         public string path;
-        public string originalPath;
     }
 }

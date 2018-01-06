@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.foldersView = new System.Windows.Forms.TreeView();
             this.filesView = new System.Windows.Forms.ListView();
@@ -38,6 +39,8 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.historyBox = new System.Windows.Forms.TextBox();
             this.inputBox = new System.Windows.Forms.TextBox();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -45,6 +48,7 @@
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -91,6 +95,7 @@
             this.filesView.UseCompatibleStateImageBehavior = false;
             this.filesView.View = System.Windows.Forms.View.Details;
             this.filesView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.filesView_MouseDoubleClick);
+            this.filesView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.filesView_MouseUp);
             // 
             // columnHeader1
             // 
@@ -163,13 +168,27 @@
             this.inputBox.TextChanged += new System.EventHandler(this.inputBox_TextChanged);
             this.inputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputBox_KeyDown);
             // 
-            // FileBrowserPanel
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.downloadToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 48);
+            // 
+            // downloadToolStripMenuItem
+            // 
+            this.downloadToolStripMenuItem.Name = "downloadToolStripMenuItem";
+            this.downloadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.downloadToolStripMenuItem.Text = "Download";
+            this.downloadToolStripMenuItem.Click += new System.EventHandler(this.downloadToolStripMenuItem_Click);
+            // 
+            // UserPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabControl1);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "FileBrowserPanel";
+            this.Name = "UserPanel";
             this.Size = new System.Drawing.Size(714, 485);
             this.ParentChanged += new System.EventHandler(this.FileBrowserPanel_ParentChanged);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -180,6 +199,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -196,5 +216,7 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TextBox historyBox;
         private System.Windows.Forms.TextBox inputBox;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem downloadToolStripMenuItem;
     }
 }

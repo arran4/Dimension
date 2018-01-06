@@ -87,6 +87,27 @@ namespace Dimension.Model
                 string s = Program.settings.getString("Default Download Folder", "C:\\Downloads");
                 if (!System.IO.Directory.Exists(s))
                     System.IO.Directory.CreateDirectory(s);
+                System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(s);
+
+                string subfolderName = chunk.originalPath.TrimEnd('/');
+                if (chunk.originalPath.Contains("/"))
+                    subfolderName = subfolderName.Substring(subfolderName.LastIndexOf("/")+1);
+
+                string subfolderRealName = System.IO.Path.Combine(d.FullName, subfolderName);
+                if (!System.IO.Directory.Exists(subfolderRealName))
+                    System.IO.Directory.CreateDirectory(subfolderRealName);
+                System.IO.DirectoryInfo currentFolder = new System.IO.DirectoryInfo(subfolderRealName);
+
+                string[] remainingPath = chunk.path.TrimEnd('/').Substring(chunk.originalPath.TrimEnd('/').Length + 1).Split('/');
+
+                for (int i = 0; i < remainingPath.Length - 1; i++)
+                {
+                    string blah = System.IO.Path.Combine(currentFolder.FullName, remainingPath[i]);
+                    if (!System.IO.Directory.Exists(blah))
+                        currentFolder = System.IO.Directory.CreateDirectory(blah);
+                }
+
+                string filename = currentFolder.FullName+ "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1);
 
                 System.Diagnostics.Stopwatch loopbackWatch = new System.Diagnostics.Stopwatch();
                 loopbackWatch.Start();
@@ -94,7 +115,7 @@ namespace Dimension.Model
                 tryAgain:
                 try
                 {
-                    System.IO.FileStream f = new System.IO.FileStream(s + "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1), System.IO.FileMode.OpenOrCreate);
+                    System.IO.FileStream f = new System.IO.FileStream(filename, System.IO.FileMode.OpenOrCreate);
                     f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
                     f.Write(chunk.data, 0, chunk.data.Length);
                     f.Close();
@@ -108,8 +129,8 @@ namespace Dimension.Model
                     goto tryAgain;
                 }
                 loopbackWatch.Stop();
-                if(transfers.ContainsKey(chunk.path)){
-                    Transfer t = transfers[chunk.path];
+                if(transfers.ContainsKey(chunk.originalPath)){
+                    Transfer t = transfers[chunk.originalPath];
                     if (t != null)
                     {
                         t.path = chunk.path;
@@ -118,7 +139,7 @@ namespace Dimension.Model
                         {
                             lock (Transfer.transfers)
                             {
-                                transfers.Remove(chunk.path);
+                                transfers.Remove(chunk.originalPath);
                                 Transfer.transfers.Remove(t);
                                 t = null;
                             }

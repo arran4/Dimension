@@ -128,6 +128,7 @@
     <Compile Include="Model\Commands\PrivateChatCommand.cs" />
     <Compile Include="Model\Commands\Quitting.cs" />
     <Compile Include="Model\Commands\RequestChunks.cs" />
+    <Compile Include="Model\Commands\RequestFolderContents.cs" />
     <Compile Include="Model\Commands\ReverseConnectionType.cs" />
     <Compile Include="Model\Commands\RoomChatCommand.cs" />
     <Compile Include="Model\Connection.cs" />
