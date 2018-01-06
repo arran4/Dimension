@@ -157,7 +157,7 @@ namespace Dimension.UI
         }
         void peerJoined(Model.Peer p)
         {
-            if (created.Subtract(DateTime.Now).TotalSeconds > 3)
+            if (DateTime.Now.Subtract(created).TotalSeconds > 5)
             {
                 chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash);
             }
