@@ -8,6 +8,20 @@ namespace Dimension
 {
     static class Program
     {
+        public static bool comicSansOnly
+        {
+            get
+            {
+                return settings.getString("Username", "Username").ToLower().Trim() == "zardoz";
+            }
+        }
+        public static System.Drawing.Font getFont()
+        {
+            if (comicSansOnly || settings.getString("Font", "Lucida Console") == "Comic Sans MS")
+                return new System.Drawing.Font("Comic Sans MS", 14);
+            else
+                return new System.Drawing.Font(settings.getString("Font", "Lucida Console"), 8.25f);
+        }
         public const int buildNumber = 31;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();

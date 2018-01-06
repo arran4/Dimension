@@ -171,6 +171,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FileBrowserPanel";
             this.Size = new System.Drawing.Size(714, 485);
+            this.ParentChanged += new System.EventHandler(this.FileBrowserPanel_ParentChanged);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

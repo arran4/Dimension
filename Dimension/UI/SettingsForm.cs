@@ -18,6 +18,15 @@ namespace Dimension.UI
             InitializeComponent();
             load();
         }
+        private void usernameBox_TextChanged(object sender, EventArgs e)
+        {
+            if (usernameBox.Text.ToLower().Trim() == "zardoz")
+            {
+                fontSelectBox.Items.Clear();
+                fontSelectBox.Items.Add("Comic Sans MS");
+                fontSelectBox.SelectedIndex = 0;
+            }
+        }
         void load()
         {
             if (Program.settings.getBool("Use UPnP", true))
@@ -38,6 +47,13 @@ namespace Dimension.UI
 
             downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:\\Downloads");
 
+            fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
+            if (Program.comicSansOnly)
+            {
+                fontSelectBox.Items.Clear();
+                fontSelectBox.Items.Add("Comic Sans MS");
+                fontSelectBox.SelectedIndex = 0;
+            }
             useUDTBox.Checked = Program.settings.getBool("Use UDT", true);
             int numShares = Program.fileListDatabase.getInt(Program.settings.settings, "Root Share Count", 0);
 
@@ -73,6 +89,7 @@ namespace Dimension.UI
 
             Program.settings.setBool("Use UDT", useUDTBox.Checked);
 
+            Program.settings.setString("Font", fontSelectBox.Text);
             Program.settings.save();
             Close();
         }
@@ -205,5 +222,6 @@ namespace Dimension.UI
                 downloadFolderInput.Text = fullPath;
             }
         }
+
     }
 }

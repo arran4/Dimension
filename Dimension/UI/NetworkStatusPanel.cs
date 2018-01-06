@@ -21,6 +21,11 @@ namespace Dimension.UI
         {
             update();
         }
+        void updateFont()
+        {
+            eventsBox.Font = Program.getFont();
+            portsTextBox.Font = Program.getFont();
+        }
 
         void update()
         {
@@ -54,6 +59,7 @@ namespace Dimension.UI
 
 
             eventsBox.Text = s;
+            updateFont();
         }
     }
 }

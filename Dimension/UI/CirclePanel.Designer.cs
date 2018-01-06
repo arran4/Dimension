@@ -128,6 +128,7 @@
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "CirclePanel";
             this.Size = new System.Drawing.Size(619, 368);
+            this.ParentChanged += new System.EventHandler(this.CirclePanel_ParentChanged);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);

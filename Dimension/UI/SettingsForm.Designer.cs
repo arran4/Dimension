@@ -32,6 +32,8 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.fontSelectBox = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.browseDownloadsButton = new System.Windows.Forms.Button();
             this.downloadFolderInput = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -105,6 +107,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.fontSelectBox);
+            this.tabPage1.Controls.Add(this.label9);
             this.tabPage1.Controls.Add(this.browseDownloadsButton);
             this.tabPage1.Controls.Add(this.downloadFolderInput);
             this.tabPage1.Controls.Add(this.label7);
@@ -119,6 +123,28 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // fontSelectBox
+            // 
+            this.fontSelectBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.fontSelectBox.FormattingEnabled = true;
+            this.fontSelectBox.Items.AddRange(new object[] {
+            "Courier New",
+            "Lucida Console",
+            "Consolas"});
+            this.fontSelectBox.Location = new System.Drawing.Point(98, 79);
+            this.fontSelectBox.Name = "fontSelectBox";
+            this.fontSelectBox.Size = new System.Drawing.Size(337, 21);
+            this.fontSelectBox.TabIndex = 8;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(65, 82);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(31, 13);
+            this.label9.TabIndex = 7;
+            this.label9.Text = "Font:";
             // 
             // browseDownloadsButton
             // 
@@ -170,6 +196,7 @@
             this.usernameBox.Name = "usernameBox";
             this.usernameBox.Size = new System.Drawing.Size(337, 20);
             this.usernameBox.TabIndex = 1;
+            this.usernameBox.TextChanged += new System.EventHandler(this.usernameBox_TextChanged);
             // 
             // label1
             // 
@@ -443,5 +470,7 @@
         private System.Windows.Forms.CheckBox useUDTBox;
         private System.Windows.Forms.NumericUpDown dhtPortBox;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox fontSelectBox;
+        private System.Windows.Forms.Label label9;
     }
 }

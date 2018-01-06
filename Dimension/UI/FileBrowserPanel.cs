@@ -16,6 +16,11 @@ namespace Dimension.UI
         {
             p.commandReceivedEvent -= commandReceived;
         }
+        void updateFont()
+        {
+            historyBox.Font = Program.getFont();
+            inputBox.Font = Program.getFont();
+        }
         Model.Peer p;
         public FileBrowserPanel(Model.Peer p)
         {
@@ -35,6 +40,7 @@ namespace Dimension.UI
             t.Name = "Create connection thread";
             t.IsBackground = true;
             t.Start();
+            updateFont();
         }
         static ImageList iconCache = new ImageList();
 
@@ -313,6 +319,11 @@ namespace Dimension.UI
         private void inputBox_TextChanged(object sender, EventArgs e)
         {
             inputBox.Height = Math.Min(100, inputBox.Font.Height * (inputBox.Text.Split('\n').Length + 1));
+        }
+
+        private void FileBrowserPanel_ParentChanged(object sender, EventArgs e)
+        {
+            updateFont();
         }
     }
 }

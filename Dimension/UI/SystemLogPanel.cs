@@ -21,12 +21,17 @@ namespace Dimension.UI
             update();
         }
 
+        void updateFont()
+        {
+            contentBox.Font = Program.getFont();
+        }
         void update()
         {
             contentBox.Text = Model.SystemLog.theLog;
             contentBox.SelectionStart = contentBox.Text.Length;
             contentBox.SelectionLength = 0;
             contentBox.ScrollToCaret();
+            updateFont();
         }
         private void updateTimer_Tick(object sender, EventArgs e)
         {
@@ -34,6 +39,11 @@ namespace Dimension.UI
             {
                 update();
             }
+        }
+
+        private void SystemLogPanel_ParentChanged(object sender, EventArgs e)
+        {
+            updateFont();
         }
     }
 }

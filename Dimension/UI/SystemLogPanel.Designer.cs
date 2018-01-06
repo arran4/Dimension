@@ -61,6 +61,7 @@
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "SystemLogPanel";
             this.Size = new System.Drawing.Size(460, 362);
+            this.ParentChanged += new System.EventHandler(this.SystemLogPanel_ParentChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 

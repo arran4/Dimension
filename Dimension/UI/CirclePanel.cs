@@ -56,8 +56,7 @@ namespace Dimension.UI
             InitializeComponent();
             setupUserList();
 
-            if (Program.settings.getString("Username", "Username").ToLower().Trim() == "zardoz")
-                historyBox.Font = new Font("Comic Sans MS", 14);
+            updateFont();
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
@@ -206,6 +205,16 @@ namespace Dimension.UI
         private void inputBox_TextChanged(object sender, EventArgs e)
         {
             inputBox.Height = Math.Min(100, inputBox.Font.Height * (inputBox.Text.Split('\n').Length+1));
+        }
+
+        void updateFont()
+        {
+            historyBox.Font = Program.getFont();
+            inputBox.Font = Program.getFont();
+        }
+        private void CirclePanel_ParentChanged(object sender, EventArgs e)
+        {
+            updateFont();
         }
     }
 }
