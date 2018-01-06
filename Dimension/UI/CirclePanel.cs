@@ -163,8 +163,7 @@ namespace Dimension.UI
                 this.Invoke(new Action(delegate ()
                 {
                     historyBox.Text += s + Environment.NewLine;
-                    historyBox.SelectionStart = historyBox.Text.Length;
-                    historyBox.ScrollToCaret();
+                    updateFont();
                 }));
             }
             catch (ObjectDisposedException)
@@ -212,7 +211,11 @@ namespace Dimension.UI
 
         void updateFont()
         {
-            historyBox.Font = Program.getFont();
+            historyBox.SelectionStart = 0;
+            historyBox.SelectionLength = historyBox.Text.Length;
+            historyBox.SelectionFont = Program.getFont();
+            historyBox.SelectionStart = historyBox.Text.Length;
+            historyBox.ScrollToCaret();
             inputBox.Font = Program.getFont();
         }
         private void CirclePanel_ParentChanged(object sender, EventArgs e)

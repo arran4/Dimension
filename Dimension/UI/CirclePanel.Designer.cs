@@ -81,6 +81,7 @@
             this.columnHeader3,
             this.columnHeader2});
             this.userListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.userListView.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.userListView.FullRowSelect = true;
             this.userListView.Location = new System.Drawing.Point(0, 0);
             this.userListView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);

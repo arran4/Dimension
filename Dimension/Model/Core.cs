@@ -269,9 +269,10 @@ namespace Dimension.Model
                 {
                     if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.externalControlPort == sender.Port)
                         p.chatReceived(r);
-                    foreach(System.Net.IPAddress ip in p.internalAddress)
-                        if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port)
-                            p.chatReceived(r);
+                    if(p.internalAddress != null)
+                        foreach(System.Net.IPAddress ip in p.internalAddress)
+                            if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port)
+                                p.chatReceived(r);
                 }
 
             }
