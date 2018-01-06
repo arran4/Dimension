@@ -269,10 +269,16 @@ namespace Dimension.Model
                 foreach (Peer p in peerManager.allPeers)
                     if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.actualEndpoint.Port == sender.Port)
                         send = false;
+                lock (toMiniHello)
+                {
 
-                foreach (System.Net.IPEndPoint p in toMiniHello)
-                    if (p.Address.ToString() == sender.Address.ToString() && p.Port == sender.Port)
-                        send = false;
+                    System.Net.IPEndPoint toRemove = null;
+                    foreach (System.Net.IPEndPoint p in toMiniHello)
+                        if (p.Address.ToString() == sender.Address.ToString() && p.Port == sender.Port)
+                            toRemove = p;
+                    if(toMiniHello.Contains(toRemove))
+                        toMiniHello.Remove(toRemove);
+                }
 
                 if (send)
                     lock (toHello)
