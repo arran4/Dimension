@@ -311,19 +311,26 @@ namespace Dimension.UI
                 {
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    p.controlConnection.send(new Model.Commands.PrivateChatCommand() {  content = inputBox.Text});
 
 
-                    foreach (string s in inputBox.Text.Split('\n'))
+                    if (p.controlConnection == null)
+                        addLine("Error - haven't connected to other peer yet.");
+                    else
                     {
-                        string w = DateTime.Now.ToShortTimeString() + " " +  Program.settings.getString("Username", "Username") + ": " + s;
-                        if (this.InvokeRequired)
-                            this.Invoke(new Action(delegate () { addLine(w); }));
-                        else
-                            addLine(w);
+                        p.controlConnection.send(new Model.Commands.PrivateChatCommand() { content = inputBox.Text });
+
+
+                        foreach (string s in inputBox.Text.Split('\n'))
+                        {
+                            string w = DateTime.Now.ToShortTimeString() + " " + Program.settings.getString("Username", "Username") + ": " + s;
+                            if (this.InvokeRequired)
+                                this.Invoke(new Action(delegate () { addLine(w); }));
+                            else
+                                addLine(w);
+                        }
+                        inputBox.Text = "";
+                        inputBox.Height = 22;
                     }
-                    inputBox.Text = "";
-                    inputBox.Height = 22;
                 }
 
             }

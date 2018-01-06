@@ -36,13 +36,14 @@ namespace Dimension.Model
         {
             peerRemoved?.Invoke(p);
         }
-        public bool havePeerWithAddress(System.Net.IPAddress i, System.Net.IPAddress e)
+        public bool havePeerWithAddress(string[] i, System.Net.IPAddress e)
         {
             if (e.ToString() == Program.bootstrap.publicControlEndPoint.Address.ToString())
             {
                 //they're local
                 foreach (Peer p in allPeers)
-                    if (p.internalAddress.ToString() == i.ToString())
+                    foreach(string inte in i)
+                    if (inte == i.ToString())
                         return true;
             }
             else
@@ -69,12 +70,15 @@ namespace Dimension.Model
                 {
                     try
                     {
-                        peers[h.id].internalAddress = System.Net.IPAddress.Parse(h.internalIPs[0]);
+                        System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
+                        for (int i = 0; i < ips.Length; i++)
+                            ips[i] = System.Net.IPAddress.Parse(h.internalIPs[i]);
+                        peers[h.id].internalAddress = ips;
                     }
                     catch
                     {
                         //whatever
-                        peers[h.id].internalAddress = System.Net.IPAddress.Loopback;
+                        peers[h.id].internalAddress = new System.Net.IPAddress[] { System.Net.IPAddress.Loopback };
                     }
                     peers[h.id].buildNumber = h.buildNumber;
                     peers[h.id].quit = false;

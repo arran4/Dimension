@@ -42,13 +42,20 @@ namespace Dimension.Model
             Commands.GossipPeer[] peers = new Commands.GossipPeer[allPeers.Length];
             for (int i = 0; i < peers.Length; i++)
             {
+                if (allPeers[i].internalAddress == null)
+                    allPeers[i].internalAddress = new System.Net.IPAddress[] { System.Net.IPAddress.Loopback };
+                string[] addrs = new string[allPeers[i].internalAddress.Length];
+                for (int z = 0; z < addrs.Length; z++)
+                    addrs[z] = allPeers[i].internalAddress[z].ToString();
                 peers[i] = new Commands.GossipPeer()
                 {
                     publicAddress = allPeers[i].publicAddress.ToString(),
                     publicControlPort = allPeers[i].externalControlPort,
-                    internalAddress = allPeers[i].internalAddress.ToString(),
-                    internalControlPort = allPeers[i].localControlPort
+                    internalAddress = allPeers[i].internalAddress[0].ToString(),
+                    internalControlPort = allPeers[i].localControlPort,
+                    internalAddresses = addrs
                 };
+                
             }
             byte[] b = Program.serializer.serialize(new Commands.GossipCommand()
             {
@@ -227,7 +234,9 @@ namespace Dimension.Model
                 Commands.GossipCommand g = (Commands.GossipCommand)c;
                 foreach (Commands.GossipPeer p in g.peers)
                 {
-                    if (!peerManager.havePeerWithAddress(System.Net.IPAddress.Parse(p.internalAddress), System.Net.IPAddress.Parse(p.publicAddress)))
+                    if (p.internalAddresses == null)
+                        p.internalAddresses = new string[] { p.internalAddress };
+                    if (!peerManager.havePeerWithAddress(p.internalAddresses, System.Net.IPAddress.Parse(p.publicAddress)))
                     {
                         //send it to both, whatever
                         Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
@@ -257,8 +266,13 @@ namespace Dimension.Model
             {
                 Commands.RoomChatCommand r = (Commands.RoomChatCommand)c;
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
-                    if (p.actualEndpoint.ToString() == sender.ToString())
+                {
+                    if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.externalControlPort == sender.Port)
                         p.chatReceived(r);
+                    foreach(System.Net.IPAddress ip in p.internalAddress)
+                        if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port)
+                            p.chatReceived(r);
+                }
 
             }
             if (c is Commands.Quitting)
@@ -531,7 +545,6 @@ namespace Dimension.Model
         public System.Net.IPAddress[] internalIPs = new System.Net.IPAddress[] { };
         public Commands.HelloCommand generateHello()
         {
-
             Commands.HelloCommand c = new Commands.HelloCommand();
             c.id = id;
             c.username = Program.settings.getString("Username", "Username");
@@ -637,13 +650,16 @@ namespace Dimension.Model
 
                 foreach (Peer p in peerManager.allPeers)
                 {
-                    if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)
+                    //if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)
                     {
-                        if (p.id != Program.theCore.id && !p.quit)
+                        //if (p.id != Program.theCore.id)
                         {
-                            Program.udp.Send(b, b.Length, p.actualEndpoint);
-                            Program.globalUpCounter.addBytes(b.Length);
-                            p.lastTimeHelloSent = DateTime.Now;
+                            if (!p.quit)
+                            {
+                                Program.udp.Send(b, b.Length, p.actualEndpoint);
+                                Program.globalUpCounter.addBytes(b.Length);
+                                p.lastTimeHelloSent = DateTime.Now;
+                            }
                         }
                     }
                 }

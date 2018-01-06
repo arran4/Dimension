@@ -8,6 +8,7 @@ namespace Dimension.Model.Commands
 {
     public class GossipPeer
     {
+        public string[] internalAddresses;
         public string internalAddress;
         public string publicAddress;
         public int internalControlPort;

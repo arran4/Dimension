@@ -14,7 +14,7 @@ namespace Dimension.Model
         public OutgoingConnection controlConnection;
         public OutgoingConnection udtConnection;
         public System.Net.IPAddress publicAddress;
-        public System.Net.IPAddress internalAddress;
+        public System.Net.IPAddress[] internalAddress;
         public int buildNumber;
         System.Net.IPAddress _actualAddr;
         public System.Net.IPEndPoint actualEndpoint
@@ -43,6 +43,8 @@ namespace Dimension.Model
             get
             {
                 //TODO: Add more conditions
+                if (id == Program.theCore.id)
+                    return true;
                 if (Program.bootstrap.publicControlEndPoint == null)
                     return true;
                 if (publicAddress.ToString() == Program.bootstrap.publicControlEndPoint.Address.ToString())
@@ -150,7 +152,13 @@ namespace Dimension.Model
         public void sendCommand(Commands.Command c)
         {
             byte[] b = Program.serializer.serialize(c);
-            Program.udp.Send(b, b.Length, actualEndpoint);
+            if (isLocal)
+            {
+                foreach(System.Net.IPAddress a in internalAddress)
+                    Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(a, localControlPort));
+            }
+            else
+                Program.udp.Send(b, b.Length, actualEndpoint);
             Program.globalUpCounter.addBytes(b.Length);
         }
         public void reverseConnect()
