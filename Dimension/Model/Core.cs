@@ -55,13 +55,13 @@ namespace Dimension.Model
                     internalControlPort = allPeers[i].localControlPort,
                     internalAddresses = addrs
                 };
-                
+
             }
             byte[] b = Program.serializer.serialize(new Commands.GossipCommand()
             {
-                 peers = peers,
-                 requestingGossipBack = requestingResponse,
-                 circleId = circleId
+                peers = peers,
+                requestingGossipBack = requestingResponse,
+                circleId = circleId
             });
             Program.udp.Send(b, b.Length, target);
             Program.globalUpCounter.addBytes(b.Length);
@@ -97,33 +97,53 @@ namespace Dimension.Model
                 }
             }
 
+        }
+        public bool isMono
+        {
+            get{
+                return Type.GetType("Mono.Runtime") != null;
             }
+        }
         public ulong id;
         public Core()
         {
+            Model.SystemLog.addEntry("Generating an ID...");
             Random r = new Random();
             ulong randomId = (ulong)r.Next();
             randomId = randomId << 32;
             randomId |= (uint)r.Next();
-
-            udtListener = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
-            udtListener.Bind(System.Net.IPAddress.Any, 0);
-            udtListener.Listen(1000);
-
             id = (ulong)Program.settings.getULong("ID", randomId);
             Program.settings.setULong("ID", id);
+
+            if (!isMono)
+            {
+                Model.SystemLog.addEntry("Creating a UDT listener...");
+                udtListener = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                udtListener.Bind(System.Net.IPAddress.Any, 0);
+                udtListener.Listen(1000);
+            }
+
+
+            Model.SystemLog.addEntry("Creating a Peer Manager...");
             peerManager = new PeerManager();
             System.Threading.Thread t = new System.Threading.Thread(helloLoop);
             t.IsBackground = true;
             t.Name = "Hello send loop";
             t.Start();
+
+            Model.SystemLog.addEntry("Starting UDP async receive...");
             doReceive();
             Program.fileList.updateComplete += updateIncomings;
 
-            t = new System.Threading.Thread(udtAcceptLoop);
-            t.IsBackground = true;
-            t.Name = "UDT Accept Loop";
-            t.Start();
+
+            Model.SystemLog.addEntry("Launching network keep alive loops...");
+            if (!isMono)
+            {
+                t = new System.Threading.Thread(udtAcceptLoop);
+                t.IsBackground = true;
+                t.Name = "UDT Accept Loop";
+                t.Start();
+            }
             t = new System.Threading.Thread(keepAliveLoop);
             t.IsBackground = true;
             t.Name = "Reliable Keep Alive Loop";
@@ -173,7 +193,10 @@ namespace Dimension.Model
         {
             get
             {
-                return udtListener.LocalEndPoint.Port;
+                if (isMono)
+                    return 0;
+                else
+                    return udtListener.LocalEndPoint.Port;
             }
         }
         void doReceive()
@@ -595,7 +618,13 @@ namespace Dimension.Model
             }
             c.internalControlPort = Program.bootstrap.internalControlPort;
             c.internalDataPort = Program.bootstrap.internalDataPort;
-            c.internalUdtPort = udtListener.LocalEndPoint.Port;
+            if (isMono)
+            {
+                c.useUDT = false;
+                c.internalUdtPort = 0;
+            }
+            else
+                c.internalUdtPort = udtListener.LocalEndPoint.Port;
             c.buildNumber = Program.buildNumber;
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();

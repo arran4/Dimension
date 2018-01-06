@@ -127,7 +127,7 @@ namespace Dimension.Model
         public async Task launch()
         {
             SystemLog.addEntry("Beginning network setup...");
-            Program.currentLoadState = "Deleting old UPnP mappings...";
+            SystemLog.addEntry("Deleting old UPnP mappings...");
             if (Program.settings.getBool("Use UPnP", true))
             {
 
@@ -151,7 +151,7 @@ namespace Dimension.Model
                     UPnPActive = false;
                 }
             }
-            Program.currentLoadState = "Binding UDP sockets.";
+            SystemLog.addEntry("Binding UDP sockets.");
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
 
@@ -169,7 +169,7 @@ namespace Dimension.Model
 
             if (Program.settings.getBool("Use UPnP", true) == false || LANMode || !UPnPActive)
             {
-                Program.currentLoadState = "STUNning NAT";
+                SystemLog.addEntry("STUNning NAT");
                 try
                 {
                     string stunUrl = "stun.l.google.com";
@@ -179,7 +179,6 @@ namespace Dimension.Model
                     if (result.NetType == STUN_NetType.UdpBlocked)
                     {
                         SystemLog.addEntry("STUN failed. Assuming network is LAN-only.");
-                        Program.currentLoadState = "STUN failed. Running in LAN mode.";
                         LANMode = true;
                         UPnPActive = false;
                     }
@@ -208,7 +207,6 @@ namespace Dimension.Model
             if (Program.settings.getBool("Use UPnP", true) && !LANMode && UPnPActive)
             {
                 SystemLog.addEntry("UPnP enabled. Attempting to map UPnP ports...");
-                Program.currentLoadState = "Mapping UPnP ports.";
 
                 publicControlEndPoint = new IPEndPoint(publicControlEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);
                 publicDataEndPoint = new IPEndPoint(publicControlEndPoint.Address, r.Next(short.MaxValue - 1000) + 1000);

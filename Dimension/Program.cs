@@ -22,7 +22,7 @@ namespace Dimension
             else
                 return new System.Drawing.Font(settings.getString("Font", "Lucida Console"), 8.25f);
         }
-        public const int buildNumber = 40;
+        public const int buildNumber = 41;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
         public static Model.ByteCounter globalDownCounter = new Model.ByteCounter();
@@ -91,13 +91,14 @@ namespace Dimension
             try
             {
 #endif
+            
             settings = new Model.Settings();
 
 
             string username = settings.getString("Username", Environment.MachineName);
             settings.setString("Username", username);
 
-            currentLoadState = "Setting up NAT...";
+            Model.SystemLog.addEntry("Setting up NAT...");
             bootstrap = new Model.Bootstrap();
             bootstrap.launch().Wait();
             listener = bootstrap.listener;
@@ -108,13 +109,19 @@ namespace Dimension
             t.Start();
             fileListDatabase = new Model.FileListDatabase();
 
+            Model.SystemLog.addEntry("Creating File List Manager...");
             fileList = new Model.FileList();
-            
+
+            Model.SystemLog.addEntry("Starting a file list update...");
             fileList.startUpdate(false);
 
+            Model.SystemLog.addEntry("Creating a serializer...");
             serializer = new Model.Serializer();
+
+            Model.SystemLog.addEntry("Creating the client core...");
             theCore = new Model.Core();
 
+            Model.SystemLog.addEntry("Starting Kademlia launching...");
             t = new System.Threading.Thread(delegate ()
             {
                 kademlia = new Model.Kademlia();
@@ -124,6 +131,7 @@ namespace Dimension
             t.Name = "Kademlia Init Thread";
             t.Start();
 
+            Model.SystemLog.addEntry("Done loading!");
             doneLoading = true;
 #if DEBUG
 #else
@@ -137,8 +145,7 @@ namespace Dimension
 #endif
         }
         public static bool doneLoading = false;
-
-        public static string currentLoadState = "";
+        
         
         //TODO: Remove old incoming connections when they're dead
         static void acceptLoop()

@@ -87,12 +87,18 @@ namespace Dimension.UI
             {
                 if (this.InvokeRequired)
                 {
-                    Invoke(new Action(delegate ()
+                    try
                     {
-                        userListView.VirtualListSize = items.Length;
-                        userListView.RedrawItems(0, items.Length-1, false);
+                        Invoke(new Action(delegate ()
+                        {
+                            userListView.VirtualListSize = items.Length;
+                            userListView.RedrawItems(0, items.Length - 1, false);
 
-                    }));
+                        }));
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
                 }
                 else
                 {
@@ -107,11 +113,17 @@ namespace Dimension.UI
                     {
                         if (this.InvokeRequired)
                         {
-                            Invoke(new Action(delegate ()
+                            try
                             {
-                                userListView.VirtualListSize = items.Length;
-                                userListView.RedrawItems(i, i, false);
-                            }));
+                                Invoke(new Action(delegate ()
+                                {
+                                    userListView.VirtualListSize = items.Length;
+                                    userListView.RedrawItems(i, i, false);
+                                }));
+                            }
+                            catch (InvalidOperationException)
+                            {
+                            }
                         }
                         else
                         {
@@ -186,6 +198,9 @@ namespace Dimension.UI
             catch (ObjectDisposedException)
             {
 
+            }
+            catch (InvalidOperationException)
+            {
             }
             }
         private void inputBox_KeyDown(object sender, KeyEventArgs e)

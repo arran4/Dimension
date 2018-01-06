@@ -27,7 +27,7 @@ namespace Dimension
                 t.Name = "Loading Thread";
                 t.Start();
             }
-            label1.Text = "Dimension - " + Program.currentLoadState;
+            label1.Text = "Dimension - " + Model.SystemLog.lastLine;
             if (Program.doneLoading)
                 this.Close();
             }

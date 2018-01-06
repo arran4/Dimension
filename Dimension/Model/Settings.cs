@@ -16,7 +16,7 @@ namespace Dimension.Model
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             folder = Path.Combine(folder, "Dimension");
 
-            Program.currentLoadState = "Loading Settings...";
+            SystemLog.addEntry("Loading Settings...");
             settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);
         }
 

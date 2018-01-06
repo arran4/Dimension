@@ -29,16 +29,23 @@ namespace Dimension.Model
         }
         public FileListDatabase()
         {
+            SystemLog.addEntry("Loading Databases...");
+
             string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             folder = Path.Combine(folder, "Dimension");
 
-            Program.currentLoadState = "Loading File List...";
+            SystemLog.addEntry("Loading File List...");
             fileList = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "FileList"), false);
-            Program.currentLoadState = "Loading Hashes...";
+            SystemLog.addEntry("Loading Quick Hashes...");
             quickHashes = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "QuickHashes"), false);
+            SystemLog.addEntry("Loading Full Hashes...");
             fullHashes = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "FullHashes"), false);
+            SystemLog.addEntry("Loading Download Queue...");
             downloadQueue = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "DownloadQueue"), false);
+            SystemLog.addEntry("Loading Remote File Lists...");
             remoteFileLists = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "RemoteFileLists"), false);
+
+            SystemLog.addEntry("All Databases Loaded.");
         }
         public void setString(RaptorDB.RaptorDB<string> db, string name, string val)
         {

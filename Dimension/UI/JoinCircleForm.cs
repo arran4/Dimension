@@ -56,10 +56,16 @@ namespace Dimension.UI
                     {
                         MessageBox.Show("Error connecting to bootstrap - " + e3.Message);
 
-                        this.Invoke(new Action(delegate ()
+                        try
                         {
-                            this.Close();
-                        }));
+                            this.Invoke(new Action(delegate ()
+                            {
+                                this.Close();
+                            }));
+                        }
+                        catch (InvalidOperationException)
+                        {
+                        }
                         return;
                     }
                 }
@@ -74,10 +80,16 @@ namespace Dimension.UI
                     Program.mainForm.addInternetCircle(e, s, circleType);
 
                 }));
-                this.Invoke(new Action(delegate ()
+                try
                 {
-                    this.Close();
-                }));
+                    this.Invoke(new Action(delegate ()
+                    {
+                        this.Close();
+                    }));
+                }
+                catch (InvalidOperationException)
+                {
+                }
             })
             {
                 Name = "Bootstrap join thread",
