@@ -55,19 +55,24 @@ namespace Dimension.Model
             }
             return false;
         }
+        public delegate void PeerRenameEvent(string oldName, Peer p);
         public delegate void PeerUpdateEvent(Peer p);
-        public event PeerUpdateEvent peerRenamed;
+        public event PeerRenameEvent peerRenamed;
         public event PeerUpdateEvent peerAdded;
+        public event PeerUpdateEvent peerUpdated;
         public event PeerUpdateEvent peerRemoved;
         Dictionary<ulong, Peer> peers = new Dictionary<ulong, Peer>();
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
+            string oldName = "";
             bool renamed = false;
+            bool updated = false;
             bool added = false;
             lock (peers)
             {
                 if (peers.ContainsKey(h.id))
                 {
+                    oldName = peers[h.id].username;
                     try
                     {
                         System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
@@ -81,6 +86,8 @@ namespace Dimension.Model
                         peers[h.id].internalAddress = new System.Net.IPAddress[] { System.Net.IPAddress.Loopback };
                     }
                     peers[h.id].buildNumber = h.buildNumber;
+                    if (peers[h.id].quit)
+                        added = true;
                     peers[h.id].quit = false;
                     peers[h.id].useUDT = h.useUDT;
                     peers[h.id].actualEndpoint = sender;
@@ -94,7 +101,7 @@ namespace Dimension.Model
                     if (peers[h.id].share != h.myShare)
                     {
                         peers[h.id].share = h.myShare;
-                        renamed = true;
+                        updated = true;
                     }
 
                     peers[h.id].peerCount = h.peerCount;
@@ -133,7 +140,8 @@ namespace Dimension.Model
                     added = true;
                 }
             }
-            if(renamed)                peerRenamed?.Invoke(peers[h.id]);
+            if (updated)                peerUpdated?.Invoke(peers[h.id]);
+            if (renamed)                peerRenamed?.Invoke(oldName, peers[h.id]);
             if(added)                  peerAdded?.Invoke(peers[h.id]);
         }
     }
