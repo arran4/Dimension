@@ -227,6 +227,19 @@ namespace Dimension.Model
         }
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
+            if (c is Commands.MiniHello)
+            {
+                foreach (Peer p in peerManager.allPeers)
+                    if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.actualEndpoint.Port == sender.Port)
+                        return;
+
+                foreach (System.Net.IPEndPoint p in toHello)
+                    if (p.Address.ToString() == sender.Address.ToString() && p.Port == sender.Port)
+                        return;
+
+                toHello.Add(sender);
+
+            }
             if (c is Commands.GossipCommand)
             {
                 var h = generateHello();
@@ -628,8 +641,9 @@ namespace Dimension.Model
                     System.Threading.Thread.Sleep(10);
                 if (disposed)
                     return;
-
+                
                 byte[] b = Program.serializer.serialize(generateHello());
+                byte[] b2 = Program.serializer.serialize(new Commands.MiniHello());
                 var sha = new System.Security.Cryptography.SHA512Managed();
                 string helloHash = Convert.ToBase64String(sha.ComputeHash(b));
 
@@ -651,18 +665,22 @@ namespace Dimension.Model
 
                 foreach (Peer p in peerManager.allPeers)
                 {
-                    //if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)
+                    bool sentHello = false;
+                    if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)
                     {
-                        //if (p.id != Program.theCore.id)
+                        if (p.id != Program.theCore.id)
                         {
                             if (!p.quit)
                             {
                                 Program.udp.Send(b, b.Length, p.actualEndpoint);
                                 Program.globalUpCounter.addBytes(b.Length);
                                 p.lastTimeHelloSent = DateTime.Now;
+                                sentHello = true;
                             }
                         }
                     }
+                    if (!sentHello)
+                        Program.udp.Send(b2, b2.Length, p.actualEndpoint);
                 }
                 lastHelloHash = helloHash;
                 System.Threading.Thread.Sleep(1000);
