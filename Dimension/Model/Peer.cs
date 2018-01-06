@@ -272,7 +272,10 @@ namespace Dimension.Model
                 return;
             usedIds.Add(r.sequenceId);
 
-            Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + r.content, r.roomId);
+            foreach (string s in r.content.Split('\n'))
+            {
+                Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s, r.roomId);
+            }
 
         }
     }
