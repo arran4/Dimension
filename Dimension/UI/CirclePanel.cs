@@ -164,12 +164,20 @@ namespace Dimension.UI
         }
         private void userListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            ListViewItem i = new ListViewItem();
-            i.Tag = allPeersInCircle[e.ItemIndex];
-            i.Text = allPeersInCircle[e.ItemIndex].username;
-            i.SubItems.Add(allPeersInCircle[e.ItemIndex].buildNumber.ToString());
-            i.SubItems.Add(ByteFormatter.formatBytes(allPeersInCircle[e.ItemIndex].share));
-            e.Item = i;
+            var peers = allPeersInCircle;
+            if (e.ItemIndex < peers.Length)
+            {
+                ListViewItem i = new ListViewItem();
+                i.Tag = peers[e.ItemIndex];
+                i.Text = peers[e.ItemIndex].username;
+                i.SubItems.Add(peers[e.ItemIndex].buildNumber.ToString());
+                i.SubItems.Add(ByteFormatter.formatBytes(peers[e.ItemIndex].share));
+                e.Item = i;
+            }
+            else
+            {
+                userListView.VirtualListSize = peers.Length;
+            }
         }
         public void chatReceived(string s, ulong roomId)
         {

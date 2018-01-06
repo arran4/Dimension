@@ -73,42 +73,23 @@ namespace Dimension.Model
                 if (peers.ContainsKey(h.id))
                 {
                     oldName = peers[h.id].username;
-                    try
-                    {
-                        System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
-                        for (int i = 0; i < ips.Length; i++)
-                            ips[i] = System.Net.IPAddress.Parse(h.internalIPs[i]);
-                        peers[h.id].internalAddress = ips;
-                    }
-                    catch
-                    {
-                        //whatever
-                        peers[h.id].internalAddress = new System.Net.IPAddress[] { System.Net.IPAddress.Loopback };
-                    }
-                    peers[h.id].buildNumber = h.buildNumber;
                     if (peers[h.id].quit)
                         added = true;
                     peers[h.id].quit = false;
-                    peers[h.id].useUDT = h.useUDT;
-                    peers[h.id].actualEndpoint = sender;
-                    if(h.externalIP != null)
-                        peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
+                    
                     if (peers[h.id].username != h.username)
                     {
-                        peers[h.id].username = h.username;
                         renamed = true;
                     }
                     if (peers[h.id].share != h.myShare)
                     {
-                        peers[h.id].share = h.myShare;
+                        updated = true;
+                    }
+                    if (peers[h.id].buildNumber != h.buildNumber)
+                    {
                         updated = true;
                     }
 
-                    peers[h.id].peerCount = h.peerCount;
-                    peers[h.id].externalControlPort = h.externalControlPort;
-                    peers[h.id].externalDataPort = h.externalDataPort;
-                    peers[h.id].localControlPort = h.internalControlPort;
-                    peers[h.id].localDataPort = h.internalDataPort;
                     string s1 = "";
                     string s2 = "";
                     foreach (int i in peers[h.id].circles)
@@ -117,28 +98,45 @@ namespace Dimension.Model
                         s2 += i.ToString() + ", ";
                     if (s1 != s2)
                     {
-                        peers[h.id].circles = h.myCircles;
                         added = true;
                     }
-                    peers[h.id].lastTimeCommandReceived = DateTime.Now;
                 }
                 else
                 {
                     peers[h.id] = new Peer();
-                    peers[h.id].id = h.id;
-                    peers[h.id].actualEndpoint = sender;
-                    if(h.externalIP != null)
-                        peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
-                    peers[h.id].username = h.username;
-                    peers[h.id].circles = h.myCircles;
-                    peers[h.id].externalControlPort = h.externalControlPort;
-                    peers[h.id].externalDataPort = h.externalDataPort;
-                    peers[h.id].localControlPort = h.internalControlPort;
-                    peers[h.id].localDataPort = h.internalDataPort;
-                    peers[h.id].localUDTPort = h.internalUdtPort;
-                    peers[h.id].lastTimeCommandReceived = DateTime.Now;
                     added = true;
                 }
+                try
+                {
+                    System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
+                    for (int i = 0; i < ips.Length; i++)
+                        ips[i] = System.Net.IPAddress.Parse(h.internalIPs[i]);
+                    peers[h.id].internalAddress = ips;
+                }
+                catch
+                {
+                    //whatever
+                    peers[h.id].internalAddress = new System.Net.IPAddress[] { System.Net.IPAddress.Loopback };
+                }
+                peers[h.id].circles = h.myCircles;
+                peers[h.id].username = h.username;
+                peers[h.id].share = h.myShare;
+
+                peers[h.id].externalControlPort = h.externalControlPort;
+                peers[h.id].externalDataPort = h.externalDataPort;
+                peers[h.id].localControlPort = h.internalControlPort;
+                peers[h.id].localDataPort = h.internalDataPort;
+                peers[h.id].localUDTPort = h.internalUdtPort;
+
+                peers[h.id].id = h.id;
+                peers[h.id].actualEndpoint = sender;
+                if (h.externalIP != null)
+                    peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
+                peers[h.id].peerCount = h.peerCount;
+                peers[h.id].useUDT = h.useUDT;
+                peers[h.id].actualEndpoint = sender;
+                peers[h.id].buildNumber = h.buildNumber;
+                peers[h.id].lastTimeCommandReceived = DateTime.Now;
             }
             if (updated)                peerUpdated?.Invoke(peers[h.id]);
             if (renamed)                peerRenamed?.Invoke(oldName, peers[h.id]);
