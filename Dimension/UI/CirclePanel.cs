@@ -132,13 +132,34 @@ namespace Dimension.UI
 
             circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
             Program.theCore.chatReceivedEvent += chatReceived;
+            created = DateTime.Now;
         }
+        DateTime created;
         void setupUserList()
         {
             updateUserList(null);
+            Program.theCore.peerManager.peerRemoved += peerLeft;
             Program.theCore.peerManager.peerRemoved += updateUserList;
             Program.theCore.peerManager.peerAdded += updateUserList;
+            Program.theCore.peerManager.peerAdded += peerJoined;
             Program.theCore.peerManager.peerRenamed += updateUserList;
+            Program.theCore.peerManager.peerRenamed += peerRenamed;
+        }
+        void peerRenamed(Model.Peer p)
+        {
+
+        }
+        void peerLeft(Model.Peer p)
+        {
+            chatReceived("*** " + p.username + " left at " + DateTime.Now.ToShortTimeString(), circleHash);
+
+        }
+        void peerJoined(Model.Peer p)
+        {
+            if (created.Subtract(DateTime.Now).TotalSeconds > 5)
+            {
+                chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash);
+            }
         }
         private void userListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
