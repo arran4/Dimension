@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Dimension.UI
 {
-    public partial class FileBrowserPanel : UserControl, Model.ClosableTab
+    public partial class UserPanel : UserControl, Model.ClosableTab
     {
         public void close()
         {
@@ -22,7 +22,7 @@ namespace Dimension.UI
             inputBox.Font = Program.getFont();
         }
         Model.Peer p;
-        public FileBrowserPanel(Model.Peer p)
+        public UserPanel(Model.Peer p)
         {
             InitializeComponent();
             filesView.SmallImageList = iconCache;
@@ -166,11 +166,14 @@ namespace Dimension.UI
             {
                 Model.Commands.PrivateChatCommand chat = (Model.Commands.PrivateChatCommand)c;
 
-
-                if (this.InvokeRequired)
-                    this.Invoke(new Action(delegate () { addLine(chat.content); }));
-                else
-                    addLine(chat.content);
+                foreach (string s in chat.content.Split('\n'))
+                {
+                    string w = DateTime.Now.ToShortTimeString() + " " + p.username + ": " + s;
+                    if (this.InvokeRequired)
+                        this.Invoke(new Action(delegate () { addLine(w); }));
+                    else
+                        addLine(w);
+                }
             }
             if (c is Model.Commands.FileListing)
             {
@@ -187,7 +190,7 @@ namespace Dimension.UI
         }
         void addLine(string s)
         {
-            historyBox.Text = s + Environment.NewLine;
+            historyBox.Text += s + Environment.NewLine;
             historyBox.SelectionStart = historyBox.Text.Length;
             historyBox.ScrollToCaret();
         }
@@ -309,6 +312,16 @@ namespace Dimension.UI
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     p.controlConnection.send(new Model.Commands.PrivateChatCommand() {  content = inputBox.Text});
+
+
+                    foreach (string s in inputBox.Text.Split('\n'))
+                    {
+                        string w = DateTime.Now.ToShortTimeString() + " " +  Program.settings.getString("Username", "Username") + ": " + s;
+                        if (this.InvokeRequired)
+                            this.Invoke(new Action(delegate () { addLine(w); }));
+                        else
+                            addLine(w);
+                    }
                     inputBox.Text = "";
                     inputBox.Height = 22;
                 }

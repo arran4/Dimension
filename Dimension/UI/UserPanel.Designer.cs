@@ -1,6 +1,6 @@
 ﻿namespace Dimension.UI
 {
-    partial class FileBrowserPanel
+    partial class UserPanel
     {
         /// <summary> 
         /// Required designer variable.

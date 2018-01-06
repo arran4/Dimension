@@ -176,11 +176,11 @@
     <Compile Include="UI\DownloadQueuePanel.Designer.cs">
       <DependentUpon>DownloadQueuePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\FileBrowserPanel.cs">
+    <Compile Include="UI\UserPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\FileBrowserPanel.Designer.cs">
-      <DependentUpon>FileBrowserPanel.cs</DependentUpon>
+    <Compile Include="UI\UserPanel.Designer.cs">
+      <DependentUpon>UserPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\FinishedTransfersPanel.cs">
       <SubType>UserControl</SubType>
@@ -254,8 +254,8 @@
     <EmbeddedResource Include="UI\DownloadQueuePanel.resx">
       <DependentUpon>DownloadQueuePanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\FileBrowserPanel.resx">
-      <DependentUpon>FileBrowserPanel.cs</DependentUpon>
+    <EmbeddedResource Include="UI\UserPanel.resx">
+      <DependentUpon>UserPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FinishedTransfersPanel.resx">
       <DependentUpon>FinishedTransfersPanel.cs</DependentUpon>

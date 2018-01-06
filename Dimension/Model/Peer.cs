@@ -58,6 +58,12 @@ namespace Dimension.Model
         {
             commandReceivedEvent?.Invoke(c);
 
+            if (c is Commands.PrivateChatCommand)
+            {
+                Commands.PrivateChatCommand chat = (Commands.PrivateChatCommand)c;
+
+            }
+
             if (c is Commands.CancelCommand)
             {
                 OutgoingConnection c3 = null;

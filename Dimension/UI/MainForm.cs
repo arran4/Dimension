@@ -283,7 +283,7 @@ namespace Dimension
 
             for (int i = 0; i < tabControl.TabPages.Count; i++)
             {
-                if (tabControl.TabPages[i].Controls[0] is UI.FileBrowserPanel)
+                if (tabControl.TabPages[i].Controls[0] is UI.UserPanel)
                 {
                     tabControl.TabPages.RemoveAt(i);
                     i--;

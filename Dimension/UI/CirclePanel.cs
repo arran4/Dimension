@@ -198,7 +198,7 @@ namespace Dimension.UI
                 TabPage p = new TabPage();
                 p.Text = z.username;
                 p.Tag = "Files for " + z.id.ToString();
-                FileBrowserPanel b = new FileBrowserPanel(z);
+                UserPanel b = new UserPanel(z);
                 b.Dock = DockStyle.Fill;
                 p.Controls.Add(b);
                 Program.mainForm.createOrSelect(p);

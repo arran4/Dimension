@@ -330,10 +330,17 @@ namespace Dimension.Model
         List<string> toCancel = new List<string>();
         void commandReceived(Commands.Command c, IncomingConnection con)
         {
-            lock(con){
+            if (con is LoopbackIncomingConnection && con.hello == null)
+                con.hello = Program.theCore.generateHello();
+            lock (con){
                 if (c is Commands.PrivateChatCommand)
                 {
-                    //todo: pass it on to the correct user
+                    if (con.hello != null)
+                    {
+                        foreach (Peer p in peerManager.allPeers)
+                            if (p.id == con.hello.id)
+                                p.commandReceived(c);
+                    }
                 }
                 if (c is Commands.CancelCommand)
                 {
