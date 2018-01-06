@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.historyBox = new System.Windows.Forms.TextBox();
             this.inputBox = new System.Windows.Forms.TextBox();
             this.userListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.historyBox = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -60,20 +60,6 @@
             this.splitContainer1.SplitterDistance = 389;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
-            // 
-            // historyBox
-            // 
-            this.historyBox.BackColor = System.Drawing.SystemColors.Window;
-            this.historyBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.historyBox.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.historyBox.Location = new System.Drawing.Point(0, 0);
-            this.historyBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.historyBox.Multiline = true;
-            this.historyBox.Name = "historyBox";
-            this.historyBox.ReadOnly = true;
-            this.historyBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.historyBox.Size = new System.Drawing.Size(389, 346);
-            this.historyBox.TabIndex = 3;
             // 
             // inputBox
             // 
@@ -120,6 +106,17 @@
             // 
             this.columnHeader3.Text = "Build";
             // 
+            // historyBox
+            // 
+            this.historyBox.BackColor = System.Drawing.SystemColors.Window;
+            this.historyBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.historyBox.Location = new System.Drawing.Point(0, 0);
+            this.historyBox.Name = "historyBox";
+            this.historyBox.ReadOnly = true;
+            this.historyBox.Size = new System.Drawing.Size(389, 346);
+            this.historyBox.TabIndex = 5;
+            this.historyBox.Text = "";
+            // 
             // CirclePanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -141,11 +138,11 @@
         #endregion
 
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TextBox historyBox;
         private System.Windows.Forms.TextBox inputBox;
         private System.Windows.Forms.ListView userListView;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.RichTextBox historyBox;
     }
 }
