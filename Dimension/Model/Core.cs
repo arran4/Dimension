@@ -227,6 +227,13 @@ namespace Dimension.Model
         }
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
+            foreach (Peer p in peerManager.allPeers)
+                if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.actualEndpoint.Port == sender.Port)
+                    p.lastTimeCommandReceived = DateTime.Now;
+            foreach (Peer p in peerManager.allPeers)
+                if (DateTime.Now.Subtract(p.lastTimeCommandReceived).TotalSeconds > 30)
+                    p.quit = true;
+
             if (c is Commands.MiniHello)
             {
                 foreach (Peer p in peerManager.allPeers)
@@ -668,16 +675,14 @@ namespace Dimension.Model
                     bool sentHello = false;
                     if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)
                     {
-                        if (p.id != Program.theCore.id)
+                        if (!p.quit)
                         {
-                            if (!p.quit)
-                            {
-                                Program.udp.Send(b, b.Length, p.actualEndpoint);
-                                Program.globalUpCounter.addBytes(b.Length);
-                                p.lastTimeHelloSent = DateTime.Now;
-                                sentHello = true;
-                            }
+                            Program.udp.Send(b, b.Length, p.actualEndpoint);
+                            Program.globalUpCounter.addBytes(b.Length);
+                            p.lastTimeHelloSent = DateTime.Now;
+                            sentHello = true;
                         }
+                        
                     }
                     if (!sentHello)
                         Program.udp.Send(b2, b2.Length, p.actualEndpoint);

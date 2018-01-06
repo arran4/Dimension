@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public class Peer
     {
+        public DateTime lastTimeCommandReceived = DateTime.MinValue;
         public DateTime lastTimeHelloSent = DateTime.MinValue;
         public Dictionary<ulong, int> peerCount = new Dictionary<ulong, int>();
         public OutgoingConnection dataConnection;
