@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.historyBox = new System.Windows.Forms.RichTextBox();
             this.inputBox = new System.Windows.Forms.TextBox();
             this.userListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.historyBox = new System.Windows.Forms.RichTextBox();
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -45,7 +45,7 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(2);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -61,12 +61,23 @@
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
             // 
+            // historyBox
+            // 
+            this.historyBox.BackColor = System.Drawing.SystemColors.Window;
+            this.historyBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.historyBox.Location = new System.Drawing.Point(0, 0);
+            this.historyBox.Name = "historyBox";
+            this.historyBox.ReadOnly = true;
+            this.historyBox.Size = new System.Drawing.Size(389, 346);
+            this.historyBox.TabIndex = 5;
+            this.historyBox.Text = "";
+            // 
             // inputBox
             // 
             this.inputBox.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.inputBox.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.inputBox.Location = new System.Drawing.Point(0, 346);
-            this.inputBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.inputBox.Margin = new System.Windows.Forms.Padding(2);
             this.inputBox.Multiline = true;
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(389, 22);
@@ -84,14 +95,12 @@
             this.userListView.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.userListView.FullRowSelect = true;
             this.userListView.Location = new System.Drawing.Point(0, 0);
-            this.userListView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.userListView.Margin = new System.Windows.Forms.Padding(2);
             this.userListView.Name = "userListView";
             this.userListView.Size = new System.Drawing.Size(227, 368);
             this.userListView.TabIndex = 0;
             this.userListView.UseCompatibleStateImageBehavior = false;
             this.userListView.View = System.Windows.Forms.View.Details;
-            this.userListView.VirtualMode = true;
-            this.userListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.userListView_RetrieveVirtualItem);
             this.userListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.userListView_MouseDoubleClick);
             // 
             // columnHeader1
@@ -99,31 +108,20 @@
             this.columnHeader1.Text = "Username";
             this.columnHeader1.Width = 200;
             // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Share";
-            // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Build";
             // 
-            // historyBox
+            // columnHeader2
             // 
-            this.historyBox.BackColor = System.Drawing.SystemColors.Window;
-            this.historyBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.historyBox.Location = new System.Drawing.Point(0, 0);
-            this.historyBox.Name = "historyBox";
-            this.historyBox.ReadOnly = true;
-            this.historyBox.Size = new System.Drawing.Size(389, 346);
-            this.historyBox.TabIndex = 5;
-            this.historyBox.Text = "";
+            this.columnHeader2.Text = "Share";
             // 
             // CirclePanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "CirclePanel";
             this.Size = new System.Drawing.Size(619, 368);
             this.ParentChanged += new System.EventHandler(this.CirclePanel_ParentChanged);

@@ -246,7 +246,8 @@ namespace Dimension.Model
         List<System.Net.IPEndPoint> toHello = new List<System.Net.IPEndPoint>();
         public void addPeer(System.Net.IPEndPoint p)
         {
-            toHello.Add(p);
+            lock(toHello)
+                toHello.Add(p);
         }
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
@@ -282,8 +283,9 @@ namespace Dimension.Model
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
                 peerManager.parseHello(h, sender);
-                if (toHello.Contains(sender))
-                    toHello.Remove(sender);
+                lock(toHello)
+                    if (toHello.Contains(sender))
+                        toHello.Remove(sender);
             }
             if (c is Commands.RoomChatCommand)
             {

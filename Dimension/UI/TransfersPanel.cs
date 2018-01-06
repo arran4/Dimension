@@ -12,28 +12,50 @@ namespace Dimension.UI
 {
     public partial class TransfersPanel : UserControl
     {
+        public bool isMono
+        {
+            get
+            {
+                return Type.GetType("Mono.Runtime") != null;
+            }
+        }
         public TransfersPanel()
         {
             InitializeComponent();
-            ListView x = listView;
-            Controls.Remove(x);
-            listView = new DoubleBufferedListView();
-            for (int i = 0; i < x.Columns.Count; i++)
-                listView.Columns.Add(x.Columns[i].Text,x.Columns[i].Width);
-            listView.View = View.Details;
-            listView.Dock = DockStyle.Fill;
-            listView.MouseUp += listView_MouseUp;
-            listView.FullRowSelect = true;
-            Controls.Add(listView);
+            if (!isMono)
+            {
+                ListView x = listView;
+                Controls.Remove(x);
+                listView = new DoubleBufferedListView();
+                for (int i = 0; i < x.Columns.Count; i++)
+                    listView.Columns.Add(x.Columns[i].Text, x.Columns[i].Width);
+                listView.View = View.Details;
+                listView.Dock = DockStyle.Fill;
+                listView.MouseUp += listView_MouseUp;
+                listView.FullRowSelect = true;
+                Controls.Add(listView);
+            }
         }
 
+        string lastFingerprint = "";
         private void updateTimer_Tick(object sender, EventArgs e)
         {
-            listView.BeginUpdate();
-
             Model.Transfer[] z;
             lock (Model.Transfer.transfers)
                 z = Model.Transfer.transfers.ToArray();
+
+            string fingerprint = "";
+            fingerprint += z.Length.ToString();
+            foreach (Model.Transfer t in z)
+                fingerprint += t.completed.ToString() + t.download.ToString() + t.filename + t.path + t.protocol + t.rate.ToString() + t.size.ToString() + t.username;
+            if (lastFingerprint == fingerprint)
+                return;
+            lastFingerprint = fingerprint;
+
+            if (!isMono)
+            {
+                listView.BeginUpdate();
+            }
 
             while (listView.Items.Count < z.Length)
                 listView.Items.Add(new ListViewItem(""));
@@ -68,7 +90,10 @@ namespace Dimension.UI
             }
 
 
-            listView.EndUpdate();
+            if (!isMono)
+            {
+                listView.EndUpdate();
+            }
         }
 
         private void listView_MouseUp(object sender, MouseEventArgs e)

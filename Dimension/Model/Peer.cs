@@ -93,22 +93,32 @@ namespace Dimension.Model
                 if (chunk.originalPath.Contains("/"))
                     subfolderName = subfolderName.Substring(subfolderName.LastIndexOf("/")+1);
 
-                string subfolderRealName = System.IO.Path.Combine(d.FullName, subfolderName);
-                if (!System.IO.Directory.Exists(subfolderRealName))
-                    System.IO.Directory.CreateDirectory(subfolderRealName);
-                System.IO.DirectoryInfo currentFolder = new System.IO.DirectoryInfo(subfolderRealName);
-
-                string[] remainingPath = chunk.path.TrimEnd('/').Substring(chunk.originalPath.TrimEnd('/').Length + 1).Split('/');
-
-                for (int i = 0; i < remainingPath.Length - 1; i++)
+                string filename;
+                if (chunk.originalPath == chunk.path)
                 {
-                    string blah = System.IO.Path.Combine(currentFolder.FullName, remainingPath[i]);
-                    if (!System.IO.Directory.Exists(blah))
-                        currentFolder = System.IO.Directory.CreateDirectory(blah);
+                    string x = chunk.path;
+                    if (x.Contains("/"))
+                        x = x.Substring(x.LastIndexOf("/") + 1);
+                    filename = System.IO.Path.Combine(s, x);
                 }
+                else
+                {
+                    string subfolderRealName = System.IO.Path.Combine(d.FullName, subfolderName);
+                    if (!System.IO.Directory.Exists(subfolderRealName))
+                        System.IO.Directory.CreateDirectory(subfolderRealName);
+                    System.IO.DirectoryInfo currentFolder = new System.IO.DirectoryInfo(subfolderRealName);
+                    string[] remainingPath = chunk.path.TrimEnd('/').Substring(chunk.originalPath.TrimEnd('/').Length + 1).Split('/');
 
-                string filename = currentFolder.FullName+ "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1);
+                    for (int i = 0; i < remainingPath.Length - 1; i++)
+                    {
+                        string blah = System.IO.Path.Combine(currentFolder.FullName, remainingPath[i]);
+                        if (!System.IO.Directory.Exists(blah))
+                            currentFolder = System.IO.Directory.CreateDirectory(blah);
+                    }
 
+                    filename = currentFolder.FullName + "\\" + chunk.path.Substring(chunk.path.LastIndexOf("/") + 1);
+
+                }
                 System.Diagnostics.Stopwatch loopbackWatch = new System.Diagnostics.Stopwatch();
                 loopbackWatch.Start();
                 int attempts = 0;

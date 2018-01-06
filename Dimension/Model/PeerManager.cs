@@ -85,7 +85,6 @@ namespace Dimension.Model
                         //whatever
                         peers[h.id].internalAddress = new System.Net.IPAddress[] { System.Net.IPAddress.Loopback };
                     }
-                    peers[h.id].buildNumber = h.buildNumber;
                     if (peers[h.id].quit)
                         added = true;
                     peers[h.id].quit = false;
@@ -137,6 +136,7 @@ namespace Dimension.Model
                     peers[h.id].localUDTPort = h.internalUdtPort;
                     added = true;
                 }
+                peers[h.id].buildNumber = h.buildNumber;
             }
             if (updated) peerUpdated?.Invoke(peers[h.id]);
             if (renamed) peerRenamed?.Invoke(oldName, peers[h.id]);

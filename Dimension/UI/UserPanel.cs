@@ -353,7 +353,9 @@ namespace Dimension.UI
 
         private void inputBox_TextChanged(object sender, EventArgs e)
         {
-            inputBox.Height = Math.Min(100, inputBox.Font.Height * (inputBox.Text.Split('\n').Length + 1));
+            int h = Math.Min(100, inputBox.Font.Height * (inputBox.Text.Split('\n').Length + 1));
+            if (inputBox.Height != h)
+                inputBox.Height = h;
         }
 
         private void FileBrowserPanel_ParentChanged(object sender, EventArgs e)
