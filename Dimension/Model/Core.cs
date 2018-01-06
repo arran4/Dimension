@@ -221,9 +221,10 @@ namespace Dimension.Model
             doReceive();
         }
         List<System.Net.IPEndPoint> toHello = new List<System.Net.IPEndPoint>();
+        List<System.Net.IPEndPoint> toMiniHello = new List<System.Net.IPEndPoint>();
         public void addPeer(System.Net.IPEndPoint p)
         {
-            toHello.Add(p);
+            toMiniHello.Add(p);
         }
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
@@ -234,19 +235,6 @@ namespace Dimension.Model
                 if (DateTime.Now.Subtract(p.lastTimeCommandReceived).TotalSeconds > 30)
                     p.quit = true;
 
-            if (c is Commands.MiniHello)
-            {
-                foreach (Peer p in peerManager.allPeers)
-                    if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.actualEndpoint.Port == sender.Port)
-                        return;
-
-                foreach (System.Net.IPEndPoint p in toHello)
-                    if (p.Address.ToString() == sender.Address.ToString() && p.Port == sender.Port)
-                        return;
-
-                toHello.Add(sender);
-
-            }
             if (c is Commands.GossipCommand)
             {
                 var h = generateHello();
@@ -275,10 +263,27 @@ namespace Dimension.Model
                         return;
                     }
             }
+            if (c is Commands.MiniHello)
+            {
+                bool send = true;
+                foreach (Peer p in peerManager.allPeers)
+                    if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.actualEndpoint.Port == sender.Port)
+                        send = false;
+
+                foreach (System.Net.IPEndPoint p in toMiniHello)
+                    if (p.Address.ToString() == sender.Address.ToString() && p.Port == sender.Port)
+                        send = false;
+
+                if (send)
+                    lock (toHello)
+                        toHello.Add(sender);
+            }
             if (c is Commands.HelloCommand)
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
                 peerManager.parseHello(h, sender);
+                if (toMiniHello.Contains(sender))
+                    toMiniHello.Remove(sender);
                 if (toHello.Contains(sender))
                     toHello.Remove(sender);
             }
@@ -663,6 +668,12 @@ namespace Dimension.Model
 
                 Program.globalUpCounter.addBytes(b.Length);
 
+                lock (toMiniHello)
+                    foreach (System.Net.IPEndPoint p in toMiniHello)
+                    {
+                        Program.udp.Send(b2, b2.Length, p);
+                        Program.globalUpCounter.addBytes(b2.Length);
+                    }
                 lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)
                     {
