@@ -58,6 +58,7 @@ namespace Dimension.Model
                     read = 1;
                     System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                     sw.Start();
+                    Program.speedLimiter.limitDownload((ulong)((Commands.DataCommand)c).data.Length);
                     byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                     while (read > 0 && pos < chunk.Length)
                     {
@@ -97,6 +98,7 @@ namespace Dimension.Model
                     }
                     if (c is Commands.DataCommand)
                     {
+                        Program.speedLimiter.limitUpload((ulong)((Commands.DataCommand)c).data.Length);
                         b = ((Commands.DataCommand)c).data;
                         pos = 0;
                         read = 1;

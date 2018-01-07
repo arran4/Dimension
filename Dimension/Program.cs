@@ -23,6 +23,7 @@ namespace Dimension
                 return new System.Drawing.Font(settings.getString("Font", "Lucida Console"), 8.25f);
         }
         public const int buildNumber = 42;
+        public static Model.GlobalSpeedLimiter speedLimiter = new Model.GlobalSpeedLimiter();
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
         public static Model.ByteCounter globalDownCounter = new Model.ByteCounter();

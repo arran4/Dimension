@@ -137,6 +137,7 @@
     <Compile Include="Model\FileList.cs" />
     <Compile Include="Model\FileListDatabase.cs" />
     <Compile Include="Model\Folder.cs" />
+    <Compile Include="Model\GlobalSpeedLimiter.cs" />
     <Compile Include="Model\IncomingConnection.cs" />
     <Compile Include="Model\FSListing.cs" />
     <Compile Include="Model\Kademlia.cs" />

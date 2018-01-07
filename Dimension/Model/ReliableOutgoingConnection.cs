@@ -77,6 +77,7 @@ namespace Dimension.Model
                         int read = 1;
                         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                         sw.Start();
+                        Program.speedLimiter.limitDownload((ulong)((Commands.DataCommand)c).data.Length);
                         byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                         while (read > 0 && pos < chunk.Length)
                         {
@@ -114,6 +115,7 @@ namespace Dimension.Model
                     Program.globalUpCounter.addBytes((ulong)b.Length);
                     if (c is Commands.DataCommand)
                     {
+                        Program.speedLimiter.limitUpload((ulong)((Commands.DataCommand)c).data.Length);
                         client.GetStream().Write(((Commands.DataCommand)c).data, 0, ((Commands.DataCommand)c).data.Length);
                         Program.globalUpCounter.addBytes((ulong)((Commands.DataCommand)c).data.Length);
                     }
