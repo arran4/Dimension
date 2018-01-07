@@ -177,6 +177,12 @@
     <Compile Include="UI\DownloadQueuePanel.Designer.cs">
       <DependentUpon>DownloadQueuePanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\LimitChangeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\LimitChangeDialog.Designer.cs">
+      <DependentUpon>LimitChangeDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\UserPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -254,6 +260,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DownloadQueuePanel.resx">
       <DependentUpon>DownloadQueuePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\LimitChangeDialog.resx">
+      <DependentUpon>LimitChangeDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\UserPanel.resx">
       <DependentUpon>UserPanel.cs</DependentUpon>

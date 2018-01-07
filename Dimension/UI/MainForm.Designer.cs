@@ -34,6 +34,9 @@
             this.logStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.kadReadyLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.speedLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.limitButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.downloadSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uploadSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.joinLANCircleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -95,11 +98,12 @@
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.logStatus,
             this.kadReadyLabel,
-            this.speedLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 377);
+            this.speedLabel,
+            this.limitButton});
+            this.statusStrip.Location = new System.Drawing.Point(0, 375);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
-            this.statusStrip.Size = new System.Drawing.Size(724, 24);
+            this.statusStrip.Size = new System.Drawing.Size(724, 26);
             this.statusStrip.TabIndex = 0;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -110,7 +114,7 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.logStatus.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenInner;
             this.logStatus.Name = "logStatus";
-            this.logStatus.Size = new System.Drawing.Size(194, 19);
+            this.logStatus.Size = new System.Drawing.Size(194, 21);
             this.logStatus.Text = "Successfully started up Dimension.";
             // 
             // kadReadyLabel
@@ -120,7 +124,7 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.kadReadyLabel.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenInner;
             this.kadReadyLabel.Name = "kadReadyLabel";
-            this.kadReadyLabel.Size = new System.Drawing.Size(98, 19);
+            this.kadReadyLabel.Size = new System.Drawing.Size(98, 21);
             this.kadReadyLabel.Text = "Kademlia Ready.";
             this.kadReadyLabel.Visible = false;
             // 
@@ -131,9 +135,35 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.speedLabel.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenInner;
             this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(234, 19);
+            this.speedLabel.Size = new System.Drawing.Size(234, 21);
             this.speedLabel.Text = "0B/s up; 0B/s down. Total 0B up, 0B down.";
             this.speedLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // limitButton
+            // 
+            this.limitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.downloadSpeedToolStripMenuItem,
+            this.uploadSpeedToolStripMenuItem});
+            this.limitButton.Image = ((System.Drawing.Image)(resources.GetObject("limitButton.Image")));
+            this.limitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.limitButton.Name = "limitButton";
+            this.limitButton.Size = new System.Drawing.Size(72, 24);
+            this.limitButton.Text = "Limits";
+            this.limitButton.Click += new System.EventHandler(this.limitButton_Click);
+            // 
+            // downloadSpeedToolStripMenuItem
+            // 
+            this.downloadSpeedToolStripMenuItem.Name = "downloadSpeedToolStripMenuItem";
+            this.downloadSpeedToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.downloadSpeedToolStripMenuItem.Text = "Download Speed: None";
+            this.downloadSpeedToolStripMenuItem.Click += new System.EventHandler(this.downloadSpeedToolStripMenuItem_Click);
+            // 
+            // uploadSpeedToolStripMenuItem
+            // 
+            this.uploadSpeedToolStripMenuItem.Name = "uploadSpeedToolStripMenuItem";
+            this.uploadSpeedToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.uploadSpeedToolStripMenuItem.Text = "Upload Speed: None";
+            this.uploadSpeedToolStripMenuItem.Click += new System.EventHandler(this.uploadSpeedToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -468,8 +498,8 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tabControl);
-            this.splitContainer1.Size = new System.Drawing.Size(724, 326);
-            this.splitContainer1.SplitterDistance = 196;
+            this.splitContainer1.Size = new System.Drawing.Size(724, 324);
+            this.splitContainer1.SplitterDistance = 195;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -482,7 +512,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 196);
+            this.tabControl.Size = new System.Drawing.Size(724, 195);
             this.tabControl.TabIndex = 0;
             this.tabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl_DrawItem);
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
@@ -493,7 +523,7 @@
             this.systemLogStartingPage.Margin = new System.Windows.Forms.Padding(2);
             this.systemLogStartingPage.Name = "systemLogStartingPage";
             this.systemLogStartingPage.Padding = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 170);
+            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 169);
             this.systemLogStartingPage.TabIndex = 0;
             this.systemLogStartingPage.Text = "System Log";
             this.systemLogStartingPage.UseVisualStyleBackColor = true;
@@ -606,6 +636,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem networkStatusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem systemLogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripDropDownButton limitButton;
+        private System.Windows.Forms.ToolStripMenuItem downloadSpeedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uploadSpeedToolStripMenuItem;
     }
 }
 

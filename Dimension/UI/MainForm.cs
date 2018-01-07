@@ -389,5 +389,31 @@ namespace Dimension
                 e.Graphics.DrawString(tp.Text, e.Font, textBrush, e.Bounds.X + 3, e.Bounds.Y + 4);
             }
         }
+
+        private void limitButton_Click(object sender, EventArgs e)
+        {
+            if (Program.settings.getULong("Global Upload Rate Limit", 0) == 0)
+                uploadSpeedToolStripMenuItem.Text = "Upload Speed: None";
+            else
+                uploadSpeedToolStripMenuItem.Text = "Upload Speed: " + UI.ByteFormatter.formatBytes(Program.settings.getULong("Global Upload Rate Limit", 0))+"/s";
+            if (Program.settings.getULong("Global Download Rate Limit", 0) == 0)
+                downloadSpeedToolStripMenuItem.Text = "Download Speed: None";
+            else
+                downloadSpeedToolStripMenuItem.Text = "Download Speed: " + UI.ByteFormatter.formatBytes(Program.settings.getULong("Global Download Rate Limit", 0)) + "/s";
+
+        }
+
+        private void downloadSpeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UI.LimitChangeDialog d = new UI.LimitChangeDialog(UI.LimitChangeDialog.WhichLimit.down);
+            d.ShowDialog();
+        }
+
+        private void uploadSpeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            UI.LimitChangeDialog d = new UI.LimitChangeDialog(UI.LimitChangeDialog.WhichLimit.up);
+            d.ShowDialog();
+        }
     }
 }
