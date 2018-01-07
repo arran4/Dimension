@@ -266,32 +266,35 @@ namespace Dimension.UI
             if (p.udtConnection != null && p.useUDT && Program.settings.getBool("Use UDT", true))
                 useUDT = true;
             Model.Transfer t;
-            if (!p.transfers.ContainsKey(s))
+            lock (p.transfers)
             {
-                t = new Model.Transfer();
-                t.thePeer = p;
-                p.transfers[s] = t;
-                t.originalPath = s;
-                t.path = s;
-                t.username = p.username;
-                t.filename = tag.name;
-                t.download = true;
-                t.size = tag.size;
-                t.completed = 0;
-                if (p.dataConnection is Model.LoopbackOutgoingConnection)
-                    t.protocol = "Loopback";
-                else
-                    if (useUDT)
-                    t.protocol = "UDT";
-                else
-                    t.protocol = "TCP";
+                if (!p.transfers.ContainsKey(s))
+                {
+                    t = new Model.Transfer();
+                    t.thePeer = p;
+                    p.transfers[s] = t;
+                    t.originalPath = s;
+                    t.path = s;
+                    t.username = p.username;
+                    t.filename = tag.name;
+                    t.download = true;
+                    t.size = tag.size;
+                    t.completed = 0;
+                    if (p.dataConnection is Model.LoopbackOutgoingConnection)
+                        t.protocol = "Loopback";
+                    else
+                        if (useUDT)
+                        t.protocol = "UDT";
+                    else
+                        t.protocol = "TCP";
 
-                p.transfers[t.path] = t;
-                lock (Model.Transfer.transfers)
-                    Model.Transfer.transfers.Add(t);
+                    p.transfers[t.path] = t;
+                    lock (Model.Transfer.transfers)
+                        Model.Transfer.transfers.Add(t);
+                }
+                else
+                    t = p.transfers[s];
             }
-            else
-                t = p.transfers[s];
             System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
             {
                 Model.Commands.Command c;

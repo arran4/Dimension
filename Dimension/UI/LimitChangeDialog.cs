@@ -34,12 +34,12 @@ namespace Dimension.UI
             if (whichLimit == WhichLimit.down)
                 value = Program.settings.getULong("Global Download Rate Limit", 0);
 
+            unitComboBox.SelectedIndex = 0;
             if (value == 0)
                 noLimitButton.Checked = true;
             else
             {
                 yesLimitButton.Checked = true;
-                unitComboBox.SelectedIndex = 0;
                 while (value > 1024)
                 {
                     unitComboBox.SelectedIndex++;

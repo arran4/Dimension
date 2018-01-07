@@ -144,6 +144,10 @@ namespace Dimension.Model
                 t.Name = "UDT Accept Loop";
                 t.Start();
             }
+            t = new System.Threading.Thread(transferRefreshLoop);
+            t.IsBackground = true;
+            t.Name = "transferRefreshLoop";
+            t.Start();
             t = new System.Threading.Thread(keepAliveLoop);
             t.IsBackground = true;
             t.Name = "Reliable Keep Alive Loop";
@@ -153,6 +157,15 @@ namespace Dimension.Model
             t.Name = "Gossip Loop";
             t.Start();
         }
+        void transferRefreshLoop()
+        {
+            while (!disposed)
+            {
+                foreach (Peer p in peerManager.allPeers)
+                    if (!p.quit)
+                        p.updateTransfers();
+            }
+            }
 
         void keepAliveLoop()
         {

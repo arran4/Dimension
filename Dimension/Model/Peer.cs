@@ -76,8 +76,12 @@ namespace Dimension.Model
                     if (dataConnection.connected)
                         c3 = dataConnection;
                 string s = (((Commands.CancelCommand)c).path);
-                Transfer.transfers.Remove(transfers[s]);
-                transfers.Remove(s);
+                lock (transfers)
+                {
+                    Transfer.transfers.Remove(transfers[s]);
+
+                    transfers.Remove(s);
+                }
                 c3.send(c);
             }
             if (c is Commands.FileChunk)
@@ -139,47 +143,57 @@ namespace Dimension.Model
                     goto tryAgain;
                 }
                 loopbackWatch.Stop();
-                if(transfers.ContainsKey(chunk.originalPath)){
-                    Transfer t = transfers[chunk.originalPath];
-                    if (t != null)
+                lock (transfers)
+                {
+                    if (transfers.ContainsKey(chunk.originalPath))
                     {
-                        t.path = chunk.path;
-                        t.completed += (ulong)chunk.data.Length;
-                        if (t.completed >= t.size)
+                        Transfer t = transfers[chunk.originalPath];
+                        if (t != null)
                         {
-                            lock (Transfer.transfers)
+                            t.path = chunk.path;
+                            t.completed += (ulong)chunk.data.Length;
+                            if (t.completed >= t.size)
                             {
-                                transfers.Remove(chunk.originalPath);
-                                Transfer.transfers.Remove(t);
-                                t = null;
-                            }
-                        }
-                        else
-                        {
-                            OutgoingConnection c3 = null;
-                            if (udtConnection != null)
-                                if (udtConnection.connected)
-                                    c3 = udtConnection;
-                            if (dataConnection != null)
-                                if (dataConnection.connected)
-                                    if (dataConnection.rate > 0)
-                                        c3 = dataConnection;
-                            if (id == Program.theCore.id)
-                            {
-                                t.rate = ((LoopbackOutgoingConnection)dataConnection).downCounter.frontBuffer;
-                                t.username = username;
-                            }
-                            if (c3 != null)
-                            {
-                                if (c3.rate > 0)
-                                    t.rate = c3.rate;
+                                lock (Transfer.transfers)
+                                {
+                                    transfers.Remove(chunk.originalPath);
+                                    Transfer.transfers.Remove(t);
+                                    t = null;
+                                }
                             }
                         }
                     }
                 }
                 }
         }
+        public void updateTransfers()
+        {
+            lock (transfers)
+                foreach (string s in transfers.Keys)
+                    updateTransferRate(transfers[s]);
+        }
 
+        void updateTransferRate(Transfer t)
+        {
+            OutgoingConnection c3 = null;
+            if (udtConnection != null)
+                if (udtConnection.connected)
+                    c3 = udtConnection;
+            if (dataConnection != null)
+                if (dataConnection.connected)
+                    if (dataConnection.rate > 0)
+                        c3 = dataConnection;
+            if (id == Program.theCore.id)
+            {
+                t.rate = ((LoopbackOutgoingConnection)dataConnection).downCounter.frontBuffer;
+                t.username = username;
+            }
+            if (c3 != null)
+            {
+                if (c3.rate > 0)
+                    t.rate = c3.rate;
+            }
+        }
         public void sendCommand(Commands.Command c)
         {
             byte[] b = Program.serializer.serialize(c);

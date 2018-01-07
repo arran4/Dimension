@@ -49,6 +49,8 @@ namespace Dimension.Model
                 while (Math.Min(amount, currentUploadLimit - totalUpload) <= 0 && currentUploadLimit > 0)
                     System.Threading.Thread.Sleep(1);
 
+                if (currentUploadLimit == 0)
+                    return amount;
                 totalUpload += amount;
                 return Math.Min(amount, currentUploadLimit - (totalUpload-amount));
 
@@ -66,6 +68,8 @@ namespace Dimension.Model
                 while(Math.Min(amount, currentDownloadLimit - totalDownload) <= 0 && currentDownloadLimit > 0)
                     System.Threading.Thread.Sleep(1);
 
+                if (currentDownloadLimit == 0)
+                    return amount;
                 totalDownload += amount;
                 return Math.Min(amount, currentDownloadLimit - (totalDownload - amount));
             }
