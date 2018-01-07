@@ -63,12 +63,28 @@ namespace Dimension.UI
             circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
             Program.theCore.joinCircle(url);
             Program.theCore.chatReceivedEvent += chatReceived;
+            MainForm.colorChange += colorChanged;
+            Program.mainForm.setColors();
 
 
             System.Threading.Thread t = new System.Threading.Thread(joinLoop);
             t.IsBackground = true;
             t.Name = "Circle join loop";
             t.Start();
+        }
+        public CirclePanel()
+        {
+            InitializeComponent();
+            setupUserList();
+
+            url = "LAN";
+            Program.theCore.joinCircle(url);
+            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+
+            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
+            Program.theCore.chatReceivedEvent += chatReceived;
+            MainForm.colorChange += colorChanged;
+            Program.mainForm.setColors();
         }
         ulong circleHash;
         Model.Peer[] allPeersInCircle
@@ -141,20 +157,6 @@ namespace Dimension.UI
             {
                 doUpdateUserList();
             }
-        }
-        public CirclePanel()
-        {
-            InitializeComponent();
-            setupUserList();
-
-            url = "LAN";
-            Program.theCore.joinCircle(url);
-            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
-
-            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
-            Program.theCore.chatReceivedEvent += chatReceived;
-            MainForm.colorChange += colorChanged;
-            Program.mainForm.setColors();
         }
         void colorChanged(bool invert)
         {
