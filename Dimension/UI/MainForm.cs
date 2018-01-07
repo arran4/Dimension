@@ -386,7 +386,7 @@ namespace Dimension
                    new SolidBrush(!highlight ? tp.ForeColor : SystemColors.HighlightText))
             {
                 e.Graphics.FillRectangle(brush, e.Bounds);
-                e.Graphics.DrawString(tp.Text, e.Font, textBrush, e.Bounds.X + 3, e.Bounds.Y + 4);
+                e.Graphics.DrawString(tp.Text, e.Font, textBrush, e.Bounds.X + 2, e.Bounds.Y + 4);
             }
         }
 

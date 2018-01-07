@@ -39,8 +39,20 @@ namespace Dimension.Model
             {
                 if (device == null)
                 {
-                    NatDiscoverer d = new NatDiscoverer();
-                    device = await d.DiscoverDeviceAsync();
+                    for (int i = 0; i < 5; i++)
+                    {
+                        try
+                        {
+                            NatDiscoverer d = new NatDiscoverer();
+                            device = await d.DiscoverDeviceAsync();
+                            break;
+                        }
+                        catch
+                        {
+                            System.Threading.Thread.Sleep(1000);
+                            SystemLog.addEntry("Failed to delete UPnP mapping. Trying again...");
+                        }
+                        }
                 }
                 externalIPFromUPnP = await device.GetExternalIPAsync();
                 foreach (Mapping z in await device.GetAllMappingsAsync())
