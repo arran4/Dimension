@@ -153,6 +153,35 @@ namespace Dimension.UI
 
             circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
             Program.theCore.chatReceivedEvent += chatReceived;
+            MainForm.colorChange += colorChanged;
+            Program.mainForm.setColors();
+        }
+        void colorChanged(bool invert)
+        {
+            if (invert)
+            {
+                historyBox.BackColor = Color.Black;
+                historyBox.ForeColor = Color.Gray;
+
+                inputBox.BackColor = Color.Black;
+                inputBox.ForeColor = Color.Gray;
+
+                userListView.BackColor = Color.Black;
+                userListView.ForeColor = Color.Gray;
+            }
+            else
+            {
+                historyBox.BackColor = SystemColors.Window;
+                historyBox.ForeColor = SystemColors.WindowText;
+
+                inputBox.BackColor = SystemColors.Window;
+                inputBox.ForeColor = SystemColors.WindowText;
+
+                userListView.BackColor = SystemColors.Window;
+                userListView.ForeColor = SystemColors.WindowText;
+
+            }
+
         }
         void setupUserList()
         {

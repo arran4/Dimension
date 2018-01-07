@@ -16,6 +16,7 @@ namespace Dimension
         {
             InitializeComponent();
             Text = "Dimension Private Alpha #" + Program.buildNumber.ToString();
+            setColors();
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -45,6 +46,8 @@ namespace Dimension
             w.Tag = "Network Status";
             w.Controls.Add(z);
             tabControl.TabPages.Add(w);
+
+            setColors();
         }
 
         private void joinLANButton_Click(object sender, EventArgs e)
@@ -415,5 +418,18 @@ namespace Dimension
             UI.LimitChangeDialog d = new UI.LimitChangeDialog(UI.LimitChangeDialog.WhichLimit.up);
             d.ShowDialog();
         }
+
+        private void invertedColorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Program.settings.setBool("Invert Colors", !invertedColorsToolStripMenuItem.Checked);
+            setColors();
+        }
+        public void setColors()
+        {
+            invertedColorsToolStripMenuItem.Checked = Program.settings.getBool("Invert Colors", false);
+            colorChange?.Invoke(Program.settings.getBool("Invert Colors", false));
+        }
+        public delegate void ColorChangeEvent(bool inverted = false);
+        public static event ColorChangeEvent colorChange;
     }
 }

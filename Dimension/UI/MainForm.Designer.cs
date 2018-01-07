@@ -82,6 +82,8 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogTimer = new System.Windows.Forms.Timer(this.components);
             this.transferRateTimer = new System.Windows.Forms.Timer(this.components);
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.invertedColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -172,6 +174,7 @@
             this.fileToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.windowToolStripMenuItem,
+            this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -554,6 +557,21 @@
             this.transferRateTimer.Interval = 1000;
             this.transferRateTimer.Tick += new System.EventHandler(this.transferRateTimer_Tick);
             // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.invertedColorsToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // invertedColorsToolStripMenuItem
+            // 
+            this.invertedColorsToolStripMenuItem.Name = "invertedColorsToolStripMenuItem";
+            this.invertedColorsToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.invertedColorsToolStripMenuItem.Text = "Inverted Colors";
+            this.invertedColorsToolStripMenuItem.Click += new System.EventHandler(this.invertedColorsToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -640,6 +658,8 @@
         private System.Windows.Forms.ToolStripDropDownButton limitButton;
         private System.Windows.Forms.ToolStripMenuItem downloadSpeedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uploadSpeedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem invertedColorsToolStripMenuItem;
     }
 }
 
