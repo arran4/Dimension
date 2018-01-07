@@ -147,5 +147,37 @@ namespace Dimension.UI
                 t.con.send(new Model.Commands.CancelCommand() { path = t.originalPath });
             }
             }
+
+        private void disableLimitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem i in listView.SelectedItems)
+            {
+                Model.Transfer t = (Model.Transfer)i.Tag;
+
+                if (t.con != null)
+                {
+                    if (t.con is Model.IncomingConnection)
+                        ((Model.IncomingConnection)t.con).rateLimiterDisabled = true;
+                    else if (t.con is Model.OutgoingConnection)
+                        ((Model.OutgoingConnection)t.con).rateLimiterDisabled = true;
+                }
+            }
+        }
+
+        private void enableLimitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem i in listView.SelectedItems)
+            {
+                Model.Transfer t = (Model.Transfer)i.Tag;
+
+                if (t.con != null)
+                {
+                    if (t.con is Model.IncomingConnection)
+                        ((Model.IncomingConnection)t.con).rateLimiterDisabled = false;
+                    else if (t.con is Model.OutgoingConnection)
+                        ((Model.OutgoingConnection)t.con).rateLimiterDisabled = false;
+                }
+            }
+        }
     }
 }

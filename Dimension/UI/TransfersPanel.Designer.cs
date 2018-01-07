@@ -42,6 +42,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.cancelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.disableLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -115,9 +117,11 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableLimitToolStripMenuItem,
+            this.disableLimitToolStripMenuItem,
             this.cancelToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(111, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 92);
             // 
             // cancelToolStripMenuItem
             // 
@@ -129,6 +133,20 @@
             // columnHeader9
             // 
             this.columnHeader9.Text = "Limit";
+            // 
+            // disableLimitToolStripMenuItem
+            // 
+            this.disableLimitToolStripMenuItem.Name = "disableLimitToolStripMenuItem";
+            this.disableLimitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.disableLimitToolStripMenuItem.Text = "Disable Limit";
+            this.disableLimitToolStripMenuItem.Click += new System.EventHandler(this.disableLimitToolStripMenuItem_Click);
+            // 
+            // enableLimitToolStripMenuItem
+            // 
+            this.enableLimitToolStripMenuItem.Name = "enableLimitToolStripMenuItem";
+            this.enableLimitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.enableLimitToolStripMenuItem.Text = "Enable Limit";
+            this.enableLimitToolStripMenuItem.Click += new System.EventHandler(this.enableLimitToolStripMenuItem_Click);
             // 
             // TransfersPanel
             // 
@@ -158,5 +176,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem cancelToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ToolStripMenuItem disableLimitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enableLimitToolStripMenuItem;
     }
 }
