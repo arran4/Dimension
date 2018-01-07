@@ -75,18 +75,19 @@ namespace Dimension.Model
                     {
                         int pos = 0;
                         int read = 1;
-                        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                        sw.Start();
                         byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                         while (read > 0 && pos < chunk.Length)
                         {
-                            read = client.GetStream().Read(chunk, pos, (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos)));
+                            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                            sw.Start();
+                            int amt = (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos));
+                            read = client.GetStream().Read(chunk, pos,amt);
+                            sw.Stop();
+                            rate = (ulong)((amt) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
                             Program.globalDownCounter.addBytes((ulong)read);
                             pos += read;
                         }
                         ((Commands.DataCommand)c).data = chunk;
-                        sw.Stop();
-                        rate = (ulong)((chunk.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
                     }
                 }
                 catch
@@ -120,8 +121,8 @@ namespace Dimension.Model
                             int amt = (int)Program.speedLimiter.limitUpload((ulong)(((Commands.DataCommand)c).data.Length - pos));
                             client.GetStream().Write(((Commands.DataCommand)c).data, pos, amt);
                             pos += amt;
+                            Program.globalUpCounter.addBytes(amt);
                         }
-                        Program.globalUpCounter.addBytes((ulong)((Commands.DataCommand)c).data.Length);
                     }
                 }
                 catch

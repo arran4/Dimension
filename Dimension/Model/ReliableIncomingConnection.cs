@@ -126,8 +126,8 @@ namespace Dimension.Model
                             int amt = (int)Program.speedLimiter.limitUpload((ulong)(((Commands.DataCommand)c).data.Length - pos));
                             client.GetStream().Write(((Commands.DataCommand)c).data, pos, amt);
                             pos += amt;
+                            Program.globalUpCounter.addBytes(amt);
                         }
-                        Program.globalUpCounter.addBytes((ulong)((Commands.DataCommand)c).data.Length);
                     }
                 }
 
