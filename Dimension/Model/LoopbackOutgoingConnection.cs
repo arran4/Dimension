@@ -23,7 +23,7 @@ namespace Dimension.Model
             {
                 Program.globalUpCounter.addBytes(((Commands.DataCommand)c).data.Length);
                 upCounter.addBytes(((Commands.DataCommand)c).data.Length);
-                Program.speedLimiter.limitUpload((ulong)((Commands.DataCommand)c).data.Length);
+                Program.speedLimiter.limitUpload((ulong)((Commands.DataCommand)c).data.Length, rateLimiterDisabled);
             }
             this.c.received(c);
         }
@@ -33,7 +33,7 @@ namespace Dimension.Model
             {
                 Program.globalDownCounter.addBytes(((Commands.DataCommand)c).data.Length);
                 downCounter.addBytes(((Commands.DataCommand)c).data.Length);
-                Program.speedLimiter.limitDownload((ulong)((Commands.DataCommand)c).data.Length);
+                Program.speedLimiter.limitDownload((ulong)((Commands.DataCommand)c).data.Length, rateLimiterDisabled);
             }
             commandReceived?.Invoke(c);
         }

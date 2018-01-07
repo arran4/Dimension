@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public abstract class OutgoingConnection : Connection
     {
+        public bool rateLimiterDisabled = false;
         public ulong rate;
         public delegate void CommandReceived(Commands.Command c);
         public abstract event CommandReceived commandReceived;

@@ -87,6 +87,19 @@ namespace Dimension.UI
                     if (upLimit > 0)
                         limit = UI.ByteFormatter.formatBytes(upLimit) + "/s";
                 }
+                if (z[i].con != null)
+                {
+                    if (z[i].con is Model.IncomingConnection)
+                    {
+                        if (((Model.IncomingConnection)z[i].con).rateLimiterDisabled)
+                            limit = "Bypassed";
+                    }
+                    else if (z[i].con is Model.OutgoingConnection)
+                    {
+                        if (((Model.OutgoingConnection)z[i].con).rateLimiterDisabled)
+                            limit = "Bypassed";
+                    }
+                }
 
                 w[3] = ByteFormatter.formatBytes(z[i].rate) + "/s";
                 w[4] = limit;

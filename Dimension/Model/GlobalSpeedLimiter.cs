@@ -40,8 +40,10 @@ namespace Dimension.Model
                 System.Threading.Thread.Sleep(1000);
             }
         }
-        public ulong limitUpload(ulong amount)
+        public ulong limitUpload(ulong amount, bool disabled = false)
         {
+            if (disabled)
+                return amount;
             if (currentUploadLimit > 0)
             {
                 while (totalUpload > currentUploadLimit && currentUploadLimit > 0)
@@ -59,8 +61,10 @@ namespace Dimension.Model
                 return amount;
 
         }
-        public ulong limitDownload(ulong amount)
+        public ulong limitDownload(ulong amount, bool disabled = false)
         {
+            if (disabled)
+                return amount;
             if (currentDownloadLimit > 0)
             {
                 while (totalDownload > currentDownloadLimit && currentDownloadLimit > 0)

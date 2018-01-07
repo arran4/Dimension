@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public abstract class IncomingConnection : Connection
     {
+        public bool rateLimiterDisabled = false;
         public Commands.HelloCommand hello;
         public string lastFolder;
         public delegate void CommandReceived(Commands.Command c, IncomingConnection con);

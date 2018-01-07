@@ -173,6 +173,7 @@ namespace Dimension.Model
                             {
                                 if (t.con is ReliableIncomingConnection)
                                     t.rate = ((ReliableIncomingConnection)t.con).rate;
+                                
                             }
                         }
                     }

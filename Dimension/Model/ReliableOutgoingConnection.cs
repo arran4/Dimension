@@ -78,7 +78,7 @@ namespace Dimension.Model
                         byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                         while (read > 0 && pos < chunk.Length)
                         {
-                            int amt = (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos));
+                            int amt = (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos), rateLimiterDisabled);
                             read = client.GetStream().Read(chunk, pos,amt);
                             downCounter.addBytes(read);
                             currentRate = (currentRate * 0.9f) + (downCounter.frontBuffer * 0.1f);
@@ -120,7 +120,7 @@ namespace Dimension.Model
                         int pos = 0;
                         while (pos < ((Commands.DataCommand)c).data.Length)
                         {
-                            int amt = (int)Program.speedLimiter.limitUpload((ulong)(((Commands.DataCommand)c).data.Length - pos));
+                            int amt = (int)Program.speedLimiter.limitUpload((ulong)(((Commands.DataCommand)c).data.Length - pos), rateLimiterDisabled);
                             client.GetStream().Write(((Commands.DataCommand)c).data, pos, amt);
                             pos += amt;
                             Program.globalUpCounter.addBytes(amt);
