@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public class Transfer
     {
+        public string originalPath;
         public string path;
         public Peer thePeer;
         public Connection con;

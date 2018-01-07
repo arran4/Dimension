@@ -420,6 +420,9 @@ namespace Dimension.Model
                                     sendCompleteFile(fullPath, path, path, con);
                                 if (c is Commands.RequestFolderContents)
                                     sendCompleteFolder(fullPath, path, path, con);
+
+                                if (toCancel.Contains(path))
+                                    toCancel.Remove(path);
                             });
                             t.Name = "Upload thread";
                             t.IsBackground = true;
@@ -440,10 +443,14 @@ namespace Dimension.Model
             System.IO.DirectoryInfo f = new System.IO.DirectoryInfo(realPath);
             foreach (System.IO.DirectoryInfo z in f.GetDirectories())
             {
+                if (toCancel.Contains(originalPath))
+                    return;
                 sendCompleteFolder(z.FullName, requestPath.TrimEnd('/') + "/" + z.Name, originalPath, con);
             }
             foreach (System.IO.FileInfo z in f.GetFiles())
             {
+                if (toCancel.Contains(originalPath))
+                    return;
                 sendCompleteFile(z.FullName, requestPath.TrimEnd('/') + "/" + z.Name, originalPath, con);
             }
 
@@ -467,6 +474,7 @@ namespace Dimension.Model
             t.size = (ulong)f.Length;
             t.con = con;
             t.path = requestPath;
+            t.originalPath = originalPath;
             if (con is LoopbackIncomingConnection)
                 t.protocol = "Loopback";
             else
@@ -485,10 +493,8 @@ namespace Dimension.Model
 
                 lock (con)
                 {
-                    if (toCancel.Contains(requestPath))
+                    if (toCancel.Contains(requestPath) || toCancel.Contains(originalPath))
                     {
-                        toCancel.Remove(requestPath);
-
                         lock (Transfer.transfers)
                             Transfer.transfers.Remove(t);
                         return;

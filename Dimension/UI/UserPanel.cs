@@ -271,6 +271,7 @@ namespace Dimension.UI
                 t = new Model.Transfer();
                 t.thePeer = p;
                 p.transfers[s] = t;
+                t.originalPath = s;
                 t.path = s;
                 t.username = p.username;
                 t.filename = tag.name;

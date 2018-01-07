@@ -113,11 +113,11 @@ namespace Dimension.UI
                 if (t.thePeer != null)
                 {
                     lock(t.thePeer.transfers)
-                        t.thePeer.transfers.Remove(t.path);
+                        t.thePeer.transfers.Remove(t.originalPath);
                 }
                 lock(Model.Transfer.transfers)
                     Model.Transfer.transfers.Remove(t);
-                t.con.send(new Model.Commands.CancelCommand() { path = t.path });
+                t.con.send(new Model.Commands.CancelCommand() { path = t.originalPath });
             }
             }
     }
