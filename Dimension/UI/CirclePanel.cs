@@ -264,5 +264,10 @@ namespace Dimension.UI
         {
             updateFont();
         }
+
+        private void historyBox_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.LinkText);
+        }
     }
 }

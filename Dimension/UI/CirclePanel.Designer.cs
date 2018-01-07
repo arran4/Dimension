@@ -71,6 +71,7 @@
             this.historyBox.Size = new System.Drawing.Size(389, 346);
             this.historyBox.TabIndex = 5;
             this.historyBox.Text = "";
+            this.historyBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.historyBox_LinkClicked);
             // 
             // inputBox
             // 
