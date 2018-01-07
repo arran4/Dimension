@@ -51,6 +51,9 @@
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hashingProgressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.networkStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.systemLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllCirclesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllFileListsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,9 +79,6 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogTimer = new System.Windows.Forms.Timer(this.components);
             this.transferRateTimer = new System.Windows.Forms.Timer(this.components);
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.networkStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.systemLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -275,6 +275,25 @@
             this.hashingProgressToolStripMenuItem.Text = "Hashing Progress...";
             this.hashingProgressToolStripMenuItem.Click += new System.EventHandler(this.hashingProgressToolStripMenuItem_Click);
             // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(177, 6);
+            // 
+            // networkStatusToolStripMenuItem
+            // 
+            this.networkStatusToolStripMenuItem.Name = "networkStatusToolStripMenuItem";
+            this.networkStatusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.networkStatusToolStripMenuItem.Text = "Network Status";
+            this.networkStatusToolStripMenuItem.Click += new System.EventHandler(this.networkStatusToolStripMenuItem_Click);
+            // 
+            // systemLogToolStripMenuItem
+            // 
+            this.systemLogToolStripMenuItem.Name = "systemLogToolStripMenuItem";
+            this.systemLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.systemLogToolStripMenuItem.Text = "System Log";
+            this.systemLogToolStripMenuItem.Click += new System.EventHandler(this.systemLogToolStripMenuItem_Click);
+            // 
             // windowToolStripMenuItem
             // 
             this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -450,7 +469,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tabControl);
             this.splitContainer1.Size = new System.Drawing.Size(724, 326);
-            this.splitContainer1.SplitterDistance = 195;
+            this.splitContainer1.SplitterDistance = 196;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -458,12 +477,14 @@
             // 
             this.tabControl.Controls.Add(this.systemLogStartingPage);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 195);
+            this.tabControl.Size = new System.Drawing.Size(724, 196);
             this.tabControl.TabIndex = 0;
+            this.tabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl_DrawItem);
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
             // 
             // systemLogStartingPage
@@ -472,7 +493,7 @@
             this.systemLogStartingPage.Margin = new System.Windows.Forms.Padding(2);
             this.systemLogStartingPage.Name = "systemLogStartingPage";
             this.systemLogStartingPage.Padding = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 169);
+            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 170);
             this.systemLogStartingPage.TabIndex = 0;
             this.systemLogStartingPage.Text = "System Log";
             this.systemLogStartingPage.UseVisualStyleBackColor = true;
@@ -502,25 +523,6 @@
             this.transferRateTimer.Enabled = true;
             this.transferRateTimer.Interval = 1000;
             this.transferRateTimer.Tick += new System.EventHandler(this.transferRateTimer_Tick);
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(177, 6);
-            // 
-            // networkStatusToolStripMenuItem
-            // 
-            this.networkStatusToolStripMenuItem.Name = "networkStatusToolStripMenuItem";
-            this.networkStatusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.networkStatusToolStripMenuItem.Text = "Network Status";
-            this.networkStatusToolStripMenuItem.Click += new System.EventHandler(this.networkStatusToolStripMenuItem_Click);
-            // 
-            // systemLogToolStripMenuItem
-            // 
-            this.systemLogToolStripMenuItem.Name = "systemLogToolStripMenuItem";
-            this.systemLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.systemLogToolStripMenuItem.Text = "System Log";
-            this.systemLogToolStripMenuItem.Click += new System.EventHandler(this.systemLogToolStripMenuItem_Click);
             // 
             // MainForm
             // 

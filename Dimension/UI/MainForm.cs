@@ -373,5 +373,21 @@ namespace Dimension
         {
             openDownloadFolder();
         }
+
+        private void tabControl_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            TabPage tp = tabControl.TabPages[e.Index];
+
+            bool highlight = tp.Text.StartsWith("(!) ");
+
+            using (SolidBrush brush =
+                   new SolidBrush(!highlight ? tp.BackColor : SystemColors.Highlight))
+            using (SolidBrush textBrush =
+                   new SolidBrush(!highlight ? tp.ForeColor : SystemColors.HighlightText))
+            {
+                e.Graphics.FillRectangle(brush, e.Bounds);
+                e.Graphics.DrawString(tp.Text, e.Font, textBrush, e.Bounds.X + 3, e.Bounds.Y + 4);
+            }
+        }
     }
 }
