@@ -23,7 +23,7 @@ namespace Dimension
                 return new System.Drawing.Font(settings.getString("Font", "Lucida Console"), 8.25f);
         }
         public const int buildNumber = 42;
-        public static Model.GlobalSpeedLimiter speedLimiter = new Model.GlobalSpeedLimiter();
+        public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
         public static Model.ByteCounter globalDownCounter = new Model.ByteCounter();
@@ -74,6 +74,7 @@ namespace Dimension
             fileList.Dispose();
             fileListDatabase.close();
             bootstrap.Dispose();
+            speedLimiter.Dispose();
             Model.SystemLog.writer.Close();
         }
         public static Model.Kademlia kademlia;
@@ -95,7 +96,7 @@ namespace Dimension
             
             settings = new Model.Settings();
 
-
+            speedLimiter = new Model.GlobalSpeedLimiter();
             string username = settings.getString("Username", Environment.MachineName);
             settings.setString("Username", username);
 

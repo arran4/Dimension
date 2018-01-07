@@ -37,23 +37,40 @@ namespace Dimension.Model
                 currentUploadLimit = Program.settings.getULong("Global Upload Rate Limit", 0);
 
 
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(1000);
             }
         }
-        public void limitUpload(ulong amount)
+        public ulong limitUpload(ulong amount)
         {
             if (currentUploadLimit > 0)
             {
+                while (totalUpload > currentUploadLimit)
+                    System.Threading.Thread.Sleep(1);
+                while (Math.Min(amount, currentUploadLimit - totalUpload) <= 0)
+                    System.Threading.Thread.Sleep(1);
+
+                totalUpload += amount;
+                return Math.Min(amount, currentUploadLimit - (totalUpload-amount));
 
             }
+            else
+                return amount;
 
-            }
-        public void limitDownload(ulong amount)
+        }
+        public ulong limitDownload(ulong amount)
         {
             if (currentDownloadLimit > 0)
             {
+                while (totalDownload > currentDownloadLimit)
+                    System.Threading.Thread.Sleep(1);
+                while(Math.Min(amount, currentDownloadLimit - totalDownload) <= 0)
+                    System.Threading.Thread.Sleep(1);
 
+                totalDownload += amount;
+                return Math.Min(amount, currentDownloadLimit - (totalDownload - amount));
             }
+            else
+                return amount;
 
         }
     }

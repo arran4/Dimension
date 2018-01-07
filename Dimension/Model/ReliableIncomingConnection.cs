@@ -61,12 +61,11 @@ namespace Dimension.Model
                     {
                         int pos = 0;
                         int read = 1;
-
-                        Program.speedLimiter.limitDownload((ulong)((Commands.DataCommand)c).data.Length);
+                        
                         byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                         while (read > 0 && pos < chunk.Length)
                         {
-                            read = client.GetStream().Read(chunk, pos, chunk.Length - pos);
+                            read = client.GetStream().Read(chunk, pos, (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos)));
                             Program.globalDownCounter.addBytes((ulong)read);
                             pos += read;
                         }
@@ -121,8 +120,13 @@ namespace Dimension.Model
                     Program.globalUpCounter.addBytes((ulong)b.Length);
                     if (c is Commands.DataCommand)
                     {
-                        Program.speedLimiter.limitUpload((ulong)((Commands.DataCommand)c).data.Length);
-                        client.GetStream().Write(((Commands.DataCommand)c).data, 0, ((Commands.DataCommand)c).data.Length);
+                        int pos = 0;
+                        while (pos < ((Commands.DataCommand)c).data.Length)
+                        {
+                            int amt = (int)Program.speedLimiter.limitUpload((ulong)(((Commands.DataCommand)c).data.Length - pos));
+                            client.GetStream().Write(((Commands.DataCommand)c).data, pos, amt);
+                            pos += amt;
+                        }
                         Program.globalUpCounter.addBytes((ulong)((Commands.DataCommand)c).data.Length);
                     }
                 }

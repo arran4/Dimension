@@ -55,7 +55,7 @@ namespace Dimension.Model
                     byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                     while (read > 0 && pos < chunk.Length)
                     {
-                        read = socket.Receive(chunk, pos, chunk.Length - pos);
+                        read = socket.Receive(chunk, pos, (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos)));
                         pos += read;
                         Program.globalDownCounter.addBytes((ulong)read);
                     }
@@ -91,13 +91,13 @@ namespace Dimension.Model
 
                     if (c is Commands.DataCommand)
                     {
-                        Program.speedLimiter.limitUpload((ulong)((Commands.DataCommand)c).data.Length);
                         b = ((Commands.DataCommand)c).data;
                         pos = 0;
                         read = 1;
                         while (read > 0 && pos < b.Length)
                         {
-                            read = socket.Send(b, pos, b.Length - pos);
+                            int amt = (int)Program.speedLimiter.limitUpload((ulong)(b.Length - pos));
+                            read = socket.Send(b, pos, amt);
                             Program.globalUpCounter.addBytes((ulong)read);
                             pos += read;
                         }
