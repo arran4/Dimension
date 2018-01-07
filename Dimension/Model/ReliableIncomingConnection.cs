@@ -102,6 +102,9 @@ namespace Dimension.Model
                     hello = (Commands.HelloCommand)c;
             }
         }
+        public ulong rate;
+        public ByteCounter rateCounter = new ByteCounter();
+        float internalRate;
         System.Net.Sockets.TcpClient client;
         object sendLock = new object();
         public override void send(Commands.Command c)
@@ -124,6 +127,9 @@ namespace Dimension.Model
                         while (pos < ((Commands.DataCommand)c).data.Length)
                         {
                             int amt = (int)Program.speedLimiter.limitUpload((ulong)(((Commands.DataCommand)c).data.Length - pos));
+                            rateCounter.addBytes(amt);
+                            internalRate = (internalRate * 0.9f) + (rateCounter.frontBuffer * 0.1f);
+                            rate = (ulong)internalRate;
                             client.GetStream().Write(((Commands.DataCommand)c).data, pos, amt);
                             pos += amt;
                             Program.globalUpCounter.addBytes(amt);

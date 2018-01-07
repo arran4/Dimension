@@ -78,12 +78,11 @@ namespace Dimension.Model
                         byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                         while (read > 0 && pos < chunk.Length)
                         {
-                            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                            sw.Start();
                             int amt = (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos));
                             read = client.GetStream().Read(chunk, pos,amt);
-                            sw.Stop();
-                            rate = (ulong)((amt) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
+                            downCounter.addBytes(read);
+                            currentRate = (currentRate * 0.9f) + (downCounter.frontBuffer * 0.1f);
+                            rate = (ulong)currentRate;
                             Program.globalDownCounter.addBytes((ulong)read);
                             pos += read;
                         }
@@ -97,6 +96,9 @@ namespace Dimension.Model
                 commandReceived?.Invoke(c);
             }
         }
+        ByteCounter downCounter = new ByteCounter();
+        float currentRate;
+
         System.Net.Sockets.TcpClient client;
         object sendLock = new object();
         public override void send(Commands.Command c)

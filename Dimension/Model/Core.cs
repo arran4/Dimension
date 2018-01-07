@@ -164,8 +164,20 @@ namespace Dimension.Model
                 foreach (Peer p in peerManager.allPeers)
                     if (!p.quit)
                         p.updateTransfers();
+                lock (Transfer.transfers)
+                    foreach (Transfer t in Transfer.transfers)
+                    {
+                        if (t.download == false)
+                        {
+                            if (t.con != null)
+                            {
+                                if (t.con is ReliableIncomingConnection)
+                                    t.rate = ((ReliableIncomingConnection)t.con).rate;
+                            }
+                        }
+                    }
             }
-            }
+        }
 
         void keepAliveLoop()
         {
@@ -615,7 +627,11 @@ namespace Dimension.Model
             Commands.HelloCommand c = new Commands.HelloCommand();
             c.id = id;
             c.username = Program.settings.getString("Username", "Username");
+            if (isMono)
+                Program.settings.setBool("Use UDT", false);
+
             c.useUDT = Program.settings.getBool("Use UDT", true);
+
 
 
             Dictionary<ulong, int> counts = new Dictionary<ulong, int>();
