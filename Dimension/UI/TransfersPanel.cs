@@ -63,9 +63,11 @@ namespace Dimension.UI
                 listView.Items.RemoveAt(listView.Items.Count - 1);
 
 
+            ulong upLimit = Program.settings.getULong("Global Upload Rate Limit", 0);
+            ulong downLimit = Program.settings.getULong("Global Download Rate Limit", 0);
             for (int i = 0; i < z.Length; i++)
             {
-                string[] w = new string[8];
+                string[] w = new string[9];
                 w[0] = z[i].filename;
                 if (z[i].download)
                     w[1] = "Downloading";
@@ -74,16 +76,28 @@ namespace Dimension.UI
                 w[2] = z[i].username;
 
                 string percent = ((int)((100.0 * z[i].completed) / z[i].size)).ToString() + "%";
+                string limit = "None";
+                if (z[i].download)
+                {
+                    if (downLimit > 0)
+                        limit = UI.ByteFormatter.formatBytes(downLimit) + "/s";
+                }
+                else
+                {
+                    if (upLimit > 0)
+                        limit = UI.ByteFormatter.formatBytes(upLimit) + "/s";
+                }
 
                 w[3] = ByteFormatter.formatBytes(z[i].rate) + "/s";
-                w[4] = ByteFormatter.formatBytes(z[i].completed);
-                w[5] = percent;
-                w[6] = ByteFormatter.formatBytes(z[i].size);
-                w[7] = z[i].protocol;
+                w[4] = limit;
+                w[5] = ByteFormatter.formatBytes(z[i].completed);
+                w[6] = percent;
+                w[7] = ByteFormatter.formatBytes(z[i].size);
+                w[8] = z[i].protocol;
 
                 while (listView.Items[i].SubItems.Count < w.Length)
                     listView.Items[i].SubItems.Add("");
-                for (int x = 0; x < 8; x++)
+                for (int x = 0; x < 9; x++)
                     if (listView.Items[i].SubItems[x].Text != w[x])
                         listView.Items[i].SubItems[x].Text = w[x];
                 listView.Items[i].Tag = z[i];
