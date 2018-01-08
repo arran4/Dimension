@@ -100,13 +100,12 @@ namespace Dimension.Model
             string response;
             try
             {
-                //TODO: Gracefully handle URLs that don't exist
                 WebRequest r = WebRequest.Create(address + "?port=" + publicControlEndPoint.Port.ToString());
                 response = (new StreamReader(r.GetResponse().GetResponseStream())).ReadToEnd();
             }
             catch(Exception e)
             {
-                throw new WebException(e.Message);
+                return new IPEndPoint[] { };
             }
             string[] split = response.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             List<string> nonDuplicates = new List<string>();
