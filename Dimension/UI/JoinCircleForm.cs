@@ -51,6 +51,10 @@ namespace Dimension.UI
                     try
                     {
                         e = Program.bootstrap.join(s);
+                        if (e.Length == 0)
+                        {
+                            MessageBox.Show("Invalid bootstrap URL.");
+                        }
                     }
                     catch (System.Net.WebException e3)
                     {

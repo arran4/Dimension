@@ -32,6 +32,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.flashNameDropBox = new System.Windows.Forms.CheckBox();
             this.fontSelectBox = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.browseDownloadsButton = new System.Windows.Forms.Button();
@@ -62,7 +63,6 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.flashNameDropBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -125,6 +125,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // flashNameDropBox
+            // 
+            this.flashNameDropBox.AutoSize = true;
+            this.flashNameDropBox.Location = new System.Drawing.Point(98, 106);
+            this.flashNameDropBox.Name = "flashNameDropBox";
+            this.flashNameDropBox.Size = new System.Drawing.Size(188, 17);
+            this.flashNameDropBox.TabIndex = 9;
+            this.flashNameDropBox.Text = "Flash Taskbar Item on Name Drop";
+            this.flashNameDropBox.UseVisualStyleBackColor = true;
             // 
             // fontSelectBox
             // 
@@ -234,7 +244,7 @@
             // 
             this.dhtPortBox.Location = new System.Drawing.Point(117, 116);
             this.dhtPortBox.Maximum = new decimal(new int[] {
-            32767,
+            65034,
             0,
             0,
             0});
@@ -293,7 +303,7 @@
             // 
             this.udpControlPortBox.Location = new System.Drawing.Point(116, 90);
             this.udpControlPortBox.Maximum = new decimal(new int[] {
-            32767,
+            65034,
             0,
             0,
             0});
@@ -314,7 +324,7 @@
             // 
             this.udpDataPortBox.Location = new System.Drawing.Point(116, 64);
             this.udpDataPortBox.Maximum = new decimal(new int[] {
-            32767,
+            65034,
             0,
             0,
             0});
@@ -409,16 +419,6 @@
             // columnHeader4
             // 
             this.columnHeader4.Text = "Hashed";
-            // 
-            // flashNameDropBox
-            // 
-            this.flashNameDropBox.AutoSize = true;
-            this.flashNameDropBox.Location = new System.Drawing.Point(98, 106);
-            this.flashNameDropBox.Name = "flashNameDropBox";
-            this.flashNameDropBox.Size = new System.Drawing.Size(188, 17);
-            this.flashNameDropBox.TabIndex = 9;
-            this.flashNameDropBox.Text = "Flash Taskbar Item on Name Drop";
-            this.flashNameDropBox.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
