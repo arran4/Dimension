@@ -62,6 +62,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.flashNameDropBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -107,6 +108,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.flashNameDropBox);
             this.tabPage1.Controls.Add(this.fontSelectBox);
             this.tabPage1.Controls.Add(this.label9);
             this.tabPage1.Controls.Add(this.browseDownloadsButton);
@@ -408,6 +410,16 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
+            // flashNameDropBox
+            // 
+            this.flashNameDropBox.AutoSize = true;
+            this.flashNameDropBox.Location = new System.Drawing.Point(98, 106);
+            this.flashNameDropBox.Name = "flashNameDropBox";
+            this.flashNameDropBox.Size = new System.Drawing.Size(188, 17);
+            this.flashNameDropBox.TabIndex = 9;
+            this.flashNameDropBox.Text = "Flash Taskbar Item on Name Drop";
+            this.flashNameDropBox.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -472,5 +484,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox fontSelectBox;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox flashNameDropBox;
     }
 }

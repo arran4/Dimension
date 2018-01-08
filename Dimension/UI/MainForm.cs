@@ -28,6 +28,29 @@ namespace Dimension
         {
 
         }
+        public void flash()
+        {
+            try
+            {
+                this.Invoke(new Action(delegate ()
+                {
+                    try
+                    {
+                        if (Program.settings.getBool("Flash on Name Drop", true))
+                            if (!UI.FlashWindow.ApplicationIsActivated())
+                                UI.FlashWindow.Flash(this);
+                    }
+                    catch
+                    {
+
+                    }
+                }));
+            }
+            catch
+            {
+
+            }
+        }
 
         private void MainForm_Load(object sender, EventArgs e)
         {

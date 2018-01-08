@@ -46,6 +46,7 @@ namespace Dimension.UI
             descriptionBox.Text = Program.settings.getString("Description", "");
 
             downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:\\Downloads");
+            flashNameDropBox.Checked = Program.settings.getBool("Flash on Name Drop", true);
 
             fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
             if (Program.comicSansOnly)
@@ -90,6 +91,8 @@ namespace Dimension.UI
             Program.settings.setBool("Use UDT", useUDTBox.Checked);
 
             Program.settings.setString("Font", fontSelectBox.Text);
+
+            Program.settings.setBool("Flash on Name Drop", flashNameDropBox.Checked);
             Program.settings.save();
             Close();
         }

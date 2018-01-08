@@ -181,6 +181,7 @@
     <Compile Include="UI\DownloadQueuePanel.Designer.cs">
       <DependentUpon>DownloadQueuePanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\FlashWindow.cs" />
     <Compile Include="UI\LimitChangeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
