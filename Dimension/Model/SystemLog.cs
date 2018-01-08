@@ -24,7 +24,7 @@ namespace Dimension.Model
                 writer = new System.IO.StreamWriter(log);
             }
             lastLine = s;
-            theLog += s + Environment.NewLine;
+            theLog += DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " - " + s + Environment.NewLine;
             writer.WriteLine(s);
             writer.Flush();
         }
