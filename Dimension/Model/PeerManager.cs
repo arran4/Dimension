@@ -34,7 +34,8 @@ namespace Dimension.Model
         }
         public void doPeerRemoved(Peer p)
         {
-            peerRemoved?.Invoke(p);
+            foreach(ulong u in p.circles)
+                peerRemoved?.Invoke(p, u);
         }
         public bool havePeerWithAddress(string[] i, System.Net.IPAddress e)
         {
@@ -57,13 +58,16 @@ namespace Dimension.Model
         }
         public delegate void PeerRenameEvent(string oldName, Peer p);
         public delegate void PeerUpdateEvent(Peer p);
+        public delegate void PeerChannelUpdateEvent(Peer p, ulong channel);
         public event PeerRenameEvent peerRenamed;
-        public event PeerUpdateEvent peerAdded;
+        public event PeerChannelUpdateEvent peerAdded;
         public event PeerUpdateEvent peerUpdated;
-        public event PeerUpdateEvent peerRemoved;
+        public event PeerChannelUpdateEvent peerRemoved;
         Dictionary<ulong, Peer> peers = new Dictionary<ulong, Peer>();
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
+            List<ulong> channels = new List<ulong>();
+            List<ulong> oldChannels = new List<ulong>();
             string oldName = "";
             bool renamed = false;
             bool updated = false;
@@ -73,6 +77,7 @@ namespace Dimension.Model
                 if (peers.ContainsKey(h.id))
                 {
                     oldName = peers[h.id].username;
+                    oldChannels.AddRange(peers[h.id].circles);
                     try
                     {
                         System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
@@ -119,6 +124,7 @@ namespace Dimension.Model
                         peers[h.id].circles = h.myCircles;
                         added = true;
                     }
+                    channels.AddRange(h.myCircles);
                 }
                 else
                 {
@@ -140,7 +146,9 @@ namespace Dimension.Model
             }
             if (updated) peerUpdated?.Invoke(peers[h.id]);
             if (renamed) peerRenamed?.Invoke(oldName, peers[h.id]);
-            if (added) peerAdded?.Invoke(peers[h.id]);
+            foreach(ulong u in channels)
+                if(!oldChannels.Contains(u))
+                    if (added) peerAdded?.Invoke(peers[h.id], u);
         }
     }
 }
