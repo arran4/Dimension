@@ -19,7 +19,8 @@ namespace Dimension.Model
                 string w = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/Dimension";
                 if (!System.IO.Directory.Exists(w))
                     System.IO.Directory.CreateDirectory(w);
-                log = System.IO.File.Open(w + "/Log.txt", System.IO.FileMode.Create);
+                log = System.IO.File.Open(w + "/Log.txt", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.ReadWrite);
+                log.Seek(0, System.IO.SeekOrigin.End);
                 writer = new System.IO.StreamWriter(log);
             }
             lastLine = s;

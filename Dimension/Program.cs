@@ -93,7 +93,10 @@ namespace Dimension
             try
             {
 #endif
-            
+            Model.SystemLog.addEntry("---------------");
+            Model.SystemLog.addEntry("");
+            Model.SystemLog.addEntry("Startup at " + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString());
+
             settings = new Model.Settings();
 
             speedLimiter = new Model.GlobalSpeedLimiter();
