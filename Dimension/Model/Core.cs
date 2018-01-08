@@ -644,6 +644,11 @@ namespace Dimension.Model
                     else
                         counts[i]++;
             }
+#if DEBUG
+            c.debugBuild = true;
+#else
+            c.debugBuild  = false;
+#endif
             c.peerCount = counts;
             if (Program.bootstrap.publicControlEndPoint != null)
             {

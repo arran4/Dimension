@@ -8,6 +8,7 @@ namespace Dimension.Model.Commands
 {
     public class HelloCommand : Command
     {
+        public bool debugBuild;
         public ulong id;
         public ulong myShare;
         public string username;
