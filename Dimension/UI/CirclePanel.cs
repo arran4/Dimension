@@ -194,28 +194,33 @@ namespace Dimension.UI
         {
             updateUserList(null, circleHash);
             Program.theCore.peerManager.peerRemoved += peerLeft;
-            Program.theCore.peerManager.peerRemoved += updateUserList;
-            Program.theCore.peerManager.peerAdded += updateUserList;
             Program.theCore.peerManager.peerAdded += peerJoined;
-            Program.theCore.peerManager.peerUpdated += updateUserList;
+            Program.theCore.peerManager.peerUpdated += peerUpdated;
             Program.theCore.peerManager.peerRenamed += peerRenamed;
         }
         void peerRenamed(string oldName, Model.Peer p)
         {
             if(p.circles.Contains(circleHash))
                 chatReceived("*** " + oldName + " changed name to " + p.username + " at " + DateTime.Now.ToShortTimeString(), circleHash);
+            updateUserList(null, circleHash);
         }
         void peerLeft(Model.Peer p, ulong channelId)
         {
             if(channelId == circleHash)
                 chatReceived("*** " + p.username + " left at " + DateTime.Now.ToShortTimeString(), circleHash);
+            updateUserList(null, circleHash);
 
+        }
+        void peerUpdated(Model.Peer p)
+        {
+            updateUserList(null, circleHash);
         }
         void peerJoined(Model.Peer p, ulong channelId)
         {
             if (channelId == circleHash)
                 chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash);
 
+            updateUserList(null, circleHash);
         }
         public void chatReceived(string s, ulong roomId)
         {

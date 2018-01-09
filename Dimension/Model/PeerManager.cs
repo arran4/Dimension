@@ -142,7 +142,11 @@ namespace Dimension.Model
                     peers[h.id].localUDTPort = h.internalUdtPort;
                     added = true;
                 }
-                peers[h.id].afk = h.afk;
+                if (peers[h.id].afk != h.afk)
+                {
+                    peers[h.id].afk = h.afk;
+                    updated = true;
+                }
                 peers[h.id].buildNumber = h.buildNumber;
             }
             if (updated) peerUpdated?.Invoke(peers[h.id]);
