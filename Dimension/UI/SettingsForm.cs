@@ -226,5 +226,9 @@ namespace Dimension.UI
             }
         }
 
+        private void renameButton_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not implemented yet, sorry.");
+        }
     }
 }

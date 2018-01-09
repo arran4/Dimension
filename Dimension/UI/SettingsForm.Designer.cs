@@ -63,6 +63,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.renameButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -357,6 +358,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.renameButton);
             this.tabPage3.Controls.Add(this.deleteShareButton);
             this.tabPage3.Controls.Add(this.addShareButton);
             this.tabPage3.Controls.Add(this.sharesListView);
@@ -419,6 +421,16 @@
             // columnHeader4
             // 
             this.columnHeader4.Text = "Hashed";
+            // 
+            // renameButton
+            // 
+            this.renameButton.Location = new System.Drawing.Point(165, 240);
+            this.renameButton.Name = "renameButton";
+            this.renameButton.Size = new System.Drawing.Size(75, 23);
+            this.renameButton.TabIndex = 3;
+            this.renameButton.Text = "Rename";
+            this.renameButton.UseVisualStyleBackColor = true;
+            this.renameButton.Click += new System.EventHandler(this.renameButton_Click);
             // 
             // SettingsForm
             // 
@@ -485,5 +497,6 @@
         private System.Windows.Forms.ComboBox fontSelectBox;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox flashNameDropBox;
+        private System.Windows.Forms.Button renameButton;
     }
 }
