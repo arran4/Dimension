@@ -28,6 +28,7 @@ namespace Dimension.Model
                 _actualAddr = value.Address;
             }
         }
+        public bool afk;
         public string username;
         public ulong id;
         public ulong[] circles;

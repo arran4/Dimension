@@ -626,6 +626,25 @@ namespace Dimension.Model
         {
             chatReceivedEvent?.Invoke(s, id);
         }
+
+        internal struct LASTINPUTINFO
+        {
+            public uint cbSize;
+
+            public uint dwTime;
+        }
+        [System.Runtime.InteropServices.DllImport("User32.dll")]
+        private static extern bool
+                GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        public static uint getIdleTime()
+        {
+            LASTINPUTINFO lastInput = new LASTINPUTINFO();
+            lastInput.cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(lastInput);
+            GetLastInputInfo(ref lastInput);
+
+            return (uint)Environment.TickCount - lastInput.dwTime;
+        }
         public System.Net.IPAddress[] internalIPs = new System.Net.IPAddress[] { };
         public Commands.HelloCommand generateHello()
         {
@@ -637,7 +656,16 @@ namespace Dimension.Model
 
             c.useUDT = Program.settings.getBool("Use UDT", true);
 
-
+            try
+            {
+                c.afk = getIdleTime() > 60 * 1000;
+            }
+            catch
+            {
+                c.afk = false;
+            }
+            if (!Program.settings.getBool("Show AFK", true))
+                c.afk = false;
 
             Dictionary<ulong, int> counts = new Dictionary<ulong, int>();
             foreach (Peer p in peerManager.allPeers)

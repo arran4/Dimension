@@ -121,7 +121,7 @@ namespace Dimension.UI
 
                 string s2 = items[i].username;
 
-                userListView.Items[i].Text = s2;
+                userListView.Items[i].Text = s2 + (items[i].afk ? " (AFK)" : "");
                 userListView.Items[i].SubItems[1].Text = (items[i].buildNumber.ToString());
                 userListView.Items[i].SubItems[2].Text = (ByteFormatter.formatBytes(items[i].share));
             }
@@ -141,7 +141,7 @@ namespace Dimension.UI
             string fingerprint = "";
             foreach (Model.Peer p2 in items)
                 if (!p2.quit)
-                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString();
+                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString() + p2.afk.ToString();
             if (lastFingerprint == fingerprint)
                 return;
             lastFingerprint = fingerprint;
