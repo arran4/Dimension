@@ -38,7 +38,10 @@ namespace Dimension
                     {
                         if (Program.settings.getBool("Flash on Name Drop", true))
                             if (!UI.FlashWindow.ApplicationIsActivated())
+                            {
                                 UI.FlashWindow.Flash(this);
+                                System.Media.SystemSounds.Beep.Play();
+                            }
                     }
                     catch
                     {

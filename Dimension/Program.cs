@@ -22,11 +22,62 @@ namespace Dimension
             else
                 return new System.Drawing.Font(settings.getString("Font", "Lucida Console"), 8.25f);
         }
+        public static void downloadUpdates()
+        {
+            System.Diagnostics.Process p = new System.Diagnostics.Process();
+            p.StartInfo.FileName = "Updater.exe";
+            p.StartInfo.Arguments =buildNumber.ToString();
+            p.Start();
+        }
         public const int buildNumber = 44;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
         public static Model.ByteCounter globalDownCounter = new Model.ByteCounter();
+        static object updateRequestLock = new object();
+        public static bool checkForUpdates()
+        {
+            try
+            {
+                lock (updateRequestLock)
+                {
+                    if (!updateDeclined)
+                    {
+                        if (Updater.Program.needsUpdate(buildNumber))
+                        {
+                            if (MessageBox.Show("An update is available. Would you like to download it?", "Dimension Update", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                if (isMono)
+                                {
+                                    System.Diagnostics.Process.Start(Updater.Program.downloadPath());
+                                }
+                                else
+                                {
+                                    downloadUpdates();
+                                }
+                                Application.Exit();
+                                return true;
+                            }
+                            else
+                                updateDeclined = true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                //whatever
+            }
+            return false;
+        }
+        static bool updateDeclined = false;
+        public static bool isMono
+        {
+            get
+            {
+                return Type.GetType("Mono.Runtime") != null;
+            }
+        }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -35,6 +86,11 @@ namespace Dimension
         {
             using(System.Threading.Mutex mutex = new System.Threading.Mutex(false, "Global\\DimensionMutex"))
             {
+#if DEBUG
+#else
+                if (checkForUpdates())
+                    return;
+#endif
                 if (!mutex.WaitOne(0, false))
                 {
                     MessageBox.Show("Dimension is already running. Please check your task manager to make sure you've closed it fully before running.");

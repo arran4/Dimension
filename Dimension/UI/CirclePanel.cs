@@ -242,6 +242,30 @@ namespace Dimension.UI
             {
             }
         }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Tab && inputBox.Focused)
+            {
+                //e.SuppressKeyPress = true;
+                string s = inputBox.Text;
+                if (s.Contains(' ')) s = s.Substring(s.LastIndexOf(' '));
+                if (s.Contains('\t')) s = s.Substring(s.LastIndexOf('\t'));
+
+                foreach (Model.Peer p in Program.theCore.peerManager.allPeersInCircle(circleHash))
+                {
+                    if (p.username.ToLower().StartsWith(s.ToLower()) && s.Trim() != "" && p.username.Trim() != "")
+                    {
+                        inputBox.Text = inputBox.Text.Substring(0, inputBox.Text.Length - s.Length) + p.username;
+                        inputBox.SelectionStart = inputBox.Text.Length;
+                        return true;
+                    }
+
+                }
+                System.Media.SystemSounds.Beep.Play();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)

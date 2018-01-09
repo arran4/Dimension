@@ -308,6 +308,10 @@ namespace Dimension.Model
             if (c is Commands.HelloCommand)
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
+
+                if (!h.debugBuild && h.buildNumber > Program.buildNumber)
+                    Program.checkForUpdates();
+
                 peerManager.parseHello(h, sender);
                 lock(toHello)
                     if (toHello.Contains(sender))
