@@ -77,7 +77,6 @@ namespace Dimension.Model
                 if (peers.ContainsKey(h.id))
                 {
                     oldName = peers[h.id].username;
-                    oldChannels.AddRange(peers[h.id].circles);
                     try
                     {
                         System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
@@ -151,9 +150,13 @@ namespace Dimension.Model
             }
             if (updated) peerUpdated?.Invoke(peers[h.id]);
             if (renamed) peerRenamed?.Invoke(oldName, peers[h.id]);
-            foreach(ulong u in channels)
-                if(!oldChannels.Contains(u))
-                    if (added) peerAdded?.Invoke(peers[h.id], u);
+            if (added)
+            {
+                foreach (ulong u in channels)
+                    if (!oldChannels.Contains(u))
+                        peerAdded?.Invoke(peers[h.id], u);
+                oldChannels.AddRange(peers[h.id].circles);
+            }
         }
     }
 }
