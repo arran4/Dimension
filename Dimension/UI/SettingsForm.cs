@@ -48,7 +48,9 @@ namespace Dimension.UI
             downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:\\Downloads");
             flashNameDropBox.Checked = Program.settings.getBool("Flash on Name Drop", true);
 
-            fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
+            showAFKBox.Checked = Program.settings.getBool("Show AFK", true);
+
+                fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
             if (Program.comicSansOnly)
             {
                 fontSelectBox.Items.Clear();
@@ -93,6 +95,10 @@ namespace Dimension.UI
             Program.settings.setString("Font", fontSelectBox.Text);
 
             Program.settings.setBool("Flash on Name Drop", flashNameDropBox.Checked);
+
+
+            Program.settings.setBool("Show AFK", showAFKBox.Checked);
+
             Program.settings.save();
             Close();
         }

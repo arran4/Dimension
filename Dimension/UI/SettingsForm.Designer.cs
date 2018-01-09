@@ -64,6 +64,7 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.renameButton = new System.Windows.Forms.Button();
+            this.showAFKBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -109,6 +110,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.showAFKBox);
             this.tabPage1.Controls.Add(this.flashNameDropBox);
             this.tabPage1.Controls.Add(this.fontSelectBox);
             this.tabPage1.Controls.Add(this.label9);
@@ -432,6 +434,16 @@
             this.renameButton.UseVisualStyleBackColor = true;
             this.renameButton.Click += new System.EventHandler(this.renameButton_Click);
             // 
+            // showAFKBox
+            // 
+            this.showAFKBox.AutoSize = true;
+            this.showAFKBox.Location = new System.Drawing.Point(98, 130);
+            this.showAFKBox.Name = "showAFKBox";
+            this.showAFKBox.Size = new System.Drawing.Size(277, 17);
+            this.showAFKBox.TabIndex = 10;
+            this.showAFKBox.Text = "Show as \"(AFK)\" when idle for more than 60 seconds";
+            this.showAFKBox.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -498,5 +510,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox flashNameDropBox;
         private System.Windows.Forms.Button renameButton;
+        private System.Windows.Forms.CheckBox showAFKBox;
     }
 }
