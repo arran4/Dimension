@@ -247,16 +247,18 @@ namespace Dimension.UI
             if (keyData == Keys.Tab && inputBox.Focused)
             {
                 //e.SuppressKeyPress = true;
-                string s = inputBox.Text;
-                if (s.Contains(' ')) s = s.Substring(s.LastIndexOf(' '));
-                if (s.Contains('\t')) s = s.Substring(s.LastIndexOf('\t'));
+                string s = inputBox.Text.Substring(0,inputBox.SelectionStart);
+                string rest = inputBox.Text.Substring(s.Length);
+                if (s.Contains(' ')) s = s.Substring(s.LastIndexOf(' ')+1);
+                if (s.Contains('\t')) s = s.Substring(s.LastIndexOf('\t') + 1);
+                if (s.Contains('\n')) s = s.Substring(s.LastIndexOf('\n') + 1);
 
                 foreach (Model.Peer p in Program.theCore.peerManager.allPeersInCircle(circleHash))
                 {
                     if (p.username.ToLower().StartsWith(s.ToLower()) && s.Trim() != "" && p.username.Trim() != "")
                     {
-                        inputBox.Text = inputBox.Text.Substring(0, inputBox.Text.Length - s.Length) + p.username;
-                        inputBox.SelectionStart = inputBox.Text.Length;
+                        inputBox.Text = inputBox.Text.Substring(0, inputBox.SelectionStart - s.Length) + p.username + " " + rest;
+                        inputBox.SelectionStart = inputBox.Text.Length - (rest.Length + 1);
                         return true;
                     }
 
