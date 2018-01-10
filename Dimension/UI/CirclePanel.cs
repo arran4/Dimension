@@ -60,7 +60,7 @@ namespace Dimension.UI
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
-            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
+            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url.ToLower())), 0);
             Program.theCore.joinCircle(url);
             Program.theCore.chatReceivedEvent += chatReceived;
             MainForm.colorChange += colorChanged;
@@ -81,7 +81,7 @@ namespace Dimension.UI
             Program.theCore.joinCircle(url);
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
-            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url)), 0);
+            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url.ToLower())), 0);
             Program.theCore.chatReceivedEvent += chatReceived;
             MainForm.colorChange += colorChanged;
             Program.mainForm.setColors();
@@ -121,7 +121,10 @@ namespace Dimension.UI
 
                 string s2 = items[i].username;
 
-                userListView.Items[i].Text = s2 + (items[i].afk ? " (AFK)" : "");
+                if (items[i].afk.HasValue)
+                    userListView.Items[i].Text = s2 + (items[i].afk.Value ? " (AFK)" : "");
+                else
+                    userListView.Items[i].Text = s2;
                 userListView.Items[i].SubItems[1].Text = (items[i].buildNumber.ToString());
                 userListView.Items[i].SubItems[2].Text = (ByteFormatter.formatBytes(items[i].share));
             }
@@ -231,11 +234,29 @@ namespace Dimension.UI
                 Program.theCore.chatReceivedEvent -= chatReceived;
                 return;
             }
+            bool highlight = false;
+
+            string z = s;
+            if (z.Contains(":"))
+                z = z.Substring(z.IndexOf(":")+1);  //timestamp
+            if (z.Contains(":"))
+                z = z.Substring(z.IndexOf(":") + 1); //user: says this
+            if (z.ToLower().Contains(Program.settings.getString("Username", "Username")))
+                highlight = true;
+
+
             try
             {
                 this.Invoke(new Action(delegate ()
                 {
-                    historyBox.Text += s + Environment.NewLine;
+                    historyBox.AppendText(s + Environment.NewLine);
+                    if (highlight)
+                    {
+                        historyBox.SelectionStart = historyBox.Text.Length - (s.Length + 1);
+                        historyBox.SelectionLength = s.Length + 1;
+                        historyBox.SelectionBackColor = SystemColors.Highlight;
+                        historyBox.SelectionColor = SystemColors.HighlightText;
+                    }
                     updateFont();
                 }));
             }

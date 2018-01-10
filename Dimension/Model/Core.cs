@@ -76,7 +76,7 @@ namespace Dimension.Model
                 {
                     foreach (string s in circles)
                     {
-                        byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
+                        byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()));
                         ulong circleId = (BitConverter.ToUInt64(hash, 0));
 
                         List<Peer> potentials = new List<Peer>();
@@ -309,8 +309,9 @@ namespace Dimension.Model
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
 
-                if (!h.debugBuild && h.buildNumber > Program.buildNumber)
-                    Program.checkForUpdates();
+                if(h.debugBuild.HasValue)
+                    if (!h.debugBuild.Value && h.buildNumber > Program.buildNumber)
+                        Program.checkForUpdates();
 
                 peerManager.parseHello(h, sender);
                 lock(toHello)
@@ -322,8 +323,13 @@ namespace Dimension.Model
                 Commands.RoomChatCommand r = (Commands.RoomChatCommand)c;
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
                 {
-                    if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.externalControlPort == sender.Port)
-                        p.chatReceived(r);
+                    if (p.actualEndpoint.Address.ToString() == sender.Address.ToString())
+                        if (r.userId.HasValue)
+                        {
+                            if (r.userId == p.id)
+                                p.chatReceived(r);
+                        }else
+                            p.chatReceived(r);
                     if(p.internalAddress != null)
                         foreach(System.Net.IPAddress ip in p.internalAddress)
                             if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port)
@@ -363,6 +369,7 @@ namespace Dimension.Model
                 }
             Model.Commands.RoomChatCommand c = new Commands.RoomChatCommand();
             c.content = content;
+            c.userId = Program.theCore.id;
             c.roomId = hash;
 
             //TODO: Make this more gracefully handle collisions
@@ -706,8 +713,11 @@ namespace Dimension.Model
             List<ulong> circles = new List<ulong>();
             foreach (string s in this.circles)
             {
-                byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
+                byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()));
                 circles.Add(BitConverter.ToUInt64(hash, 0));
+
+                byte[] hash2 = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
+                circles.Add(BitConverter.ToUInt64(hash2, 0));
             }
             c.myCircles = circles.ToArray();
 

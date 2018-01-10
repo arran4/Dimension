@@ -1,2 +1,2 @@
-44
-DimensionNetTest44-x86.zip
+48
+DimensionNetTest48-x86.zip

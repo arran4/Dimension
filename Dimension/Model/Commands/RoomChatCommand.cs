@@ -11,5 +11,6 @@ namespace Dimension.Model.Commands
         public string content;
         public int sequenceId;
         public ulong roomId;
+        public ulong? userId;
     }
 }

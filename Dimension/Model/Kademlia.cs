@@ -56,7 +56,7 @@ namespace Dimension.Model
         byte[] doHash(string s)
         {
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
-            byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
+            byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()));
             byte[] output = new byte[20];
             Array.Copy(hash, output, output.Length);
             return output;
