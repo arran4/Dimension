@@ -76,7 +76,6 @@ namespace Dimension.Model
             {
                 if (peers.ContainsKey(h.id))
                 {
-                    oldName = peers[h.id].username;
                     try
                     {
                         System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
@@ -96,22 +95,11 @@ namespace Dimension.Model
                     peers[h.id].actualEndpoint = sender;
                     if (h.externalIP != null)
                         peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
-                    if (peers[h.id].username != h.username)
-                    {
-                        peers[h.id].username = h.username;
-                        renamed = true;
-                    }
                     if (peers[h.id].share != h.myShare)
                     {
                         peers[h.id].share = h.myShare;
                         updated = true;
                     }
-
-                    peers[h.id].peerCount = h.peerCount;
-                    peers[h.id].externalControlPort = h.externalControlPort;
-                    peers[h.id].externalDataPort = h.externalDataPort;
-                    peers[h.id].localControlPort = h.internalControlPort;
-                    peers[h.id].localDataPort = h.internalDataPort;
                     string s1 = "";
                     string s2 = "";
                     foreach (int i in peers[h.id].circles)
@@ -120,6 +108,7 @@ namespace Dimension.Model
                         s2 += i.ToString() + ", ";
                     if (s1 != s2)
                     {
+                        oldChannels.AddRange(peers[h.id].circles);
                         peers[h.id].circles = h.myCircles;
                         added = true;
                     }
@@ -134,12 +123,19 @@ namespace Dimension.Model
                         peers[h.id].publicAddress = System.Net.IPAddress.Parse(h.externalIP);
                     peers[h.id].username = h.username;
                     peers[h.id].circles = h.myCircles;
-                    peers[h.id].externalControlPort = h.externalControlPort;
-                    peers[h.id].externalDataPort = h.externalDataPort;
-                    peers[h.id].localControlPort = h.internalControlPort;
-                    peers[h.id].localDataPort = h.internalDataPort;
-                    peers[h.id].localUDTPort = h.internalUdtPort;
                     added = true;
+                }
+                peers[h.id].peerCount = h.peerCount;
+                peers[h.id].externalControlPort = h.externalControlPort;
+                peers[h.id].externalDataPort = h.externalDataPort;
+                peers[h.id].localControlPort = h.internalControlPort;
+                peers[h.id].localDataPort = h.internalDataPort;
+                peers[h.id].localUDTPort = h.internalUdtPort;
+                if (peers[h.id].username != h.username)
+                {
+                    oldName = peers[h.id].username;
+                    peers[h.id].username = h.username;
+                    renamed = true;
                 }
                 if (peers[h.id].afk != h.afk)
                 {
@@ -156,7 +152,6 @@ namespace Dimension.Model
                 foreach (ulong u in channels)
                     if (!oldChannels.Contains(u))
                         peerAdded?.Invoke(peers[h.id], u);
-                oldChannels.AddRange(peers[h.id].circles);
             }
         }
     }

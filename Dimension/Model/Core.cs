@@ -793,7 +793,7 @@ namespace Dimension.Model
                     {
                         //if (p.id != Program.theCore.id)
                         {
-                            if (!p.quit)
+                            //if (!p.quit)
                             {
                                 Program.udp.Send(b, b.Length, p.actualEndpoint);
                                 Program.globalUpCounter.addBytes(b.Length);
