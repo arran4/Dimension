@@ -121,6 +121,13 @@ namespace Dimension.UI
 
                 string s2 = items[i].username;
 
+                if (items[i].maybeDead)
+                    userListView.Items[i].ForeColor = SystemColors.GrayText;
+                if (items[i].probablyDead)
+                    userListView.Items[i].Font = new Font(userListView.Font, FontStyle.Italic);
+                else
+                    userListView.Items[i].Font = new Font(userListView.Font, FontStyle.Regular);
+
                 if (items[i].afk.HasValue)
                     userListView.Items[i].Text = s2 + (items[i].afk.Value ? " (AFK)" : "");
                 else

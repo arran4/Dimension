@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public class Peer
     {
+        public DateTime lastContact = DateTime.Now;
         public DateTime lastTimeHelloSent = DateTime.MinValue;
         public Dictionary<ulong, int> peerCount = new Dictionary<ulong, int>();
         public OutgoingConnection dataConnection;
@@ -39,6 +40,27 @@ namespace Dimension.Model
         public int localControlPort;
         public int localUDTPort;
         public bool useUDT;
+
+        public bool maybeDead
+        {
+            get
+            {
+                if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 5000)
+                    return true;
+                else
+                    return false;
+            }
+        }
+        public bool probablyDead
+        {
+            get
+            {
+                if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 20000)
+                    return true;
+                else
+                    return false;
+            }
+        }
         public bool isLocal
         {
             get
