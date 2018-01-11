@@ -95,6 +95,7 @@ namespace Dimension.Model
                         System.Threading.Thread.Sleep(1000);
                     }
                 }
+                System.Threading.Thread.Sleep(1000);
             }
 
         }
@@ -177,6 +178,7 @@ namespace Dimension.Model
                             }
                         }
                     }
+                System.Threading.Thread.Sleep(1000);
             }
         }
 
