@@ -79,6 +79,15 @@ namespace Dimension.Model
         public bool quit = false;
         public delegate void CommandReceived(Commands.Command c);
         public event CommandReceived commandReceivedEvent;
+
+        public static string downloadFilePath(string s)
+        {
+            string s2 = Program.settings.getString("Default Download Folder", "C:\\Downloads");
+            string x = s;
+            if (x.Contains("/"))
+                x = x.Substring(x.LastIndexOf("/") + 1);
+            return System.IO.Path.Combine(s2, x);
+        }
         public void commandReceived(Commands.Command c)
         {
             commandReceivedEvent?.Invoke(c);
@@ -123,10 +132,7 @@ namespace Dimension.Model
                 string filename;
                 if (chunk.originalPath == chunk.path)
                 {
-                    string x = chunk.path;
-                    if (x.Contains("/"))
-                        x = x.Substring(x.LastIndexOf("/") + 1);
-                    filename = System.IO.Path.Combine(s, x);
+                    filename = downloadFilePath(chunk.path);
                 }
                 else
                 {

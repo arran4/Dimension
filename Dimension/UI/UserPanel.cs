@@ -298,6 +298,13 @@ namespace Dimension.UI
             }
             System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
             {
+                long startingByte = 0;
+                string downloadPath = Model.Peer.downloadFilePath(s);
+                if (System.IO.File.Exists(downloadPath))
+                {
+                    startingByte = new System.IO.FileInfo(downloadPath).Length;
+                    t.completed = (ulong)startingByte;
+                }
                 Model.Commands.Command c;
                 if (tag.isFolder)
                 {
@@ -305,7 +312,7 @@ namespace Dimension.UI
                 }
                 else
                 {
-                    c = new Model.Commands.RequestChunks() { allChunks = true, path = s };
+                    c = new Model.Commands.RequestChunks() { allChunks = true, path = s, startingByte = startingByte };
                 }
                 if (useUDT)
                 {

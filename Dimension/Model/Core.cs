@@ -456,7 +456,7 @@ namespace Dimension.Model
                             System.Threading.Thread t = new System.Threading.Thread(delegate ()
                             {
                                 if (c is Commands.RequestChunks)
-                                    sendCompleteFile(fullPath, path, path, con);
+                                    sendCompleteFile(fullPath, path, path, con, ((Commands.RequestChunks)c).startingByte);
                                 if (c is Commands.RequestFolderContents)
                                     sendCompleteFolder(fullPath, path, path, con);
 
@@ -490,18 +490,19 @@ namespace Dimension.Model
             {
                 if (toCancel.Contains(originalPath))
                     return;
-                sendCompleteFile(z.FullName, requestPath.TrimEnd('/') + "/" + z.Name, originalPath, con);
+                sendCompleteFile(z.FullName, requestPath.TrimEnd('/') + "/" + z.Name, originalPath, con, 0);
             }
 
         }
-        void sendCompleteFile(string realPath, string requestPath, string originalPath, IncomingConnection con)
+        void sendCompleteFile(string realPath, string requestPath, string originalPath, IncomingConnection con, long startingByte)
         {
             
             int chunkSize = 64 * 1024;
-            long pos = 0;
+            long pos = startingByte;
 
             System.IO.FileInfo f = new System.IO.FileInfo(realPath);
             System.IO.FileStream s = new System.IO.FileStream(realPath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+            s.Seek(startingByte, System.IO.SeekOrigin.Begin);
             Transfer t = new Transfer();
             
             if (con is LoopbackIncomingConnection)
@@ -510,6 +511,7 @@ namespace Dimension.Model
                 t.username = "(Uploading)";
             t.filename = realPath.Substring(realPath.LastIndexOf("/") + 1);
             t.download = false;
+            t.completed = (ulong) startingByte;
             t.size = (ulong)f.Length;
             t.con = con;
             t.path = requestPath;

@@ -8,6 +8,7 @@ namespace Dimension.Model.Commands
 {
     public class RequestChunks:Command
     {
+        public long startingByte;
         public bool allChunks;
         public string path;
     }

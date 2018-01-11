@@ -144,6 +144,7 @@ namespace Dimension.Model
                 }
                 peers[h.id].lastContact = DateTime.Now;
                 peers[h.id].buildNumber = h.buildNumber;
+                channels.AddRange(peers[h.id].circles);
             }
             if (updated) peerUpdated?.Invoke(peers[h.id]);
             if (renamed) peerRenamed?.Invoke(oldName, peers[h.id]);
