@@ -152,6 +152,10 @@ namespace Dimension.Model
                 foreach (ulong u in channels)
                     if (!oldChannels.Contains(u))
                         peerAdded?.Invoke(peers[h.id], u);
+
+                foreach (ulong u in oldChannels)
+                    if (!channels.Contains(u))
+                        peerRemoved?.Invoke(peers[h.id], u);
             }
         }
     }
