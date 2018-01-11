@@ -157,6 +157,7 @@ namespace Dimension.UI
             }
             filesView.EndUpdate();
             ignoreReselect = false;
+            updateFilterList();
         }
         string currentPath = "/";
         void commandReceived(Model.Commands.Command c)
@@ -300,7 +301,7 @@ namespace Dimension.UI
                 Model.Commands.Command c;
                 if (tag.isFolder)
                 {
-                    c = new Model.Commands.RequestFolderContents {  path = s };
+                    c = new Model.Commands.RequestFolderContents { path = s };
                 }
                 else
                 {
@@ -387,6 +388,25 @@ namespace Dimension.UI
                     s = currentPath + "/" + tag.name;
                 downloadElement(s, tag);
             }
+        }
+
+        void updateFilterList()
+        {
+            foreach (ListViewItem i in filesView.Items)
+            {
+                if (filterBox.Text.Trim() == "")
+                    i.ForeColor = SystemColors.WindowText;
+                else
+                    if (i.Text.ToLower().Contains(filterBox.Text.ToLower()))
+                        i.ForeColor = SystemColors.WindowText;
+                    else
+                        i.ForeColor = SystemColors.GrayText;
+            }
+            }
+
+        private void filterBox_TextChanged(object sender, EventArgs e)
+        {
+            updateFilterList();
         }
     }
 }
