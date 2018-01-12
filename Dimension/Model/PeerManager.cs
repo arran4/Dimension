@@ -112,7 +112,6 @@ namespace Dimension.Model
                         peers[h.id].circles = h.myCircles;
                         added = true;
                     }
-                    channels.AddRange(h.myCircles);
                 }
                 else
                 {

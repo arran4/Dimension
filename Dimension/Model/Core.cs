@@ -720,9 +720,7 @@ namespace Dimension.Model
             {
                 byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()));
                 circles.Add(BitConverter.ToUInt64(hash, 0));
-
-                byte[] hash2 = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
-                circles.Add(BitConverter.ToUInt64(hash2, 0));
+                
             }
             c.myCircles = circles.ToArray();
 
