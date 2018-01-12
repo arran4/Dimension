@@ -61,6 +61,8 @@
             this.closeAllCirclesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllFileListsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllSearchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.invertedColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
@@ -82,8 +84,6 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogTimer = new System.Windows.Forms.Timer(this.components);
             this.transferRateTimer = new System.Windows.Forms.Timer(this.components);
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.invertedColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -358,6 +358,21 @@
             this.closeAllSearchesToolStripMenuItem.Text = "Close All Searches";
             this.closeAllSearchesToolStripMenuItem.Click += new System.EventHandler(this.closeAllSearchesToolStripMenuItem_Click);
             // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.invertedColorsToolStripMenuItem});
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // invertedColorsToolStripMenuItem
+            // 
+            this.invertedColorsToolStripMenuItem.Name = "invertedColorsToolStripMenuItem";
+            this.invertedColorsToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.invertedColorsToolStripMenuItem.Text = "Inverted Colors";
+            this.invertedColorsToolStripMenuItem.Click += new System.EventHandler(this.invertedColorsToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -502,7 +517,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tabControl);
             this.splitContainer1.Size = new System.Drawing.Size(724, 324);
-            this.splitContainer1.SplitterDistance = 195;
+            this.splitContainer1.SplitterDistance = 196;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -515,9 +530,10 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 195);
+            this.tabControl.Size = new System.Drawing.Size(724, 196);
             this.tabControl.TabIndex = 0;
             this.tabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl_DrawItem);
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
             // 
             // systemLogStartingPage
@@ -526,7 +542,7 @@
             this.systemLogStartingPage.Margin = new System.Windows.Forms.Padding(2);
             this.systemLogStartingPage.Name = "systemLogStartingPage";
             this.systemLogStartingPage.Padding = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 169);
+            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 170);
             this.systemLogStartingPage.TabIndex = 0;
             this.systemLogStartingPage.Text = "System Log";
             this.systemLogStartingPage.UseVisualStyleBackColor = true;
@@ -556,21 +572,6 @@
             this.transferRateTimer.Enabled = true;
             this.transferRateTimer.Interval = 1000;
             this.transferRateTimer.Tick += new System.EventHandler(this.transferRateTimer_Tick);
-            // 
-            // toolsToolStripMenuItem
-            // 
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.invertedColorsToolStripMenuItem});
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.toolsToolStripMenuItem.Text = "Tools";
-            // 
-            // invertedColorsToolStripMenuItem
-            // 
-            this.invertedColorsToolStripMenuItem.Name = "invertedColorsToolStripMenuItem";
-            this.invertedColorsToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.invertedColorsToolStripMenuItem.Text = "Inverted Colors";
-            this.invertedColorsToolStripMenuItem.Click += new System.EventHandler(this.invertedColorsToolStripMenuItem_Click);
             // 
             // MainForm
             // 

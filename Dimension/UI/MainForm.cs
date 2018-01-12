@@ -109,9 +109,11 @@ namespace Dimension
             for (int i = 0; i < tabControl.TabPages.Count; i++)
                 if ((string)tabControl.TabPages[i].Tag == (string)p.Tag)
                 {
-                    tabControl.SelectTab(i);
-                    if (highlight && !tabControl.TabPages[i].Text.StartsWith("(!)"))
+                    if (highlight && !tabControl.TabPages[i].Text.StartsWith("(!)") && i != tabControl.SelectedIndex)
                         tabControl.TabPages[i].Text = "(!) " + tabControl.TabPages[i].Text;
+
+                    if (!highlight)
+                        tabControl.SelectTab(i);
                     return;
                 }
             if (highlight && !p.Text.StartsWith("(!)"))
@@ -481,5 +483,11 @@ namespace Dimension
         }
         public delegate void ColorChangeEvent(bool inverted = false);
         public static event ColorChangeEvent colorChange;
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl.SelectedTab.Text.StartsWith("(!)"))
+                tabControl.SelectedTab.Text = tabControl.SelectedTab.Text.Substring(3);
+        }
     }
 }
