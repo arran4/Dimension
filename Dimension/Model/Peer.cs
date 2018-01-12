@@ -96,6 +96,7 @@ namespace Dimension.Model
             if (c is Commands.PrivateChatCommand)
             {
                 Commands.PrivateChatCommand chat = (Commands.PrivateChatCommand)c;
+                Program.mainForm.privateChatReceived((Commands.PrivateChatCommand)c, this);
 
             }
 

@@ -21,6 +21,10 @@ namespace Dimension.UI
             historyBox.Font = Program.getFont();
             inputBox.Font = Program.getFont();
         }
+        public void selectChat()
+        {
+            tabControl1.SelectedIndex = 1;
+        }
         Model.Peer p;
         public UserPanel(Model.Peer p)
         {
@@ -45,7 +49,7 @@ namespace Dimension.UI
         static ImageList iconCache = new ImageList();
 
         bool connected = false;
-        void displayMessage(string s)
+        public void displayMessage(string s)
         {
             if (this.InvokeRequired)
             {
@@ -189,7 +193,7 @@ namespace Dimension.UI
 
             }
         }
-        void addLine(string s)
+        public void addLine(string s)
         {
             historyBox.Text += s + Environment.NewLine;
             historyBox.SelectionStart = historyBox.Text.Length;

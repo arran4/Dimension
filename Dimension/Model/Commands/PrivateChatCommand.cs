@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model.Commands
 {
-    class PrivateChatCommand : Command
+    public class PrivateChatCommand : Command
     {
         public string content;
     }

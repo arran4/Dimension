@@ -28,6 +28,22 @@ namespace Dimension
         {
 
         }
+        public void privateChatReceived(Model.Commands.PrivateChatCommand c, Model.Peer z)
+        {
+            TabPage p = new TabPage();
+            p.Text = z.username;
+            p.Tag = "(!) Files for " + z.id.ToString();
+            UI.UserPanel b = new UI.UserPanel(z);
+            b.Dock = DockStyle.Fill;
+            p.Controls.Add(b);
+            this.Invoke(new Action(delegate ()
+            {
+                Program.mainForm.createOrSelect(p, true);
+                ((UI.UserPanel)p.Controls[0]).selectChat();
+                ((UI.UserPanel)p.Controls[0]).addLine(DateTime.Now.ToShortTimeString() + " " + z.username + ": " + c.content);
+                flash();
+            }));
+        }
         public void flash()
         {
             try
@@ -88,14 +104,18 @@ namespace Dimension
         {
             joinLANCircle();
         }
-        public void createOrSelect(TabPage p)
+        public void createOrSelect(TabPage p, bool highlight = false)
         {
             for (int i = 0; i < tabControl.TabPages.Count; i++)
                 if ((string)tabControl.TabPages[i].Tag == (string)p.Tag)
                 {
                     tabControl.SelectTab(i);
+                    if (highlight && !tabControl.TabPages[i].Text.StartsWith("(!)"))
+                        tabControl.TabPages[i].Text = "(!) " + tabControl.TabPages[i].Text;
                     return;
                 }
+            if (highlight && !p.Text.StartsWith("(!)"))
+                p.Text = "(!) " + p.Text;
             tabControl.TabPages.Add(p);
             tabControl.SelectTab(tabControl.TabPages.Count - 1);
 

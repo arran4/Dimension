@@ -337,7 +337,7 @@ namespace Dimension.UI
                 UserPanel b = new UserPanel(z);
                 b.Dock = DockStyle.Fill;
                 p.Controls.Add(b);
-                Program.mainForm.createOrSelect(p);
+                Program.mainForm.createOrSelect(p, false);
             }
         }
 
