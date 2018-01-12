@@ -40,7 +40,11 @@ namespace Dimension
                             if (!UI.FlashWindow.ApplicationIsActivated())
                             {
                                 UI.FlashWindow.Flash(this);
-                                System.Media.SystemSounds.Beep.Play();
+                                if (Program.settings.getBool("Play sounds", true))
+                                {
+                                    System.Media.SoundPlayer p = new System.Media.SoundPlayer(Properties.Resources.Bell);
+                                    p.Play();
+                                }
                             }
                     }
                     catch

@@ -32,6 +32,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.showAFKBox = new System.Windows.Forms.CheckBox();
             this.flashNameDropBox = new System.Windows.Forms.CheckBox();
             this.fontSelectBox = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -55,6 +56,7 @@
             this.manuallyForwardPortsButton = new System.Windows.Forms.RadioButton();
             this.UPnPButton = new System.Windows.Forms.RadioButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.renameButton = new System.Windows.Forms.Button();
             this.deleteShareButton = new System.Windows.Forms.Button();
             this.addShareButton = new System.Windows.Forms.Button();
             this.sharesListView = new System.Windows.Forms.ListView();
@@ -63,8 +65,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.renameButton = new System.Windows.Forms.Button();
-            this.showAFKBox = new System.Windows.Forms.CheckBox();
+            this.playSoundsBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -110,6 +111,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.playSoundsBox);
             this.tabPage1.Controls.Add(this.showAFKBox);
             this.tabPage1.Controls.Add(this.flashNameDropBox);
             this.tabPage1.Controls.Add(this.fontSelectBox);
@@ -128,6 +130,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // showAFKBox
+            // 
+            this.showAFKBox.AutoSize = true;
+            this.showAFKBox.Location = new System.Drawing.Point(98, 130);
+            this.showAFKBox.Name = "showAFKBox";
+            this.showAFKBox.Size = new System.Drawing.Size(277, 17);
+            this.showAFKBox.TabIndex = 10;
+            this.showAFKBox.Text = "Show as \"(AFK)\" when idle for more than 60 seconds";
+            this.showAFKBox.UseVisualStyleBackColor = true;
             // 
             // flashNameDropBox
             // 
@@ -371,6 +383,16 @@
             this.tabPage3.Text = "Shares";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // renameButton
+            // 
+            this.renameButton.Location = new System.Drawing.Point(165, 240);
+            this.renameButton.Name = "renameButton";
+            this.renameButton.Size = new System.Drawing.Size(75, 23);
+            this.renameButton.TabIndex = 3;
+            this.renameButton.Text = "Rename";
+            this.renameButton.UseVisualStyleBackColor = true;
+            this.renameButton.Click += new System.EventHandler(this.renameButton_Click);
+            // 
             // deleteShareButton
             // 
             this.deleteShareButton.Location = new System.Drawing.Point(84, 240);
@@ -424,25 +446,15 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
-            // renameButton
+            // playSoundsBox
             // 
-            this.renameButton.Location = new System.Drawing.Point(165, 240);
-            this.renameButton.Name = "renameButton";
-            this.renameButton.Size = new System.Drawing.Size(75, 23);
-            this.renameButton.TabIndex = 3;
-            this.renameButton.Text = "Rename";
-            this.renameButton.UseVisualStyleBackColor = true;
-            this.renameButton.Click += new System.EventHandler(this.renameButton_Click);
-            // 
-            // showAFKBox
-            // 
-            this.showAFKBox.AutoSize = true;
-            this.showAFKBox.Location = new System.Drawing.Point(98, 130);
-            this.showAFKBox.Name = "showAFKBox";
-            this.showAFKBox.Size = new System.Drawing.Size(277, 17);
-            this.showAFKBox.TabIndex = 10;
-            this.showAFKBox.Text = "Show as \"(AFK)\" when idle for more than 60 seconds";
-            this.showAFKBox.UseVisualStyleBackColor = true;
+            this.playSoundsBox.AutoSize = true;
+            this.playSoundsBox.Location = new System.Drawing.Point(98, 154);
+            this.playSoundsBox.Name = "playSoundsBox";
+            this.playSoundsBox.Size = new System.Drawing.Size(152, 17);
+            this.playSoundsBox.TabIndex = 11;
+            this.playSoundsBox.Text = "Play Sound on Name Drop";
+            this.playSoundsBox.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -511,5 +523,6 @@
         private System.Windows.Forms.CheckBox flashNameDropBox;
         private System.Windows.Forms.Button renameButton;
         private System.Windows.Forms.CheckBox showAFKBox;
+        private System.Windows.Forms.CheckBox playSoundsBox;
     }
 }

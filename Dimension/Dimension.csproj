@@ -330,6 +330,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="if_network1_216674.ico" />
+    <None Include="Resources\Bell.wav" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Updater\Updater.csproj">

@@ -47,6 +47,7 @@ namespace Dimension.UI
 
             downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:\\Downloads");
             flashNameDropBox.Checked = Program.settings.getBool("Flash on Name Drop", true);
+            playSoundsBox.Checked = Program.settings.getBool("Play sounds", true);
 
             showAFKBox.Checked = Program.settings.getBool("Show AFK", true);
 
@@ -96,6 +97,7 @@ namespace Dimension.UI
 
             Program.settings.setBool("Flash on Name Drop", flashNameDropBox.Checked);
 
+            Program.settings.setBool("Play sounds", playSoundsBox.Checked);
 
             Program.settings.setBool("Show AFK", showAFKBox.Checked);
 

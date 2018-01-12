@@ -265,6 +265,7 @@ namespace Dimension.UI
                         historyBox.SelectionLength = s.Length + 1;
                         historyBox.SelectionBackColor = SystemColors.Highlight;
                         historyBox.SelectionColor = SystemColors.HighlightText;
+                        Program.mainForm.flash();
                     }
                     updateFont();
                 }));
@@ -298,7 +299,11 @@ namespace Dimension.UI
                     }
 
                 }
-                System.Media.SystemSounds.Beep.Play();
+                if (Program.settings.getBool("Play sounds", true))
+                {
+                    System.Media.SoundPlayer p = new System.Media.SoundPlayer(Properties.Resources.Bell);
+                    p.Play();
+                }
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
