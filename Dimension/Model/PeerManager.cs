@@ -125,6 +125,11 @@ namespace Dimension.Model
                     peers[h.id].circles = h.myCircles;
                     added = true;
                 }
+                if (peers[h.id].description != h.description)
+                {
+                    peers[h.id].description = h.description;
+                    updated = true;
+                }
                 peers[h.id].peerCount = h.peerCount;
                 peers[h.id].externalControlPort = h.externalControlPort;
                 peers[h.id].externalDataPort = h.externalDataPort;

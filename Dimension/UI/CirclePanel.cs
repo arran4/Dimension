@@ -104,6 +104,7 @@ namespace Dimension.UI
                 ListViewItem i = new ListViewItem();
                 i.SubItems.Add("");
                 i.SubItems.Add("");
+                i.SubItems.Add("");
                 userListView.Items.Add(i);
             }
             while (userListView.Items.Count > items.Length)
@@ -134,6 +135,7 @@ namespace Dimension.UI
                     userListView.Items[i].Text = s2;
                 userListView.Items[i].SubItems[1].Text = (items[i].buildNumber.ToString());
                 userListView.Items[i].SubItems[2].Text = (ByteFormatter.formatBytes(items[i].share));
+                userListView.Items[i].SubItems[3].Text = (items[i].description);
             }
             userListView.EndUpdate();
         }
@@ -151,7 +153,7 @@ namespace Dimension.UI
             string fingerprint = "";
             foreach (Model.Peer p2 in items)
                 if (!p2.quit)
-                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString() + p2.afk.ToString();
+                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString() + p2.afk.ToString() + p2.probablyDead.ToString() + p2.maybeDead.ToString()+p2.description;
             if (lastFingerprint == fingerprint)
                 return;
             lastFingerprint = fingerprint;

@@ -666,6 +666,7 @@ namespace Dimension.Model
                 Program.settings.setBool("Use UDT", false);
 
             c.useUDT = Program.settings.getBool("Use UDT", true);
+            c.description = Program.settings.getString("Description", "");
 
             try
             {

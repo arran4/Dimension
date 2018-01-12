@@ -35,6 +35,7 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -91,7 +92,8 @@
             this.userListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader3,
-            this.columnHeader2});
+            this.columnHeader2,
+            this.columnHeader4});
             this.userListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.userListView.Font = new System.Drawing.Font("Lucida Sans Unicode", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.userListView.FullRowSelect = true;
@@ -116,6 +118,11 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Share";
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Description";
+            this.columnHeader4.Width = 200;
             // 
             // CirclePanel
             // 
@@ -144,5 +151,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.RichTextBox historyBox;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }

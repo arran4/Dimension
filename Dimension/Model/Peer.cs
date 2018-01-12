@@ -17,6 +17,7 @@ namespace Dimension.Model
         public System.Net.IPAddress publicAddress;
         public System.Net.IPAddress[] internalAddress;
         public int buildNumber;
+        public string description;
         System.Net.IPAddress _actualAddr;
         public System.Net.IPEndPoint actualEndpoint
         {
