@@ -73,5 +73,21 @@ namespace Dimension.UI
                 Program.settings.setULong("Global Download Rate Limit", value);
             this.Close();
         }
+
+        private void valueBox_ValueChanged(object sender, EventArgs e)
+        {
+            yesLimitButton.Checked = true;
+        }
+
+        private void unitComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            yesLimitButton.Checked = true;
+        }
+
+        private void valueBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            yesLimitButton.Checked = true;
+        }
     }
 }

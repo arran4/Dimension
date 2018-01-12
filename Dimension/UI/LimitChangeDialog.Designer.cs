@@ -100,6 +100,8 @@
             this.valueBox.Name = "valueBox";
             this.valueBox.Size = new System.Drawing.Size(120, 20);
             this.valueBox.TabIndex = 5;
+            this.valueBox.ValueChanged += new System.EventHandler(this.valueBox_ValueChanged);
+            this.valueBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.valueBox_KeyDown);
             // 
             // unitComboBox
             // 
@@ -115,6 +117,7 @@
             this.unitComboBox.Name = "unitComboBox";
             this.unitComboBox.Size = new System.Drawing.Size(173, 21);
             this.unitComboBox.TabIndex = 6;
+            this.unitComboBox.SelectedIndexChanged += new System.EventHandler(this.unitComboBox_SelectedIndexChanged);
             // 
             // LimitChangeDialog
             // 
