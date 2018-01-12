@@ -195,21 +195,27 @@ namespace Dimension.Model
             System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(path);
             if (d.LastWriteTimeUtc.Ticks != f.lastModified)
                 invalidated = true;
-            if (d.GetFiles().Length + d.GetDirectories().Length != f.folderIds.Length + f.fileIds.Length)
-                invalidated = true;
-            
             string s = "";
-            foreach (System.IO.FileInfo i in d.GetFiles())
+            try
             {
-                s += i.Name + "|" + i.Length.ToString() + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
-                wait(urgent);
+                if (d.GetFiles().Length + d.GetDirectories().Length != f.folderIds.Length + f.fileIds.Length)
+                    invalidated = true;
+                foreach (System.IO.FileInfo i in d.GetFiles())
+                {
+                    s += i.Name + "|" + i.Length.ToString() + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
+                    wait(urgent);
 
+                }
+                foreach (System.IO.DirectoryInfo i in d.GetDirectories())
+                {
+                    s += i.Name + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
+                    wait(urgent);
+
+                }
             }
-            foreach (System.IO.DirectoryInfo i in d.GetDirectories())
+            catch (System.IO.IOException)
             {
-                s += i.Name + "|" + i.LastWriteTimeUtc.Ticks.ToString() + Environment.NewLine;
-                wait(urgent);
-
+                return;
             }
             string s2 = "";
             foreach (ulong id in f.fileIds)
@@ -281,46 +287,54 @@ namespace Dimension.Model
             Folder[] folderChildren = new Folder[d.GetDirectories().Length];
             File[] fileChildren = new File[d.GetFiles().Length];
             int fi = 0;
-            foreach (System.IO.FileInfo z in d.GetFiles())
+            try
             {
-                if (quitting)
+                foreach (System.IO.FileInfo z in d.GetFiles())
                 {
-                    deleteFolder(f, true);
-                    return 0;
+                    if (quitting)
+                    {
+                        deleteFolder(f, true);
+                        return 0;
+                    }
+                    wait(urgent);
+                    File output = new File();
+                    output.id = Program.fileListDatabase.allocateId();
+                    output.name = z.Name;
+                    output.parentId = f.id;
+                    output.size = (ulong)z.Length;
+                    output.lastModified = z.LastWriteTimeUtc.Ticks;
+                    total += output.size;
+                    fileChildren[fi] = output;
+                    fi++;
+                    toSave["FSListing " + output.id.ToString()] = output;
                 }
-                wait(urgent);
-                File output = new File();
-                output.id = Program.fileListDatabase.allocateId();
-                output.name = z.Name;
-                output.parentId = f.id;
-                output.size = (ulong)z.Length;
-                output.lastModified = z.LastWriteTimeUtc.Ticks;
-                total += output.size;
-                fileChildren[fi] = output;
-                fi++;
-                toSave["FSListing " + output.id.ToString()] = output;
+
+                fi = 0;
+                foreach (System.IO.DirectoryInfo z in d.GetDirectories())
+                {
+                    if (quitting)
+                    {
+                        deleteFolder(f, true);
+                        return 0;
+                    }
+                    wait(urgent);
+                    Folder output = new Folder();
+                    output.id = Program.fileListDatabase.allocateId();
+                    output.name = z.Name;
+                    output.parentId = f.id;
+                    output.size = loadFolder(output, urgent, realLocation + "/" + z.Name);
+                    output.lastModified = z.LastWriteTimeUtc.Ticks;
+                    total += output.size;
+                    folderChildren[fi] = output;
+                    fi++;
+                    toSave["FSListing " + output.id.ToString()] = output;
+                }
             }
-            
-            fi = 0;
-            foreach (System.IO.DirectoryInfo z in d.GetDirectories())
+            catch (System.IO.IOException)
             {
-                if (quitting)
-                {
-                    deleteFolder(f, true);
-                    return 0;
-                }
-                wait(urgent);
-                Folder output = new Folder();
-                output.id = Program.fileListDatabase.allocateId();
-                output.name = z.Name;
-                output.parentId = f.id;
-                output.size = loadFolder(output, urgent, realLocation + "/" + z.Name);
-                output.lastModified = z.LastWriteTimeUtc.Ticks;
-                total += output.size;
-                folderChildren[fi] = output;
-                fi++;
-                toSave["FSListing " + output.id.ToString()] = output;
+                return 0;
             }
+
             FSListing x = new FSListing();
 
             f.fileIds = new ulong[fileChildren.Length];

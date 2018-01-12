@@ -363,16 +363,19 @@ namespace Dimension.Model
 
             foreach (string s in r.content.Split('\n'))
             {
+                string s2 = s;
+                if (s2.Contains("hunter2"))
+                    s2 = s2.Replace("hunter2", "*******");
                 if (r.content.ToLower().Contains(Program.settings.getString("Username", Environment.MachineName)))
                     Program.mainForm.flash();
-                if (s.StartsWith("/me"))
+                if (s2.StartsWith("/me"))
                 {
-                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " *** " + username + " " + s.Trim('\r').Substring(4), r.roomId);
+                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " *** " + username + " " + s2.Trim('\r').Substring(4), r.roomId);
 
                 }
                 else
                 {
-                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s.Trim('\r'), r.roomId);
+                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s2.Trim('\r'), r.roomId);
                 }
             }
 

@@ -100,6 +100,7 @@ namespace Dimension.UI
             Program.settings.setBool("Show AFK", showAFKBox.Checked);
 
             Program.settings.save();
+            
             Close();
         }
 
@@ -219,6 +220,7 @@ namespace Dimension.UI
             }
             foreach (ListViewItem i in toRemove)
                 sharesListView.Items.Remove(i);
+            Program.fileListDatabase.setInt(Program.settings.settings, "Root Share Count", sharesListView.Items.Count);
         }
 
         private void browseDownloadsButton_Click(object sender, EventArgs e)
