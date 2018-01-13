@@ -68,7 +68,7 @@ namespace Dimension.UI
             ulong downLimit = Program.settings.getULong("Global Download Rate Limit", 0);
             for (int i = 0; i < z.Length; i++)
             {
-                string[] w = new string[9];
+                string[] w = new string[10];
                 w[0] = z[i].filename;
                 if (z[i].download)
                     w[1] = "Downloading";
@@ -102,12 +102,28 @@ namespace Dimension.UI
                     }
                 }
 
+                string eta;
+                var timeElapsed = DateTime.Now.Subtract(z[i].timeCreated);
+                float fraction=0;
+                if(z[i].completed > 0 && z[i].size > 0)
+                    fraction = z[i].completed / (float)z[i].size;
+                double seconds;
+
+                if (fraction == 0)
+                    seconds = 0;
+                else
+                    seconds = (timeElapsed.TotalSeconds * (1.0f/fraction))- timeElapsed.TotalSeconds;
+                TimeSpan timeSpan = new TimeSpan(0, 0, (int)seconds);
+                eta = timeSpan.ToString();
+
+
                 w[3] = ByteFormatter.formatBytes(z[i].rate) + "/s";
                 w[4] = limit;
-                w[5] = ByteFormatter.formatBytes(z[i].completed);
-                w[6] = percent;
-                w[7] = ByteFormatter.formatBytes(z[i].size);
-                w[8] = z[i].protocol;
+                w[5] = eta;
+                w[6] = ByteFormatter.formatBytes(z[i].completed);
+                w[7] = percent;
+                w[8] = ByteFormatter.formatBytes(z[i].size);
+                w[9] = z[i].protocol;
 
                 while (listView.Items[i].SubItems.Count < w.Length)
                     listView.Items[i].SubItems.Add("");

@@ -20,6 +20,7 @@ namespace Dimension.Model
         public string username = "";
         public ulong rate;
         public ulong userId;
+        public DateTime timeCreated = DateTime.Now;
 
         public static List<Transfer> transfers = new List<Transfer>();
     }
