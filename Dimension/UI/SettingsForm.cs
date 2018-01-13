@@ -238,7 +238,18 @@ namespace Dimension.UI
 
         private void renameButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Not implemented yet, sorry.");
+            foreach (ListViewItem i in sharesListView.SelectedItems)
+            {
+                RenameShareForm r = new RenameShareForm(i.Text);
+                r.ShowDialog();
+
+                Model.RootShare r2 = (Model.RootShare)i.Tag;
+                r2.name = r.theName;
+                i.Text = r2.name;
+
+                Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.Index, r2);
+                
+            }
         }
     }
 }
