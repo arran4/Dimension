@@ -37,7 +37,7 @@ namespace Dimension.Model
                 currentUploadLimit = Program.settings.getULong("Global Upload Rate Limit", 0);
 
 
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(100);
             }
         }
         public ulong limitUpload(ulong amount, bool disabled = false)

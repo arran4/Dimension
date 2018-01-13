@@ -31,6 +31,8 @@ namespace Updater
 
                 if (System.IO.Directory.Exists("temp"))
                     System.IO.Directory.Delete("temp",true);
+                if (System.IO.File.Exists("newversion.zip"))
+                    System.IO.File.Delete("newversion.zip");
                 System.Diagnostics.Process.Start("Dimension.exe");
                 Application.Exit();
             });
