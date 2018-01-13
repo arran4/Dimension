@@ -53,16 +53,15 @@ namespace Dimension.UI
         {
             this.Close();
         }
-
-        private void okayButton_Click(object sender, EventArgs e)
+        void saveAndClose()
         {
-            ulong value=0;
+            ulong value = 0;
 
             if (noLimitButton.Checked)
                 value = 0;
             if (yesLimitButton.Checked)
             {
-                value = (ulong) valueBox.Value;
+                value = (ulong)valueBox.Value;
                 for (int i = 0; i < unitComboBox.SelectedIndex; i++)
                     value *= 1024;
             }
@@ -72,6 +71,11 @@ namespace Dimension.UI
             if (whichLimit == WhichLimit.down)
                 Program.settings.setULong("Global Download Rate Limit", value);
             this.Close();
+        }
+
+        private void okayButton_Click(object sender, EventArgs e)
+        {
+            saveAndClose();
         }
 
         private void valueBox_ValueChanged(object sender, EventArgs e)
@@ -88,6 +92,23 @@ namespace Dimension.UI
         private void valueBox_KeyDown(object sender, KeyEventArgs e)
         {
             yesLimitButton.Checked = true;
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                saveAndClose();
+
+            }
+
+        }
+
+        private void LimitChangeDialog_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                saveAndClose();
+
+            }
         }
     }
 }

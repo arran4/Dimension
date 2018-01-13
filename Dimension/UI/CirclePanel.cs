@@ -387,12 +387,17 @@ namespace Dimension.UI
         private void tabChanged(object sender, EventArgs e)
         {
             changeEventReceived = true;
-            if (((TabControl)Parent.Parent).SelectedTab == Parent)
+            if (Parent.Parent != null)
             {
-                TabPage p = (TabPage)Parent;
-                focused = true;
-                if (p.Text.StartsWith("(!) "))
-                    p.Text = p.Text.Substring(4);
+                if (((TabControl)Parent.Parent).SelectedTab == Parent)
+                {
+                    TabPage p = (TabPage)Parent;
+                    focused = true;
+                    if (p.Text.StartsWith("(!) "))
+                        p.Text = p.Text.Substring(4);
+                }
+                else
+                    focused = false;
             }
             else
                 focused = false;

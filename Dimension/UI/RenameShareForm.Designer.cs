@@ -48,6 +48,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(257, 20);
             this.textBox1.TabIndex = 1;
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // okayButton
             // 
@@ -72,6 +73,7 @@
             this.MinimizeBox = false;
             this.Name = "RenameShareForm";
             this.Text = "Rename Share";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RenameShareForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

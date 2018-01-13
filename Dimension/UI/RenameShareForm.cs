@@ -25,5 +25,27 @@ namespace Dimension.UI
             theName = textBox1.Text;
             Close();
         }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+
+                theName = textBox1.Text;
+                Close();
+            }
+        }
+
+        private void RenameShareForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+
+                theName = textBox1.Text;
+                Close();
+            }
+        }
     }
 }

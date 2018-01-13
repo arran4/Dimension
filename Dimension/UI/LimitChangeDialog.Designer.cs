@@ -137,6 +137,7 @@
             this.Name = "LimitChangeDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Change Transfer Limit";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LimitChangeDialog_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.valueBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
