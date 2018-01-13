@@ -504,11 +504,17 @@ namespace Dimension.Model
             System.IO.FileStream s = new System.IO.FileStream(realPath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
             s.Seek(startingByte, System.IO.SeekOrigin.Begin);
             Transfer t = new Transfer();
-            
+
             if (con is LoopbackIncomingConnection)
+            {
                 t.username = Program.settings.getString("Username", "Username");
+                t.userId = id;
+            }
             else
+            {
                 t.username = "(Uploading)";
+                t.userId = 0;
+            }
             t.filename = realPath.Substring(realPath.LastIndexOf("/") + 1);
             t.download = false;
             t.completed = (ulong) startingByte;
@@ -564,6 +570,7 @@ namespace Dimension.Model
                     {
                         t.rate = ((LoopbackIncomingConnection)con).upCounter.frontBuffer;
                         t.username = Program.settings.getString("Username", "Username");
+                        t.userId = Program.theCore.id;
                     }
                     else
                     {
@@ -571,7 +578,10 @@ namespace Dimension.Model
                     }
                     t.completed += (ulong)buffer.Length;
                     if (con.hello != null)
-                        t.username = con.hello.username;    //TODO: Get ID and get latest username
+                    {
+                        t.username = con.hello.username;    //TODO: Get latest username
+                        t.userId = con.hello.id;
+                    }
                     pos += buffer.Length;
                 }
             }

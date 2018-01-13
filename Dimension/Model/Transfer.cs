@@ -19,6 +19,7 @@ namespace Dimension.Model
         public ulong completed;
         public string username = "";
         public ulong rate;
+        public ulong userId;
 
         public static List<Transfer> transfers = new List<Transfer>();
     }

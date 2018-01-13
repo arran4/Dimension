@@ -218,6 +218,7 @@ namespace Dimension.Model
             {
                 t.rate = ((LoopbackOutgoingConnection)dataConnection).downCounter.frontBuffer;
                 t.username = username;
+                t.userId = id;
             }
             if (c3 != null)
             {

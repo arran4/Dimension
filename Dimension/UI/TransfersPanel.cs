@@ -187,7 +187,7 @@ namespace Dimension.UI
             {
                 Model.Transfer t = (Model.Transfer)listView.SelectedItems[0].Tag;
                 foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
-                    if (p.username == t.username)
+                    if (p.id== t.userId)
                     {
                         Program.mainForm.selectUser(p);
                         return;

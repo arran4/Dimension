@@ -281,6 +281,7 @@ namespace Dimension.UI
                     t.originalPath = s;
                     t.path = s;
                     t.username = p.username;
+                    t.userId = p.id;
                     t.filename = tag.name;
                     t.download = true;
                     t.size = tag.size;
