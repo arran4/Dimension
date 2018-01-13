@@ -396,6 +396,7 @@ namespace Dimension.UI
             }
             else
                 focused = false;
+            updateFont();
         }
         public bool focused = false;
 
