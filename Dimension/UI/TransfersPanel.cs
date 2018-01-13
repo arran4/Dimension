@@ -32,6 +32,7 @@ namespace Dimension.UI
                 listView.View = View.Details;
                 listView.Dock = DockStyle.Fill;
                 listView.MouseUp += listView_MouseUp;
+                listView.MouseDoubleClick += listView_MouseDoubleClick;
                 listView.FullRowSelect = true;
                 Controls.Add(listView);
             }
@@ -177,6 +178,20 @@ namespace Dimension.UI
                     else if (t.con is Model.OutgoingConnection)
                         ((Model.OutgoingConnection)t.con).rateLimiterDisabled = false;
                 }
+            }
+        }
+
+        private void listView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (listView.SelectedItems.Count > 0)
+            {
+                Model.Transfer t = (Model.Transfer)listView.SelectedItems[0].Tag;
+                foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
+                    if (p.username == t.username)
+                    {
+                        Program.mainForm.selectUser(p);
+                        return;
+                    }
             }
         }
     }

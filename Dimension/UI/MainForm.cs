@@ -28,6 +28,17 @@ namespace Dimension
         {
 
         }
+        public void selectUser(Model.Peer z)
+        {
+            TabPage p = new TabPage();
+            p.Text = z.username;
+            p.Tag = "(!) Files for " + z.id.ToString();
+            UI.UserPanel b = new UI.UserPanel(z);
+            b.Dock = DockStyle.Fill;
+            p.Controls.Add(b);
+            Program.mainForm.createOrSelect(p, true);
+
+        }
         public void privateChatReceived(Model.Commands.PrivateChatCommand c, Model.Peer z)
         {
             TabPage p = new TabPage();

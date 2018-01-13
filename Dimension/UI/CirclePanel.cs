@@ -71,6 +71,7 @@ namespace Dimension.UI
             t.IsBackground = true;
             t.Name = "Circle join loop";
             t.Start();
+
         }
         public CirclePanel()
         {
@@ -139,6 +140,7 @@ namespace Dimension.UI
             }
             userListView.EndUpdate();
         }
+        bool addedEvent = false;
         string lastFingerprint = "";
         void updateUserList(Model.Peer p, ulong channel)
         {
@@ -236,6 +238,12 @@ namespace Dimension.UI
         }
         public void chatReceived(string s, ulong roomId)
         {
+            if (Parent != null && Parent.Parent != null && !addedEvent)
+            {
+                addedEvent = true;
+                ((TabControl)Parent.Parent).SelectedIndexChanged += tabChanged;
+
+            }
             if (roomId != this.circleHash)
                 return;
             if (IsDisposed)
@@ -258,6 +266,12 @@ namespace Dimension.UI
             {
                 this.Invoke(new Action(delegate ()
                 {
+                    if (!focused && addedEvent && changeEventReceived)
+                    {
+                        TabPage p = (TabPage)Parent;
+                        if (!p.Text.StartsWith("(!) "))
+                            p.Text = "(!) " + p.Text;
+                    }
                     historyBox.AppendText(s + Environment.NewLine);
                     if (highlight)
                     {
@@ -369,6 +383,21 @@ namespace Dimension.UI
         {
             updateFont();
         }
+        bool changeEventReceived = false;
+        private void tabChanged(object sender, EventArgs e)
+        {
+            changeEventReceived = true;
+            if (((TabControl)Parent.Parent).SelectedTab == Parent)
+            {
+                TabPage p = (TabPage)Parent;
+                focused = true;
+                if (p.Text.StartsWith("(!) "))
+                    p.Text = p.Text.Substring(4);
+            }
+            else
+                focused = false;
+        }
+        public bool focused = false;
 
         private void historyBox_LinkClicked(object sender, LinkClickedEventArgs e)
         {

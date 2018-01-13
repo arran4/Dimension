@@ -34,16 +34,16 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.cancelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.disableLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enableLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cancelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,6 +68,7 @@
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
+            this.listView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView_MouseDoubleClick);
             this.listView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listView_MouseUp);
             // 
             // columnHeader1
@@ -89,6 +90,10 @@
             // 
             this.columnHeader5.Text = "Speed";
             this.columnHeader5.Width = 84;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "Limit";
             // 
             // columnHeader7
             // 
@@ -121,32 +126,28 @@
             this.disableLimitToolStripMenuItem,
             this.cancelToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 92);
-            // 
-            // cancelToolStripMenuItem
-            // 
-            this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
-            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.cancelToolStripMenuItem.Text = "Cancel";
-            this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
-            // 
-            // columnHeader9
-            // 
-            this.columnHeader9.Text = "Limit";
-            // 
-            // disableLimitToolStripMenuItem
-            // 
-            this.disableLimitToolStripMenuItem.Name = "disableLimitToolStripMenuItem";
-            this.disableLimitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.disableLimitToolStripMenuItem.Text = "Disable Limit";
-            this.disableLimitToolStripMenuItem.Click += new System.EventHandler(this.disableLimitToolStripMenuItem_Click);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(143, 70);
             // 
             // enableLimitToolStripMenuItem
             // 
             this.enableLimitToolStripMenuItem.Name = "enableLimitToolStripMenuItem";
-            this.enableLimitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.enableLimitToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.enableLimitToolStripMenuItem.Text = "Enable Limit";
             this.enableLimitToolStripMenuItem.Click += new System.EventHandler(this.enableLimitToolStripMenuItem_Click);
+            // 
+            // disableLimitToolStripMenuItem
+            // 
+            this.disableLimitToolStripMenuItem.Name = "disableLimitToolStripMenuItem";
+            this.disableLimitToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.disableLimitToolStripMenuItem.Text = "Disable Limit";
+            this.disableLimitToolStripMenuItem.Click += new System.EventHandler(this.disableLimitToolStripMenuItem_Click);
+            // 
+            // cancelToolStripMenuItem
+            // 
+            this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
+            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.cancelToolStripMenuItem.Text = "Cancel";
+            this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
             // 
             // TransfersPanel
             // 
