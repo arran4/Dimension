@@ -23,6 +23,11 @@ namespace Dimension.Model
                 Program.globalUpCounter.addBytes(b.Length);
             }
         }
+        public void leaveCircle(string s)
+        {
+            lock (circles)
+                circles.Remove(s);
+        }
         public void joinCircle(string s)
         {
             lock (circles)

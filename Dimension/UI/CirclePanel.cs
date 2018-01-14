@@ -10,8 +10,12 @@ using System.Windows.Forms;
 
 namespace Dimension.UI
 {
-    public partial class CirclePanel : UserControl
+    public partial class CirclePanel : UserControl, Model.ClosableTab
     {
+        public void close()
+        {
+            Program.theCore.leaveCircle(url);
+        }
         List<string> haveAdded = new List<string>();
         void joinLoop()
         {
