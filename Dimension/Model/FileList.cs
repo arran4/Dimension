@@ -67,11 +67,18 @@ namespace Dimension.Model
         {
             lock (updateLock)
             {
+                quitComplete = false;
                 RootShare[] shares = Program.fileListDatabase.getRootShares();
                 string path = e.FullPath.Replace('\\', '/');
                 SystemLog.addEntry("Partial filesystem update to " + path.Replace('/', System.IO.Path.DirectorySeparatorChar));
 
                 bool isFolder = System.IO.Directory.Exists(path);
+
+                if (!isFolder)
+                {
+                    path = path.Substring(0, path.LastIndexOf('/')+1);
+                    isFolder = System.IO.Directory.Exists(path);
+                }
                 if (isFolder)
                 {
                     foreach (RootShare r in shares)
@@ -79,10 +86,10 @@ namespace Dimension.Model
                         {
                             if (quitComplete)
                                 return;
-                            if ((path + "/").StartsWith(r.fullPath + "/"))
+                            if (path.StartsWith(r.fullPath + "/"))
                             {
-                                string remaining = path.Substring(r.fullPath.Length + 1);
-                                FSListing f = getFSListing(r, remaining);
+                                string remaining = path.Replace(System.IO.Path.DirectorySeparatorChar, '/').Substring(r.fullPath.Length+1);
+                                FSListing f = getFSListing(r,"/"+r.name + "/"+ remaining.Trim('/'));
 
                                 if (f is Folder)
                                 {
@@ -93,6 +100,7 @@ namespace Dimension.Model
                         }
                 }
             }
+            doSave();
             if (updateComplete != null)
                 updateComplete();
         }
@@ -139,6 +147,9 @@ namespace Dimension.Model
         public FSListing getFSListing(Folder parent, string path)
         {
             string[] split = path.Split('/');
+
+            if (split.Length <2)
+                return parent;
 
             for (int i = 2; i < split.Length; i++)
             {
@@ -252,13 +263,18 @@ namespace Dimension.Model
                 if (!quitting)
                 {
                     Program.fileListDatabase.setObject(Program.settings.settings, "Root Share " + f.index.ToString(), f);
-                    foreach (string s3 in toSave.Keys)
-                        Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
+                    doSave();
                 }
-                toSave = null;
             }
             sw.Stop();
             sw.Reset();
+        }
+        public void doSave()
+        {
+            foreach (string s3 in toSave.Keys)
+                Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
+            toSave = new Dictionary<string, FSListing>();
+
         }
         public void startUpdate(bool urgent)
         {
