@@ -35,6 +35,8 @@ namespace Dimension.Model
         public void addStringToArrayNoDup(string name, string value)
         {
             string[] q = getStringArray(name);
+            if (q == null)
+                q = new string[] { };
             if (q.Contains(value))
                 return;
             Array.Resize(ref q, q.Length + 1);
@@ -43,7 +45,11 @@ namespace Dimension.Model
         }
         public void removeStringToArrayNoDup(string name, string value)
         {
+            if (value == null || value == "")
+                return;
             string[] q = getStringArray(name);
+            if (q == null)
+                q = new string[] { };
             if (!q.Contains(value))
                 return;
             List<string> output = new List<string>();

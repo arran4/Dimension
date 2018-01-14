@@ -56,12 +56,17 @@ namespace Dimension.UI
                 //takes too long, display the thing later
                 //e = Program.kademlia.doLookup(s.ToLower().Trim());
             }
-            Program.mainForm.Invoke(new Action(delegate ()
+            if (Program.mainForm.InvokeRequired)
+            {
+                Program.mainForm.Invoke(new Action(delegate ()
+                {
+                    Program.mainForm.addInternetCircle(e, s, circleType);
+                }));
+            }
+            else
             {
                 Program.mainForm.addInternetCircle(e, s, circleType);
-
-            }));
-
+            }
         }
 
         void doJoin()
