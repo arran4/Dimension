@@ -293,8 +293,15 @@ namespace Dimension.Model
                     request = true;
                 else
                     if (knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] != hash)
-                        request = true;
+                    request = true;
 
+                if (request)
+                {
+                    var h = generateHello();
+                    h.requestingHelloBack = true;
+                    byte[] b = Program.serializer.serialize(h);
+                    Program.udp.Send(b, b.Length, sender);
+                }
             }
             if (c is Commands.GossipCommand)
             {
@@ -338,6 +345,13 @@ namespace Dimension.Model
                     if (!h.debugBuild.Value && h.buildNumber > Program.buildNumber)
                         Program.checkForUpdates();
 
+                if (h.requestingHelloBack)
+                {
+                    var h2 = generateHello();
+                    h2.requestingHelloBack = false;
+                    byte[] b = Program.serializer.serialize(h2);
+                    Program.udp.Send(b, b.Length, sender);
+                }
                 peerManager.parseHello(h, sender);
                 lock(toHello)
                     if (toHello.Contains(sender))
