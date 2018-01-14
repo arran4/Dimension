@@ -81,23 +81,29 @@ namespace Dimension.Model
                 }
                 if (isFolder)
                 {
-                    foreach (RootShare r in shares)
-                        if (r != null)
-                        {
-                            if (quitComplete)
-                                return;
-                            if (path.StartsWith(r.fullPath + "/"))
+                    System.Threading.Thread t = new System.Threading.Thread(delegate ()
+                    {
+                        foreach (RootShare r in shares)
+                            if (r != null)
                             {
-                                string remaining = path.Replace(System.IO.Path.DirectorySeparatorChar, '/').Substring(r.fullPath.Length+1);
-                                FSListing f = getFSListing(r,"/"+r.name + "/"+ remaining.Trim('/'));
-
-                                if (f is Folder)
+                                if (quitComplete)
+                                    return;
+                                if (path.StartsWith(r.fullPath + "/"))
                                 {
-                                    deleteFolder((Folder)f, false);
-                                    loadFolder((Folder)f, false, path); //TODO: Update size of everything above this folder
+                                    string remaining = path.Replace(System.IO.Path.DirectorySeparatorChar, '/').Substring(r.fullPath.Length + 1);
+                                    FSListing f = getFSListing(r, (r.name + "/" + remaining).Trim('/'));
+
+                                    if (f is Folder)
+                                    {
+                                        deleteFolder((Folder)f, false);
+                                        loadFolder((Folder)f, false, path); //TODO: Update size of everything above this folder
+                                    }
                                 }
                             }
-                        }
+                    });
+                    t.IsBackground = true;
+                    t.Name = "Partial file list update thread";
+                    t.Start();
                 }
             }
             doSave();
