@@ -91,7 +91,7 @@ namespace Dimension.Model
                                 if (path.StartsWith(r.fullPath + "/"))
                                 {
                                     string remaining = path.Replace(System.IO.Path.DirectorySeparatorChar, '/').Substring(r.fullPath.Length + 1);
-                                    FSListing f = getFSListing(r, (r.name + "/" + remaining).Trim('/'));
+                                    FSListing f = getFSListing("/"+(r.name + "/" + remaining).Trim('/'), true);
 
                                     if (f is Folder)
                                     {
@@ -100,15 +100,15 @@ namespace Dimension.Model
                                     }
                                 }
                             }
+                        doSave();
+                        if (updateComplete != null)
+                            updateComplete();
                     });
                     t.IsBackground = true;
                     t.Name = "Partial file list update thread";
                     t.Start();
                 }
             }
-            doSave();
-            if (updateComplete != null)
-                updateComplete();
         }
         //TODO: Make this cache in the key-value store instead of just iterating
         public RootShare getRootShare(ulong id)
@@ -265,7 +265,8 @@ namespace Dimension.Model
                 deleteFolder(f, urgent);
                 size = loadFolder(f, urgent, path);
                 f.size = size;
-                toSave["FSListing " + f.id] = f;
+                lock (toSave)
+                    toSave["FSListing " + f.id] = f;
                 if (!quitting)
                 {
                     Program.fileListDatabase.setObject(Program.settings.settings, "Root Share " + f.index.ToString(), f);
@@ -277,8 +278,9 @@ namespace Dimension.Model
         }
         public void doSave()
         {
-            foreach (string s3 in toSave.Keys)
-                Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
+            lock(toSave)
+                foreach (string s3 in toSave.Keys)
+                    Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
             toSave = new Dictionary<string, FSListing>();
 
         }
@@ -296,7 +298,8 @@ namespace Dimension.Model
             ulong total = 0;
             wait(urgent);
             System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(realLocation);
-            toSave["FSListing " + f.id.ToString()]= f;   //save it once here in case the user exits halfway through
+            lock (toSave)
+                toSave["FSListing " + f.id.ToString()]= f;   //save it once here in case the user exits halfway through
 
             try
             {
@@ -328,7 +331,8 @@ namespace Dimension.Model
                     total += output.size;
                     fileChildren[fi] = output;
                     fi++;
-                    toSave["FSListing " + output.id.ToString()] = output;
+                    lock (toSave)
+                        toSave["FSListing " + output.id.ToString()] = output;
                 }
 
                 fi = 0;
@@ -349,7 +353,8 @@ namespace Dimension.Model
                     total += output.size;
                     folderChildren[fi] = output;
                     fi++;
-                    toSave["FSListing " + output.id.ToString()] = output;
+                    lock (toSave)
+                        toSave["FSListing " + output.id.ToString()] = output;
                 }
             }
             catch (System.IO.IOException)
@@ -371,7 +376,8 @@ namespace Dimension.Model
                 deleteFolder(f, true);
                 return 0;
             }
-            toSave["FSListing " + f.id.ToString()] = f;
+            lock (toSave)
+                toSave["FSListing " + f.id.ToString()] = f;
             return total;
         }
         void deleteFolder(Folder f, bool urgent)
