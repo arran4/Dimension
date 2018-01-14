@@ -129,6 +129,7 @@
     <Compile Include="Model\Commands\GossipPeer.cs" />
     <Compile Include="Model\Commands\HelloCommand.cs" />
     <Compile Include="Model\Commands\KeepAlive.cs" />
+    <Compile Include="Model\Commands\MiniHello.cs" />
     <Compile Include="Model\Commands\PeerList.cs" />
     <Compile Include="Model\Commands\PrivateChatCommand.cs" />
     <Compile Include="Model\Commands\Quitting.cs" />

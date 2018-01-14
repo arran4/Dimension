@@ -154,13 +154,33 @@ namespace Dimension.Model
             if (renamed) peerRenamed?.Invoke(oldName, peers[h.id]);
             if (added)
             {
+
+                System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+                ulong lanHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes("LAN".ToLower())), 0);
+
                 foreach (ulong u in channels)
-                    if (!oldChannels.Contains(u))
-                        peerAdded?.Invoke(peers[h.id], u);
+                    if (u == lanHash)
+                    {
+                        if (!oldChannels.Contains(u) && peers[h.id].isLocal)
+                            peerAdded?.Invoke(peers[h.id], u);
+                    }
+                    else
+                    {
+                        if (!oldChannels.Contains(u))
+                            peerAdded?.Invoke(peers[h.id], u);
+                    }
 
                 foreach (ulong u in oldChannels)
-                    if (!channels.Contains(u))
-                        peerRemoved?.Invoke(peers[h.id], u);
+                    if (u == lanHash)
+                    {
+                        if (!channels.Contains(u) && peers[h.id].isLocal)
+                            peerRemoved?.Invoke(peers[h.id], u);
+                    }
+                    else
+                    {
+                        if (!channels.Contains(u))
+                            peerRemoved?.Invoke(peers[h.id], u);
+                    }
             }
         }
     }

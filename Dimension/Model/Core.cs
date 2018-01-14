@@ -282,8 +282,20 @@ namespace Dimension.Model
             lock(toHello)
                 toHello.Add(p);
         }
+        Dictionary<string, int> knownHashes = new Dictionary<string, int>();
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
         {
+            if (c is Commands.MiniHello)
+            {
+                int hash = ((Commands.MiniHello)c).helloHash;
+                bool request = false;
+                if (!knownHashes.ContainsKey(sender.Address.ToString() + "\n" + sender.Port.ToString()))
+                    request = true;
+                else
+                    if (knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] != hash)
+                        request = true;
+
+            }
             if (c is Commands.GossipCommand)
             {
                 var h = generateHello();
@@ -316,7 +328,13 @@ namespace Dimension.Model
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
 
-                if(h.debugBuild.HasValue)
+
+                var sha = new System.Security.Cryptography.SHA512Managed();
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(h);
+                helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(json)), 0);
+                knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
+
+                if (h.debugBuild.HasValue)
                     if (!h.debugBuild.Value && h.buildNumber > Program.buildNumber)
                         Program.checkForUpdates();
 
@@ -676,6 +694,7 @@ namespace Dimension.Model
             return (uint)Environment.TickCount - lastInput.dwTime;
         }
         public System.Net.IPAddress[] internalIPs = new System.Net.IPAddress[] { };
+        int helloHash = 0;
         public Commands.HelloCommand generateHello()
         {
             Commands.HelloCommand c = new Commands.HelloCommand();
@@ -773,9 +792,11 @@ namespace Dimension.Model
             }
             c.internalIPs = ips.ToArray();
             internalIPs = ips2.ToArray();
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(c);
+            helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(json)),0);
             return c;
         }
-        string lastHelloHash;
         void helloLoop()
         {
             while (!disposed)
@@ -787,16 +808,24 @@ namespace Dimension.Model
                 if (disposed)
                     return;
 
+
                 byte[] b = Program.serializer.serialize(generateHello());
-                var sha = new System.Security.Cryptography.SHA512Managed();
-                string helloHash = Convert.ToBase64String(sha.ComputeHash(b));
+
+
+                Commands.MiniHello mini = new Commands.MiniHello();
+                mini.helloHash = helloHash;
+                byte[] m = Program.serializer.serialize(mini);
 
                 Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
+                Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 
                 Program.globalUpCounter.addBytes(b.Length);
-                
-                if(((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port != NetConstants.controlPort)
+
+                if (((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port != NetConstants.controlPort)
+                {
                     Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
+                    Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
+                }
 
                 Program.globalUpCounter.addBytes(b.Length);
 
@@ -805,6 +834,8 @@ namespace Dimension.Model
                     {
                         Program.udp.Send(b, b.Length, p);
                         Program.globalUpCounter.addBytes(b.Length);
+                        Program.udp.Send(m, m.Length, p);
+                        Program.globalUpCounter.addBytes(m.Length);
                     }
 
                 foreach (Peer p in peerManager.allPeers)
@@ -817,12 +848,13 @@ namespace Dimension.Model
                             {
                                 Program.udp.Send(b, b.Length, p.actualEndpoint);
                                 Program.globalUpCounter.addBytes(b.Length);
+                                Program.udp.Send(m, m.Length, p.actualEndpoint);
+                                Program.globalUpCounter.addBytes(m.Length);
                                 p.lastTimeHelloSent = DateTime.Now;
                             }
                         }
                     }
                 }
-                lastHelloHash = helloHash;
                 System.Threading.Thread.Sleep(1000);
             }
         }
