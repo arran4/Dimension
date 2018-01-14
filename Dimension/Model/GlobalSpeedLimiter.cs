@@ -37,7 +37,7 @@ namespace Dimension.Model
                 currentUploadLimit = Program.settings.getULong("Global Upload Rate Limit", 0);
 
 
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(100);
             }
         }
         public ulong limitUpload(ulong amount, bool disabled = false)
@@ -46,7 +46,7 @@ namespace Dimension.Model
                 return amount;
             if (currentUploadLimit > 0)
             {
-                while (totalUpload > currentUploadLimit && currentUploadLimit > 0)
+                while (totalUpload*10 > currentUploadLimit && currentUploadLimit > 0)
                     System.Threading.Thread.Sleep(1);
                 while (Math.Min(amount, currentUploadLimit - totalUpload) <= 0 && currentUploadLimit > 0)
                     System.Threading.Thread.Sleep(1);
@@ -54,7 +54,7 @@ namespace Dimension.Model
                 if (currentUploadLimit == 0)
                     return amount;
                 totalUpload += amount;
-                return Math.Min(amount, currentUploadLimit - (totalUpload-amount));
+                return Math.Min(amount, (currentUploadLimit - (totalUpload-amount))/10);
 
             }
             else
@@ -67,7 +67,7 @@ namespace Dimension.Model
                 return amount;
             if (currentDownloadLimit > 0)
             {
-                while (totalDownload > currentDownloadLimit && currentDownloadLimit > 0)
+                while (totalDownload*10 > currentDownloadLimit && currentDownloadLimit > 0)
                     System.Threading.Thread.Sleep(1);
                 while(Math.Min(amount, currentDownloadLimit - totalDownload) <= 0 && currentDownloadLimit > 0)
                     System.Threading.Thread.Sleep(1);
@@ -75,7 +75,7 @@ namespace Dimension.Model
                 if (currentDownloadLimit == 0)
                     return amount;
                 totalDownload += amount;
-                return Math.Min(amount, currentDownloadLimit - (totalDownload - amount));
+                return Math.Min(amount, (currentDownloadLimit - (totalDownload - amount))/10);
             }
             else
                 return amount;
