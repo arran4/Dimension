@@ -310,6 +310,13 @@ namespace Dimension.UI
                     startingByte = new System.IO.FileInfo(downloadPath).Length;
                     t.completed = (ulong)startingByte;
                 }
+                if (startingByte >= (long)tag.size) //we already have the file
+                {
+                    p.transfers.Remove(t.path);
+                    lock (Model.Transfer.transfers)
+                        Model.Transfer.transfers.Remove(t);
+                    return;
+                }
                 Model.Commands.Command c;
                 if (tag.isFolder)
                 {
