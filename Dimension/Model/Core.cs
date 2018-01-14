@@ -623,19 +623,23 @@ namespace Dimension.Model
                 if (q is Folder)
                 {
                     Folder f = (Folder)q;
-                    output.folders = new Commands.FSListing[f.folderIds.Length];
+                    List<Commands.FSListing> folders = new List<Commands.FSListing>();
                     for (int i = 0; i < f.folderIds.Length; i++)
                     {
                         FSListing z = Program.fileList.getFolder(f.folderIds[i]);
-                        output.folders[i] = new Commands.FSListing() { isFolder = true, name = z.name, size = z.size };
+                        if(z != null)
+                            folders.Add(new Commands.FSListing() { isFolder = true, name = z.name, size = z.size });
                     }
-                    output.files = new Commands.FSListing[f.fileIds.Length];
+                    output.folders = folders.ToArray();
 
+                   List <Commands.FSListing> files = new List<Commands.FSListing>();
                     for (int i = 0; i < f.fileIds.Length; i++)
                     {
                         FSListing z = Program.fileList.getFile(f.fileIds[i]);
-                        output.files[i] = new Commands.FSListing() { isFolder = false, name = z.name, size = z.size };
+                        if (z != null)
+                            files.Add(new Commands.FSListing() { isFolder = false, name = z.name, size = z.size });
                     }
+                    output.files = files.ToArray();
 
                 }
             }
