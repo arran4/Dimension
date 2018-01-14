@@ -43,11 +43,11 @@ namespace Dimension.Model
         }
         public void removeStringToArrayNoDup(string name, string value)
         {
-            string[] q = getStringArray("qs" + name);
+            string[] q = getStringArray(name);
             if (!q.Contains(value))
                 return;
             List<string> output = new List<string>();
-            output.AddRange(q);
+            output.Remove(value);
             setStringArray(name, output.ToArray());
         }
         public void setStringArray(string name, string[] value)

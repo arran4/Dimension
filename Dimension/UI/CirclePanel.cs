@@ -15,6 +15,12 @@ namespace Dimension.UI
         public void close()
         {
             Program.theCore.leaveCircle(url);
+            if (url == "LAN")
+                Program.settings.setBool("Joined LAN Circle", false);
+            if (circleType == JoinCircleForm.CircleType.bootstrap)
+                Program.settings.removeStringToArrayNoDup("Bootstrap Circles Open", url);
+            if (circleType == JoinCircleForm.CircleType.kademlia)
+                Program.settings.removeStringToArrayNoDup("Kademlia Circles Open", url);
         }
         List<string> haveAdded = new List<string>();
         void joinLoop()
