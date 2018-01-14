@@ -49,6 +49,7 @@ namespace Dimension.UI
             flashNameDropBox.Checked = Program.settings.getBool("Flash on Name Drop", true);
             playSoundsBox.Checked = Program.settings.getBool("Play sounds", true);
 
+            autoRejoinBox.Checked = Program.settings.getBool("Auto Rejoin on Startup", true);
             showAFKBox.Checked = Program.settings.getBool("Show AFK", true);
 
                 fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
@@ -100,6 +101,7 @@ namespace Dimension.UI
             Program.settings.setBool("Play sounds", playSoundsBox.Checked);
 
             Program.settings.setBool("Show AFK", showAFKBox.Checked);
+            Program.settings.setBool("Auto Rejoin on Startup", autoRejoinBox.Checked);
 
             Program.settings.save();
             

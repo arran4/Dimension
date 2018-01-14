@@ -503,12 +503,15 @@ namespace Dimension
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-            if (Program.settings.getBool("Joined LAN Circle", false))
-                joinLANCircle();
-            foreach (string s in Program.settings.getStringArray("Bootstrap Circles Open"))
-                UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.bootstrap);
-            foreach (string s in Program.settings.getStringArray("Kademlia Circles Open"))
-                UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.kademlia);
+            if (Program.settings.getBool("Auto Rejoin on Startup", true))
+            {
+                if (Program.settings.getBool("Joined LAN Circle", false))
+                    joinLANCircle();
+                foreach (string s in Program.settings.getStringArray("Bootstrap Circles Open"))
+                    UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.bootstrap);
+                foreach (string s in Program.settings.getStringArray("Kademlia Circles Open"))
+                    UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.kademlia);
+            }
         }
     }
 }

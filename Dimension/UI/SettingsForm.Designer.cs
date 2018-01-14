@@ -32,6 +32,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.playSoundsBox = new System.Windows.Forms.CheckBox();
             this.showAFKBox = new System.Windows.Forms.CheckBox();
             this.flashNameDropBox = new System.Windows.Forms.CheckBox();
             this.fontSelectBox = new System.Windows.Forms.ComboBox();
@@ -65,7 +66,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.playSoundsBox = new System.Windows.Forms.CheckBox();
+            this.autoRejoinBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -111,6 +112,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.autoRejoinBox);
             this.tabPage1.Controls.Add(this.playSoundsBox);
             this.tabPage1.Controls.Add(this.showAFKBox);
             this.tabPage1.Controls.Add(this.flashNameDropBox);
@@ -130,6 +132,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // playSoundsBox
+            // 
+            this.playSoundsBox.AutoSize = true;
+            this.playSoundsBox.Location = new System.Drawing.Point(98, 154);
+            this.playSoundsBox.Name = "playSoundsBox";
+            this.playSoundsBox.Size = new System.Drawing.Size(152, 17);
+            this.playSoundsBox.TabIndex = 11;
+            this.playSoundsBox.Text = "Play Sound on Name Drop";
+            this.playSoundsBox.UseVisualStyleBackColor = true;
             // 
             // showAFKBox
             // 
@@ -446,15 +458,15 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
-            // playSoundsBox
+            // autoRejoinBox
             // 
-            this.playSoundsBox.AutoSize = true;
-            this.playSoundsBox.Location = new System.Drawing.Point(98, 154);
-            this.playSoundsBox.Name = "playSoundsBox";
-            this.playSoundsBox.Size = new System.Drawing.Size(152, 17);
-            this.playSoundsBox.TabIndex = 11;
-            this.playSoundsBox.Text = "Play Sound on Name Drop";
-            this.playSoundsBox.UseVisualStyleBackColor = true;
+            this.autoRejoinBox.AutoSize = true;
+            this.autoRejoinBox.Location = new System.Drawing.Point(98, 178);
+            this.autoRejoinBox.Name = "autoRejoinBox";
+            this.autoRejoinBox.Size = new System.Drawing.Size(207, 17);
+            this.autoRejoinBox.TabIndex = 12;
+            this.autoRejoinBox.Text = "Automatically Rejoin Circles on Startup";
+            this.autoRejoinBox.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -524,5 +536,6 @@
         private System.Windows.Forms.Button renameButton;
         private System.Windows.Forms.CheckBox showAFKBox;
         private System.Windows.Forms.CheckBox playSoundsBox;
+        private System.Windows.Forms.CheckBox autoRejoinBox;
     }
 }
