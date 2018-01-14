@@ -21,6 +21,41 @@ namespace Dimension.Model
             settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);
         }
 
+        public string[] getStringArray(string name)
+        {
+            if (cache.ContainsKey("qs" + name))
+                return Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(cache["qs" + name]);
+            string z = "[]";
+            settings.Get("qs" + name, out z);
+            cache["qs" + name] = z;
+            if (z == "" || z == null)
+                z = "[]";
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(z);
+        }
+        public void addStringToArrayNoDup(string name, string value)
+        {
+            string[] q = getStringArray(name);
+            if (q.Contains(value))
+                return;
+            Array.Resize(ref q, q.Length + 1);
+            q[q.Length - 1] = value;
+            setStringArray(name, q);
+        }
+        public void removeStringToArrayNoDup(string name, string value)
+        {
+            string[] q = getStringArray("qs" + name);
+            if (!q.Contains(value))
+                return;
+            List<string> output = new List<string>();
+            output.AddRange(q);
+            setStringArray(name, output.ToArray());
+        }
+        public void setStringArray(string name, string[] value)
+        {
+            string data = Newtonsoft.Json.JsonConvert.SerializeObject(value);
+            cache["qs" + name] = data;
+            settings.Set("qs" + name, data);
+        }
         public ulong getULong(string name, ulong def)
         {
             if (cache.ContainsKey("i" + name))

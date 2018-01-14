@@ -39,51 +39,57 @@ namespace Dimension.UI
             doJoin();
         }
 
+        public static void joinCircle(string s, CircleType circleType)
+        {
+            System.Net.IPEndPoint[] e;
+            if (circleType == CircleType.bootstrap)
+            {
+                    e = Program.bootstrap.join(s);
+                    if (e.Length == 0)
+                    {
+                        MessageBox.Show("Invalid bootstrap URL.");
+                    }
+            }
+            else
+            {
+                e = new System.Net.IPEndPoint[] { };
+                //takes too long, display the thing later
+                //e = Program.kademlia.doLookup(s.ToLower().Trim());
+            }
+            Program.mainForm.Invoke(new Action(delegate ()
+            {
+                Program.mainForm.addInternetCircle(e, s, circleType);
+
+            }));
+
+        }
+
         void doJoin()
         {
             joinButton.Enabled = false;
             string s = urlBox.Text;
             var t = new System.Threading.Thread(delegate ()
             {
-                System.Net.IPEndPoint[] e;
-                if (circleType == CircleType.bootstrap)
+                try
                 {
+                    joinCircle(s, circleType);
+                }
+                catch (System.Net.WebException e3)
+                {
+                    MessageBox.Show("Error connecting to bootstrap - " + e3.Message);
+
                     try
                     {
-                        e = Program.bootstrap.join(s);
-                        if (e.Length == 0)
+                        this.Invoke(new Action(delegate ()
                         {
-                            MessageBox.Show("Invalid bootstrap URL.");
-                        }
+                            this.Close();
+                        }));
                     }
-                    catch (System.Net.WebException e3)
+                    catch (InvalidOperationException)
                     {
-                        MessageBox.Show("Error connecting to bootstrap - " + e3.Message);
-
-                        try
-                        {
-                            this.Invoke(new Action(delegate ()
-                            {
-                                this.Close();
-                            }));
-                        }
-                        catch (InvalidOperationException)
-                        {
-                        }
-                        return;
                     }
+                    return;
                 }
-                else
-                {
-                    e = new System.Net.IPEndPoint[] { };
-                    //takes too long, display the thing later
-                    //e = Program.kademlia.doLookup(s.ToLower().Trim());
-                }
-                Program.mainForm.Invoke(new Action(delegate ()
-                {
-                    Program.mainForm.addInternetCircle(e, s, circleType);
-
-                }));
                 try
                 {
                     this.Invoke(new Action(delegate ()

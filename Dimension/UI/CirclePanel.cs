@@ -72,7 +72,16 @@ namespace Dimension.UI
             t.Name = "Circle join loop";
             t.Start();
 
-        }
+            if (circleType == JoinCircleForm.CircleType.bootstrap)
+            {
+                Program.settings.addStringToArrayNoDup("Bootstrap Circles Open", url);
+            }
+            else if (circleType == JoinCircleForm.CircleType.kademlia)
+            {
+                Program.settings.addStringToArrayNoDup("Kademlia Circles Open", url);
+            }
+
+            }
         public CirclePanel()
         {
             InitializeComponent();
@@ -86,6 +95,8 @@ namespace Dimension.UI
             Program.theCore.chatReceivedEvent += chatReceived;
             MainForm.colorChange += colorChanged;
             Program.mainForm.setColors();
+
+            Program.settings.setBool("Joined LAN Circle", true);
         }
         ulong circleHash;
         Model.Peer[] allPeersInCircle

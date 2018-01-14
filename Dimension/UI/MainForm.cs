@@ -500,5 +500,15 @@ namespace Dimension
             if (tabControl.SelectedTab.Text.StartsWith("(!)"))
                 tabControl.SelectedTab.Text = tabControl.SelectedTab.Text.Substring(3);
         }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (Program.settings.getBool("Joined LAN Circle", false))
+                joinLANCircle();
+            foreach (string s in Program.settings.getStringArray("Bootstrap Circles Open"))
+                UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.bootstrap);
+            foreach (string s in Program.settings.getStringArray("Kademlia Circles Open"))
+                UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.kademlia);
+        }
     }
 }
