@@ -63,10 +63,10 @@ namespace Dimension
                 {
                     try
                     {
-                        if (Program.settings.getBool("Flash on Name Drop", true))
-                            if (!UI.FlashWindow.ApplicationIsActivated())
-                            {
-                                UI.FlashWindow.Flash(this);
+                        if (!UI.FlashWindow.ApplicationIsActivated())
+                        {
+                                if (Program.settings.getBool("Flash on Name Drop", true))
+                                    UI.FlashWindow.Flash(this);
                                 if (Program.settings.getBool("Play sounds", true))
                                 {
                                     System.Media.SoundPlayer p = new System.Media.SoundPlayer(Properties.Resources.Bell);
