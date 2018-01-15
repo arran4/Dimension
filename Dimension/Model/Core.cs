@@ -838,7 +838,7 @@ namespace Dimension.Model
                 //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
                 Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 
-                Program.globalUpCounter.addBytes(b.Length);
+                Program.globalUpCounter.addBytes(m.Length);
 
                 if (((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port != NetConstants.controlPort)
                 {
@@ -846,7 +846,7 @@ namespace Dimension.Model
                     Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
                 }
 
-                Program.globalUpCounter.addBytes(b.Length);
+                Program.globalUpCounter.addBytes(m.Length);
 
                 lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)
