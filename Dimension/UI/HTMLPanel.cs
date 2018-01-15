@@ -21,7 +21,7 @@ namespace Dimension.UI
             p.Dock = DockStyle.Fill;
             p.Navigating += navigate;
             Controls.Add(p);
-            p.DocumentText = "<html><body><h1>Testing!</h1><p>Oh dear, what hath God wrought...</p> <h2>List of Bootsraps</h2><ul><li><a href='!BOOTSTRAP!http://www.9thcircle.net/Projects/Dimension/bootstrap.php'>9th Circle Test Bootstrap</a></li><li><a href='!BOOTSTRAP!http://www.respawn.com.au/dimension.php'>Respawn LAN Bootstrap</a></li></ul></body></html>";
+            p.DocumentText = "<html><body><h1>Welcome to Dimension!</h1><p>It's still young, so there aren't many networks to join. Check these ones out:</p> <h2>List of Bootsraps</h2><ul><li><a href='!BOOTSTRAP!http://www.9thcircle.net/Projects/Dimension/bootstrap.php'>9th Circle Test Bootstrap</a></li><li><a href='!BOOTSTRAP!http://www.respawn.com.au/dimension.php'>Respawn LAN Bootstrap</a></li></ul></body></html>";
             p.Refresh(WebBrowserRefreshOption.Completely);
         }
         void navigate(object sender, WebBrowserNavigatingEventArgs e)

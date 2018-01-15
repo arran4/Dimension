@@ -88,25 +88,15 @@ namespace Dimension
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            var p = new UI.SystemLogPanel();
-            p.Dock = DockStyle.Fill;
-            systemLogStartingPage.Tag = "System Log";
-            systemLogStartingPage.Controls.Add(p);
-
             var t = new UI.TransfersPanel();
             t.Dock = DockStyle.Fill;
             splitContainer1.Panel2.Controls.Add(t);
-
-            var z = new UI.NetworkStatusPanel();
-            z.Dock = DockStyle.Fill;
-            TabPage w = new TabPage("Network Status");
-            w.Tag = "Network Status";
-            w.Controls.Add(z);
-            tabControl.TabPages.Add(w);
+            
 
             setColors();
 
-            TabPage h = new TabPage("HTML Demo");
+            tabControl.TabPages.Clear();
+            TabPage h = new TabPage("Welcome");
             h.Tag = h.Text;
             UI.HTMLPanel hp = new UI.HTMLPanel();
             hp.Dock = DockStyle.Fill;
@@ -504,8 +494,9 @@ namespace Dimension
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl.SelectedTab.Text.StartsWith("(!)"))
-                tabControl.SelectedTab.Text = tabControl.SelectedTab.Text.Substring(3);
+            if(tabControl.SelectedTab != null)
+                if (tabControl.SelectedTab.Text.StartsWith("(!)"))
+                    tabControl.SelectedTab.Text = tabControl.SelectedTab.Text.Substring(3);
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
