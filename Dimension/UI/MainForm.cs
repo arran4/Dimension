@@ -105,6 +105,13 @@ namespace Dimension
             tabControl.TabPages.Add(w);
 
             setColors();
+
+            TabPage h = new TabPage("HTML Demo");
+            h.Tag = h.Text;
+            UI.HTMLPanel hp = new UI.HTMLPanel();
+            hp.Dock = DockStyle.Fill;
+            h.Controls.Add(hp);
+            tabControl.TabPages.Add(h);
         }
 
         private void joinLANButton_Click(object sender, EventArgs e)

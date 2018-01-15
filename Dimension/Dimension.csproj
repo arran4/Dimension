@@ -78,6 +78,12 @@
     <ApplicationIcon>if_network1_216674.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlRenderer, Version=1.5.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.Core.1.5.0.5\lib\net45\HtmlRenderer.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="LumiSoft.Net">
       <HintPath>..\LumiSoft.Net.dll</HintPath>
     </Reference>
@@ -185,6 +191,12 @@
       <DependentUpon>DownloadQueuePanel.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\FlashWindow.cs" />
+    <Compile Include="UI\HTMLPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\HTMLPanel.Designer.cs">
+      <DependentUpon>HTMLPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\LimitChangeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -274,6 +286,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\DownloadQueuePanel.resx">
       <DependentUpon>DownloadQueuePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\HTMLPanel.resx">
+      <DependentUpon>HTMLPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\LimitChangeDialog.resx">
       <DependentUpon>LimitChangeDialog.cs</DependentUpon>
