@@ -64,6 +64,14 @@ namespace Dimension.Model
         public event PeerUpdateEvent peerUpdated;
         public event PeerChannelUpdateEvent peerRemoved;
         Dictionary<ulong, Peer> peers = new Dictionary<ulong, Peer>();
+        public void parseMiniHello(Commands.MiniHello h, System.Net.IPEndPoint sender)
+        {
+            lock (peers)
+            {
+                if (peers.ContainsKey(h.id))
+                    peers[h.id].lastContact = DateTime.Now;
+            }
+        }
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
             List<ulong> channels = new List<ulong>();

@@ -9,5 +9,6 @@ namespace Dimension.Model.Commands
     public class MiniHello : Command
     {
         public int helloHash;
+        public ulong id;
     }
 }

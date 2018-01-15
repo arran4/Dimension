@@ -307,6 +307,7 @@ namespace Dimension.Model
                     byte[] b = Program.serializer.serialize(h);
                     Program.udp.Send(b, b.Length, sender);
                 }
+                peerManager.parseMiniHello(((Commands.MiniHello)c), sender);
             }
             if (c is Commands.GossipCommand)
             {
@@ -833,6 +834,7 @@ namespace Dimension.Model
 
                 Commands.MiniHello mini = new Commands.MiniHello();
                 mini.helloHash = helloHash;
+                mini.id = id;
                 byte[] m = Program.serializer.serialize(mini);
 
                 //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
