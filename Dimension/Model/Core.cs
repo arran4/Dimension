@@ -279,8 +279,13 @@ namespace Dimension.Model
         List<System.Net.IPEndPoint> toHello = new List<System.Net.IPEndPoint>();
         public void addPeer(System.Net.IPEndPoint p)
         {
-            lock(toHello)
+            lock (toHello)
+            {
+                foreach (var v in toHello)
+                    if (v.Address.ToString() == p.Address.ToString() && v.Port == p.Port)
+                        return;
                 toHello.Add(p);
+            }
         }
         Dictionary<string, int> knownHashes = new Dictionary<string, int>();
         void parse(Commands.Command c, System.Net.IPEndPoint sender)
@@ -830,14 +835,14 @@ namespace Dimension.Model
                 mini.helloHash = helloHash;
                 byte[] m = Program.serializer.serialize(mini);
 
-                Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
+                //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
                 Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 
                 Program.globalUpCounter.addBytes(b.Length);
 
                 if (((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port != NetConstants.controlPort)
                 {
-                    Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
+                    //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
                     Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
                 }
 
@@ -846,8 +851,8 @@ namespace Dimension.Model
                 lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)
                     {
-                        Program.udp.Send(b, b.Length, p);
-                        Program.globalUpCounter.addBytes(b.Length);
+                        //Program.udp.Send(b, b.Length, p);
+                        //Program.globalUpCounter.addBytes(b.Length);
                         Program.udp.Send(m, m.Length, p);
                         Program.globalUpCounter.addBytes(m.Length);
                     }
@@ -860,8 +865,8 @@ namespace Dimension.Model
                         {
                             //if (!p.quit)
                             {
-                                Program.udp.Send(b, b.Length, p.actualEndpoint);
-                                Program.globalUpCounter.addBytes(b.Length);
+                                //Program.udp.Send(b, b.Length, p.actualEndpoint);
+                                //Program.globalUpCounter.addBytes(b.Length);
                                 Program.udp.Send(m, m.Length, p.actualEndpoint);
                                 Program.globalUpCounter.addBytes(m.Length);
                                 p.lastTimeHelloSent = DateTime.Now;
