@@ -71,9 +71,14 @@ namespace Dimension.Model
             lock (peers)
             {
                 if (peers.ContainsKey(h.id))
+                {
+                    peers[h.id].quit = false;
                     peers[h.id].lastContact = DateTime.Now;
+                }
                 else
+                {
                     return true;
+                }
                 return false;
             }
         }
@@ -158,6 +163,7 @@ namespace Dimension.Model
                     peers[h.id].afk = h.afk;
                     updated = true;
                 }
+                peers[h.id].quit = false;
                 peers[h.id].peerCount = h.peerCount;
                 peers[h.id].lastContact = DateTime.Now;
                 peers[h.id].buildNumber = h.buildNumber;

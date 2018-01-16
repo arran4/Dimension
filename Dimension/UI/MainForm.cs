@@ -85,6 +85,13 @@ namespace Dimension
 
             }
         }
+        public static bool isMono
+        {
+            get
+            {
+                return Type.GetType("Mono.Runtime") != null;
+            }
+        }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -95,13 +102,16 @@ namespace Dimension
 
             setColors();
 
-            tabControl.TabPages.Clear();
-            TabPage h = new TabPage("Welcome");
-            h.Tag = h.Text;
-            UI.HTMLPanel hp = new UI.HTMLPanel();
-            hp.Dock = DockStyle.Fill;
-            h.Controls.Add(hp);
-            tabControl.TabPages.Add(h);
+            if (!isMono)
+            {
+                tabControl.TabPages.Clear();
+                TabPage h = new TabPage("Welcome");
+                h.Tag = h.Text;
+                UI.HTMLPanel hp = new UI.HTMLPanel();
+                hp.Dock = DockStyle.Fill;
+                h.Controls.Add(hp);
+                tabControl.TabPages.Add(h);
+            }
         }
 
         private void joinLANButton_Click(object sender, EventArgs e)
