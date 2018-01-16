@@ -66,12 +66,15 @@ namespace Dimension.Model
         public event PeerUpdateEvent peerUpdated;
         public event PeerChannelUpdateEvent peerRemoved;
         Dictionary<ulong, Peer> peers = new Dictionary<ulong, Peer>();
-        public void parseMiniHello(Commands.MiniHello h, System.Net.IPEndPoint sender)
+        public bool parseMiniHello(Commands.MiniHello h, System.Net.IPEndPoint sender)
         {
             lock (peers)
             {
                 if (peers.ContainsKey(h.id))
                     peers[h.id].lastContact = DateTime.Now;
+                else
+                    return true;
+                return false;
             }
         }
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
@@ -139,7 +142,6 @@ namespace Dimension.Model
                     peers[h.id].description = h.description;
                     updated = true;
                 }
-                peers[h.id].peerCount = h.peerCount;
                 peers[h.id].externalControlPort = h.externalControlPort;
                 peers[h.id].externalDataPort = h.externalDataPort;
                 peers[h.id].localControlPort = h.internalControlPort;

@@ -96,7 +96,7 @@ namespace Dimension.Model
                                         potentials.Insert(r.Next(0, potentials.Count + 1), p);
                                     else
                                         if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
-                                            potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                                        potentials.Insert(r.Next(0, potentials.Count + 1), p);
 
                         if (potentials.Count > 0)
                         {
@@ -284,7 +284,7 @@ namespace Dimension.Model
 
             Program.globalDownCounter.addBytes(data.Length);
             if (data.Length > 32 && Program.theCore != null) //Ignore extraneous STUN info
-                parse(Program.serializer.deserialize(data), sender);
+                parse(Program.serializer.deserialize(data), sender, Program.serializer.getText(data));
             doReceive();
         }
         List<System.Net.IPEndPoint> toHello = new List<System.Net.IPEndPoint>();
@@ -299,7 +299,7 @@ namespace Dimension.Model
             }
         }
         Dictionary<string, int> knownHashes = new Dictionary<string, int>();
-        void parse(Commands.Command c, System.Net.IPEndPoint sender)
+        void parse(Commands.Command c, System.Net.IPEndPoint sender, string originalText)
         {
             if (c is Commands.MiniHello)
             {
@@ -311,6 +311,8 @@ namespace Dimension.Model
                     if (knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] != hash)
                     request = true;
 
+                if (peerManager.parseMiniHello(((Commands.MiniHello)c), sender))
+                    request = true;
                 if (request)
                 {
                     var h = generateHello();
@@ -318,7 +320,6 @@ namespace Dimension.Model
                     byte[] b = Program.serializer.serialize(h);
                     Program.udp.Send(b, b.Length, sender);
                 }
-                peerManager.parseMiniHello(((Commands.MiniHello)c), sender);
             }
             if (c is Commands.GossipCommand)
             {
@@ -359,8 +360,7 @@ namespace Dimension.Model
 
 
                 var sha = new System.Security.Cryptography.SHA512Managed();
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(h);
-                helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(json)), 0);
+                helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(originalText.Trim())), 0);
                 knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
 
                 if (h.debugBuild.HasValue)
@@ -865,16 +865,21 @@ namespace Dimension.Model
                 }
 
                 Program.globalUpCounter.addBytes(m.Length);
+                System.Threading.Thread.Sleep(1000);
 
                 lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)
                     {
-                        //Program.udp.Send(b, b.Length, p);
-                        //Program.globalUpCounter.addBytes(b.Length);
-                        Program.udp.Send(m, m.Length, p);
-                        Program.globalUpCounter.addBytes(m.Length);
+                        if (p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
+                        {
+                            //Program.udp.Send(b, b.Length, p);
+                            //Program.globalUpCounter.addBytes(b.Length);
+                            Program.udp.Send(m, m.Length, p);
+                            Program.globalUpCounter.addBytes(m.Length);
+                        }
                     }
 
+                System.Threading.Thread.Sleep(1000);
                 foreach (Peer p in peerManager.allPeers)
                 {
                     //if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)

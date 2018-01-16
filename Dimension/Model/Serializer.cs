@@ -33,6 +33,18 @@ namespace Dimension.Model
             m.Dispose();
             return output;
         }
+        public string getText(byte[] b)
+        {
+            System.IO.MemoryStream m = new System.IO.MemoryStream(b);
+            System.IO.BinaryReader br = new System.IO.BinaryReader(m);
+
+            int tl = br.ReadInt32();
+            string t = Encoding.UTF8.GetString(br.ReadBytes(tl));
+            int dl = br.ReadInt32();
+            string d = Encoding.UTF8.GetString(br.ReadBytes(dl));
+
+            return d;
+        }
         public Commands.Command deserialize(byte[] b)
         {
             System.IO.MemoryStream m = new System.IO.MemoryStream(b);
