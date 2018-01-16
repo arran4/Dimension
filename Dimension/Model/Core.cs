@@ -360,8 +360,9 @@ namespace Dimension.Model
 
 
                 var sha = new System.Security.Cryptography.SHA512Managed();
-                helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(originalText.Trim())), 0);
-                knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
+                int helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(originalText.Trim())), 0);
+                if(!h.requestingHelloBack)
+                    knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
 
                 if (h.debugBuild.HasValue)
                     if (!h.debugBuild.Value && h.buildNumber > Program.buildNumber)
@@ -830,7 +831,7 @@ namespace Dimension.Model
             internalIPs = ips2.ToArray();
 
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(c);
-            helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(json)),0);
+            helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(json.Trim())),0);
             return c;
         }
         void helloLoop()
