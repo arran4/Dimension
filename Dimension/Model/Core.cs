@@ -92,10 +92,21 @@ namespace Dimension.Model
                         foreach (Peer p in allPeers)
                             if (p.peerCount.ContainsKey(circleId))
                                 if (p.peerCount[circleId] != peerManager.allPeersInCircle(circleId).Length)
-                                    potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                                    if (p.lastGossipPeerCount == null || DateTime.Now.Subtract(p.lastGossipTime).TotalSeconds > 30)
+                                        potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                                    else
+                                        if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
+                                            potentials.Insert(r.Next(0, potentials.Count + 1), p);
 
                         if (potentials.Count > 0)
+                        {
                             sendGossip(circleId, potentials[0].actualEndpoint, true);
+                            potentials[0].lastGossipTime = DateTime.Now;
+                        }
+
+
+                        foreach (Peer p in allPeers)
+                            p.lastGossipPeerCount = p.peerCount;
 
                         System.Threading.Thread.Sleep(1000);
                     }
@@ -320,9 +331,14 @@ namespace Dimension.Model
                         p.internalAddresses = new string[] { p.internalAddress };
                     if (!peerManager.havePeerWithAddress(p.internalAddresses, System.Net.IPAddress.Parse(p.publicAddress)))
                     {
+
+                        Commands.MiniHello mini = new Commands.MiniHello();
+                        mini.helloHash = helloHash;
+                        mini.id = id;
+                        byte[] m = Program.serializer.serialize(mini);
                         //send it to both, whatever
-                        Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
-                        Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
+                        Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
+                        Program.udp.Send(m,m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.internalAddress), p.internalControlPort));
                     }
                 }
                 if (g.requestingGossipBack)

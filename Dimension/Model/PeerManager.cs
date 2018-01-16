@@ -39,6 +39,8 @@ namespace Dimension.Model
         }
         public bool havePeerWithAddress(string[] i, System.Net.IPAddress e)
         {
+            if (Program.theCore.internalIPs.Contains(e))
+                return true;
             if (e.ToString() == Program.bootstrap.publicControlEndPoint.Address.ToString())
             {
                 //they're local

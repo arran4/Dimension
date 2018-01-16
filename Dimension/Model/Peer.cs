@@ -30,6 +30,8 @@ namespace Dimension.Model
                 _actualAddr = value.Address;
             }
         }
+        public DateTime lastGossipTime = DateTime.MinValue;
+        public Dictionary<ulong, int> lastGossipPeerCount = new Dictionary<ulong, int>();
         public bool? afk;
         public string username;
         public ulong id;
