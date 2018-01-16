@@ -158,6 +158,7 @@ namespace Dimension.Model
                     peers[h.id].afk = h.afk;
                     updated = true;
                 }
+                peers[h.id].peerCount = h.peerCount;
                 peers[h.id].lastContact = DateTime.Now;
                 peers[h.id].buildNumber = h.buildNumber;
                 channels.AddRange(peers[h.id].circles);
