@@ -102,9 +102,9 @@ namespace Dimension
 
             setColors();
 
+            tabControl.TabPages.Clear();
             if (!isMono)
             {
-                tabControl.TabPages.Clear();
                 TabPage h = new TabPage("Welcome");
                 h.Tag = h.Text;
                 UI.HTMLPanel hp = new UI.HTMLPanel();
