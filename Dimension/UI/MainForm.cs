@@ -205,7 +205,7 @@ namespace Dimension
         {
             for (int i = 0; i < tabControl.TabPages.Count; i++)
                 if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
-                    if (((UI.CirclePanel)tabControl.TabPages[i].Controls[0]).url == url)
+                    if (((UI.CirclePanel)tabControl.TabPages[i].Controls[0]).url.ToLower() == url.ToLower())
                     {
                         tabControl.SelectTab(i);
                         return;

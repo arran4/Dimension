@@ -61,11 +61,16 @@ namespace Dimension.UI
         UI.JoinCircleForm.CircleType circleType;
         public CirclePanel(string url, UI.JoinCircleForm.CircleType circleType)
         {
-            this.circleType = circleType;
-            this.url = url;
             InitializeComponent();
             setupUserList();
 
+            if (url.ToLower() == "http://lan/" || circleType == JoinCircleForm.CircleType.LAN)
+            {
+                initLAN();
+                return;
+            }
+            this.circleType = circleType;
+            this.url = url;
             updateFont();
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
@@ -96,7 +101,10 @@ namespace Dimension.UI
         {
             InitializeComponent();
             setupUserList();
-
+            initLAN();
+        }
+        void initLAN()
+        {
             url = "LAN";
             Program.theCore.joinCircle(url);
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();

@@ -15,7 +15,8 @@ namespace Dimension.UI
         public enum CircleType
         {
             bootstrap,
-            kademlia
+            kademlia,
+            LAN
         }
         CircleType circleType;
         public JoinCircleForm(CircleType circleType)
@@ -42,7 +43,9 @@ namespace Dimension.UI
         public static void joinCircle(string s, CircleType circleType)
         {
             System.Net.IPEndPoint[] e;
-            if (circleType == CircleType.bootstrap)
+            if (s.ToLower() == "http://lan/")
+                s = "LAN";
+            if (circleType == CircleType.bootstrap && s != "LAN")
             {
                     e = Program.bootstrap.join(s);
                     if (e.Length == 0)

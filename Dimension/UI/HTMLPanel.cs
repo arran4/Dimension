@@ -21,18 +21,25 @@ namespace Dimension.UI
             p.Dock = DockStyle.Fill;
             p.Navigating += navigate;
             Controls.Add(p);
-            p.DocumentText = "<html><body><h1>Welcome to Dimension!</h1><p>It's still young, so there aren't many networks to join. Check these ones out:</p> <h2>List of Bootsraps</h2><ul><li><a href='!BOOTSTRAP!http://www.9thcircle.net/Projects/Dimension/bootstrap.php'>9th Circle Test Bootstrap</a></li><li><a href='!BOOTSTRAP!http://www.respawn.com.au/dimension.php'>Respawn LAN Bootstrap</a></li></ul></body></html>";
+            p.DocumentText = "<html><body><h1>Welcome to Dimension!</h1><p>It's still young, so there aren't many networks to join. Check these ones out:</p> <h2>List of Bootsraps</h2><ul><li><a href='DimensionBootstrap://www.9thcircle.net/Projects/Dimension/bootstrap.php'>9th Circle Test Bootstrap</a></li><li><a href='DimensionBootstrap://www.respawn.com.au/dimension.php'>Respawn LAN Bootstrap</a></li><li><a href='DimensionLAN://LAN'>Your local network</a></li></ul></body></html>";
             p.Refresh(WebBrowserRefreshOption.Completely);
         }
         void navigate(object sender, WebBrowserNavigatingEventArgs e)
         {
-            if (e.Url.AbsolutePath.StartsWith("!BOOTSTRAP!"))
+            if (e.Url.AbsoluteUri.ToLower().StartsWith("dimensionbootstrap://"))
             {
                 e.Cancel = true;
-                string s = e.Url.AbsolutePath;
-                s = s.Substring("!BOOTSTRAP!".Length);
+                string s = e.Url.AbsoluteUri;
+                s = "http://" + s.Substring("DimensionBootstrap://".Length);
                 UI.JoinCircleForm.joinCircle(s, JoinCircleForm.CircleType.bootstrap);
             }
+            if (e.Url.AbsoluteUri.ToLower().StartsWith("dimensionlan://"))
+            {
+                e.Cancel = true;
+                string s = e.Url.AbsoluteUri;
+                s = "http://" + s.Substring("DimensionLAN://".Length);
+                UI.JoinCircleForm.joinCircle(s, JoinCircleForm.CircleType.LAN);
             }
+        }
         }
 }
