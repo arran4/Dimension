@@ -311,6 +311,8 @@ namespace Dimension.Model
                     if (knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] != hash)
                     request = true;
 
+                if (((Commands.MiniHello)c).unknown)
+                    request = true;
                 if (peerManager.parseMiniHello(((Commands.MiniHello)c), sender))
                     request = true;
                 if (request)
@@ -870,6 +872,8 @@ namespace Dimension.Model
                 mini.helloHash = helloHash;
                 mini.id = id;
                 byte[] m = Program.serializer.serialize(mini);
+                mini.unknown = true;
+                byte[] m2 = Program.serializer.serialize(mini);
 
                 //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
                 Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
@@ -892,8 +896,8 @@ namespace Dimension.Model
                         {
                             //Program.udp.Send(b, b.Length, p);
                             //Program.globalUpCounter.addBytes(b.Length);
-                            Program.udp.Send(m, m.Length, p);
-                            Program.globalUpCounter.addBytes(m.Length);
+                            Program.udp.Send(m2, m2.Length, p);
+                            Program.globalUpCounter.addBytes(m2.Length);
                         }
                     }
 
@@ -908,8 +912,16 @@ namespace Dimension.Model
                             {
                                 //Program.udp.Send(b, b.Length, p.actualEndpoint);
                                 //Program.globalUpCounter.addBytes(b.Length);
-                                Program.udp.Send(m, m.Length, p.actualEndpoint);
-                                Program.globalUpCounter.addBytes(m.Length);
+                                if (p.maybeDead)
+                                {
+                                    Program.udp.Send(m2, m2.Length, p.actualEndpoint);
+                                    Program.globalUpCounter.addBytes(m2.Length);
+                                }
+                                else
+                                {
+                                    Program.udp.Send(m, m.Length, p.actualEndpoint);
+                                    Program.globalUpCounter.addBytes(m.Length);
+                                }
                                 p.lastTimeHelloSent = DateTime.Now;
                             }
                         }

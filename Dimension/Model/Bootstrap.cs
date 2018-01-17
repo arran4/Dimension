@@ -178,6 +178,8 @@ namespace Dimension.Model
             publicControlEndPoint = (IPEndPoint)unreliableClient.Client.LocalEndPoint;
             publicDataEndPoint = (IPEndPoint)listener.Server.LocalEndPoint;
 
+            tryAgain:
+
             if (Program.settings.getBool("Use UPnP", true) == false || LANMode || !UPnPActive)
             {
                 SystemLog.addEntry("STUNning NAT");
@@ -210,6 +212,7 @@ namespace Dimension.Model
                 }
             }
 
+
             Random r = new Random();
             internalDHTPort = Program.settings.getInt("Default DHT Port", 0);
             if (internalDHTPort == 0)
@@ -229,9 +232,19 @@ namespace Dimension.Model
                 await mapPorts(((IPEndPoint)listener.Server.LocalEndPoint).Port, publicDataEndPoint.Port, true);
                 SystemLog.addEntry("Creating DHT UPnP mapping (random external port)...");
                 await mapPorts(internalDHTPort, publicDHTPort, false);
-                
+
                 publicControlEndPoint = new IPEndPoint(externalIPFromUPnP, publicControlEndPoint.Port);
                 publicDataEndPoint = new IPEndPoint(externalIPFromUPnP, publicDataEndPoint.Port);
+
+                if (externalIPFromUPnP.ToString().StartsWith("10.") || externalIPFromUPnP.ToString().StartsWith("192."))
+                {
+                    SystemLog.addEntry("WARNING! Your router provided a local IP address as the external endpoint.");
+                    SystemLog.addEntry("This probably means you're running more than one router in a row (double NAT).");
+                    SystemLog.addEntry("Dimension is going to disable UPnP and try STUNning again to get through this.");
+                    SystemLog.addEntry("If this is your home network, please talk to a network engineer -- having UPnP with double NAT is a very bad idea.");
+                    Program.settings.setBool("Use UPnP", false);
+                    goto tryAgain;
+                }
             }
 
             SystemLog.addEntry("Network setup complete.");
