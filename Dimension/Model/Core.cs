@@ -366,8 +366,16 @@ namespace Dimension.Model
 
                 if (h.debugBuild.HasValue)
                     if (!h.debugBuild.Value && h.buildNumber > Program.buildNumber)
-                        Program.checkForUpdates();
+                    {
 
+                        System.Threading.Thread t = new System.Threading.Thread(delegate ()
+                        {
+                            Program.checkForUpdates();
+                        });
+                        t.IsBackground = true;
+                        t.Name = "Program update thread";
+                        t.Start();
+                    }
                 if (h.requestingHelloBack)
                 {
                     var h2 = generateHello();
@@ -383,20 +391,29 @@ namespace Dimension.Model
             if (c is Commands.RoomChatCommand)
             {
                 Commands.RoomChatCommand r = (Commands.RoomChatCommand)c;
+                bool received = false;
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
                 {
                     if (p.actualEndpoint.Address.ToString() == sender.Address.ToString())
                         if (r.userId.HasValue)
                         {
                             if (r.userId == p.id)
+                            {
                                 p.chatReceived(r);
-                        }else
-                            p.chatReceived(r);
-                    if(p.internalAddress != null)
-                        foreach(System.Net.IPAddress ip in p.internalAddress)
-                            if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port)
-                                p.chatReceived(r);
+                                received = true;
+                            }
+                        }
+                    if(!received)
+                        if (p.internalAddress != null)
+                            foreach (System.Net.IPAddress ip in p.internalAddress)
+                                if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port)
+                                {
+                                    p.chatReceived(r);
+                                    received = true;
+                                }
                 }
+                if (!received)
+                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " (Unknown): " + r.content.Trim('\r'), r.roomId);
 
             }
             if (c is Commands.Quitting)
