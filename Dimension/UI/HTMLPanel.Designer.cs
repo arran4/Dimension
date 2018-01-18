@@ -34,8 +34,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.Name = "HTMLPanel";
             this.Size = new System.Drawing.Size(499, 349);
+            this.Load += new System.EventHandler(this.HTMLPanel_Load);
             this.ResumeLayout(false);
 
         }
