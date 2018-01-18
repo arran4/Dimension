@@ -12,7 +12,7 @@ namespace Dimension
         {
             get
             {
-                return settings.getString("Username", "Username").ToLower().Trim() == "zardoz";
+                return bootstrap.behindDoubleNAT;
             }
         }
         public static System.Drawing.Font getFont()
@@ -35,8 +35,12 @@ namespace Dimension
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
         public static Model.ByteCounter globalDownCounter = new Model.ByteCounter();
         static object updateRequestLock = new object();
+        static bool checking = false;
         public static bool checkForUpdates()
         {
+            if (checking)
+                return false;
+            checking = true;
             try
             {
                 lock (updateRequestLock)
@@ -56,6 +60,7 @@ namespace Dimension
                                     downloadUpdates();
                                 }
                                 Application.Exit();
+                                checking = false;
                                 return true;
                             }
                             else
@@ -68,6 +73,7 @@ namespace Dimension
             {
                 //whatever
             }
+            checking = false;
             return false;
         }
         static bool updateDeclined = false;

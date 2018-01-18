@@ -78,13 +78,13 @@
     <ApplicationIcon>if_network1_216674.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlRenderer, Version=1.5.0.5, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="HtmlRenderer, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\HTML-Renderer-master\Source\HtmlRenderer\bin\Debug\HtmlRenderer.dll</HintPath>
+      <HintPath>..\..\..\HtmlRenderer\Core\NET45\HtmlRenderer.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="HtmlRenderer.WinForms, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\HTML-Renderer-master\Source\HtmlRenderer.WinForms\bin\DebugNet20\HtmlRenderer.WinForms.dll</HintPath>
+      <HintPath>..\..\..\HtmlRenderer\Mono\NET45\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="LumiSoft.Net">
       <HintPath>..\LumiSoft.Net.dll</HintPath>

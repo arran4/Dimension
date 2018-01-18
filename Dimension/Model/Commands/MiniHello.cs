@@ -10,6 +10,6 @@ namespace Dimension.Model.Commands
     {
         public int helloHash;
         public ulong id;
-        public bool unknown = false;
+        public bool? unknown = null;
     }
 }

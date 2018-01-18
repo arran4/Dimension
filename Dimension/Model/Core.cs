@@ -311,8 +311,11 @@ namespace Dimension.Model
                     if (knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] != hash)
                     request = true;
 
-                if (((Commands.MiniHello)c).unknown)
+                if (((Commands.MiniHello)c).unknown == null)
                     request = true;
+                if (((Commands.MiniHello)c).unknown.HasValue)
+                    if (((Commands.MiniHello)c).unknown.Value == true)
+                        request = true;
                 if (peerManager.parseMiniHello(((Commands.MiniHello)c), sender))
                     request = true;
                 if (request)
@@ -807,6 +810,7 @@ namespace Dimension.Model
             else
                 c.internalUdtPort = udtListener.LocalEndPoint.Port;
             c.buildNumber = Program.buildNumber;
+            c.behindDoubleNAT = Program.bootstrap.behindDoubleNAT;
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
             List<ulong> circles = new List<ulong>();
@@ -871,6 +875,7 @@ namespace Dimension.Model
                 Commands.MiniHello mini = new Commands.MiniHello();
                 mini.helloHash = helloHash;
                 mini.id = id;
+                mini.unknown = false;
                 byte[] m = Program.serializer.serialize(mini);
                 mini.unknown = true;
                 byte[] m2 = Program.serializer.serialize(mini);

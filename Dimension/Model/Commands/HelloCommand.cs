@@ -25,6 +25,7 @@ namespace Dimension.Model.Commands
         public bool useUDT;
         public string[] internalIPs;
         public int buildNumber;
+        public bool behindDoubleNAT;
         public bool requestingHelloBack = false;
     }
 }

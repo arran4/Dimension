@@ -43,6 +43,7 @@ namespace Dimension.Model
         public int localControlPort;
         public int localUDTPort;
         public bool useUDT;
+        public bool behindDoubleNAT;
 
         public bool maybeDead
         {

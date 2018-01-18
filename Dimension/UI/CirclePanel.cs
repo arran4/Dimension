@@ -154,10 +154,15 @@ namespace Dimension.UI
 
                 if (items[i].maybeDead)
                     userListView.Items[i].ForeColor = SystemColors.GrayText;
+                Font b = userListView.Font;
+                if (items[i].behindDoubleNAT)
+                    b = new Font("Comic Sans MS", b.SizeInPoints);
+                
                 if (items[i].probablyDead)
-                    userListView.Items[i].Font = new Font(userListView.Font, FontStyle.Italic);
+                    userListView.Items[i].Font = new Font(b, FontStyle.Italic);
                 else
-                    userListView.Items[i].Font = new Font(userListView.Font, FontStyle.Regular);
+                    userListView.Items[i].Font = new Font(b, FontStyle.Regular);
+               
 
                 if (items[i].afk.HasValue)
                     userListView.Items[i].Text = s2 + (items[i].afk.Value ? " (AFK)" : "");

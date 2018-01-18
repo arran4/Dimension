@@ -135,6 +135,7 @@ namespace Dimension.Model
         public int internalDataPort;
         public int internalDHTPort;
         bool LANMode = false;
+        public bool behindDoubleNAT = false;
         public async Task launch()
         {
             SystemLog.addEntry("Beginning network setup...");
@@ -212,6 +213,7 @@ namespace Dimension.Model
                 }
             }
 
+           
 
             Random r = new Random();
             internalDHTPort = Program.settings.getInt("Default DHT Port", 0);
@@ -238,6 +240,7 @@ namespace Dimension.Model
 
                 if (externalIPFromUPnP.ToString().StartsWith("10.") || externalIPFromUPnP.ToString().StartsWith("192."))
                 {
+                    behindDoubleNAT = true;
                     SystemLog.addEntry("WARNING! Your router provided a local IP address as the external endpoint.");
                     SystemLog.addEntry("This probably means you're running more than one router in a row (double NAT).");
                     SystemLog.addEntry("Dimension is going to disable UPnP and try STUNning again to get through this.");
@@ -246,7 +249,6 @@ namespace Dimension.Model
                     goto tryAgain;
                 }
             }
-
             SystemLog.addEntry("Network setup complete.");
         }
     }

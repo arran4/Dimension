@@ -147,6 +147,7 @@ namespace Dimension.Model
                     peers[h.id].description = h.description;
                     updated = true;
                 }
+                peers[h.id].behindDoubleNAT = h.behindDoubleNAT;
                 peers[h.id].externalControlPort = h.externalControlPort;
                 peers[h.id].externalDataPort = h.externalDataPort;
                 peers[h.id].localControlPort = h.internalControlPort;
