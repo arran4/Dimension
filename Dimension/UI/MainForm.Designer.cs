@@ -79,7 +79,6 @@
             this.searchButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.systemLogStartingPage = new System.Windows.Forms.TabPage();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogTimer = new System.Windows.Forms.Timer(this.components);
@@ -90,7 +89,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.tabControl.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -517,35 +515,23 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.tabControl);
             this.splitContainer1.Size = new System.Drawing.Size(724, 324);
-            this.splitContainer1.SplitterDistance = 197;
+            this.splitContainer1.SplitterDistance = 198;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
             // tabControl
             // 
-            this.tabControl.Controls.Add(this.systemLogStartingPage);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 197);
+            this.tabControl.Size = new System.Drawing.Size(724, 198);
             this.tabControl.TabIndex = 0;
             this.tabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl_DrawItem);
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
-            // 
-            // systemLogStartingPage
-            // 
-            this.systemLogStartingPage.Location = new System.Drawing.Point(4, 22);
-            this.systemLogStartingPage.Margin = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Name = "systemLogStartingPage";
-            this.systemLogStartingPage.Padding = new System.Windows.Forms.Padding(2);
-            this.systemLogStartingPage.Size = new System.Drawing.Size(716, 171);
-            this.systemLogStartingPage.TabIndex = 0;
-            this.systemLogStartingPage.Text = "System Log";
-            this.systemLogStartingPage.UseVisualStyleBackColor = true;
             // 
             // contextMenuStrip
             // 
@@ -599,7 +585,6 @@
             this.splitContainer1.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.tabControl.ResumeLayout(false);
             this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -639,7 +624,6 @@
         private System.Windows.Forms.ToolStripButton openDownloadsFolderButton;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage systemLogStartingPage;
         private System.Windows.Forms.ToolStripButton downloadQueueButton;
         private System.Windows.Forms.ToolStripButton completedDownloadsButton;
         private System.Windows.Forms.ToolStripButton completedUploadsButton;

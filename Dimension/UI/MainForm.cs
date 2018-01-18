@@ -103,15 +103,13 @@ namespace Dimension
             setColors();
 
             tabControl.TabPages.Clear();
-            if (!isMono)
-            {
-                TabPage h = new TabPage("Welcome");
-                h.Tag = h.Text;
-                UI.HTMLPanel hp = new UI.HTMLPanel();
-                hp.Dock = DockStyle.Fill;
-                h.Controls.Add(hp);
-                tabControl.TabPages.Add(h);
-            }
+            TabPage h = new TabPage("Welcome");
+            h.Tag = h.Text;
+            UI.HTMLPanel hp = new UI.HTMLPanel();
+            hp.Dock = DockStyle.Fill;
+            h.Controls.Add(hp);
+            tabControl.TabPages.Add(h);
+            
         }
 
         private void joinLANButton_Click(object sender, EventArgs e)
@@ -204,12 +202,13 @@ namespace Dimension
         public void addInternetCircle(System.Net.IPEndPoint[] endpoints, string url, UI.JoinCircleForm.CircleType circleType)
         {
             for (int i = 0; i < tabControl.TabPages.Count; i++)
-                if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
-                    if (((UI.CirclePanel)tabControl.TabPages[i].Controls[0]).url.ToLower() == url.ToLower())
-                    {
-                        tabControl.SelectTab(i);
-                        return;
-                    }
+                if(tabControl.TabPages[i].Controls.Count > 0)
+                    if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
+                        if (((UI.CirclePanel)tabControl.TabPages[i].Controls[0]).url.ToLower() == url.ToLower())
+                        {
+                            tabControl.SelectTab(i);
+                            return;
+                        }
             TabPage p = new TabPage("Internet Circle");
             if (url.StartsWith("#"))
                 p.Text = url;

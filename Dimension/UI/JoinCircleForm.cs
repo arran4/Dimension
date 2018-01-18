@@ -43,7 +43,7 @@ namespace Dimension.UI
         public static void joinCircle(string s, CircleType circleType)
         {
             System.Net.IPEndPoint[] e;
-            if (s.ToLower() == "http://lan/")
+            if (s.ToLower().StartsWith("http://lan"))
                 s = "LAN";
             if (circleType == CircleType.bootstrap && s != "LAN")
             {
