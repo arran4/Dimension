@@ -71,7 +71,6 @@ namespace Dimension.UI
             }
             this.circleType = circleType;
             this.url = url;
-            updateFont();
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
@@ -189,7 +188,7 @@ namespace Dimension.UI
             string fingerprint = "";
             foreach (Model.Peer p2 in items)
                 if (!p2.quit)
-                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString() + p2.afk.ToString() + p2.probablyDead.ToString() + p2.maybeDead.ToString()+p2.description;
+                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString() + p2.afk.ToString() + p2.probablyDead.ToString() + p2.maybeDead.ToString()+p2.description + p2.behindDoubleNAT;
             if (lastFingerprint == fingerprint)
                 return;
             lastFingerprint = fingerprint;
@@ -249,13 +248,13 @@ namespace Dimension.UI
         void peerRenamed(string oldName, Model.Peer p)
         {
             if(p.circles.Contains(circleHash))
-                chatReceived("*** " + oldName + " changed name to " + p.username + " at " + DateTime.Now.ToShortTimeString(), circleHash);
+                chatReceived("*** " + oldName + " changed name to " + p.username + " at " + DateTime.Now.ToShortTimeString(), circleHash,p);
             updateUserList(null, circleHash);
         }
         void peerLeft(Model.Peer p, ulong channelId)
         {
             if(channelId == circleHash)
-                chatReceived("*** " + p.username + " left at " + DateTime.Now.ToShortTimeString(), circleHash);
+                chatReceived("*** " + p.username + " left at " + DateTime.Now.ToShortTimeString(), circleHash,p);
             updateUserList(null, circleHash);
 
         }
@@ -266,11 +265,11 @@ namespace Dimension.UI
         void peerJoined(Model.Peer p, ulong channelId)
         {
             if (channelId == circleHash)
-                chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash);
+                chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash,p);
 
             updateUserList(null, circleHash);
         }
-        public void chatReceived(string s, ulong roomId)
+        public void chatReceived(string s, ulong roomId, Model.Peer p)
         {
             if (Parent != null && Parent.Parent != null && !addedEvent)
             {
@@ -302,9 +301,9 @@ namespace Dimension.UI
                 {
                     if (!focused && addedEvent && changeEventReceived)
                     {
-                        TabPage p = (TabPage)Parent;
-                        if (!p.Text.StartsWith("(!) "))
-                            p.Text = "(!) " + p.Text;
+                        TabPage p2 = (TabPage)Parent;
+                        if (!p2.Text.StartsWith("(!) "))
+                            p2.Text = "(!) " + p2.Text;
                     }
                     historyBox.AppendText(s + Environment.NewLine);
                     if (highlight)
@@ -315,7 +314,22 @@ namespace Dimension.UI
                         historyBox.SelectionColor = SystemColors.HighlightText;
                         Program.mainForm.flash();
                     }
-                    updateFont();
+
+                    historyBox.SelectionStart = historyBox.Text.Length - (s.Length + 1);
+                    historyBox.SelectionLength = s.Length + 1;
+                    historyBox.SelectionFont = Program.getFont();
+                    
+                    if (p != null)
+                        if (p.behindDoubleNAT)
+                        {
+                            historyBox.SelectionStart = historyBox.Text.Length - (s.Length + 1);
+                            historyBox.SelectionLength = s.Length + 1;
+                            historyBox.SelectionFont = new Font("Comic Sans MS", historyBox.Font.SizeInPoints);
+                        }
+                    historyBox.SelectionStart = historyBox.Text.Length;
+                    historyBox.SelectionLength = 0;
+                    historyBox.ScrollToCaret();
+
                 }));
             }
             catch (ObjectDisposedException)
@@ -403,19 +417,9 @@ namespace Dimension.UI
                 lastInputBoxHeight = h;
             }
         }
-
-        void updateFont()
-        {
-            historyBox.SelectionStart = 0;
-            historyBox.SelectionLength = historyBox.Text.Length;
-            historyBox.SelectionFont = Program.getFont();
-            historyBox.SelectionStart = historyBox.Text.Length;
-            historyBox.ScrollToCaret();
-            inputBox.Font = Program.getFont();
-        }
+        
         private void CirclePanel_ParentChanged(object sender, EventArgs e)
         {
-            updateFont();
         }
         bool changeEventReceived = false;
         private void tabChanged(object sender, EventArgs e)
@@ -435,7 +439,6 @@ namespace Dimension.UI
             }
             else
                 focused = false;
-            updateFont();
         }
         public bool focused = false;
 

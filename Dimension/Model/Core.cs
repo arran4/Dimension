@@ -418,7 +418,7 @@ namespace Dimension.Model
                                 }
                 }
                 if (!received)
-                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " (Unknown): " + r.content.Trim('\r'), r.roomId);
+                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " (Unknown): " + r.content.Trim('\r'), r.roomId, null);
 
             }
             if (c is Commands.Quitting)
@@ -727,11 +727,11 @@ namespace Dimension.Model
             }
             return output;
         }
-        public delegate void ChatReceivedEvent(string s, ulong id);
+        public delegate void ChatReceivedEvent(string s, ulong id, Peer p);
         public event ChatReceivedEvent chatReceivedEvent;
-        public void chatReceived(string s, ulong id)
+        public void chatReceived(string s, ulong id, Peer p)
         {
-            chatReceivedEvent?.Invoke(s, id);
+            chatReceivedEvent?.Invoke(s, id, p);
         }
 
         internal struct LASTINPUTINFO
@@ -879,7 +879,7 @@ namespace Dimension.Model
                 byte[] m = Program.serializer.serialize(mini);
                 mini.unknown = true;
                 byte[] m2 = Program.serializer.serialize(mini);
-
+                
                 //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
                 Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 
@@ -890,7 +890,6 @@ namespace Dimension.Model
                     //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
                     Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
                 }
-
                 Program.globalUpCounter.addBytes(m.Length);
                 System.Threading.Thread.Sleep(1000);
 
@@ -899,10 +898,17 @@ namespace Dimension.Model
                     {
                         if (p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
                         {
-                            //Program.udp.Send(b, b.Length, p);
-                            //Program.globalUpCounter.addBytes(b.Length);
-                            Program.udp.Send(m2, m2.Length, p);
-                            Program.globalUpCounter.addBytes(m2.Length);
+                            try
+                            {
+                                //Program.udp.Send(b, b.Length, p);
+                                //Program.globalUpCounter.addBytes(b.Length);
+                                Program.udp.Send(m2, m2.Length, p);
+                                Program.globalUpCounter.addBytes(m2.Length);
+                            }
+                            catch
+                            {
+                                //probably invalid IP, ignore
+                            }
                         }
                     }
 
@@ -917,15 +923,22 @@ namespace Dimension.Model
                             {
                                 //Program.udp.Send(b, b.Length, p.actualEndpoint);
                                 //Program.globalUpCounter.addBytes(b.Length);
-                                if (p.maybeDead)
+                                try
                                 {
-                                    Program.udp.Send(m2, m2.Length, p.actualEndpoint);
-                                    Program.globalUpCounter.addBytes(m2.Length);
+                                    if (p.maybeDead)
+                                    {
+                                        Program.udp.Send(m2, m2.Length, p.actualEndpoint);
+                                        Program.globalUpCounter.addBytes(m2.Length);
+                                    }
+                                    else
+                                    {
+                                        Program.udp.Send(m, m.Length, p.actualEndpoint);
+                                        Program.globalUpCounter.addBytes(m.Length);
+                                    }
                                 }
-                                else
+                                catch
                                 {
-                                    Program.udp.Send(m, m.Length, p.actualEndpoint);
-                                    Program.globalUpCounter.addBytes(m.Length);
+                                    //probably invalid IP, ignore
                                 }
                                 p.lastTimeHelloSent = DateTime.Now;
                             }

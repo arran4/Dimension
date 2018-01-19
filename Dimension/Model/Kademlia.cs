@@ -65,8 +65,14 @@ namespace Dimension.Model
         {
             lock (lookupLock)
             {
-                byte[] hash = doHash(key);
-                dht.Announce(new OctoTorrent.InfoHash(hash), Program.bootstrap.publicControlEndPoint.Port);
+                try
+                {
+                    byte[] hash = doHash(key);
+                    dht.Announce(new OctoTorrent.InfoHash(hash), Program.bootstrap.publicControlEndPoint.Port);
+                }
+                catch (ObjectDisposedException)
+                {
+                }
             }
             
         }

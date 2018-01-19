@@ -376,12 +376,12 @@ namespace Dimension.Model
                     Program.mainForm.flash();
                 if (s2.StartsWith("/me"))
                 {
-                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " *** " + username + " " + s2.Trim('\r').Substring(4), r.roomId);
+                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " *** " + username + " " + s2.Trim('\r').Substring(4), r.roomId, this);
 
                 }
                 else
                 {
-                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s2.Trim('\r'), r.roomId);
+                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s2.Trim('\r'), r.roomId, this);
                 }
             }
 
