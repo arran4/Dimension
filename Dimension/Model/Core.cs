@@ -936,7 +936,6 @@ namespace Dimension.Model
                             }
                         }
                     }
-
                 System.Threading.Thread.Sleep(1000);
                 if (disposed)
                     return;
@@ -952,15 +951,18 @@ namespace Dimension.Model
                                 //Program.globalUpCounter.addBytes(b.Length);
                                 try
                                 {
+                                     
                                     if (p.maybeDead)
                                     {
-                                        Program.udp.Send(m2, m2.Length, p.actualEndpoint);
-                                        Program.globalUpCounter.addBytes(m2.Length);
+                                        udpSend(m2, p.actualEndpoint);
+                                        udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                        udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                                     }
                                     else
                                     {
-                                        Program.udp.Send(m, m.Length, p.actualEndpoint);
-                                        Program.globalUpCounter.addBytes(m.Length);
+                                        udpSend(m, p.actualEndpoint);
+                                        udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                        udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                                     }
                                 }
                                 catch
@@ -972,10 +974,14 @@ namespace Dimension.Model
                         }
                     }
                 }
+                iteration++;
+                if (iteration >= 10)
+                    iteration = 0;
                 System.Threading.Thread.Sleep(1000);
                 if (disposed)
                     return;
             }
         }
+        int iteration = 0;
     }
 }
