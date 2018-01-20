@@ -339,9 +339,12 @@ namespace Dimension.UI
                             historyBox.SelectionLength = s.Length + 1;
                             historyBox.SelectionFont = new Font("Comic Sans MS", historyBox.Font.SizeInPoints);
                         }
-                    historyBox.SelectionStart = historyBox.Text.Length;
-                    historyBox.SelectionLength = 0;
-                    historyBox.ScrollToCaret();
+                    if (selected)
+                    {
+                        historyBox.SelectionStart = historyBox.Text.Length;
+                        historyBox.SelectionLength = 0;
+                        historyBox.ScrollToCaret();
+                    }
 
                 }));
             }
@@ -418,7 +421,7 @@ namespace Dimension.UI
 
         int lastInputBoxHeight = 0;
         int fontHeight = -1;
-
+        
         private void inputBox_TextChanged(object sender, EventArgs e)
         {
             if (fontHeight == -1)
@@ -463,10 +466,16 @@ namespace Dimension.UI
         public void select()
         {
             selected = true;
+
+            historyBox.Visible = true;
+            historyBox.SelectionStart = historyBox.Text.Length;
+            historyBox.SelectionLength = 0;
+            historyBox.ScrollToCaret();
         }
         public void unselect()
         {
             selected = false;
+            historyBox.Visible = false;
         }
         private void userListView_DrawItem(object sender, DrawListViewItemEventArgs e)
         {

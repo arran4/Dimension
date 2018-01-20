@@ -131,7 +131,10 @@ namespace Dimension
         static void doCleanup()
         {
             disposed = true;
-            kademlia.Dispose();
+            if (!isMono)
+            {
+                kademlia.Dispose();
+            }
             theCore.Dispose();
             fileList.Dispose();
             fileListDatabase.close();
