@@ -32,6 +32,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.autoRejoinBox = new System.Windows.Forms.CheckBox();
             this.playSoundsBox = new System.Windows.Forms.CheckBox();
             this.showAFKBox = new System.Windows.Forms.CheckBox();
             this.flashNameDropBox = new System.Windows.Forms.CheckBox();
@@ -66,7 +67,6 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.autoRejoinBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -132,6 +132,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // autoRejoinBox
+            // 
+            this.autoRejoinBox.AutoSize = true;
+            this.autoRejoinBox.Location = new System.Drawing.Point(98, 178);
+            this.autoRejoinBox.Name = "autoRejoinBox";
+            this.autoRejoinBox.Size = new System.Drawing.Size(207, 17);
+            this.autoRejoinBox.TabIndex = 12;
+            this.autoRejoinBox.Text = "Automatically Rejoin Circles on Startup";
+            this.autoRejoinBox.UseVisualStyleBackColor = true;
             // 
             // playSoundsBox
             // 
@@ -214,7 +224,7 @@
             // descriptionBox
             // 
             this.descriptionBox.Location = new System.Drawing.Point(98, 30);
-            this.descriptionBox.MaxLength = 255;
+            this.descriptionBox.MaxLength = 80;
             this.descriptionBox.Name = "descriptionBox";
             this.descriptionBox.Size = new System.Drawing.Size(339, 20);
             this.descriptionBox.TabIndex = 3;
@@ -457,16 +467,6 @@
             // columnHeader4
             // 
             this.columnHeader4.Text = "Hashed";
-            // 
-            // autoRejoinBox
-            // 
-            this.autoRejoinBox.AutoSize = true;
-            this.autoRejoinBox.Location = new System.Drawing.Point(98, 178);
-            this.autoRejoinBox.Name = "autoRejoinBox";
-            this.autoRejoinBox.Size = new System.Drawing.Size(207, 17);
-            this.autoRejoinBox.TabIndex = 12;
-            this.autoRejoinBox.Text = "Automatically Rejoin Circles on Startup";
-            this.autoRejoinBox.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
