@@ -264,9 +264,9 @@ namespace Dimension.UI
                 chatReceived("*** " + oldName + " changed name to " + p.username + " at " + DateTime.Now.ToShortTimeString(), circleHash,p);
             updateUserList(null, circleHash);
         }
-        void peerLeft(Model.Peer p, ulong channelId)
+        void peerLeft(Model.Peer p, ulong channelId, bool notify)
         {
-            if(channelId == circleHash)
+            if(channelId == circleHash && notify)
                 chatReceived("*** " + p.username + " left at " + DateTime.Now.ToShortTimeString(), circleHash,p);
             updateUserList(null, circleHash);
 
@@ -275,7 +275,7 @@ namespace Dimension.UI
         {
             updateUserList(null, circleHash);
         }
-        void peerJoined(Model.Peer p, ulong channelId)
+        void peerJoined(Model.Peer p, ulong channelId, bool notify)
         {
             if (channelId == circleHash)
                 chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash,p);
@@ -471,6 +471,7 @@ namespace Dimension.UI
             historyBox.SelectionStart = historyBox.Text.Length;
             historyBox.SelectionLength = 0;
             historyBox.ScrollToCaret();
+            historyBox.Refresh();
         }
         public void unselect()
         {

@@ -35,7 +35,7 @@ namespace Dimension.Model
         public void doPeerRemoved(Peer p)
         {
             foreach(ulong u in p.circles)
-                peerRemoved?.Invoke(p, u);
+                peerRemoved?.Invoke(p, u, true);
         }
         public bool havePeerWithAddress(string[] i, System.Net.IPAddress e)
         {
@@ -60,7 +60,7 @@ namespace Dimension.Model
         }
         public delegate void PeerRenameEvent(string oldName, Peer p);
         public delegate void PeerUpdateEvent(Peer p);
-        public delegate void PeerChannelUpdateEvent(Peer p, ulong channel);
+        public delegate void PeerChannelUpdateEvent(Peer p, ulong channel, bool update);
         public event PeerRenameEvent peerRenamed;
         public event PeerChannelUpdateEvent peerAdded;
         public event PeerUpdateEvent peerUpdated;
@@ -84,6 +84,7 @@ namespace Dimension.Model
         }
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
+            bool wasQuit = false;
             List<ulong> channels = new List<ulong>();
             List<ulong> oldChannels = new List<ulong>();
             string oldName = "";
@@ -94,6 +95,7 @@ namespace Dimension.Model
             {
                 if (peers.ContainsKey(h.id))
                 {
+                    wasQuit = peers[h.id].quit;
                     try
                     {
                         System.Net.IPAddress[] ips = new System.Net.IPAddress[h.internalIPs.Length];
@@ -182,25 +184,26 @@ namespace Dimension.Model
                     if (u == lanHash)
                     {
                         if (!oldChannels.Contains(u) && peers[h.id].isLocal)
-                            peerAdded?.Invoke(peers[h.id], u);
+                            peerAdded?.Invoke(peers[h.id], u, true);
                     }
                     else
                     {
                         if (!oldChannels.Contains(u))
-                            peerAdded?.Invoke(peers[h.id], u);
+                            peerAdded?.Invoke(peers[h.id], u, true);
                     }
-
+                
                 foreach (ulong u in oldChannels)
                     if (u == lanHash)
                     {
                         if (!channels.Contains(u) && peers[h.id].isLocal)
-                            peerRemoved?.Invoke(peers[h.id], u);
+                            peerRemoved?.Invoke(peers[h.id], u, !wasQuit);
                     }
                     else
                     {
                         if (!channels.Contains(u))
-                            peerRemoved?.Invoke(peers[h.id], u);
+                            peerRemoved?.Invoke(peers[h.id], u, !wasQuit);
                     }
+                
             }
         }
     }

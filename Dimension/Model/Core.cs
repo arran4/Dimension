@@ -437,10 +437,13 @@ namespace Dimension.Model
             {
                 Commands.Quitting r = (Commands.Quitting)c;
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
-                    if (p.id == r.id)
+                    if (!p.quit)
                     {
-                        p.quit = true;
-                        Program.theCore.peerManager.doPeerRemoved(p);
+                        if (p.id == r.id)
+                        {
+                            p.quit = true;
+                            Program.theCore.peerManager.doPeerRemoved(p);
+                        }
                     }
             }
             }
