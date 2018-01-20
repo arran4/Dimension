@@ -298,6 +298,18 @@ namespace Dimension.Model
                 toHello.Add(p);
             }
         }
+        void udpSend(byte[] b, System.Net.IPEndPoint target)
+        {
+            Program.globalUpCounter.addBytes(b.Length);
+            try
+            {
+                Program.udp.Send(b, b.Length, target);
+            }
+            catch
+            {
+                //probably no path
+            }
+            }
         Dictionary<string, int> knownHashes = new Dictionary<string, int>();
         void parse(Commands.Command c, System.Net.IPEndPoint sender, string originalText)
         {
@@ -323,7 +335,7 @@ namespace Dimension.Model
                     var h = generateHello();
                     h.requestingHelloBack = true;
                     byte[] b = Program.serializer.serialize(h);
-                    Program.udp.Send(b, b.Length, sender);
+                    udpSend(b, sender);
                 }
             }
             if (c is Commands.GossipCommand)
@@ -343,8 +355,8 @@ namespace Dimension.Model
                         mini.id = id;
                         byte[] m = Program.serializer.serialize(mini);
                         //send it to both, whatever
-                        Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
-                        Program.udp.Send(m,m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.internalAddress), p.internalControlPort));
+                        udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
+                        udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.internalAddress), p.internalControlPort));
                     }
                 }
                 if (g.requestingGossipBack)
@@ -386,7 +398,7 @@ namespace Dimension.Model
                     var h2 = generateHello();
                     h2.requestingHelloBack = false;
                     byte[] b = Program.serializer.serialize(h2);
-                    Program.udp.Send(b, b.Length, sender);
+                    udpSend(b, sender);
                 }
                 peerManager.parseHello(h, sender);
                 lock(toHello)
