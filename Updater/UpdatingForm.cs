@@ -20,9 +20,12 @@ namespace Updater
                 System.Net.WebClient w = new System.Net.WebClient();
                 byte[] b = w.DownloadData("http://9cstatic.nfshost.com/Dimension/" + url);
 
+                if (System.IO.File.Exists("newversion.zip"))
+                    System.IO.File.Delete("newversion.zip");
                 System.IO.File.WriteAllBytes("newversion.zip", b);
-                if (!System.IO.Directory.Exists("temp"))
-                    System.IO.Directory.CreateDirectory("temp");
+                if (System.IO.Directory.Exists("temp"))
+                    System.IO.Directory.Delete("temp", true);
+                System.IO.Directory.CreateDirectory("temp");
                 System.IO.Compression.ZipFile.ExtractToDirectory("newversion.zip", "temp");
                 foreach (System.IO.FileInfo f in new System.IO.DirectoryInfo("temp").GetFiles())
                     if (f.Name != "Updater.exe")
