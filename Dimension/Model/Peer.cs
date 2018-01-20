@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public class Peer
     {
+        public DateTime timeQuit = DateTime.MinValue;
         public DateTime lastContact = DateTime.Now;
         public DateTime lastTimeHelloSent = DateTime.MinValue;
         public Dictionary<ulong, int> peerCount = new Dictionary<ulong, int>();

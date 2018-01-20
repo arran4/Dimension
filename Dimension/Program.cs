@@ -135,12 +135,14 @@ namespace Dimension
             {
                 kademlia.Dispose();
             }
-            theCore.Dispose();
             fileList.Dispose();
             fileListDatabase.close();
             bootstrap.Dispose();
             speedLimiter.Dispose();
             Model.SystemLog.writer.Close();
+
+            theCore.Dispose();
+
         }
         public static Model.Kademlia kademlia;
         public static Model.Core theCore;

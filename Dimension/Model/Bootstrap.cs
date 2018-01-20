@@ -178,10 +178,10 @@ namespace Dimension.Model
 
             publicControlEndPoint = (IPEndPoint)unreliableClient.Client.LocalEndPoint;
             publicDataEndPoint = (IPEndPoint)listener.Server.LocalEndPoint;
-
+            
             tryAgain:
 
-            if (Program.settings.getBool("Use UPnP", true) == false || LANMode || !UPnPActive)
+            if (Program.settings.getBool("Use UPnP", true) == false || LANMode || !UPnPActive || behindDoubleNAT)
             {
                 SystemLog.addEntry("STUNning NAT");
                 try
@@ -220,7 +220,7 @@ namespace Dimension.Model
             if (internalDHTPort == 0)
                 internalDHTPort = r.Next(short.MaxValue - 1000) + 1000;
             publicDHTPort = internalDHTPort;
-            if (Program.settings.getBool("Use UPnP", true) && !LANMode && UPnPActive)
+            if (Program.settings.getBool("Use UPnP", true) && !LANMode && UPnPActive && !behindDoubleNAT)
             {
                 SystemLog.addEntry("UPnP enabled. Attempting to map UPnP ports...");
 
@@ -245,7 +245,6 @@ namespace Dimension.Model
                     SystemLog.addEntry("This probably means you're running more than one router in a row (double NAT).");
                     SystemLog.addEntry("Dimension is going to disable UPnP and try STUNning again to get through this.");
                     SystemLog.addEntry("If this is your home network, please talk to a network engineer -- having UPnP with double NAT is a very bad idea.");
-                    Program.settings.setBool("Use UPnP", false);
                     goto tryAgain;
                 }
             }

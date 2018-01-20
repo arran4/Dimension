@@ -72,8 +72,23 @@ namespace Dimension.Model
             {
                 if (peers.ContainsKey(h.id))
                 {
-                    peers[h.id].quit = false;
-                    peers[h.id].lastContact = DateTime.Now;
+                    if (DateTime.Now.Subtract(peers[h.id].timeQuit).TotalSeconds > 3)
+                    {
+                        if (peers[h.id].quit)
+                        {
+                            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+                            ulong lanHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes("LAN".ToLower())), 0);
+
+                            foreach (ulong u in peers[h.id].circles)
+                                if (u == lanHash)
+                                    peerAdded?.Invoke(peers[h.id], u, true);
+                                else
+                                    peerAdded?.Invoke(peers[h.id], u, true);
+
+                        }
+                        peers[h.id].quit = false;
+                        peers[h.id].lastContact = DateTime.Now;
+                    }
                 }
                 else
                 {
@@ -95,6 +110,8 @@ namespace Dimension.Model
             {
                 if (peers.ContainsKey(h.id))
                 {
+                    if (DateTime.Now.Subtract(peers[h.id].timeQuit).TotalSeconds < 3)
+                        return;
                     wasQuit = peers[h.id].quit;
                     try
                     {
@@ -167,7 +184,8 @@ namespace Dimension.Model
                     updated = true;
                 }
                 peers[h.id].quit = false;
-                peers[h.id].peerCount = h.peerCount;
+                lock(peers[h.id].peerCount)
+                    peers[h.id].peerCount = h.peerCount;
                 peers[h.id].lastContact = DateTime.Now;
                 peers[h.id].buildNumber = h.buildNumber;
                 channels.AddRange(peers[h.id].circles);
@@ -180,30 +198,35 @@ namespace Dimension.Model
                 System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
                 ulong lanHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes("LAN".ToLower())), 0);
 
-                foreach (ulong u in channels)
-                    if (u == lanHash)
-                    {
-                        if (!oldChannels.Contains(u) && peers[h.id].isLocal)
-                            peerAdded?.Invoke(peers[h.id], u, true);
-                    }
-                    else
-                    {
-                        if (!oldChannels.Contains(u))
-                            peerAdded?.Invoke(peers[h.id], u, true);
-                    }
-                
-                foreach (ulong u in oldChannels)
-                    if (u == lanHash)
-                    {
-                        if (!channels.Contains(u) && peers[h.id].isLocal)
-                            peerRemoved?.Invoke(peers[h.id], u, !wasQuit);
-                    }
-                    else
-                    {
-                        if (!channels.Contains(u))
-                            peerRemoved?.Invoke(peers[h.id], u, !wasQuit);
-                    }
-                
+                if (!peers[h.id].quit || DateTime.Now.Subtract(peers[h.id].timeQuit).TotalSeconds > 3)
+                {
+                    foreach (ulong u in channels)
+                        if (u == lanHash)
+                        {
+                            if (!oldChannels.Contains(u) && peers[h.id].isLocal)
+                                peerAdded?.Invoke(peers[h.id], u, true);
+                        }
+                        else
+                        {
+                            if (!oldChannels.Contains(u))
+                                peerAdded?.Invoke(peers[h.id], u, true);
+                        }
+
+                }
+                if (DateTime.Now.Subtract(peers[h.id].timeQuit).TotalSeconds >3)
+                {
+                    foreach (ulong u in oldChannels)
+                        if (u == lanHash)
+                        {
+                            if (!channels.Contains(u) && peers[h.id].isLocal)
+                                peerRemoved?.Invoke(peers[h.id], u, !wasQuit);
+                        }
+                        else
+                        {
+                            if (!channels.Contains(u))
+                                peerRemoved?.Invoke(peers[h.id], u, !wasQuit);
+                        }
+                }
             }
         }
     }

@@ -14,15 +14,21 @@ namespace Dimension.Model
         public void Dispose()
         {
             disposed = true;
-            Commands.Quitting c = new Commands.Quitting();
+
+            Model.Commands.Quitting c = new Model.Commands.Quitting();
             c.id = Program.theCore.id;
             byte[] b = Program.serializer.serialize(c);
-            foreach (Peer p in peerManager.allPeers)
+            foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
             {
                 Program.udp.Send(b, b.Length, p.actualEndpoint);
                 Program.globalUpCounter.addBytes(b.Length);
             }
-        }
+            foreach (System.Net.IPEndPoint e in toHello)
+            {
+                Program.udp.Send(b, b.Length, e);
+                Program.globalUpCounter.addBytes(b.Length);
+            }
+            }
         public void leaveCircle(string s)
         {
             lock (circles)
@@ -90,13 +96,14 @@ namespace Dimension.Model
 
                         Random r = new Random();
                         foreach (Peer p in allPeers)
-                            if (p.peerCount.ContainsKey(circleId))
-                                if (p.peerCount[circleId] != peerManager.allPeersInCircle(circleId).Length)
-                                    if (p.lastGossipPeerCount == null || DateTime.Now.Subtract(p.lastGossipTime).TotalSeconds > 30)
-                                        potentials.Insert(r.Next(0, potentials.Count + 1), p);
-                                    else
-                                        if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
-                                        potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                            lock (p.peerCount)
+                                if (p.peerCount.ContainsKey(circleId))
+                                    if (p.peerCount[circleId] != peerManager.allPeersInCircle(circleId).Length)
+                                        if (p.lastGossipPeerCount == null || DateTime.Now.Subtract(p.lastGossipTime).TotalSeconds > 30)
+                                            potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                                        else
+                                            if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
+                                            potentials.Insert(r.Next(0, potentials.Count + 1), p);
 
                         if (potentials.Count > 0)
                         {
@@ -437,11 +444,12 @@ namespace Dimension.Model
             {
                 Commands.Quitting r = (Commands.Quitting)c;
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
-                    if (!p.quit)
+                    if (!p.quit || DateTime.Now.Subtract(p.timeQuit).TotalSeconds >1)
                     {
                         if (p.id == r.id)
                         {
                             p.quit = true;
+                            p.timeQuit = DateTime.Now;
                             Program.theCore.peerManager.doPeerRemoved(p);
                         }
                     }
@@ -907,6 +915,8 @@ namespace Dimension.Model
                 }
                 Program.globalUpCounter.addBytes(m.Length);
                 System.Threading.Thread.Sleep(1000);
+                if (disposed)
+                    return;
 
                 lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)
@@ -928,6 +938,8 @@ namespace Dimension.Model
                     }
 
                 System.Threading.Thread.Sleep(1000);
+                if (disposed)
+                    return;
                 foreach (Peer p in peerManager.allPeers)
                 {
                     //if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)
@@ -961,6 +973,8 @@ namespace Dimension.Model
                     }
                 }
                 System.Threading.Thread.Sleep(1000);
+                if (disposed)
+                    return;
             }
         }
     }

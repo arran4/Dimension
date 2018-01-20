@@ -201,7 +201,7 @@ namespace Dimension.UI
             string fingerprint = "";
             foreach (Model.Peer p2 in items)
                 if (!p2.quit)
-                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString() + p2.afk.ToString() + p2.probablyDead.ToString() + p2.maybeDead.ToString()+p2.description + p2.behindDoubleNAT;
+                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString() + p2.afk.ToString() + p2.probablyDead.ToString() + p2.maybeDead.ToString()+p2.description + p2.behindDoubleNAT + p2.quit + p2.timeQuit;
             if (lastFingerprint == fingerprint)
                 return;
             lastFingerprint = fingerprint;
