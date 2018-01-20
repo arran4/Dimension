@@ -62,7 +62,7 @@ namespace Dimension.Model
         System.Threading.Semaphore quitSemaphore = new System.Threading.Semaphore(0,int.MaxValue);
         bool quitting = false;
         object updateLock = new object();
-        Dictionary<string, FSListing> toSave;
+        Dictionary<string, FSListing> toSave = new Dictionary<string, FSListing>();
         void partialUpdate(object sender, System.IO.FileSystemEventArgs e)
         {
             lock (updateLock)
@@ -199,7 +199,8 @@ namespace Dimension.Model
             }
         void updateRootShare(RootShare f, bool urgent)
         {
-            toSave = new Dictionary<string, FSListing>();
+            lock (toSave)
+                toSave.Clear();
             f.id = Program.fileListDatabase.allocateId();
             ulong size = 0;
             SystemLog.addEntry("Updating root share " + f.fullPath.Replace('/', System.IO.Path.DirectorySeparatorChar) + "...");
@@ -278,10 +279,13 @@ namespace Dimension.Model
         }
         public void doSave()
         {
-            lock(toSave)
+            lock (toSave)
+            {
                 foreach (string s3 in toSave.Keys)
                     Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
-            toSave = new Dictionary<string, FSListing>();
+
+                toSave.Clear();
+            }
 
         }
         public void startUpdate(bool urgent)

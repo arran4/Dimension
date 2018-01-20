@@ -306,24 +306,32 @@ namespace Dimension.Model
             {
                 if (isLocal)
                 {
+                    actualEndpoint = new System.Net.IPEndPoint(internalAddress[0], localControlPort);
                     response?.Invoke("Local peer found.");
-                    if (createUdt)
+                    try
                     {
-                        response?.Invoke("Creating UDT connection to "+ actualEndpoint.Address.ToString()+":"+localUDTPort.ToString());
-                        udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
-                    }
-                    if (createControl)
-                    {
-                        response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
-                        controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
-                    }
-                    if (createData)
-                    {
-                        response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
-                        dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
+                        if (createUdt)
+                        {
+                            response?.Invoke("Creating UDT connection to " + actualEndpoint.Address.ToString() + ":" + localUDTPort.ToString());
+                            udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
+                        }
+                        if (createControl)
+                        {
+                            response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
+                            controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
+                        }
+                        if (createData)
+                        {
+                            response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
+                            dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
 
+                        }
                     }
-                }
+                    catch (Exception e)
+                    {
+                        SystemLog.addEntry("Failed to connect to " + actualEndpoint.Address.ToString());
+                    }
+                    }
                 else
                 {
 
@@ -355,10 +363,11 @@ namespace Dimension.Model
 
             }
             if (createData)
-                dataConnection.commandReceived += commandReceived;
-            if (createControl)
+                if(dataConnection != null)
+                    dataConnection.commandReceived += commandReceived;
+            if (createControl && controlConnection != null)
                 controlConnection.commandReceived += commandReceived;
-            if (createUdt)
+            if (createUdt && udtConnection != null)
                 udtConnection.commandReceived += commandReceived;
         }
         List<int> usedIds = new List<int>();
