@@ -36,7 +36,11 @@ namespace Dimension.UI
                 listView.FullRowSelect = true;
                 Controls.Add(listView);
             }
-        }
+            if (isMono)
+            {
+                listView.OwnerDraw = true;
+            }
+            }
 
         string lastFingerprint = "";
         private void updateTimer_Tick(object sender, EventArgs e)
@@ -209,6 +213,35 @@ namespace Dimension.UI
                         return;
                     }
             }
+        }
+
+        private void listView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        {
+
+            if (e.Bounds.Left > listView.Width)
+                return;
+            e.Graphics.DrawString(e.SubItem.Text, listView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
+        }
+
+        private void listView_DrawItem(object sender, DrawListViewItemEventArgs e)
+        {
+            if (e.Bounds.Left > listView.Width)
+                return;
+            e.Graphics.DrawString(e.Item.Text, listView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
+
+        }
+
+        private void listView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
+
+            if (e.Bounds.Left > listView.Width)
+                return;
+
+            int width = e.Bounds.Width;
+            if (e.Bounds.Right > listView.Width)
+                width = listView.Width;
+            e.Graphics.FillRectangle(new SolidBrush(SystemColors.Control), new RectangleF(e.Bounds.Left, e.Bounds.Top, width, e.Bounds.Height));
+            e.Graphics.DrawString(e.Header.Text, listView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
         }
     }
 }

@@ -94,8 +94,19 @@ namespace Dimension.UI
             {
                 Program.settings.addStringToArrayNoDup("Kademlia Circles Open", url);
             }
-
+            if (isMono)
+            {
+                userListView.OwnerDraw = true;
             }
+
+        }
+        public bool isMono
+        {
+            get
+            {
+                return Type.GetType("Mono.Runtime") != null;
+            }
+        }
         public CirclePanel()
         {
             InitializeComponent();
@@ -153,6 +164,8 @@ namespace Dimension.UI
 
                 if (items[i].maybeDead)
                     userListView.Items[i].ForeColor = SystemColors.GrayText;
+                else
+                    userListView.Items[i].ForeColor = SystemColors.WindowText;
                 Font b = userListView.Font;
                 if (items[i].behindDoubleNAT)
                     b = new Font("Comic Sans MS", b.SizeInPoints);
@@ -445,6 +458,33 @@ namespace Dimension.UI
         private void historyBox_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(e.LinkText);
+        }
+
+        private void userListView_DrawItem(object sender, DrawListViewItemEventArgs e)
+        {
+            if (e.Bounds.Left > userListView.Width)
+                return;
+            e.Graphics.DrawString(e.Item.Text, userListView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
+
+        }
+
+        private void userListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
+            if (e.Bounds.Left > userListView.Width)
+                return;
+
+            int width = e.Bounds.Width;
+            if (e.Bounds.Right > userListView.Width)
+                width = userListView.Width;
+            e.Graphics.FillRectangle(new SolidBrush(SystemColors.Control), new RectangleF(e.Bounds.Left, e.Bounds.Top, width, e.Bounds.Height) );
+            e.Graphics.DrawString(e.Header.Text, userListView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
+        }
+
+        private void userListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        {
+            if (e.Bounds.Left > userListView.Width)
+                return;
+            e.Graphics.DrawString(e.SubItem.Text, userListView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
         }
     }
 }

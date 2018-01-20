@@ -104,6 +104,9 @@
             this.userListView.TabIndex = 0;
             this.userListView.UseCompatibleStateImageBehavior = false;
             this.userListView.View = System.Windows.Forms.View.Details;
+            this.userListView.DrawColumnHeader += new System.Windows.Forms.DrawListViewColumnHeaderEventHandler(this.userListView_DrawColumnHeader);
+            this.userListView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.userListView_DrawItem);
+            this.userListView.DrawSubItem += new System.Windows.Forms.DrawListViewSubItemEventHandler(this.userListView_DrawSubItem);
             this.userListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.userListView_MouseDoubleClick);
             // 
             // columnHeader1

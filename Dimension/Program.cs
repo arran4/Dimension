@@ -189,14 +189,17 @@ namespace Dimension
             theCore = new Model.Core();
 
             Model.SystemLog.addEntry("Starting Kademlia launching...");
-            t = new System.Threading.Thread(delegate ()
+            kademlia = new Model.Kademlia();
+            if (!isMono)
             {
-                kademlia = new Model.Kademlia();
-                kademlia.initialize();
-            });
-            t.IsBackground = true;
-            t.Name = "Kademlia Init Thread";
-            t.Start();
+                t = new System.Threading.Thread(delegate ()
+                {
+                    kademlia.initialize();
+                });
+                t.IsBackground = true;
+                t.Name = "Kademlia Init Thread";
+                t.Start();
+            }
 
             Model.SystemLog.addEntry("Done loading!");
             doneLoading = true;
