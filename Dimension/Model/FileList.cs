@@ -152,6 +152,9 @@ namespace Dimension.Model
         }
         public FSListing getFSListing(Folder parent, string path)
         {
+            Folder start = parent;
+            tryAgain:
+            parent = start;
             string[] split = path.Split('/');
 
             if (split.Length <2)
@@ -163,7 +166,13 @@ namespace Dimension.Model
                 foreach (ulong id in parent.folderIds)
                 {
                     Folder f = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
-                    
+
+                    if (f == null)
+                    {
+                        System.Threading.Thread.Sleep(100);
+                        goto tryAgain;
+                    }
+
                     if (f.name == split[i])
                     {
                         if (i == split.Length - 1)
@@ -201,6 +210,8 @@ namespace Dimension.Model
         {
             lock (toSave)
                 toSave.Clear();
+            if (quitting)
+                return;
             f.id = Program.fileListDatabase.allocateId();
             ulong size = 0;
             SystemLog.addEntry("Updating root share " + f.fullPath.Replace('/', System.IO.Path.DirectorySeparatorChar) + "...");
@@ -322,7 +333,6 @@ namespace Dimension.Model
                 {
                     if (quitting)
                     {
-                        deleteFolder(f, true);
                         return 0;
                     }
                     wait(urgent);
@@ -344,7 +354,6 @@ namespace Dimension.Model
                 {
                     if (quitting)
                     {
-                        deleteFolder(f, true);
                         return 0;
                     }
                     wait(urgent);

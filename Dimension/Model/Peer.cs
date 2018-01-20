@@ -116,9 +116,12 @@ namespace Dimension.Model
                 string s = (((Commands.CancelCommand)c).path);
                 lock (transfers)
                 {
-                    Transfer.transfers.Remove(transfers[s]);
+                    if (transfers.ContainsKey(s))
+                    {
+                        Transfer.transfers.Remove(transfers[s]);
 
-                    transfers.Remove(s);
+                        transfers.Remove(s);
+                    }
                 }
                 c3.send(c);
             }
@@ -306,30 +309,38 @@ namespace Dimension.Model
             {
                 if (isLocal)
                 {
-                    actualEndpoint = new System.Net.IPEndPoint(internalAddress[0], localControlPort);
                     response?.Invoke("Local peer found.");
-                    try
+                    if (internalAddress.Length > 1)
                     {
-                        if (createUdt)
-                        {
-                            response?.Invoke("Creating UDT connection to " + actualEndpoint.Address.ToString() + ":" + localUDTPort.ToString());
-                            udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
-                        }
-                        if (createControl)
-                        {
-                            response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
-                            controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
-                        }
-                        if (createData)
-                        {
-                            response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
-                            dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
-
-                        }
+                        response?.Invoke("Multiple local addresses found. Trying each...");
                     }
-                    catch (Exception e)
+
+                    for (int i = 0; i < internalAddress.Length; i++)
                     {
-                        SystemLog.addEntry("Failed to connect to " + actualEndpoint.Address.ToString());
+                        actualEndpoint = new System.Net.IPEndPoint(internalAddress[i], localControlPort);
+                        try
+                        {
+                            if (createUdt && udtConnection == null)
+                            {
+                                response?.Invoke("Creating UDT connection to " + actualEndpoint.Address.ToString() + ":" + localUDTPort.ToString());
+                                udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
+                            }
+                            if (createControl && controlConnection == null)
+                            {
+                                response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
+                                controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
+                            }
+                            if (createData && dataConnection == null)
+                            {
+                                response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
+                                dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
+
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            SystemLog.addEntry("Failed to connect to " + actualEndpoint.Address.ToString());
+                        }
                     }
                     }
                 else

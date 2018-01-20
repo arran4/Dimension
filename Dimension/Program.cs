@@ -123,6 +123,7 @@ namespace Dimension
                 Model.SystemLog.addEntry("Exception!");
                 Model.SystemLog.addEntry(e.Message);
                 Model.SystemLog.addEntry(e.StackTrace);
+                return;
             }
 #endif
             }
