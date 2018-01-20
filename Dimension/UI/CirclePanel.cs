@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Dimension.UI
 {
-    public partial class CirclePanel : UserControl, Model.ClosableTab
+    public partial class CirclePanel : UserControl, Model.ClosableTab, UI.SelectableTab
     {
         public void close()
         {
@@ -459,9 +459,19 @@ namespace Dimension.UI
         {
             System.Diagnostics.Process.Start(e.LinkText);
         }
-
+        bool selected = false;
+        public void select()
+        {
+            selected = true;
+        }
+        public void unselect()
+        {
+            selected = false;
+        }
         private void userListView_DrawItem(object sender, DrawListViewItemEventArgs e)
         {
+            if (!selected)
+                return;
             if (e.Bounds.Left > userListView.Width)
                 return;
             e.Graphics.DrawString(e.Item.Text, userListView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
@@ -470,6 +480,8 @@ namespace Dimension.UI
 
         private void userListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         {
+            if (!selected)
+                return;
             if (e.Bounds.Left > userListView.Width)
                 return;
 
@@ -482,6 +494,8 @@ namespace Dimension.UI
 
         private void userListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
+            if (!selected)
+                return;
             if (e.Bounds.Left > userListView.Width)
                 return;
             e.Graphics.DrawString(e.SubItem.Text, userListView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);

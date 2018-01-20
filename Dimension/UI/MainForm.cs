@@ -501,11 +501,21 @@ namespace Dimension
         public delegate void ColorChangeEvent(bool inverted = false);
         public static event ColorChangeEvent colorChange;
 
+        TabPage lastSelection = null;
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(tabControl.SelectedTab != null)
+            if (tabControl.SelectedTab != null)
+            {
                 if (tabControl.SelectedTab.Text.StartsWith("(!)"))
                     tabControl.SelectedTab.Text = tabControl.SelectedTab.Text.Substring(3);
+                if (tabControl.SelectedTab.Controls.Count > 0)
+                    if (tabControl.SelectedTab.Controls[0] is UI.SelectableTab)
+                        ((UI.SelectableTab)tabControl.SelectedTab.Controls[0]).select();
+                if(lastSelection != null)
+                    if (lastSelection.Controls[0] is UI.SelectableTab)
+                        ((UI.SelectableTab)lastSelection.Controls[0]).unselect();
+                lastSelection = tabControl.SelectedTab;
+            }
         }
 
         private void MainForm_Shown(object sender, EventArgs e)

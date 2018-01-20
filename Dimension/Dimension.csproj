@@ -211,6 +211,7 @@
     <Compile Include="UI\RenameShareForm.Designer.cs">
       <DependentUpon>RenameShareForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\SelectableTab.cs" />
     <Compile Include="UI\UserPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
