@@ -142,6 +142,7 @@ namespace Dimension.Model
             randomId |= (uint)r.Next();
             id = (ulong)Program.settings.getULong("ID", randomId);
             Program.settings.setULong("ID", id);
+            Program.settings.save();
 
             if (!isMono)
             {

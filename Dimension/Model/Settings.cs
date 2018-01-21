@@ -20,6 +20,15 @@ namespace Dimension.Model
             SystemLog.addEntry("Loading Settings...");
             settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);
         }
+        public void save()
+        {
+            settings.SaveIndex();
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            folder = Path.Combine(folder, "Dimension");
+            SystemLog.addEntry("Saving Settings...");
+            settings.Dispose();
+            settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);
+        }
 
         public string[] getStringArray(string name)
         {
@@ -137,10 +146,5 @@ namespace Dimension.Model
             cache["i" + name] = s;
             return int.Parse(s);
         }
-        public void save()
-        {
-            settings.SaveIndex();
-        }
-
         }
 }
