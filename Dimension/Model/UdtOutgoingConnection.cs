@@ -120,8 +120,15 @@ namespace Dimension.Model
         {
             get
             {
-                return socket.State != Udt.SocketState.Closed;
-            }
+                try
+                {
+                    return socket.State != Udt.SocketState.Closed;
+                }
+                catch
+                {
+                    return false;
+                }
+                }
         }
     }
 }
