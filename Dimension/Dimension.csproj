@@ -75,7 +75,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>if_network1_216674.ico</ApplicationIcon>
+    <ApplicationIcon>NewIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlRenderer, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -359,6 +359,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="if_network1_216674.ico" />
+    <Content Include="NewIcon.ico" />
     <None Include="Resources\Bell.wav" />
   </ItemGroup>
   <ItemGroup>
