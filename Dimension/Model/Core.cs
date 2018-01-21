@@ -102,8 +102,9 @@ namespace Dimension.Model
                                         if (p.lastGossipPeerCount == null || DateTime.Now.Subtract(p.lastGossipTime).TotalSeconds > 30)
                                             potentials.Insert(r.Next(0, potentials.Count + 1), p);
                                         else
-                                            if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
-                                            potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                                            lock (p.lastGossipPeerCount)
+                                                if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
+                                                    potentials.Insert(r.Next(0, potentials.Count + 1), p);
 
                         if (potentials.Count > 0)
                         {
@@ -113,7 +114,8 @@ namespace Dimension.Model
 
 
                         foreach (Peer p in allPeers)
-                            p.lastGossipPeerCount = p.peerCount;
+                            lock(p.lastGossipPeerCount)
+                                p.lastGossipPeerCount = p.peerCount;
 
                         System.Threading.Thread.Sleep(1000);
                     }
