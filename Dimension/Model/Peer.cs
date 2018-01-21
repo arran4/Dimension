@@ -73,10 +73,9 @@ namespace Dimension.Model
                 //TODO: Add more conditions
                 if (id == Program.theCore.id)
                     return true;
-                if (Program.bootstrap.publicControlEndPoint == null)
-                    return true;
-                if (publicAddress.ToString() == Program.bootstrap.publicControlEndPoint.Address.ToString())
-                    return true;
+                if (Program.bootstrap.publicControlEndPoint != null)
+                    if (publicAddress.ToString() == Program.bootstrap.publicControlEndPoint.Address.ToString())
+                        return true;
                 return false;
             }
         }
@@ -318,51 +317,78 @@ namespace Dimension.Model
                     for (int i = 0; i < internalAddress.Length; i++)
                     {
                         actualEndpoint = new System.Net.IPEndPoint(internalAddress[i], localControlPort);
-                        try
-                        {
-                            if (createUdt && udtConnection == null)
-                            {
-                                response?.Invoke("Creating UDT connection to " + actualEndpoint.Address.ToString() + ":" + localUDTPort.ToString());
-                                udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
-                            }
-                            if (createControl && controlConnection == null)
-                            {
-                                response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
-                                controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
-                            }
-                            if (createData && dataConnection == null)
-                            {
-                                response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
-                                dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
 
+                        bool reverseConnect = false;
+                        if (Program.settings.getBool("Default to Reverse Connection", false))
+                            reverseConnect = true;
+                        if (!reverseConnect)
+                        {
+                            try
+                            {
+                                if (createUdt && udtConnection == null)
+                                {
+                                    response?.Invoke("Creating UDT connection to " + actualEndpoint.Address.ToString() + ":" + localUDTPort.ToString());
+                                    udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
+                                }
+                                if (createControl && controlConnection == null)
+                                {
+                                    response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
+                                    controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
+                                }
+                                if (createData && dataConnection == null)
+                                {
+                                    response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
+                                    dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, localDataPort);
+
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                SystemLog.addEntry("Failed to connect to " + actualEndpoint.Address.ToString());
+                                reverseConnect = true;
                             }
                         }
-                        catch (Exception e)
+                        if (reverseConnect)
                         {
-                            SystemLog.addEntry("Failed to connect to " + actualEndpoint.Address.ToString());
+                            response?.Invoke("Attempting to initiate reverse connection.");
+
+                            byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
+                            Program.udp.Send(b, b.Length, actualEndpoint);
+                            Program.globalUpCounter.addBytes(b.Length);
+                            return;
                         }
                     }
-                    }
+                }
                 else
                 {
 
                     createUdt = false;
-                    try
+                    bool reverseConnect = false;
+                    if (Program.settings.getBool("Default to Reverse Connection", false))
+                        reverseConnect = true;
+                    if (!reverseConnect)
                     {
-                        if (createControl)
+                        try
                         {
-                            response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + externalDataPort.ToString());
-                            controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                            if (createControl)
+                            {
+                                response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + externalDataPort.ToString());
+                                controlConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                            }
+                            if (createData)
+                            {
+                                response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + externalDataPort.ToString());
+                                dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                            }
                         }
-                        if (createData)
+                        catch (System.Net.Sockets.SocketException s)
                         {
-                            response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + externalDataPort.ToString());
-                            dataConnection = new ReliableOutgoingConnection(actualEndpoint.Address, externalDataPort);
+                            response?.Invoke("Error: " + s.Message + ".");
+                            reverseConnect = true;
                         }
                     }
-                    catch (System.Net.Sockets.SocketException s)
+                    if (reverseConnect)
                     {
-                        response?.Invoke("Error: " + s.Message + ".");
                         response?.Invoke("Attempting to initiate reverse connection.");
 
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());

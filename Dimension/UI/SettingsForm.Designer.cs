@@ -69,6 +69,7 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.updateWithoutPromptingBox = new System.Windows.Forms.CheckBox();
+            this.reverseDefaultBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -261,6 +262,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.reverseDefaultBox);
             this.tabPage2.Controls.Add(this.dhtPortBox);
             this.tabPage2.Controls.Add(this.label8);
             this.tabPage2.Controls.Add(this.useUDTBox);
@@ -481,6 +483,16 @@
             this.updateWithoutPromptingBox.Text = "Update Without Prompting";
             this.updateWithoutPromptingBox.UseVisualStyleBackColor = true;
             // 
+            // reverseDefaultBox
+            // 
+            this.reverseDefaultBox.AutoSize = true;
+            this.reverseDefaultBox.Location = new System.Drawing.Point(17, 179);
+            this.reverseDefaultBox.Name = "reverseDefaultBox";
+            this.reverseDefaultBox.Size = new System.Drawing.Size(161, 17);
+            this.reverseDefaultBox.TabIndex = 11;
+            this.reverseDefaultBox.Text = "Reverse Connect By Default";
+            this.reverseDefaultBox.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -552,5 +564,6 @@
         private System.Windows.Forms.CheckBox playSoundsBox;
         private System.Windows.Forms.CheckBox autoRejoinBox;
         private System.Windows.Forms.CheckBox updateWithoutPromptingBox;
+        private System.Windows.Forms.CheckBox reverseDefaultBox;
     }
 }
