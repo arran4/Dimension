@@ -77,6 +77,7 @@ namespace Updater
 
                 p.WaitForExit();
                 System.Diagnostics.Process.Start("Dimension.exe");
+                Application.Exit();
 
             }
         }
