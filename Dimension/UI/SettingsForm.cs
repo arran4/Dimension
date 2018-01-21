@@ -20,7 +20,7 @@ namespace Dimension.UI
         }
         private void usernameBox_TextChanged(object sender, EventArgs e)
         {
-            if (usernameBox.Text.ToLower().Trim() == "zardoz")
+            if (Program.comicSansOnly)
             {
                 fontSelectBox.Items.Clear();
                 fontSelectBox.Items.Add("Comic Sans MS");
