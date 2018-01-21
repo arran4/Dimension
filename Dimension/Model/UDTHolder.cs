@@ -32,6 +32,8 @@ namespace Dimension.Model
             }
         void udtAcceptLoop()
         {
+            while (Program.theCore == null)
+                System.Threading.Thread.Sleep(10);
             while (!Program.theCore.disposed)
             {
                 Udt.Socket s = udtListener.Accept();
