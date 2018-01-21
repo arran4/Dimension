@@ -29,7 +29,7 @@ namespace Dimension
             p.StartInfo.Arguments =buildNumber.ToString();
             p.Start();
         }
-        public const int buildNumber = 68;
+        public const int buildNumber = 69;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
@@ -204,8 +204,6 @@ namespace Dimension
             Model.SystemLog.addEntry("Creating File List Manager...");
             fileList = new Model.FileList();
 
-            Model.SystemLog.addEntry("Starting a file list update...");
-            fileList.startUpdate(false);
 
             Model.SystemLog.addEntry("Creating a serializer...");
             serializer = new Model.Serializer();
@@ -225,6 +223,9 @@ namespace Dimension
                 t.Name = "Kademlia Init Thread";
                 t.Start();
             }
+            Model.SystemLog.addEntry("Starting a file list update...");
+            fileList.startUpdate(false);
+
             Model.SystemLog.addEntry("Saving settings...");
             Program.settings.save();
 

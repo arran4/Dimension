@@ -165,7 +165,13 @@ namespace Dimension.UI
                 }
                 lock(Model.Transfer.transfers)
                     Model.Transfer.transfers.Remove(t);
-                t.con.send(new Model.Commands.CancelCommand() { path = t.originalPath });
+                System.Threading.Thread z = new System.Threading.Thread(delegate ()
+                {
+                    t.con.send(new Model.Commands.CancelCommand() { path = t.originalPath });
+                });
+                z.IsBackground = true;
+                z.Name = "Cancel command";
+                z.Start();
             }
             }
 

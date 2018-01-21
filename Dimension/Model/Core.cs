@@ -304,6 +304,7 @@ namespace Dimension.Model
             }
             }
         Dictionary<string, int> knownHashes = new Dictionary<string, int>();
+        Dictionary<string, List<int>> requestedHashes = new  Dictionary<string, List<int>>();
         void parse(Commands.Command c, System.Net.IPEndPoint sender, string originalText)
         {
             if (c is Commands.MiniHello)
@@ -323,12 +324,18 @@ namespace Dimension.Model
                         request = true;
                 if (peerManager.parseMiniHello(((Commands.MiniHello)c), sender))
                     request = true;
-                if (request)
+                lock (requestedHashes)
                 {
-                    var h = generateHello();
-                    h.requestingHelloBack = true;
-                    byte[] b = Program.serializer.serialize(h);
-                    udpSend(b, sender);
+                    if (!requestedHashes.ContainsKey(sender.Address.ToString() + "\n" + sender.Port.ToString()))
+                        requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = new List<int>();
+                    if (request && !requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Contains(((Commands.MiniHello)c).helloHash))
+                    {
+                        requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Add(((Commands.MiniHello)c).helloHash);
+                        var h = generateHello();
+                        h.requestingHelloBack = true;
+                        byte[] b = Program.serializer.serialize(h);
+                        udpSend(b, sender);
+                    }
                 }
             }
             if (c is Commands.GossipCommand)
@@ -372,8 +379,12 @@ namespace Dimension.Model
                 h.peerCount = null;
                 var sha = new System.Security.Cryptography.SHA512Managed();
                 int helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(h).Trim())), 0);
-                if(!h.requestingHelloBack)
+                if (!h.requestingHelloBack)
                     knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
+                /*lock (requestedHashes)
+                    if(requestedHashes.ContainsKey(sender.Address.ToString() + "\n" + sender.Port.ToString()))
+                        if (requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Contains(helloHash))
+                            requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Remove(helloHash);*/
                 h.peerCount = z;
 
                 if (h.debugBuild.HasValue)
@@ -919,6 +930,10 @@ namespace Dimension.Model
                 lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)
                     {
+                        foreach (Peer p2 in peerManager.allPeers)
+                            if(p2.internalAddress != null)
+                                if (p2.internalAddress.ToString() == p.Address.ToString() || p2.publicAddress.ToString() == p.Address.ToString())
+                                    continue;
                         if (p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
                         {
                             try
@@ -958,9 +973,10 @@ namespace Dimension.Model
                                     }
                                     else
                                     {
-                                        udpSend(m, p.actualEndpoint);
-                                        udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
-                                        udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                        if(p.isLocal)
+                                            udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                        else
+                                            udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                                     }
                                 }
                                 catch
