@@ -168,6 +168,7 @@
     <Compile Include="Model\ReliableIncomingConnection.cs" />
     <Compile Include="Model\ReliableOutgoingConnection.cs" />
     <Compile Include="Model\Transfer.cs" />
+    <Compile Include="Model\UDTHolder.cs" />
     <Compile Include="Model\UdtIncomingConnection.cs" />
     <Compile Include="Model\UdtOutgoingConnection.cs" />
     <Compile Include="UI\AboutForm.cs">

@@ -29,7 +29,7 @@ namespace Dimension
             p.StartInfo.Arguments =buildNumber.ToString();
             p.Start();
         }
-        public const int buildNumber = 66;
+        public const int buildNumber = 67;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
@@ -173,7 +173,16 @@ namespace Dimension
 
             Model.SystemLog.addEntry("Setting up NAT...");
             bootstrap = new Model.Bootstrap();
-            bootstrap.launch().Wait();
+            try
+            {
+                bootstrap.launch().Wait();
+            }
+            catch (System.TypeLoadException)
+            {
+                MessageBox.Show("Error! It looks like you don't have .NET 4.5 x86 installed.");
+                Application.Exit();
+                return;
+            }
             listener = bootstrap.listener;
             udp = bootstrap.unreliableClient;
             System.Threading.Thread t = new System.Threading.Thread(acceptLoop);

@@ -10,7 +10,7 @@ namespace Dimension.Model
     {
         public List<string> circles = new List<string>();
         public PeerManager peerManager;
-        bool disposed = false;
+        public bool disposed = false;
         public void Dispose()
         {
             disposed = true;
@@ -131,6 +131,7 @@ namespace Dimension.Model
                 return Type.GetType("Mono.Runtime") != null;
             }
         }
+        public UDTHolder udtHolder;
         public ulong id;
         public Core()
         {
@@ -144,10 +145,16 @@ namespace Dimension.Model
 
             if (!isMono)
             {
-                Model.SystemLog.addEntry("Creating a UDT listener...");
-                udtListener = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
-                udtListener.Bind(System.Net.IPAddress.Any, 0);
-                udtListener.Listen(1000);
+                try
+                {
+                    Model.SystemLog.addEntry("Creating a UDT listener...");
+                    udtHolder = new UDTHolder();
+                }
+                catch
+                {
+                    Model.SystemLog.addEntry("Microsoft Visual C++ Runtime v10 x86 was not installed. UDT will be disabled.");
+                    Program.settings.setBool("Use UDT", false);
+                }
             }
 
 
@@ -166,10 +173,8 @@ namespace Dimension.Model
             Model.SystemLog.addEntry("Launching network keep alive loops...");
             if (!isMono)
             {
-                t = new System.Threading.Thread(udtAcceptLoop);
-                t.IsBackground = true;
-                t.Name = "UDT Accept Loop";
-                t.Start();
+                if(udtHolder != null)
+                    udtHolder.launchLoop();
             }
             t = new System.Threading.Thread(transferRefreshLoop);
             t.IsBackground = true;
@@ -229,28 +234,6 @@ namespace Dimension.Model
                             p.controlConnection.send(k);
                 }
                 System.Threading.Thread.Sleep(5000);
-            }
-        }
-        void udtAcceptLoop()
-        {
-            while (!disposed)
-            {
-                Udt.Socket s = udtListener.Accept();
-                var p = new UdtIncomingConnection(s);
-                addIncomingConnection(p);
-            }
-
-
-        }
-        Udt.Socket udtListener;
-        public int udtInternalPort
-        {
-            get
-            {
-                if (isMono)
-                    return 0;
-                else
-                    return udtListener.LocalEndPoint.Port;
             }
         }
         void doReceive()
@@ -834,7 +817,12 @@ namespace Dimension.Model
                 c.internalUdtPort = 0;
             }
             else
-                c.internalUdtPort = udtListener.LocalEndPoint.Port;
+            {
+                if (udtHolder != null)
+                    c.internalUdtPort = udtHolder.listenPort;
+                else
+                    c.internalUdtPort = 0;
+            }
             c.buildNumber = Program.buildNumber;
             c.behindDoubleNAT = Program.bootstrap.behindDoubleNAT;
 
