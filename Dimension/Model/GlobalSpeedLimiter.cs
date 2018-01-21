@@ -28,6 +28,8 @@ namespace Dimension.Model
         ulong currentUploadLimit;
         void updateLoop()
         {
+            while (Program.settings == null)
+                System.Threading.Thread.Sleep(100);
             while (!disposed)
             {
                 totalDownload = 0;

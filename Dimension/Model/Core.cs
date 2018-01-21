@@ -142,7 +142,6 @@ namespace Dimension.Model
             randomId |= (uint)r.Next();
             id = (ulong)Program.settings.getULong("ID", randomId);
             Program.settings.setULong("ID", id);
-            Program.settings.save();
 
             if (!isMono)
             {
@@ -369,11 +368,13 @@ namespace Dimension.Model
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
 
-
+                var z = h.peerCount;
+                h.peerCount = null;
                 var sha = new System.Security.Cryptography.SHA512Managed();
-                int helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(originalText.Trim())), 0);
+                int helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(h).Trim())), 0);
                 if(!h.requestingHelloBack)
                     knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
+                h.peerCount = z;
 
                 if (h.debugBuild.HasValue)
                     if (!h.debugBuild.Value && h.buildNumber > Program.buildNumber)
@@ -870,8 +871,11 @@ namespace Dimension.Model
             c.internalIPs = ips.ToArray();
             internalIPs = ips2.ToArray();
 
+            var z = c.peerCount;
+            c.peerCount = null;
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(c);
             helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(json.Trim())),0);
+            c.peerCount = z;
             return c;
         }
         void helloLoop()

@@ -115,6 +115,8 @@ namespace Dimension.Model
             {
                 if (cache.ContainsKey("b" + name))
                     return bool.Parse(cache["b" + name]);
+                if (settings == null)
+                    return def;
                 string s = def.ToString();
                 settings.Get("b" + name, out s);
                 if (s == "" || s == null)

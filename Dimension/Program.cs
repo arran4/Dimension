@@ -29,7 +29,7 @@ namespace Dimension
             p.StartInfo.Arguments =buildNumber.ToString();
             p.Start();
         }
-        public const int buildNumber = 67;
+        public const int buildNumber = 68;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
@@ -102,6 +102,7 @@ namespace Dimension
         {
             using(System.Threading.Mutex mutex = new System.Threading.Mutex(false, "Global\\DimensionMutex"))
             {
+                settings = new Model.Settings();
 #if DEBUG
 #else
                 if (checkForUpdates())
@@ -175,7 +176,6 @@ namespace Dimension
             Model.SystemLog.addEntry("");
             Model.SystemLog.addEntry("Startup at " + DateTime.Now.ToLongDateString() + " " + DateTime.Now.ToLongTimeString());
 
-            settings = new Model.Settings();
 
             speedLimiter = new Model.GlobalSpeedLimiter();
             string username = settings.getString("Username", Environment.MachineName);
@@ -225,6 +225,8 @@ namespace Dimension
                 t.Name = "Kademlia Init Thread";
                 t.Start();
             }
+            Model.SystemLog.addEntry("Saving settings...");
+            Program.settings.save();
 
             Model.SystemLog.addEntry("Done loading!");
             doneLoading = true;
