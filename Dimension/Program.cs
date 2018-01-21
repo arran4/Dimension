@@ -43,7 +43,6 @@ namespace Dimension
             checking = true;
             if (Program.settings.getBool("Update Without Prompting", false))
             {
-
                 if (Updater.Program.needsUpdate(buildNumber))
                 {
                     downloadUpdates();
