@@ -52,6 +52,8 @@ namespace Dimension.UI
             autoRejoinBox.Checked = Program.settings.getBool("Auto Rejoin on Startup", true);
             showAFKBox.Checked = Program.settings.getBool("Show AFK", true);
 
+            updateWithoutPromptingBox.Checked = Program.settings.getBool("Update Without Prompting", false);
+
                 fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
             if (Program.comicSansOnly)
             {
@@ -102,6 +104,7 @@ namespace Dimension.UI
 
             Program.settings.setBool("Show AFK", showAFKBox.Checked);
             Program.settings.setBool("Auto Rejoin on Startup", autoRejoinBox.Checked);
+            Program.settings.setBool("Update Without Prompting", updateWithoutPromptingBox.Checked);
 
             Program.settings.save();
             

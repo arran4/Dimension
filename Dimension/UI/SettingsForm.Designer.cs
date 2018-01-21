@@ -67,6 +67,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.updateWithoutPromptingBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -112,6 +113,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.updateWithoutPromptingBox);
             this.tabPage1.Controls.Add(this.autoRejoinBox);
             this.tabPage1.Controls.Add(this.playSoundsBox);
             this.tabPage1.Controls.Add(this.showAFKBox);
@@ -468,6 +470,16 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
+            // updateWithoutPromptingBox
+            // 
+            this.updateWithoutPromptingBox.AutoSize = true;
+            this.updateWithoutPromptingBox.Location = new System.Drawing.Point(98, 202);
+            this.updateWithoutPromptingBox.Name = "updateWithoutPromptingBox";
+            this.updateWithoutPromptingBox.Size = new System.Drawing.Size(151, 17);
+            this.updateWithoutPromptingBox.TabIndex = 13;
+            this.updateWithoutPromptingBox.Text = "Update Without Prompting";
+            this.updateWithoutPromptingBox.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -537,5 +549,6 @@
         private System.Windows.Forms.CheckBox showAFKBox;
         private System.Windows.Forms.CheckBox playSoundsBox;
         private System.Windows.Forms.CheckBox autoRejoinBox;
+        private System.Windows.Forms.CheckBox updateWithoutPromptingBox;
     }
 }

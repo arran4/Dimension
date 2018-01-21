@@ -41,6 +41,17 @@ namespace Dimension
             if (checking)
                 return false;
             checking = true;
+            if (Program.settings.getBool("Update Without Prompting", false))
+            {
+
+                if (Updater.Program.needsUpdate(buildNumber))
+                {
+                    downloadUpdates();
+                    Application.Exit();
+                    checking = false;
+                    return true;
+                }
+            }
             try
             {
                 lock (updateRequestLock)
