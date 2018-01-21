@@ -422,6 +422,8 @@ namespace Dimension.Model
                                     p.chatReceived(r);
                                     received = true;
                                 }
+                    if(received)
+                        break;
                 }
                 if (!received)
                     Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " (Unknown): " + r.content.Trim('\r'), r.roomId, null);
