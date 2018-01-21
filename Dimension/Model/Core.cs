@@ -103,8 +103,9 @@ namespace Dimension.Model
                                             potentials.Insert(r.Next(0, potentials.Count + 1), p);
                                         else
                                             lock (p.lastGossipPeerCount)
-                                                if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
-                                                    potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                                                if(p.lastGossipPeerCount.ContainsKey(circleId))
+                                                    if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
+                                                        potentials.Insert(r.Next(0, potentials.Count + 1), p);
 
                         if (potentials.Count > 0)
                         {
