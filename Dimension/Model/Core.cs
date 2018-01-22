@@ -326,11 +326,21 @@ namespace Dimension.Model
                         request = true;
                 if (peerManager.parseMiniHello(((Commands.MiniHello)c), sender))
                     request = true;
+
+                bool knownPeer = false;
+                foreach (Peer p in peerManager.allPeers)
+                    if(!p.quit && !p.maybeDead)
+                        if (p.publicAddress.ToString() == sender.Address.ToString())
+                            knownPeer = true;
+                        else
+                            if(p.internalAddress != null)
+                                if(p.internalAddress[0].ToString() == sender.Address.ToString())
+                                    knownPeer = true;
                 lock (requestedHashes)
                 {
                     if (!requestedHashes.ContainsKey(sender.Address.ToString() + "\n" + sender.Port.ToString()))
                         requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = new List<int>();
-                    if (request && !requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Contains(((Commands.MiniHello)c).helloHash))
+                    if (request && (!requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Contains(((Commands.MiniHello)c).helloHash) || !knownPeer))
                     {
                         requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Add(((Commands.MiniHello)c).helloHash);
                         var h = generateHello();
