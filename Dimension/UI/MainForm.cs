@@ -214,7 +214,7 @@ namespace Dimension
             UI.CirclePanel c = new UI.CirclePanel(url, circleType);
             c.Dock = DockStyle.Fill;
 
-            addOrSelectPanel("Internet", c, url);
+            addOrSelectPanel(p.Text, c, url);
         }
         void showDownloadQueue()
         {
