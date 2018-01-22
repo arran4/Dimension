@@ -98,7 +98,6 @@ namespace Dimension.UI
             {
                 userListView.OwnerDraw = true;
             }
-
         }
         public bool isMono
         {
@@ -387,6 +386,14 @@ namespace Dimension.UI
         }
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
+            if (fontHeight == -1)
+                fontHeight = inputBox.Font.Height;
+            int h = Math.Min(100, fontHeight * (inputBox.Text.Split('\n').Length + 1));
+            if (lastInputBoxHeight != h)
+            {
+                inputBox.Height = h;
+                lastInputBoxHeight = h;
+            }
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
             {
                 if (e.Modifiers != Keys.Shift)
@@ -402,6 +409,7 @@ namespace Dimension.UI
                 }
 
             }
+            
         }
         private void userListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -417,18 +425,6 @@ namespace Dimension.UI
 
         int lastInputBoxHeight = 0;
         int fontHeight = -1;
-        
-        private void inputBox_TextChanged(object sender, EventArgs e)
-        {
-            if (fontHeight == -1)
-                fontHeight = inputBox.Font.Height;
-            int h = Math.Min(100, fontHeight * (inputBox.Text.Split('\n').Length + 1));
-            if (lastInputBoxHeight != h)
-            {
-                inputBox.Height = h;
-                lastInputBoxHeight = h;
-            }
-        }
         
         private void CirclePanel_ParentChanged(object sender, EventArgs e)
         {

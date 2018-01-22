@@ -84,7 +84,6 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(389, 22);
             this.inputBox.TabIndex = 4;
-            this.inputBox.TextChanged += new System.EventHandler(this.inputBox_TextChanged);
             this.inputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.inputBox_KeyDown);
             // 
             // userListView
