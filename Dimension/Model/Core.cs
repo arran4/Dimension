@@ -244,7 +244,7 @@ namespace Dimension.Model
             {
                 try
                 {
-                    Program.udp.BeginReceive(receiveCallback, c);
+                    c.BeginReceive(receiveCallback, c);
                     return;
                 }
                 catch
@@ -260,7 +260,7 @@ namespace Dimension.Model
             byte[] data = null;
             try
             {
-                data = Program.udp.EndReceive(ar, ref sender);
+                data = ((System.Net.Sockets.UdpClient)ar.AsyncState).EndReceive(ar, ref sender);
             }
             catch
             {
