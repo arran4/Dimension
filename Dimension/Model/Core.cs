@@ -21,6 +21,9 @@ namespace Dimension.Model
             foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
             {
                 Program.udp.Send(b, b.Length, p.actualEndpoint);
+                foreach(System.Net.IPAddress ip in p.internalAddress)
+                    Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(ip,p.localControlPort));
+                Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                 Program.globalUpCounter.addBytes(b.Length);
             }
             foreach (System.Net.IPEndPoint e in toHello)
@@ -338,11 +341,14 @@ namespace Dimension.Model
                                     knownPeer = true;
                 lock (requestedHashes)
                 {
-                    if (!requestedHashes.ContainsKey(sender.Address.ToString() + "\n" + sender.Port.ToString()))
-                        requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = new List<int>();
-                    if (request && (!requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Contains(((Commands.MiniHello)c).helloHash) || !knownPeer))
+                    string ip = sender.Address.ToString() + "\n" + sender.Port.ToString();
+                    if (!requestedHashes.ContainsKey(ip))
+                        requestedHashes[ip] = new List<int>();
+                    if (!requestedHashes[ip].Contains(helloHash))   //Brand new hash code, wipe out all other ones in case we go back
+                        requestedHashes[ip].Clear();
+                    if (request && (!knownPeer || !requestedHashes[ip].Contains(helloHash)))
                     {
-                        requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Add(((Commands.MiniHello)c).helloHash);
+                        requestedHashes[ip].Add(((Commands.MiniHello)c).helloHash);
                         var h = generateHello();
                         h.requestingHelloBack = true;
                         byte[] b = Program.serializer.serialize(h);
