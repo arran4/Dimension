@@ -31,12 +31,12 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.logStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.kadReadyLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.speedLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.limitButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.downloadSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uploadSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.kadReadyLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.speedLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.joinLANCircleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,7 +78,8 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.searchButton = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.tabControl = new System.Windows.Forms.TabControl();
+            this.contentPanel = new System.Windows.Forms.Panel();
+            this.windowToolStrip = new System.Windows.Forms.ToolStrip();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogTimer = new System.Windows.Forms.Timer(this.components);
@@ -106,6 +107,32 @@
             this.statusStrip.Size = new System.Drawing.Size(724, 26);
             this.statusStrip.TabIndex = 0;
             this.statusStrip.Text = "statusStrip1";
+            // 
+            // limitButton
+            // 
+            this.limitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.downloadSpeedToolStripMenuItem,
+            this.uploadSpeedToolStripMenuItem});
+            this.limitButton.Image = ((System.Drawing.Image)(resources.GetObject("limitButton.Image")));
+            this.limitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.limitButton.Name = "limitButton";
+            this.limitButton.Size = new System.Drawing.Size(72, 24);
+            this.limitButton.Text = "Limits";
+            this.limitButton.Click += new System.EventHandler(this.limitButton_Click);
+            // 
+            // downloadSpeedToolStripMenuItem
+            // 
+            this.downloadSpeedToolStripMenuItem.Name = "downloadSpeedToolStripMenuItem";
+            this.downloadSpeedToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.downloadSpeedToolStripMenuItem.Text = "Download Speed: None";
+            this.downloadSpeedToolStripMenuItem.Click += new System.EventHandler(this.downloadSpeedToolStripMenuItem_Click);
+            // 
+            // uploadSpeedToolStripMenuItem
+            // 
+            this.uploadSpeedToolStripMenuItem.Name = "uploadSpeedToolStripMenuItem";
+            this.uploadSpeedToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.uploadSpeedToolStripMenuItem.Text = "Upload Speed: None";
+            this.uploadSpeedToolStripMenuItem.Click += new System.EventHandler(this.uploadSpeedToolStripMenuItem_Click);
             // 
             // logStatus
             // 
@@ -138,32 +165,6 @@
             this.speedLabel.Size = new System.Drawing.Size(234, 21);
             this.speedLabel.Text = "0B/s up; 0B/s down. Total 0B up, 0B down.";
             this.speedLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // limitButton
-            // 
-            this.limitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.downloadSpeedToolStripMenuItem,
-            this.uploadSpeedToolStripMenuItem});
-            this.limitButton.Image = ((System.Drawing.Image)(resources.GetObject("limitButton.Image")));
-            this.limitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.limitButton.Name = "limitButton";
-            this.limitButton.Size = new System.Drawing.Size(72, 24);
-            this.limitButton.Text = "Limits";
-            this.limitButton.Click += new System.EventHandler(this.limitButton_Click);
-            // 
-            // downloadSpeedToolStripMenuItem
-            // 
-            this.downloadSpeedToolStripMenuItem.Name = "downloadSpeedToolStripMenuItem";
-            this.downloadSpeedToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.downloadSpeedToolStripMenuItem.Text = "Download Speed: None";
-            this.downloadSpeedToolStripMenuItem.Click += new System.EventHandler(this.downloadSpeedToolStripMenuItem_Click);
-            // 
-            // uploadSpeedToolStripMenuItem
-            // 
-            this.uploadSpeedToolStripMenuItem.Name = "uploadSpeedToolStripMenuItem";
-            this.uploadSpeedToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.uploadSpeedToolStripMenuItem.Text = "Upload Speed: None";
-            this.uploadSpeedToolStripMenuItem.Click += new System.EventHandler(this.uploadSpeedToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -513,25 +514,28 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.tabControl);
+            this.splitContainer1.Panel1.Controls.Add(this.contentPanel);
+            this.splitContainer1.Panel1.Controls.Add(this.windowToolStrip);
             this.splitContainer1.Size = new System.Drawing.Size(724, 324);
-            this.splitContainer1.SplitterDistance = 199;
+            this.splitContainer1.SplitterDistance = 200;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
-            // tabControl
+            // contentPanel
             // 
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tabControl.Location = new System.Drawing.Point(0, 0);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(2);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(724, 199);
-            this.tabControl.TabIndex = 0;
-            this.tabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl_DrawItem);
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
-            this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
+            this.contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.contentPanel.Location = new System.Drawing.Point(0, 25);
+            this.contentPanel.Name = "contentPanel";
+            this.contentPanel.Size = new System.Drawing.Size(724, 175);
+            this.contentPanel.TabIndex = 1;
+            // 
+            // windowToolStrip
+            // 
+            this.windowToolStrip.Location = new System.Drawing.Point(0, 0);
+            this.windowToolStrip.Name = "windowToolStrip";
+            this.windowToolStrip.Size = new System.Drawing.Size(724, 25);
+            this.windowToolStrip.TabIndex = 0;
+            this.windowToolStrip.Text = "toolStrip1";
             // 
             // contextMenuStrip
             // 
@@ -546,7 +550,6 @@
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem.Text = "Close";
-            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // updateLogTimer
             // 
@@ -583,6 +586,7 @@
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.contextMenuStrip.ResumeLayout(false);
@@ -623,7 +627,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton openDownloadsFolderButton;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.ToolStripButton downloadQueueButton;
         private System.Windows.Forms.ToolStripButton completedDownloadsButton;
         private System.Windows.Forms.ToolStripButton completedUploadsButton;
@@ -646,6 +649,8 @@
         private System.Windows.Forms.ToolStripMenuItem uploadSpeedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem invertedColorsToolStripMenuItem;
+        private System.Windows.Forms.Panel contentPanel;
+        private System.Windows.Forms.ToolStrip windowToolStrip;
     }
 }
 

@@ -287,8 +287,7 @@ namespace Dimension.UI
             if (Parent != null && Parent.Parent != null && !addedEvent)
             {
                 addedEvent = true;
-                ((TabControl)Parent.Parent).SelectedIndexChanged += tabChanged;
-
+                
             }
             if (roomId != this.circleHash)
                 return;
@@ -409,13 +408,10 @@ namespace Dimension.UI
             foreach (int i in userListView.SelectedIndices)
             {
                 Model.Peer z = allPeersInCircle[i];
-                TabPage p = new TabPage();
-                p.Text = z.username;
-                p.Tag = "Files for " + z.id.ToString();
                 UserPanel b = new UserPanel(z);
                 b.Dock = DockStyle.Fill;
-                p.Controls.Add(b);
-                Program.mainForm.createOrSelect(p, false);
+
+                Program.mainForm.addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
             }
         }
 
@@ -438,24 +434,6 @@ namespace Dimension.UI
         {
         }
         bool changeEventReceived = false;
-        private void tabChanged(object sender, EventArgs e)
-        {
-            changeEventReceived = true;
-            if (Parent.Parent != null)
-            {
-                if (((TabControl)Parent.Parent).SelectedTab == Parent)
-                {
-                    TabPage p = (TabPage)Parent;
-                    focused = true;
-                    if (p.Text.StartsWith("(!) "))
-                        p.Text = p.Text.Substring(4);
-                }
-                else
-                    focused = false;
-            }
-            else
-                focused = false;
-        }
         public bool focused = false;
 
         private void historyBox_LinkClicked(object sender, LinkClickedEventArgs e)
@@ -466,6 +444,7 @@ namespace Dimension.UI
         public void select()
         {
             selected = true;
+            
 
             historyBox.Visible = true;
             historyBox.SelectionStart = historyBox.Text.Length;

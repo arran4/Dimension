@@ -30,26 +30,20 @@ namespace Dimension
         }
         public void selectUser(Model.Peer z)
         {
-            TabPage p = new TabPage();
-            p.Text = z.username;
-            p.Tag = "(!) Files for " + z.id.ToString();
             UI.UserPanel b = new UI.UserPanel(z);
             b.Dock = DockStyle.Fill;
-            p.Controls.Add(b);
-            Program.mainForm.createOrSelect(p, true);
+            Program.mainForm.addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
 
         }
         public void privateChatReceived(Model.Commands.PrivateChatCommand c, Model.Peer z)
         {
-            TabPage p = new TabPage();
-            p.Text = z.username;
-            p.Tag = "(!) Files for " + z.id.ToString();
             UI.UserPanel b = new UI.UserPanel(z);
             b.Dock = DockStyle.Fill;
-            p.Controls.Add(b);
+
             this.Invoke(new Action(delegate ()
             {
-                Program.mainForm.createOrSelect(p, true);
+                Control p = Program.mainForm.addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
+
                 ((UI.UserPanel)p.Controls[0]).selectChat();
                 ((UI.UserPanel)p.Controls[0]).addLine(DateTime.Now.ToShortTimeString() + " " + z.username + ": " + c.content);
                 flash();
@@ -102,16 +96,69 @@ namespace Dimension
 
             setColors();
 
-            tabControl.TabPages.Clear();
-            TabPage h = new TabPage("Welcome");
-            h.Tag = h.Text;
+            windowToolStrip.Items.Clear();
+            
             UI.HTMLPanel hp = new UI.HTMLPanel();
             hp.Dock = DockStyle.Fill;
-            h.Controls.Add(hp);
-            tabControl.TabPages.Add(h);
+            addOrSelectPanel("Welcome", hp, "Welcome");
             
         }
+        void deselect()
+        {
+            if (currentPanel is UI.SelectableTab)
+                ((UI.SelectableTab)currentPanel).unselect();
 
+            foreach (ToolStripItem z in windowToolStrip.Items)
+                ((ToolStripButton)z).Checked = false;
+
+        }
+        void select(ToolStripButton b)
+        {
+            deselect();
+            b.Checked = true;
+            contentPanel.Controls.Clear();
+            contentPanel.Controls.Add((Control)b.Tag);
+            currentPanel = (Control) b.Tag;
+            if (currentPanel is UI.SelectableTab)
+                ((UI.SelectableTab)currentPanel).select();
+
+        }
+        Control currentPanel = null;
+        public Control addOrSelectPanel(string text, Control panel, string tag)
+        {
+            foreach (ToolStripItem z in windowToolStrip.Items)
+            {
+                if ((string)((Control)z.Tag).Tag == tag)
+                {
+                    select((ToolStripButton)z);
+                    return (Control)z.Tag;
+                }
+            }
+            deselect();
+            ToolStripButton b = new ToolStripButton();
+            b.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+            b.Text = text;
+            b.Click += panelButtonClicked;
+            b.Checked = true;
+            b.Tag = panel;
+            contentPanel.Controls.Clear();
+            panel.Tag = tag;
+            contentPanel.Controls.Add(panel);
+            currentPanel = panel;
+            windowToolStrip.Items.Add(b);
+            if (currentPanel is UI.SelectableTab)
+                ((UI.SelectableTab)currentPanel).select();
+            return panel;
+        }
+        void panelButtonClicked(object sender, EventArgs e)
+        {
+            deselect();
+            ((ToolStripButton)sender).Checked = true;
+            select((ToolStripButton)sender);
+
+
+        }
+        
         private void joinLANButton_Click(object sender, EventArgs e)
         {
             joinLANCircle();
@@ -120,71 +167,15 @@ namespace Dimension
         {
             joinLANCircle();
         }
-        public void createOrSelect(TabPage p, bool highlight = false)
-        {
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
-                if ((string)tabControl.TabPages[i].Tag == (string)p.Tag)
-                {
-                    if (highlight && !tabControl.TabPages[i].Text.StartsWith("(!)") && i != tabControl.SelectedIndex)
-                        tabControl.TabPages[i].Text = "(!) " + tabControl.TabPages[i].Text;
-
-                    if (!highlight)
-                        tabControl.SelectTab(i);
-                    return;
-                }
-            if (highlight && !p.Text.StartsWith("(!)"))
-                p.Text = "(!) " + p.Text;
-            tabControl.TabPages.Add(p);
-            tabControl.SelectTab(tabControl.TabPages.Count - 1);
-
-        }
         void joinLANCircle()
         {
-            TabPage p = new TabPage("LAN");
             UI.CirclePanel c = new UI.CirclePanel();
             c.Dock = DockStyle.Fill;
-            p.Controls.Add(c);
-            p.Tag = "LAN Circle";
-            createOrSelect(p);
+            addOrSelectPanel("LAN", c, "LAN");
         }
 
         TabPage clickedPage;
-        private void tabControl_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Middle)
-            {
-                clickedPage = null;
-                for (int i = 0; i < tabControl.TabPages.Count; i++)
-                    if (tabControl.GetTabRect(i).Contains(tabControl.PointToClient(MousePosition)))
-                        clickedPage = tabControl.TabPages[i];
-                if (clickedPage != null)
-                {
-                    //TODO: if it's a circle, actually leave it
-                    if(clickedPage.Controls[0] is Model.ClosableTab)
-                        ((Model.ClosableTab)clickedPage.Controls[0]).close();
-                    tabControl.TabPages.Remove(clickedPage);
-                }
-            }
-            if (e.Button == MouseButtons.Right)
-            {
-                clickedPage = null;
-                for (int i = 0; i < tabControl.TabPages.Count; i++)
-                    if (tabControl.GetTabRect(i).Contains(tabControl.PointToClient(MousePosition)))
-                        clickedPage = tabControl.TabPages[i];
-                contextMenuStrip.Show(Cursor.Position);
-            }
-        }
-
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //Todo: if it's a circle, actually leave it
-            if (clickedPage != null)
-            {
-                if (clickedPage.Controls[0] is Model.ClosableTab)
-                    ((Model.ClosableTab)clickedPage.Controls[0]).close();
-                tabControl.TabPages.Remove(clickedPage);
-            }
-        }
+        
 
         private void joinInternetCircle_Click(object sender, EventArgs e)
         {
@@ -201,12 +192,11 @@ namespace Dimension
         }
         public void addInternetCircle(System.Net.IPEndPoint[] endpoints, string url, UI.JoinCircleForm.CircleType circleType)
         {
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
-                if(tabControl.TabPages[i].Controls.Count > 0)
-                    if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
-                        if (((UI.CirclePanel)tabControl.TabPages[i].Controls[0]).url.ToLower() == url.ToLower())
+            for(int i=0; i<windowToolStrip.Items.Count; i++)
+                if(windowToolStrip.Items[i].Tag is UI.CirclePanel)
+                    if (((UI.CirclePanel)windowToolStrip.Items[i].Tag).url.ToLower() == url.ToLower())
                         {
-                            tabControl.SelectTab(i);
+                            select((ToolStripButton)windowToolStrip.Items[i]);
                             return;
                         }
             TabPage p = new TabPage("Internet Circle");
@@ -223,19 +213,14 @@ namespace Dimension
             }
             UI.CirclePanel c = new UI.CirclePanel(url, circleType);
             c.Dock = DockStyle.Fill;
-            p.Controls.Add(c);
-            p.Tag = "Internet Circle";
-            tabControl.TabPages.Add(p);
-            tabControl.SelectTab(tabControl.TabPages.Count - 1);
+
+            addOrSelectPanel("Internet", c, url);
         }
         void showDownloadQueue()
         {
-            TabPage p = new TabPage("Download Queue");
             UI.DownloadQueuePanel c = new UI.DownloadQueuePanel();
             c.Dock = DockStyle.Fill;
-            p.Controls.Add(c);
-            p.Tag = "Download Queue";
-            createOrSelect(p);
+            addOrSelectPanel("Download Queue", c, "Download Queue");
         }
         private void downloadQueueToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -263,12 +248,9 @@ namespace Dimension
 
         void showCompletedDownloads()
         {
-            TabPage p = new TabPage("Completed Downloads");
             UI.FinishedTransfersPanel c = new UI.FinishedTransfersPanel();
             c.Dock = DockStyle.Fill;
-            p.Controls.Add(c);
-            p.Tag = "Completed Downloads";
-            createOrSelect(p);
+            addOrSelectPanel("Completed Downloads", c, "Completed Downloads");
         }
         private void completedDownloadsButton_Click(object sender, EventArgs e)
         {
@@ -276,12 +258,10 @@ namespace Dimension
         }
         void showCompletedUploads()
         {
-            TabPage p = new TabPage("Completed Uploads");
             UI.FinishedTransfersPanel c = new UI.FinishedTransfersPanel();
             c.Dock = DockStyle.Fill;
-            p.Controls.Add(c);
-            p.Tag = "Completed Uploads";
-            createOrSelect(p);
+            addOrSelectPanel("Completed Uploads", c, "Completed Uploads");
+
         }
 
         private void finishedDownloadsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -301,13 +281,9 @@ namespace Dimension
 
         void showSearch()
         {
-            TabPage p = new TabPage("Search");
             UI.SearchPanel c = new UI.SearchPanel();
             c.Dock = DockStyle.Fill;
-            p.Controls.Add(c);
-            p.Tag = "Search";
-            tabControl.TabPages.Add(p);
-            tabControl.SelectTab(tabControl.TabPages.Count - 1);
+            addOrSelectPanel("Search", c, "Search");
         }
 
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -336,9 +312,10 @@ namespace Dimension
             f.ShowDialog();
         }
 
+        //TODO: Fix all Close All whatever options
         private void closeAllCirclesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
+            /*for (int i = 0; i < tabControl.TabPages.Count; i++)
             {
                 if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
                 {
@@ -346,13 +323,13 @@ namespace Dimension
                     tabControl.TabPages.RemoveAt(i);
                     i--;
                 }
-                }
+                }*/
         }
         
         private void closeAllFileListsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-
+            /*
             for (int i = 0; i < tabControl.TabPages.Count; i++)
             {
                 if (tabControl.TabPages[i].Controls[0] is UI.UserPanel)
@@ -360,13 +337,13 @@ namespace Dimension
                     tabControl.TabPages.RemoveAt(i);
                     i--;
                 }
-            }
+            }*/
         }
 
         private void closeAllSearchesToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-
+            /*
             for (int i = 0; i < tabControl.TabPages.Count; i++)
             {
                 if (tabControl.TabPages[i].Controls[0] is UI.SearchPanel)
@@ -374,7 +351,7 @@ namespace Dimension
                     tabControl.TabPages.RemoveAt(i);
                     i--;
                 }
-            }
+            }*/
         }
 
         private void dHTTestToolStripMenuItem_Click(object sender, EventArgs e)
@@ -411,24 +388,17 @@ namespace Dimension
         private void systemLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UI.SystemLogPanel s = new UI.SystemLogPanel();
-            TabPage p = new TabPage("System Log");
             s.Dock = DockStyle.Fill;
-            p.Controls.Add(s);
-            p.Tag = "System Log";
 
-            createOrSelect(p);
+            addOrSelectPanel("System Log", s, "System Log");
         }
 
         private void networkStatusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             UI.NetworkStatusPanel s = new UI.NetworkStatusPanel();
-            TabPage p = new TabPage("Network Status");
             s.Dock = DockStyle.Fill;
-            p.Controls.Add(s);
-            p.Tag = "Network Status";
 
-            createOrSelect(p);
+            addOrSelectPanel("Network Status", s, "Network Status");
         }
         void openDownloadFolder()
         {
@@ -445,22 +415,7 @@ namespace Dimension
         {
             openDownloadFolder();
         }
-
-        private void tabControl_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            TabPage tp = tabControl.TabPages[e.Index];
-
-            bool highlight = tp.Text.StartsWith("(!) ");
-
-            using (SolidBrush brush =
-                   new SolidBrush(!highlight ? tp.BackColor : SystemColors.Highlight))
-            using (SolidBrush textBrush =
-                   new SolidBrush(!highlight ? tp.ForeColor : SystemColors.HighlightText))
-            {
-                e.Graphics.FillRectangle(brush, e.Bounds);
-                e.Graphics.DrawString(tp.Text, e.Font, textBrush, e.Bounds.X + 2, e.Bounds.Y + 4);
-            }
-        }
+        
 
         private void limitButton_Click(object sender, EventArgs e)
         {
@@ -500,23 +455,7 @@ namespace Dimension
         }
         public delegate void ColorChangeEvent(bool inverted = false);
         public static event ColorChangeEvent colorChange;
-
-        TabPage lastSelection = null;
-        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (tabControl.SelectedTab != null)
-            {
-                if (tabControl.SelectedTab.Text.StartsWith("(!)"))
-                    tabControl.SelectedTab.Text = tabControl.SelectedTab.Text.Substring(3);
-                if (tabControl.SelectedTab.Controls.Count > 0)
-                    if (tabControl.SelectedTab.Controls[0] is UI.SelectableTab)
-                        ((UI.SelectableTab)tabControl.SelectedTab.Controls[0]).select();
-                if(lastSelection != null)
-                    if (lastSelection.Controls[0] is UI.SelectableTab)
-                        ((UI.SelectableTab)lastSelection.Controls[0]).unselect();
-                lastSelection = tabControl.SelectedTab;
-            }
-        }
+        
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
