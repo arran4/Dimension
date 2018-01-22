@@ -29,7 +29,7 @@ namespace Dimension
             p.StartInfo.Arguments =buildNumber.ToString();
             p.Start();
         }
-        public const int buildNumber = 71;
+        public const int buildNumber = 72;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
@@ -159,6 +159,7 @@ namespace Dimension
         public static Model.Kademlia kademlia;
         public static Model.Core theCore;
         public static System.Net.Sockets.UdpClient udp;
+        public static System.Net.Sockets.UdpClient udp2;
         public static System.Net.Sockets.TcpListener listener;
         public static Model.Bootstrap bootstrap;
         public static Model.FileListDatabase fileListDatabase;
@@ -180,6 +181,15 @@ namespace Dimension
             speedLimiter = new Model.GlobalSpeedLimiter();
             string username = settings.getString("Username", Environment.MachineName);
             settings.setString("Username", username);
+
+
+            try
+            {
+                udp2 = new System.Net.Sockets.UdpClient(Dimension.Model.NetConstants.controlPort);
+            }
+            catch
+            {
+            }
 
             Model.SystemLog.addEntry("Setting up NAT...");
             bootstrap = new Model.Bootstrap();

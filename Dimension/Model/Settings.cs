@@ -28,8 +28,8 @@ namespace Dimension.Model
                 string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 folder = Path.Combine(folder, "Dimension");
                 SystemLog.addEntry("Saving Settings...");
-                settings.Dispose();
-                settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);
+                /*settings.Dispose();
+                settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);*/
             }
         }
         object saveLock = new object();

@@ -23,6 +23,9 @@ namespace Dimension.Model
                 log.Seek(0, System.IO.SeekOrigin.End);
                 writer = new System.IO.StreamWriter(log);
             }
+            if(Program.theCore != null)
+                if (Program.theCore.disposed)
+                    return;
             lastLine = s;
             theLog += DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " - " + s + Environment.NewLine;
             writer.WriteLine(s);

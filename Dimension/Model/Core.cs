@@ -166,7 +166,9 @@ namespace Dimension.Model
             t.Start();
 
             Model.SystemLog.addEntry("Starting UDP async receive...");
-            doReceive();
+            doReceive(Program.udp);
+            if(Program.udp2 != null)
+                doReceive(Program.udp2);
             Program.fileList.updateComplete += updateIncomings;
 
 
@@ -236,13 +238,13 @@ namespace Dimension.Model
                 System.Threading.Thread.Sleep(5000);
             }
         }
-        void doReceive()
+        void doReceive(System.Net.Sockets.UdpClient c)
         {
             while (!disposed)
             {
                 try
                 {
-                    Program.udp.BeginReceive(receiveCallback, null);
+                    Program.udp.BeginReceive(receiveCallback, c);
                     return;
                 }
                 catch
@@ -262,7 +264,7 @@ namespace Dimension.Model
             }
             catch
             {
-                doReceive();
+                doReceive((System.Net.Sockets.UdpClient)ar.AsyncState);
                 return;
             }
             bool notFromUs = true;
@@ -278,7 +280,7 @@ namespace Dimension.Model
             Program.globalDownCounter.addBytes(data.Length);
             if (data.Length > 32 && Program.theCore != null) //Ignore extraneous STUN info
                 parse(Program.serializer.deserialize(data), sender, Program.serializer.getText(data));
-            doReceive();
+            doReceive((System.Net.Sockets.UdpClient)ar.AsyncState);
         }
         List<System.Net.IPEndPoint> toHello = new List<System.Net.IPEndPoint>();
         public void addPeer(System.Net.IPEndPoint p)

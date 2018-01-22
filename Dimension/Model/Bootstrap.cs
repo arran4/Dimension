@@ -11,7 +11,7 @@ using Open.Nat;
 
 namespace Dimension.Model
 {
-    class Bootstrap : IDisposable
+    class Bootstrap : System.Diagnostics.TraceListener, IDisposable
     {
         //TODO: Add capability to simply disable UPnP
         //TODO: Gracefully handle web request failing if the bootstrap is down
@@ -31,7 +31,51 @@ namespace Dimension.Model
             if (Program.settings.getBool("Use UPnP", true) && UPnPActive && !LANMode)
                 unMapPorts().Wait();
         }
+
+        public override void WriteLine(string message)
+        {
+            SystemLog.addEntry(message);
+        }
+
+        public override void Write(string message)
+        {
+            SystemLog.addEntry(message);
+        }
         static NatDevice device = null;
+
+        void deviceFound(object sender, DeviceEventArgs e)
+        {
+            device = e.Device;
+            upnpSem.Release();
+        }
+        void initUPnP()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                try
+                {
+                    NatUtility.Initialize();
+                    NatUtility.DeviceFound += deviceFound;
+                    NatUtility.StartDiscovery();
+                    upnpSem.WaitOne();
+                    NatUtility.StopDiscovery();
+                    break;
+                }
+                catch (Exception e)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    if (i < 5)
+                        SystemLog.addEntry("Failed to boot up UPnP. Exception: " + e.Message + ". Trying again...");
+                    else
+                    {
+                        SystemLog.addEntry("Giving up on UPnP and running a STUN instead...");
+                        UPnPActive = false;
+                        return;
+                    }
+                }
+            }
+        }
+        System.Threading.Semaphore upnpSem = new System.Threading.Semaphore(0, 1);
         async Task unMapPorts()
         {
             SystemLog.addEntry("Cleaning up UPnP mappings...");
@@ -39,20 +83,7 @@ namespace Dimension.Model
             {
                 if (device == null)
                 {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        try
-                        {
-                            NatDiscoverer d = new NatDiscoverer();
-                            device = await d.DiscoverDeviceAsync();
-                            break;
-                        }
-                        catch
-                        {
-                            System.Threading.Thread.Sleep(1000);
-                            SystemLog.addEntry("Failed to delete UPnP mapping. Trying again...");
-                        }
-                        }
+                    initUPnP();
                 }
                 externalIPFromUPnP = await device.GetExternalIPAsync();
                 foreach (Mapping z in await device.GetAllMappingsAsync())
@@ -78,8 +109,7 @@ namespace Dimension.Model
             {
                 if (device == null)
                 {
-                    NatDiscoverer d = new NatDiscoverer();
-                    device = await d.DiscoverDeviceAsync();
+                    initUPnP();
                 }
                 externalIPFromUPnP = await device.GetExternalIPAsync();
                 SystemLog.addEntry("Successfully found UPnP device "  +await device.GetExternalIPAsync());
@@ -172,8 +202,13 @@ namespace Dimension.Model
             listener.Start();
             internalDataPort = ((IPEndPoint)listener.Server.LocalEndPoint).Port;
             SystemLog.addEntry("Binding to TCP port " + internalDataPort.ToString());
-            unreliableClient = new UdpClient(Program.settings.getInt("Default Control Port", NetConstants.controlPort));
+            int control = Program.settings.getInt("Default Control Port", 0);
+            if (control == Dimension.Model.NetConstants.controlPort)
+                control = 0;
+            unreliableClient = new UdpClient(control);
             internalControlPort = ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port;
+            if (control == 0)
+                Program.settings.setInt("Default Control Port", internalControlPort);
             SystemLog.addEntry("Successfully bound to UDP control port " + internalControlPort);
 
             publicControlEndPoint = (IPEndPoint)unreliableClient.Client.LocalEndPoint;
