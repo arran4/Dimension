@@ -157,16 +157,19 @@ namespace Dimension
         {
             if (rightClicked != null)
             {
-                ToolStripButton b = (ToolStripButton)rightClicked;
-                if (b.Checked)
-                    contentPanel.Controls.Clear();
-                if (b.Tag is Model.ClosableTab)
-                    ((Model.ClosableTab)b.Tag).close();
-                if (b.Tag is Control)
-                    ((Control)b.Tag).Dispose();
-                windowToolStrip.Items.Remove(b);
-                windowToolStrip.Refresh();
+                closeTab(rightClicked);
             }
+        }
+        void closeTab(ToolStripButton b)
+        {
+            if (b.Checked)
+                contentPanel.Controls.Clear();
+            if (b.Tag is Model.ClosableTab)
+                ((Model.ClosableTab)b.Tag).close();
+            if (b.Tag is Control)
+                ((Control)b.Tag).Dispose();
+            windowToolStrip.Items.Remove(b);
+            windowToolStrip.Refresh();
         }
         void panelButtonMouseDown(object sender, MouseEventArgs e)
         {
@@ -174,6 +177,10 @@ namespace Dimension
             {
                 rightClicked = (ToolStripButton)sender;
                 contextMenuStrip.Show(Cursor.Position);
+            }
+            if (e.Button == MouseButtons.Middle)
+            {
+                closeTab((ToolStripButton)sender);
             }
         }
         void panelButtonClicked(object sender, EventArgs e)
