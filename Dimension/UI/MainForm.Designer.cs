@@ -543,12 +543,12 @@
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(153, 48);
+            this.contextMenuStrip.Size = new System.Drawing.Size(104, 26);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -638,10 +638,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem finishedUploadsToolStripMenuItem;
-        private System.Windows.Forms.Timer updateLogTimer;
         private System.Windows.Forms.ToolStripMenuItem joinKademliaCircleToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel kadReadyLabel;
-        private System.Windows.Forms.Timer transferRateTimer;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem networkStatusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem systemLogToolStripMenuItem;
@@ -652,6 +650,8 @@
         private System.Windows.Forms.ToolStripMenuItem invertedColorsToolStripMenuItem;
         private System.Windows.Forms.Panel contentPanel;
         private System.Windows.Forms.ToolStrip windowToolStrip;
+        private System.Windows.Forms.Timer updateLogTimer;
+        private System.Windows.Forms.Timer transferRateTimer;
     }
 }
 

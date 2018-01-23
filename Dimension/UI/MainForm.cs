@@ -44,8 +44,8 @@ namespace Dimension
             {
                 Control p = Program.mainForm.addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
 
-                ((UI.UserPanel)p.Controls[0]).selectChat();
-                ((UI.UserPanel)p.Controls[0]).addLine(DateTime.Now.ToShortTimeString() + " " + z.username + ": " + c.content);
+                ((UI.UserPanel)p).selectChat();
+                ((UI.UserPanel)p).addLine(DateTime.Now.ToShortTimeString() + " " + z.username + ": " + c.content);
                 flash();
             }));
         }

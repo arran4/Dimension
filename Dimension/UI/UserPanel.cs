@@ -356,7 +356,8 @@ namespace Dimension.UI
                         addLine("Error - haven't connected to other peer yet.");
                     else
                     {
-                        p.controlConnection.send(new Model.Commands.PrivateChatCommand() { content = inputBox.Text });
+                        if(p.id != Program.theCore.id)
+                            p.controlConnection.send(new Model.Commands.PrivateChatCommand() { content = inputBox.Text });
 
 
                         foreach (string s in inputBox.Text.Split('\n'))
