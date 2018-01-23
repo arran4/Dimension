@@ -139,6 +139,7 @@ namespace Dimension
             b.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
             b.Text = text;
             b.Click += panelButtonClicked;
+            b.MouseDown += panelButtonMouseDown;
             b.Checked = true;
             b.Tag = panel;
             contentPanel.Controls.Clear();
@@ -149,6 +150,31 @@ namespace Dimension
             if (currentPanel is UI.SelectableTab)
                 ((UI.SelectableTab)currentPanel).select();
             return panel;
+        }
+        ToolStripButton rightClicked;
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (rightClicked != null)
+            {
+                ToolStripButton b = (ToolStripButton)rightClicked;
+                if (b.Checked)
+                    contentPanel.Controls.Clear();
+                if (b.Tag is Model.ClosableTab)
+                    ((Model.ClosableTab)b.Tag).close();
+                if (b.Tag is Control)
+                    ((Control)b.Tag).Dispose();
+                windowToolStrip.Items.Remove(b);
+                windowToolStrip.Refresh();
+            }
+        }
+        void panelButtonMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                rightClicked = (ToolStripButton)sender;
+                contextMenuStrip.Show(Cursor.Position);
+            }
         }
         void panelButtonClicked(object sender, EventArgs e)
         {
@@ -469,5 +495,6 @@ namespace Dimension
                     UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.kademlia);
             }
         }
+
     }
 }

@@ -383,7 +383,7 @@ namespace Dimension.Model
             if (c is Commands.ConnectToMe)
             {
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
-                    if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() || p.internalAddress.ToString() == sender.Address.ToString() || p.publicAddress.ToString() == sender.Address.ToString())
+                    if (p.id == ((Commands.ConnectToMe)c).myId)
                     {
                         p.reverseConnect();
                         return;

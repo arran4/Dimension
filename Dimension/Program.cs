@@ -29,7 +29,7 @@ namespace Dimension
             p.StartInfo.Arguments =buildNumber.ToString();
             p.Start();
         }
-        public const int buildNumber = 73;
+        public const int buildNumber = 74;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();

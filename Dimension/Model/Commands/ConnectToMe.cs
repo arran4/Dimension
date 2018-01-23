@@ -8,5 +8,6 @@ namespace Dimension.Model.Commands
 {
     public class ConnectToMe : Command
     {
+        public ulong myId;
     }
 }
