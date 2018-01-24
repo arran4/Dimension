@@ -29,7 +29,7 @@ namespace Dimension
             p.StartInfo.Arguments =buildNumber.ToString();
             p.Start();
         }
-        public const int buildNumber = 75;
+        public const int buildNumber = 80;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
@@ -40,13 +40,16 @@ namespace Dimension
         static bool updateBegin = false;
         public static bool checkForUpdates()
         {
-            if (checking || updateBegin)
+            if (checking)
                 return false;
             checking = true;
             if (Program.settings.getBool("Update Without Prompting", false))
             {
                 if (Updater.Program.needsUpdate(buildNumber))
                 {
+                    if (updateBegin)
+                        return false;
+                    updateBegin = true;
                     downloadUpdates();
                     Application.Exit();
                     checking = false;
@@ -63,6 +66,8 @@ namespace Dimension
                         {
                             if (MessageBox.Show("An update is available. Would you like to download it?", "Dimension Update", MessageBoxButtons.YesNo) == DialogResult.Yes)
                             {
+                                if (updateBegin)
+                                    return false;
                                 updateBegin = true;
                                 if (isMono)
                                 {

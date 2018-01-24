@@ -22,9 +22,14 @@ namespace Updater
 
                 using (System.Threading.Mutex mutex = new System.Threading.Mutex(false, "Global\\DimensionMutex"))
                 {
-                    while (!mutex.WaitOne(0, false))
-                        System.Threading.Thread.Sleep(100);
-
+                    try
+                    {
+                        while (!mutex.WaitOne(0, false))
+                            System.Threading.Thread.Sleep(100);
+                    }
+                    catch
+                    {
+                    }
 
                     this.Invoke(new Action(delegate ()
                     {
