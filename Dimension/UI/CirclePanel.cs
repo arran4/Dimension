@@ -434,7 +434,14 @@ namespace Dimension.UI
 
         private void historyBox_LinkClicked(object sender, LinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(e.LinkText);
+            try
+            {
+                System.Diagnostics.Process.Start(e.LinkText);
+            }
+            catch (Win32Exception)
+            {
+                //WINE throws this sometimes, doesn't actually do anything
+            }
         }
         bool selected = false;
         public void select()

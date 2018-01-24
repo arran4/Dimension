@@ -29,7 +29,7 @@ namespace Dimension
             p.StartInfo.Arguments =buildNumber.ToString();
             p.Start();
         }
-        public const int buildNumber = 80;
+        public const int buildNumber = 84;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
@@ -127,6 +127,7 @@ namespace Dimension
                 string updaterPath = System.IO.Path.Combine(tempFolder, System.IO.Path.Combine("DimensionTemp", "Updater.exe"));
                 if (System.IO.File.Exists(updaterPath) && System.IO.File.Exists("Updater.exe"))
                 {
+                    System.Threading.Thread.Sleep(1000);
                     try
                     {
                         System.IO.File.Delete("Updater.exe");
