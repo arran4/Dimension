@@ -44,7 +44,7 @@ namespace Dimension.Model
 
                     int pos = 0;
                     int read = 1;
-                    while (pos < 4 && read > 0)
+                    while (pos < 4)
                     {
                         read = client.GetStream().Read(lenByte, pos, 4-pos);
                         pos += read;
@@ -56,7 +56,7 @@ namespace Dimension.Model
                         return;
                     pos = 0;
                     read = 1;
-                    while (read > 0 && pos < dataByte.Length)
+                    while (pos < dataByte.Length)
                     {
                         read = client.GetStream().Read(dataByte, pos, dataByte.Length - pos);
                         Program.globalDownCounter.addBytes((ulong)read);
@@ -76,7 +76,7 @@ namespace Dimension.Model
                         int pos = 0;
                         int read = 1;
                         byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
-                        while (read > 0 && pos < chunk.Length)
+                        while (pos < chunk.Length)
                         {
                             int amt = (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos), rateLimiterDisabled);
                             read = client.GetStream().Read(chunk, pos,amt);

@@ -402,6 +402,15 @@ namespace Dimension
                 logStatus.Text = Model.SystemLog.lastLine;
             if (Program.kademlia.ready)
                 kadReadyLabel.Visible = true;
+
+            Model.Transfer[] z;
+            lock (Model.Transfer.transfers)
+                z = Model.Transfer.transfers.ToArray();
+            if (z.Length == 0 && splitContainer1.Panel2Collapsed == false)
+                splitContainer1.Panel2Collapsed = true;
+            if (z.Length > 0 && splitContainer1.Panel2Collapsed == true)
+                splitContainer1.Panel2Collapsed = false;
+
         }
 
         private void joinKademliaCircleToolStripMenuItem_Click(object sender, EventArgs e)
