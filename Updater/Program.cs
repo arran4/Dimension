@@ -30,19 +30,11 @@ namespace Updater
         [STAThread]
         static void Main(string[] args)
         {
-            using (System.Threading.Mutex mutex = new System.Threading.Mutex(false, "Global\\DimensionMutex"))
-            {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                if (!mutex.WaitOne(0, false))
-                {
-                    MessageBox.Show("Dimension is running. Please check your task manager to make sure you've closed it fully before updating.");
-                    return;
-                }
-
                 Application.Run(new UpdatingForm(downloadPath()));
-            }
+            
         }
     }
 }

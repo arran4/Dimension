@@ -29,16 +29,18 @@ namespace Dimension
             p.StartInfo.Arguments =buildNumber.ToString();
             p.Start();
         }
-        public const int buildNumber = 74;
+        public const int buildNumber = 75;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static MainForm mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
         public static Model.ByteCounter globalDownCounter = new Model.ByteCounter();
         static object updateRequestLock = new object();
         static bool checking = false;
+
+        static bool updateBegin = false;
         public static bool checkForUpdates()
         {
-            if (checking)
+            if (checking || updateBegin)
                 return false;
             checking = true;
             if (Program.settings.getBool("Update Without Prompting", false))
@@ -61,6 +63,7 @@ namespace Dimension
                         {
                             if (MessageBox.Show("An update is available. Would you like to download it?", "Dimension Update", MessageBoxButtons.YesNo) == DialogResult.Yes)
                             {
+                                updateBegin = true;
                                 if (isMono)
                                 {
                                     System.Diagnostics.Process.Start(Updater.Program.downloadPath());
@@ -113,6 +116,25 @@ namespace Dimension
                     MessageBox.Show("Dimension is already running. Please check your task manager to make sure you've closed it fully before running.");
                     return;
                 }
+
+
+                string tempFolder = System.IO.Path.GetTempPath();
+                string updaterPath = System.IO.Path.Combine(tempFolder, System.IO.Path.Combine("DimensionTemp", "Updater.exe"));
+                if (System.IO.File.Exists(updaterPath) && System.IO.File.Exists("Updater.exe"))
+                {
+                    try
+                    {
+                        System.IO.File.Delete("Updater.exe");
+                        System.IO.File.Copy(updaterPath, "Updater.exe");
+                    }
+                    catch
+                    {
+                        //Probably not elevated, oh well no updater update for you
+                    }
+                }
+                if (System.IO.Directory.Exists(System.IO.Path.Combine(tempFolder, "DimensionTemp")))
+                    System.IO.Directory.Delete(System.IO.Path.Combine(tempFolder, "DimensionTemp"), true);
+
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
