@@ -57,7 +57,11 @@ namespace Updater
                         System.IO.Compression.ZipFile.ExtractToDirectory(System.IO.Path.Combine(tempFolder, "newversion.zip"), System.IO.Path.Combine(tempFolder, "DimensionTemp"));
                         foreach (System.IO.FileInfo f in new System.IO.DirectoryInfo(System.IO.Path.Combine(tempFolder, "DimensionTemp")).GetFiles())
                             if (f.Name != "Updater.exe")
+                            {
                                 System.IO.File.Copy(f.FullName, f.Name, true);
+
+                                System.IO.File.Open(f.Name + ":Zone.Identifier", System.IO.FileMode.Create).Close();
+                            }
 
 
                         if (System.IO.File.Exists(System.IO.Path.Combine(tempFolder, "newversion.zip")))
