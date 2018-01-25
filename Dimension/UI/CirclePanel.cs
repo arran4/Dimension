@@ -282,6 +282,8 @@ namespace Dimension.UI
 
             updateUserList(null, circleHash);
         }
+        List<string> chatHistory = new List<string>();
+        int chatHistorySelection = 0;
         public void chatReceived(string s, ulong roomId, Model.Peer p)
         {
             if (Parent != null && Parent.Parent != null && !addedEvent)
@@ -399,6 +401,38 @@ namespace Dimension.UI
                 inputBox.Height = h;
                 lastInputBoxHeight = h;
             }
+            if (inputBox.Lines.Length <= 1) {
+                if (e.KeyCode == Keys.Up)
+                {
+                    int n = chatHistorySelection + 1;
+                    if (n > 0 && n <= chatHistory.Count)
+                    {
+                        string s = chatHistory[chatHistory.Count - n];
+                        inputBox.Text = s;
+                        chatHistorySelection = n;
+                    }
+                    else
+                    {
+                        inputBox.Text = "";
+                        chatHistorySelection = chatHistory.Count;
+                    }
+                }
+                if (e.KeyCode == Keys.Down)
+                {
+                    int n = chatHistorySelection - 1;
+                    if (n > 0 && n <= chatHistory.Count)
+                    {
+                        string s = chatHistory[(chatHistory.Count) - n];
+                        inputBox.Text = s;
+                        chatHistorySelection = n;
+                    }
+                    else
+                    {
+                        inputBox.Text = "";
+                        chatHistorySelection = 0;
+                    }
+                }
+            }
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
             {
                 if (e.Modifiers != Keys.Shift)
@@ -407,6 +441,10 @@ namespace Dimension.UI
                     e.SuppressKeyPress = true;
                     if (inputBox.Text.Trim() != "")
                     {
+                        chatHistorySelection = 0;
+                        chatHistory.Add(inputBox.Text);
+                        while (chatHistory.Count > 10)
+                            chatHistory.RemoveAt(0);
                         Program.theCore.sendChat(inputBox.Text, circleHash);
                         inputBox.Text = "";
                         inputBox.Height = 22;
