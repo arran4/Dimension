@@ -31,19 +31,23 @@
             this.components = new System.ComponentModel.Container();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.portsTextBox = new System.Windows.Forms.TextBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.eventsBox = new System.Windows.Forms.TextBox();
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.trafficBox = new System.Windows.Forms.TextBox();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.tabPage2);
+            this.tabControl.Controls.Add(this.tabPage3);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
@@ -62,17 +66,6 @@
             this.tabPage1.Text = "Ports";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.eventsBox);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(767, 393);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Events";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
             // portsTextBox
             // 
             this.portsTextBox.BackColor = System.Drawing.SystemColors.Window;
@@ -83,6 +76,17 @@
             this.portsTextBox.ReadOnly = true;
             this.portsTextBox.Size = new System.Drawing.Size(761, 387);
             this.portsTextBox.TabIndex = 0;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.eventsBox);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(767, 393);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Events";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // eventsBox
             // 
@@ -101,6 +105,27 @@
             this.updateTimer.Interval = 500;
             this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.trafficBox);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(767, 393);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Traffic";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // trafficBox
+            // 
+            this.trafficBox.BackColor = System.Drawing.SystemColors.Window;
+            this.trafficBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trafficBox.Location = new System.Drawing.Point(0, 0);
+            this.trafficBox.Multiline = true;
+            this.trafficBox.Name = "trafficBox";
+            this.trafficBox.ReadOnly = true;
+            this.trafficBox.Size = new System.Drawing.Size(767, 393);
+            this.trafficBox.TabIndex = 1;
+            // 
             // NetworkStatusPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -113,6 +138,8 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -124,5 +151,7 @@
         private System.Windows.Forms.TextBox portsTextBox;
         private System.Windows.Forms.TextBox eventsBox;
         private System.Windows.Forms.Timer updateTimer;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TextBox trafficBox;
     }
 }

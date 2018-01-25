@@ -10,6 +10,9 @@ namespace Dimension.Model
     {
         Dictionary<string, Type> commandTypes = new Dictionary<string, Type>();
 
+        public Dictionary<string, ulong> incomingTraffic = new Dictionary<string, ulong>();
+        public Dictionary<string, ulong> outgoingTraffic = new Dictionary<string, ulong>();
+
         public Serializer()
         {
             foreach (Type t in System.Reflection.Assembly.GetExecutingAssembly().GetTypes())
@@ -31,6 +34,21 @@ namespace Dimension.Model
             byte[] output = m.ToArray();
             b.Dispose();
             m.Dispose();
+
+            try
+            {
+                lock (outgoingTraffic)
+                {
+                    if (!outgoingTraffic.ContainsKey(t))
+                        outgoingTraffic[t] = 0;
+                    outgoingTraffic[t] += (ulong)output.Length;
+                }
+            }
+            catch
+            {
+                //whatever
+            }
+            
             return output;
         }
         public string getText(byte[] b)
@@ -42,6 +60,20 @@ namespace Dimension.Model
             string t = Encoding.UTF8.GetString(br.ReadBytes(tl));
             int dl = br.ReadInt32();
             string d = Encoding.UTF8.GetString(br.ReadBytes(dl));
+
+            try
+            {
+                lock (incomingTraffic)
+                {
+                    if (!incomingTraffic.ContainsKey(t))
+                        incomingTraffic[t] = 0;
+                    incomingTraffic[t] += (ulong)b.Length;
+                }
+            }
+            catch
+            {
+                //whatever
+            }
 
             return d;
         }

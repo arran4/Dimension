@@ -25,6 +25,7 @@ namespace Dimension.UI
         {
             eventsBox.Font = Program.getFont();
             portsTextBox.Font = Program.getFont();
+            trafficBox.Font = Program.getFont();
         }
 
         void update()
@@ -62,6 +63,24 @@ namespace Dimension.UI
 
 
             eventsBox.Text = s;
+
+            s = "*** Protocol Traffic Analysis ***" + Environment.NewLine;
+            s += "(Excluding bulk data such as file transfers)" + Environment.NewLine;
+            s += Environment.NewLine;
+            s += "*** Incoming ***" + Environment.NewLine;
+            lock (Program.serializer.incomingTraffic)
+                foreach (string t in Program.serializer.incomingTraffic.Keys)
+                    s += t + ": " + ByteFormatter.formatBytes(Program.serializer.incomingTraffic[t]) + Environment.NewLine;
+
+            s += Environment.NewLine;
+            s += "*** Outgoing ***" + Environment.NewLine;
+            lock (Program.serializer.outgoingTraffic)
+                foreach (string t in Program.serializer.outgoingTraffic.Keys)
+                    s += t + ": " + ByteFormatter.formatBytes(Program.serializer.outgoingTraffic[t]) + Environment.NewLine;
+
+            trafficBox.Text = s;
+
+
             updateFont();
         }
     }
