@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace Dimension.UI
 {
@@ -297,13 +298,17 @@ namespace Dimension.UI
             }
             bool highlight = false;
 
-            string z = s;
-            if (z.Contains(":"))
-                z = z.Substring(z.IndexOf(":")+1);  //timestamp
-            if (z.Contains(":"))
-                z = z.Substring(z.IndexOf(":") + 1); //user: says this
-            if (z.ToLower().Contains(Program.settings.getString("Username", "Username").ToLower()))
-                highlight = true;
+            int count = new Regex(Regex.Escape(Program.settings.getString("Username", "Username").ToLower())).Matches(s).Count;
+            if (p.id == Program.theCore.id)
+            {
+                if (count > 1)
+                    highlight = true;
+            }
+            else
+            {
+                if (count > 0)
+                    highlight = true;
+            }
 
 
             try
