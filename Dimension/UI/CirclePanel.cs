@@ -401,7 +401,7 @@ namespace Dimension.UI
                 inputBox.Height = h;
                 lastInputBoxHeight = h;
             }
-            if (inputBox.Lines.Length <= 1) {
+            if (inputBox.Lines.Length <= 1 && !((e.Modifiers & Keys.Shift) != Keys.None) ) {
                 if (e.KeyCode == Keys.Up)
                 {
                     int n = chatHistorySelection + 1;
