@@ -27,5 +27,6 @@ namespace Dimension.Model.Commands
         public int buildNumber;
         public bool behindDoubleNAT;
         public bool requestingHelloBack = false;
+        public string[] extensions = new string[] { };
     }
 }
