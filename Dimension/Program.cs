@@ -191,6 +191,36 @@ namespace Dimension
             theCore.Dispose();
 
         }
+        public static void udpSend(byte[] b, int length, System.Net.IPEndPoint target)
+        {
+            udpSend(b, target);
+        }
+        public static void udpSend(byte[] b, System.Net.IPEndPoint target)
+        {
+            try
+            {
+                lock (theCore.outgoingTraffic)
+                {
+                    string t = Program.serializer.getType(b);
+                    if (!theCore.outgoingTraffic.ContainsKey(t))
+                        theCore.outgoingTraffic[t] = 0;
+                    theCore.outgoingTraffic[t] += (ulong)b.Length;
+                }
+            }
+            catch
+            {
+                //whatever
+            }
+            Program.globalUpCounter.addBytes(b.Length);
+            try
+            {
+                udp.Send(b, b.Length, target);
+            }
+            catch
+            {
+                //probably no path
+            }
+        }
         public static Model.Kademlia kademlia;
         public static Model.Core theCore;
         public static System.Net.Sockets.UdpClient udp;

@@ -238,10 +238,10 @@ namespace Dimension.Model
             if (isLocal)
             {
                 foreach(System.Net.IPAddress a in internalAddress)
-                    Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(a, localControlPort));
+                    Program.udpSend(b, b.Length, new System.Net.IPEndPoint(a, localControlPort));
             }
             else
-                Program.udp.Send(b, b.Length, actualEndpoint);
+                Program.udpSend(b, b.Length, actualEndpoint);
             Program.globalUpCounter.addBytes(b.Length);
         }
         public void reverseConnect()
@@ -389,7 +389,7 @@ namespace Dimension.Model
                             response?.Invoke("Attempting to initiate reverse connection.");
 
                             byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
-                            Program.udp.Send(b, b.Length, actualEndpoint);
+                            Program.udpSend(b, b.Length, actualEndpoint);
                             Program.globalUpCounter.addBytes(b.Length);
                             return;
                         }
@@ -428,7 +428,7 @@ namespace Dimension.Model
                         response?.Invoke("Attempting to initiate reverse connection.");
 
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
-                        Program.udp.Send(b, b.Length, actualEndpoint);
+                        Program.udpSend(b, b.Length, actualEndpoint);
                         Program.globalUpCounter.addBytes(b.Length);
                         return;
                     }

@@ -69,15 +69,15 @@ namespace Dimension.UI
             s += "(Excluding bulk data such as file transfers)" + Environment.NewLine;
             s += Environment.NewLine;
             s += "*** Incoming ***" + Environment.NewLine;
-            lock (Program.serializer.incomingTraffic)
-                foreach (string t in Program.serializer.incomingTraffic.Keys)
-                    s += t + ": " + ByteFormatter.formatBytes(Program.serializer.incomingTraffic[t]) + Environment.NewLine;
+            lock (Program.theCore.incomingTraffic)
+                foreach (string t in Program.theCore.incomingTraffic.Keys)
+                    s += t + ": " + ByteFormatter.formatBytes(Program.theCore.incomingTraffic[t]) + Environment.NewLine;
 
             s += Environment.NewLine;
             s += "*** Outgoing ***" + Environment.NewLine;
-            lock (Program.serializer.outgoingTraffic)
-                foreach (string t in Program.serializer.outgoingTraffic.Keys)
-                    s += t + ": " + ByteFormatter.formatBytes(Program.serializer.outgoingTraffic[t]) + Environment.NewLine;
+            lock (Program.theCore.outgoingTraffic)
+                foreach (string t in Program.theCore.outgoingTraffic.Keys)
+                    s += t + ": " + ByteFormatter.formatBytes(Program.theCore.outgoingTraffic[t]) + Environment.NewLine;
 
             trafficBox.Text = s;
 

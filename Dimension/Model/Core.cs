@@ -20,15 +20,15 @@ namespace Dimension.Model
             byte[] b = Program.serializer.serialize(c);
             foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
             {
-                Program.udp.Send(b, b.Length, p.actualEndpoint);
+                Program.udpSend(b, b.Length, p.actualEndpoint);
                 foreach(System.Net.IPAddress ip in p.internalAddress)
-                    Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(ip,p.localControlPort));
-                Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                    Program.udpSend(b, b.Length, new System.Net.IPEndPoint(ip,p.localControlPort));
+                Program.udpSend(b, b.Length, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                 Program.globalUpCounter.addBytes(b.Length);
             }
             foreach (System.Net.IPEndPoint e in toHello)
             {
-                Program.udp.Send(b, b.Length, e);
+                Program.udpSend(b, b.Length, e);
                 Program.globalUpCounter.addBytes(b.Length);
             }
             }
@@ -77,7 +77,7 @@ namespace Dimension.Model
                 requestingGossipBack = requestingResponse,
                 circleId = circleId
             });
-            Program.udp.Send(b, b.Length, target);
+            Program.udpSend(b, b.Length, target);
             Program.globalUpCounter.addBytes(b.Length);
         }
 
@@ -279,6 +279,20 @@ namespace Dimension.Model
             if (notFromUs)
                 udpCommandsNotFromUs++;
 
+            try
+            {
+                lock (incomingTraffic)
+                {
+                    string t = Program.serializer.getType(data);
+                    if (!incomingTraffic.ContainsKey(t))
+                        incomingTraffic[t] = 0;
+                    incomingTraffic[t] += (ulong)data.Length;
+                }
+            }
+            catch
+            {
+                //whatever
+            }
 
             Program.globalDownCounter.addBytes(data.Length);
             if (data.Length > 32 && Program.theCore != null) //Ignore extraneous STUN info
@@ -296,18 +310,11 @@ namespace Dimension.Model
                 toHello.Add(p);
             }
         }
-        void udpSend(byte[] b, System.Net.IPEndPoint target)
-        {
-            Program.globalUpCounter.addBytes(b.Length);
-            try
-            {
-                Program.udp.Send(b, b.Length, target);
-            }
-            catch
-            {
-                //probably no path
-            }
-            }
+
+
+        public Dictionary<string, ulong> incomingTraffic = new Dictionary<string, ulong>();
+        public Dictionary<string, ulong> outgoingTraffic = new Dictionary<string, ulong>();
+        
         Dictionary<string, int> knownHashes = new Dictionary<string, int>();
         Dictionary<string, List<int>> requestedHashes = new  Dictionary<string, List<int>>();
         void parse(Commands.Command c, System.Net.IPEndPoint sender, string originalText)
@@ -352,7 +359,7 @@ namespace Dimension.Model
                         var h = generateHello();
                         h.requestingHelloBack = true;
                         byte[] b = Program.serializer.serialize(h);
-                        udpSend(b, sender);
+                        Program.udpSend(b, sender);
                     }
                 }
             }
@@ -373,8 +380,8 @@ namespace Dimension.Model
                         mini.id = id;
                         byte[] m = Program.serializer.serialize(mini);
                         //send it to both, whatever
-                        udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
-                        udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.internalAddress), p.internalControlPort));
+                        Program.udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
+                        Program.udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.internalAddress), p.internalControlPort));
                     }
                 }
                 if (g.requestingGossipBack)
@@ -422,7 +429,7 @@ namespace Dimension.Model
                     var h2 = generateHello();
                     h2.requestingHelloBack = false;
                     byte[] b = Program.serializer.serialize(h2);
-                    udpSend(b, sender);
+                    Program.udpSend(b, sender);
                 }
                 peerManager.parseHello(h, sender);
                 lock(toHello)
@@ -930,15 +937,15 @@ namespace Dimension.Model
                 mini.unknown = true;
                 byte[] m2 = Program.serializer.serialize(mini);
                 
-                //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
-                Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
+                //Program.udpSend(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
+                Program.udpSend(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
 
                 Program.globalUpCounter.addBytes(m.Length);
 
                 if (((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port != NetConstants.controlPort)
                 {
-                    //Program.udp.Send(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
-                    Program.udp.Send(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
+                    //Program.udpSend(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
+                    Program.udpSend(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
                 }
                 Program.globalUpCounter.addBytes(m.Length);
                 System.Threading.Thread.Sleep(1000);
@@ -956,9 +963,9 @@ namespace Dimension.Model
                         {
                             try
                             {
-                                //Program.udp.Send(b, b.Length, p);
+                                //Program.udpSend(b, b.Length, p);
                                 //Program.globalUpCounter.addBytes(b.Length);
-                                Program.udp.Send(m2, m2.Length, p);
+                                Program.udpSend(m2, m2.Length, p);
                                 Program.globalUpCounter.addBytes(m2.Length);
                             }
                             catch
@@ -978,23 +985,23 @@ namespace Dimension.Model
                         {
                             //if (!p.quit)
                             {
-                                //Program.udp.Send(b, b.Length, p.actualEndpoint);
+                                //Program.udpSend(b, b.Length, p.actualEndpoint);
                                 //Program.globalUpCounter.addBytes(b.Length);
                                 try
                                 {
                                      
                                     if (p.maybeDead)
                                     {
-                                        udpSend(m2, p.actualEndpoint);
-                                        udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
-                                        udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                        Program.udpSend(m2, p.actualEndpoint);
+                                        Program.udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                        Program.udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                                     }
                                     else
                                     {
                                         if(p.isLocal)
-                                            udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                            Program.udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
                                         else
-                                            udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                            Program.udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                                     }
                                 }
                                 catch
