@@ -505,5 +505,15 @@ namespace Dimension
             }
         }
 
+        private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Threading.Thread t = new System.Threading.Thread(delegate ()
+            {
+                Program.checkForUpdates();
+            });
+            t.IsBackground = true;
+            t.Name = "Check for updates thread";
+            t.Start();
+        }
     }
 }
