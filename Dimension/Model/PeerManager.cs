@@ -68,34 +68,40 @@ namespace Dimension.Model
         Dictionary<ulong, Peer> peers = new Dictionary<ulong, Peer>();
         public bool parseMiniHello(Commands.MiniHello h, System.Net.IPEndPoint sender)
         {
+            Peer p=null;
             lock (peers)
             {
                 if (peers.ContainsKey(h.id))
                 {
-                    if (DateTime.Now.Subtract(peers[h.id].timeQuit).TotalSeconds > 3)
-                    {
-                        if (peers[h.id].quit)
-                        {
-                            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
-                            ulong lanHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes("LAN".ToLower())), 0);
-
-                            foreach (ulong u in peers[h.id].circles)
-                                if (u == lanHash)
-                                    peerAdded?.Invoke(peers[h.id], u, true);
-                                else
-                                    peerAdded?.Invoke(peers[h.id], u, true);
-
-                        }
-                        peers[h.id].quit = false;
-                        peers[h.id].lastContact = DateTime.Now;
-                    }
+                    p = peers[h.id];
                 }
-                else
-                {
-                    return true;
-                }
-                return false;
             }
+            if (p != null)
+            {
+                if (DateTime.Now.Subtract(p.timeQuit).TotalSeconds > 3)
+                {
+                    if (p.quit)
+                    {
+                        System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+                        ulong lanHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes("LAN".ToLower())), 0);
+
+                        foreach (ulong u in p.circles)
+                            if (u == lanHash)
+                                peerAdded?.Invoke(p, u, true);
+                            else
+                                peerAdded?.Invoke(p, u, true);
+
+                    }
+                    p.quit = false;
+                    p.lastContact = DateTime.Now;
+                }
+            }
+            else
+            {
+                return true;
+            }
+            return false;
+            
         }
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
