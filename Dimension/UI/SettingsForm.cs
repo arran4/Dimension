@@ -89,6 +89,13 @@ namespace Dimension.UI
             Program.settings.setBool("Use UPnP", UPnPButton.Checked);
 
             Program.settings.setInt("Default Data Port", (int)udpDataPortBox.Value);
+
+            if (udpControlPortBox.Value == Model.NetConstants.controlPort)
+            {
+                MessageBox.Show("UDP Port 31542 is reserved for local broadcasting. Dimension will pick another random port for you.");
+                udpControlPortBox.Value = 0;
+            }
+
             Program.settings.setInt("Default Control Port", (int)udpControlPortBox.Value);
             Program.settings.setInt("Default DHT Port", (int)dhtPortBox.Value);
     
