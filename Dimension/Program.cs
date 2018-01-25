@@ -71,7 +71,14 @@ namespace Dimension
                                 updateBegin = true;
                                 if (isMono)
                                 {
-                                    System.Diagnostics.Process.Start(Updater.Program.downloadPath());
+                                    try
+                                    {
+                                        System.Diagnostics.Process.Start(Updater.Program.downloadPath());
+                                    }
+                                    catch (System.ComponentModel.Win32Exception)
+                                    {
+                                        //Wine sometimes throws these, doesn't mean anything
+                                    }
                                 }
                                 else
                                 {
