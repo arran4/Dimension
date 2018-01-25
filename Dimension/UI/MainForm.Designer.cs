@@ -56,7 +56,6 @@
             this.hashingProgressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.networkStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.systemLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllCirclesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllFileListsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -261,8 +260,7 @@
             this.searchToolStripMenuItem,
             this.hashingProgressToolStripMenuItem,
             this.toolStripMenuItem4,
-            this.networkStatusToolStripMenuItem,
-            this.systemLogToolStripMenuItem});
+            this.networkStatusToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -270,61 +268,54 @@
             // downloadQueueToolStripMenuItem
             // 
             this.downloadQueueToolStripMenuItem.Name = "downloadQueueToolStripMenuItem";
-            this.downloadQueueToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.downloadQueueToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.downloadQueueToolStripMenuItem.Text = "Download Queue";
             this.downloadQueueToolStripMenuItem.Click += new System.EventHandler(this.downloadQueueToolStripMenuItem_Click);
             // 
             // finishedUploadsToolStripMenuItem
             // 
             this.finishedUploadsToolStripMenuItem.Name = "finishedUploadsToolStripMenuItem";
-            this.finishedUploadsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.finishedUploadsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.finishedUploadsToolStripMenuItem.Text = "Finished Uploads";
             this.finishedUploadsToolStripMenuItem.Click += new System.EventHandler(this.finishedUploadsToolStripMenuItem_Click);
             // 
             // finishedDownloadsToolStripMenuItem
             // 
             this.finishedDownloadsToolStripMenuItem.Name = "finishedDownloadsToolStripMenuItem";
-            this.finishedDownloadsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.finishedDownloadsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.finishedDownloadsToolStripMenuItem.Text = "Finished Downloads";
             this.finishedDownloadsToolStripMenuItem.Click += new System.EventHandler(this.finishedDownloadsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(181, 6);
             // 
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.searchToolStripMenuItem.Text = "Search";
             this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
             // 
             // hashingProgressToolStripMenuItem
             // 
             this.hashingProgressToolStripMenuItem.Name = "hashingProgressToolStripMenuItem";
-            this.hashingProgressToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hashingProgressToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.hashingProgressToolStripMenuItem.Text = "Hashing Progress...";
             this.hashingProgressToolStripMenuItem.Click += new System.EventHandler(this.hashingProgressToolStripMenuItem_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(181, 6);
             // 
             // networkStatusToolStripMenuItem
             // 
             this.networkStatusToolStripMenuItem.Name = "networkStatusToolStripMenuItem";
-            this.networkStatusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.networkStatusToolStripMenuItem.Text = "Network Status";
+            this.networkStatusToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.networkStatusToolStripMenuItem.Text = "Network Status/Logs";
             this.networkStatusToolStripMenuItem.Click += new System.EventHandler(this.networkStatusToolStripMenuItem_Click);
-            // 
-            // systemLogToolStripMenuItem
-            // 
-            this.systemLogToolStripMenuItem.Name = "systemLogToolStripMenuItem";
-            this.systemLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.systemLogToolStripMenuItem.Text = "System Log";
-            this.systemLogToolStripMenuItem.Click += new System.EventHandler(this.systemLogToolStripMenuItem_Click);
             // 
             // windowToolStripMenuItem
             // 
@@ -517,7 +508,7 @@
             this.splitContainer1.Panel1.Controls.Add(this.contentPanel);
             this.splitContainer1.Panel1.Controls.Add(this.windowToolStrip);
             this.splitContainer1.Size = new System.Drawing.Size(724, 324);
-            this.splitContainer1.SplitterDistance = 200;
+            this.splitContainer1.SplitterDistance = 201;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -526,7 +517,7 @@
             this.contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.contentPanel.Location = new System.Drawing.Point(0, 25);
             this.contentPanel.Name = "contentPanel";
-            this.contentPanel.Size = new System.Drawing.Size(724, 175);
+            this.contentPanel.Size = new System.Drawing.Size(724, 176);
             this.contentPanel.TabIndex = 1;
             // 
             // windowToolStrip
@@ -642,7 +633,6 @@
         private System.Windows.Forms.ToolStripStatusLabel kadReadyLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem networkStatusToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem systemLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton limitButton;
         private System.Windows.Forms.ToolStripMenuItem downloadSpeedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uploadSpeedToolStripMenuItem;

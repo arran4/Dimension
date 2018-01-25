@@ -426,14 +426,7 @@ namespace Dimension
                  UI.ByteFormatter.formatBytes(Program.globalUpCounter.totalBytes) + " up; " +
                 UI.ByteFormatter.formatBytes(Program.globalDownCounter.totalBytes) + " down.";
         }
-
-        private void systemLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UI.SystemLogPanel s = new UI.SystemLogPanel();
-            s.Dock = DockStyle.Fill;
-
-            addOrSelectPanel("System Log", s, "System Log");
-        }
+        
 
         private void networkStatusToolStripMenuItem_Click(object sender, EventArgs e)
         {

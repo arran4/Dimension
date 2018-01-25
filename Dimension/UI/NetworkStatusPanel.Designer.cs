@@ -37,10 +37,13 @@
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.trafficBox = new System.Windows.Forms.TextBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.systemLogBox = new System.Windows.Forms.TextBox();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -48,6 +51,7 @@
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabPage3);
+            this.tabControl.Controls.Add(this.tabPage4);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
@@ -74,6 +78,7 @@
             this.portsTextBox.Multiline = true;
             this.portsTextBox.Name = "portsTextBox";
             this.portsTextBox.ReadOnly = true;
+            this.portsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.portsTextBox.Size = new System.Drawing.Size(761, 387);
             this.portsTextBox.TabIndex = 0;
             // 
@@ -96,6 +101,7 @@
             this.eventsBox.Multiline = true;
             this.eventsBox.Name = "eventsBox";
             this.eventsBox.ReadOnly = true;
+            this.eventsBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.eventsBox.Size = new System.Drawing.Size(761, 387);
             this.eventsBox.TabIndex = 1;
             // 
@@ -123,8 +129,30 @@
             this.trafficBox.Multiline = true;
             this.trafficBox.Name = "trafficBox";
             this.trafficBox.ReadOnly = true;
+            this.trafficBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.trafficBox.Size = new System.Drawing.Size(767, 393);
             this.trafficBox.TabIndex = 1;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.systemLogBox);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(767, 393);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "System Log";
+            // 
+            // systemLogBox
+            // 
+            this.systemLogBox.BackColor = System.Drawing.SystemColors.Window;
+            this.systemLogBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.systemLogBox.Location = new System.Drawing.Point(0, 0);
+            this.systemLogBox.Multiline = true;
+            this.systemLogBox.Name = "systemLogBox";
+            this.systemLogBox.ReadOnly = true;
+            this.systemLogBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.systemLogBox.Size = new System.Drawing.Size(767, 393);
+            this.systemLogBox.TabIndex = 1;
             // 
             // NetworkStatusPanel
             // 
@@ -140,6 +168,8 @@
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -153,5 +183,7 @@
         private System.Windows.Forms.Timer updateTimer;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TextBox trafficBox;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TextBox systemLogBox;
     }
 }

@@ -26,6 +26,7 @@ namespace Dimension.UI
             eventsBox.Font = Program.getFont();
             portsTextBox.Font = Program.getFont();
             trafficBox.Font = Program.getFont();
+            systemLogBox.Font = Program.getFont();
         }
 
         void update()
@@ -80,6 +81,8 @@ namespace Dimension.UI
 
             trafficBox.Text = s;
 
+
+            systemLogBox.Text = Model.SystemLog.theLog;
 
             updateFont();
         }

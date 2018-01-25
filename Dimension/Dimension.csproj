@@ -271,12 +271,6 @@
     <Compile Include="UI\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\SystemLogPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SystemLogPanel.Designer.cs">
-      <DependentUpon>SystemLogPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\TransfersPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -337,9 +331,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SystemLogPanel.resx">
-      <DependentUpon>SystemLogPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\TransfersPanel.resx">
       <DependentUpon>TransfersPanel.cs</DependentUpon>
