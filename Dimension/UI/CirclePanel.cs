@@ -327,7 +327,7 @@ namespace Dimension.UI
                     if (highlight)
                     {
                         historyBox.SelectionStart = historyBox.Text.Length - (s.Length + 1);
-                        historyBox.SelectionLength = s.Length + 1;
+                        historyBox.SelectionLength = s.Length;
                         historyBox.SelectionBackColor = SystemColors.Highlight;
                         historyBox.SelectionColor = SystemColors.HighlightText;
                         Program.mainForm.flash();
