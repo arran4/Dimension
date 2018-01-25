@@ -205,6 +205,7 @@ namespace Dimension
                     if (!theCore.outgoingTraffic.ContainsKey(t))
                         theCore.outgoingTraffic[t] = 0;
                     theCore.outgoingTraffic[t] += (ulong)b.Length;
+                    Program.globalUpCounter.addBytes(b.Length);
                 }
             }
             catch
