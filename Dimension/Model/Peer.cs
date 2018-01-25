@@ -242,7 +242,6 @@ namespace Dimension.Model
             }
             else
                 Program.udpSend(b, b.Length, actualEndpoint);
-            Program.globalUpCounter.addBytes(b.Length);
         }
         public void reverseConnect()
         {
@@ -390,7 +389,6 @@ namespace Dimension.Model
 
                             byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
                             Program.udpSend(b, b.Length, actualEndpoint);
-                            Program.globalUpCounter.addBytes(b.Length);
                             return;
                         }
                     }
@@ -429,7 +427,6 @@ namespace Dimension.Model
 
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe());
                         Program.udpSend(b, b.Length, actualEndpoint);
-                        Program.globalUpCounter.addBytes(b.Length);
                         return;
                     }
                 }

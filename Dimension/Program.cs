@@ -211,7 +211,6 @@ namespace Dimension
             {
                 //whatever
             }
-            Program.globalUpCounter.addBytes(b.Length);
             try
             {
                 udp.Send(b, b.Length, target);

@@ -24,12 +24,10 @@ namespace Dimension.Model
                 foreach(System.Net.IPAddress ip in p.internalAddress)
                     Program.udpSend(b, b.Length, new System.Net.IPEndPoint(ip,p.localControlPort));
                 Program.udpSend(b, b.Length, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
-                Program.globalUpCounter.addBytes(b.Length);
             }
             foreach (System.Net.IPEndPoint e in toHello)
             {
                 Program.udpSend(b, b.Length, e);
-                Program.globalUpCounter.addBytes(b.Length);
             }
             }
         public void leaveCircle(string s)
@@ -78,7 +76,6 @@ namespace Dimension.Model
                 circleId = circleId
             });
             Program.udpSend(b, b.Length, target);
-            Program.globalUpCounter.addBytes(b.Length);
         }
 
         void gossipLoop()
@@ -939,15 +936,13 @@ namespace Dimension.Model
                 
                 //Program.udpSend(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
                 Program.udpSend(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
-
-                Program.globalUpCounter.addBytes(m.Length);
+                
 
                 if (((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port != NetConstants.controlPort)
                 {
                     //Program.udpSend(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
                     Program.udpSend(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
                 }
-                Program.globalUpCounter.addBytes(m.Length);
                 System.Threading.Thread.Sleep(1000);
                 if (disposed)
                     return;
@@ -964,9 +959,7 @@ namespace Dimension.Model
                             try
                             {
                                 //Program.udpSend(b, b.Length, p);
-                                //Program.globalUpCounter.addBytes(b.Length);
                                 Program.udpSend(m2, m2.Length, p);
-                                Program.globalUpCounter.addBytes(m2.Length);
                             }
                             catch
                             {
