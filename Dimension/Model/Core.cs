@@ -398,11 +398,14 @@ namespace Dimension.Model
             {
                 Commands.HelloCommand h = (Commands.HelloCommand)c;
 
+                bool requestingBack = h.requestingHelloBack;
+                h.requestingHelloBack = false;
                 var z = h.peerCount;
                 h.peerCount = null;
                 var sha = new System.Security.Cryptography.SHA512Managed();
                 int helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(h).Trim())), 0);
-                if (!h.requestingHelloBack)
+                
+                //if (!h.requestingHelloBack)
                     knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
                 /*lock (requestedHashes)
                     if(requestedHashes.ContainsKey(sender.Address.ToString() + "\n" + sender.Port.ToString()))
@@ -422,7 +425,7 @@ namespace Dimension.Model
                         t.Name = "Program update thread";
                         t.Start();
                     }
-                if (h.requestingHelloBack)
+                if (requestingBack)
                 {
                     var h2 = generateHello();
                     h2.requestingHelloBack = false;
@@ -910,6 +913,7 @@ namespace Dimension.Model
 
             var z = c.peerCount;
             c.peerCount = null;
+            c.requestingHelloBack = false;
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(c);
             helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(json.Trim())),0);
             c.peerCount = z;
@@ -953,7 +957,7 @@ namespace Dimension.Model
                     {
                         foreach (Peer p2 in peerManager.allPeers)
                             if(p2.internalAddress != null)
-                                if (p2.internalAddress.ToString() == p.Address.ToString() || p2.publicAddress.ToString() == p.Address.ToString())
+                                if (p2.internalAddress[0].ToString() == p.Address.ToString() || p2.publicAddress.ToString() == p.Address.ToString())
                                     continue;
                         if (p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
                         {
@@ -984,9 +988,9 @@ namespace Dimension.Model
                                 try
                                 {
 
-                                    Program.udpSend(m2, p.actualEndpoint);
                                     if (p.maybeDead)
                                     {
+                                        Program.udpSend(m2, p.actualEndpoint);
                                         if (p.isLocal)
                                         {
                                             if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
@@ -1000,6 +1004,7 @@ namespace Dimension.Model
                                     }
                                     else
                                     {
+                                        Program.udpSend(m, p.actualEndpoint);
                                         if (p.isLocal)
                                         {
                                             if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
