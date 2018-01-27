@@ -362,8 +362,6 @@ namespace Dimension.Model
             }
             if (c is Commands.GossipCommand)
             {
-                var h = generateHello();
-                byte[] b = Program.serializer.serialize(h);
                 Commands.GossipCommand g = (Commands.GossipCommand)c;
                 foreach (Commands.GossipPeer p in g.peers)
                 {
