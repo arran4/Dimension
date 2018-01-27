@@ -92,13 +92,13 @@ namespace Dimension.Model
 
                         List<Peer> potentials = new List<Peer>();
 
-                        Peer[] allPeers = peerManager.allPeersInCircle(circleId);
+                        Peer[] allPeers = peerManager.allPeersInCircle(circleId, false);
 
                         Random r = new Random();
                         foreach (Peer p in allPeers)
                             lock (p.peerCount)
                                 if (p.peerCount.ContainsKey(circleId))
-                                    if (p.peerCount[circleId] != peerManager.allPeersInCircle(circleId).Length)
+                                    if (p.peerCount[circleId] != peerManager.allPeersInCircle(circleId, false).Length)
                                         if (p.lastGossipPeerCount == null || DateTime.Now.Subtract(p.lastGossipTime).TotalSeconds > 30)
                                             potentials.Insert(r.Next(0, potentials.Count + 1), p);
                                         else
@@ -825,11 +825,14 @@ namespace Dimension.Model
             Dictionary<ulong, int> counts = new Dictionary<ulong, int>();
             foreach (Peer p in peerManager.allPeers)
             {
-                foreach (ulong i in p.circles)
-                    if (!counts.ContainsKey(i))
-                        counts[i] = 1;
-                    else
-                        counts[i]++;
+                if (!p.maybeDead)
+                {
+                    foreach (ulong i in p.circles)
+                        if (!counts.ContainsKey(i))
+                            counts[i] = 1;
+                        else
+                            counts[i]++;
+                }
             }
 #if DEBUG
             c.debugBuild = true;

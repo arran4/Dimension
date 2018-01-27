@@ -16,7 +16,7 @@ namespace Dimension.Model
                     return ((new List<Peer>(peers.Values)).ToArray());
             }
         }
-        public Peer[] allPeersInCircle(ulong id)
+        public Peer[] allPeersInCircle(ulong id, bool includeMaybeDead = true)
         {
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
             ulong lanHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes("LAN".ToLower())), 0);
@@ -24,12 +24,13 @@ namespace Dimension.Model
             List<Peer> output = new List<Peer>();
             foreach (Peer p in allPeers)
                 if (p.circles.Contains(id) && !p.quit)
-                    if (id == lanHash)
-                    {
-                        if (p.isLocal)
+                    if(!p.maybeDead || includeMaybeDead)
+                        if (id == lanHash)
+                        {
+                            if (p.isLocal)
+                                output.Add(p);
+                        }else
                             output.Add(p);
-                    }else
-                        output.Add(p);
             return output.ToArray();
         }
         public void doPeerRemoved(Peer p)
