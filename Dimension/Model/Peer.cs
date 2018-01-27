@@ -247,71 +247,71 @@ namespace Dimension.Model
         {
             System.Net.IPAddress addr = publicAddress;
 
-            bool success = false;
-            var t = new System.Net.Sockets.TcpClient();
-            if (isLocal)
+            var t = attemptConnection();
+            if (t != null)
             {
-                for (int i = 0; i < internalAddress.Length; i++)
-                {
-                    try
-                    {
-                        t.Connect(new System.Net.IPEndPoint(internalAddress[i], localDataPort));
-                        success = true;
-                    }
-                    catch
-                    {
-                        SystemLog.addEntry("Error local reverse connecting to " + internalAddress[i] + ":" + localDataPort.ToString());
-                        continue;
-                    }
-                }
+                ReliableIncomingConnection c = new ReliableIncomingConnection(t);
+                c.send(new Commands.ReverseConnectionType() { makeControl = true, id = Program.theCore.id });
+                Program.theCore.addIncomingConnection(c);
             }
-            if (!success)
+            t = attemptConnection();
+            if (t != null)
             {
-                try
-                {
-                    t.Connect(new System.Net.IPEndPoint(publicAddress, externalDataPort));
-                }
-                catch
-                {
-                    SystemLog.addEntry("Error public reverse connecting to " + publicAddress + ":" + externalDataPort.ToString());
-                }
-            }
-            ReliableIncomingConnection c = new ReliableIncomingConnection(t);
-            c.send(new Commands.ReverseConnectionType() { makeControl = true, id = Program.theCore.id });
-            Program.theCore.addIncomingConnection(c);
 
-            success = false;
-            t = new System.Net.Sockets.TcpClient();
-            if (isLocal)
+                ReliableIncomingConnection c = new ReliableIncomingConnection(t);
+                c.send(new Commands.ReverseConnectionType() { makeData = true, id = Program.theCore.id });
+                Program.theCore.addIncomingConnection(c);
+            }
+        }
+        System.Net.Sockets.TcpClient attemptConnection()
+        {
+
+            var t = new System.Net.Sockets.TcpClient();
+
+            try
             {
-                for (int i = 0; i < internalAddress.Length; i++)
+                if (isLocal)
+                    t.Connect(new System.Net.IPEndPoint(_actualAddr, localDataPort));
+                else
+                    t.Connect(new System.Net.IPEndPoint(_actualAddr, externalDataPort));
+                return t;
+            }
+            catch
+            {
+
+            }
+            try
+            {
+                if (isLocal)
                 {
-                    try
+                    for (int i = 0; i < internalAddress.Length; i++)
                     {
-                        t.Connect(new System.Net.IPEndPoint(internalAddress[i], localDataPort));
-                        success = true;
-                    }
-                    catch
-                    {
-                        SystemLog.addEntry("Error local reverse connecting to " + internalAddress[i] + ":" + localDataPort.ToString());
-                        continue;
+                        try
+                        {
+                            t.Connect(new System.Net.IPEndPoint(internalAddress[i], localDataPort));
+                            return t;
+                        }
+                        catch
+                        {
+
+                        }
                     }
                 }
-            }
-            if (!success)
-            {
-                try
+                else
                 {
                     t.Connect(new System.Net.IPEndPoint(publicAddress, externalDataPort));
+                    return t;
                 }
-                catch
-                {
-                    SystemLog.addEntry("Error public reverse connecting to " + publicAddress + ":" + externalDataPort.ToString());
-                }
-                }
-            c = new ReliableIncomingConnection(t);
-            c.send(new Commands.ReverseConnectionType() { makeData = true, id = Program.theCore.id });
-            Program.theCore.addIncomingConnection(c);
+            }
+            catch
+            {
+                
+            }
+
+            SystemLog.addEntry("Error reverse connecting to " + _actualAddr);
+
+            return null;
+
         }
         public delegate void MessageResponseDelegate(string s);
         public void createConnection(MessageResponseDelegate response = null)

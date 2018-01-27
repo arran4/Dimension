@@ -129,6 +129,7 @@
     <Compile Include="Model\Commands\CancelCommand.cs" />
     <Compile Include="Model\Commands\Command.cs" />
     <Compile Include="Model\Commands\ConnectToMe.cs" />
+    <Compile Include="Model\Commands\InitRendezvous.cs" />
     <Compile Include="Model\Commands\DataCommand.cs" />
     <Compile Include="Model\Commands\FileChunk.cs" />
     <Compile Include="Model\Commands\FSListing.cs" />

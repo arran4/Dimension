@@ -353,7 +353,7 @@ namespace Dimension.Model
                         requestedHashes[ip] = new List<int>();
                     if (!requestedHashes[ip].Contains(helloHash))   //Brand new hash code, wipe out all other ones in case we go back
                         requestedHashes[ip].Clear();
-                    if (request && (!knownPeer || !requestedHashes[ip].Contains(helloHash)))
+                    if (request)
                     {
                         requestedHashes[ip].Add(((Commands.MiniHello)c).helloHash);
                         var h = generateHello();
@@ -376,6 +376,7 @@ namespace Dimension.Model
                         Commands.MiniHello mini = new Commands.MiniHello();
                         mini.helloHash = helloHash;
                         mini.id = id;
+                        mini.unknown = true;
                         byte[] m = Program.serializer.serialize(mini);
                         //send it to both, whatever
                         Program.udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
