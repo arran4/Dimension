@@ -951,9 +951,13 @@ namespace Dimension.Model
                     {
                         bool skip = false;
                         foreach (Peer p2 in peerManager.allPeers)
+                        {
+                            if (p2.publicAddress.ToString() == p.Address.ToString())
+                                skip = true;
                             if (p2.internalAddress != null)
-                                if (p2.internalAddress[0].ToString() == p.Address.ToString() || p2.publicAddress.ToString() == p.Address.ToString())
+                                if (p2.internalAddress[0].ToString() == p.Address.ToString())
                                     skip = true;
+                        }
                         if (!skip && p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
                         {
                             try
