@@ -969,6 +969,7 @@ namespace Dimension.Model
                             {
                                 //probably invalid IP, ignore
                             }
+                            System.Threading.Thread.Sleep(100);
                         }
                     }
                 System.Threading.Thread.Sleep(1000);
@@ -1021,6 +1022,13 @@ namespace Dimension.Model
                                     //probably invalid IP, ignore
                                 }
                                 p.lastTimeHelloSent = DateTime.Now;
+                                //Pulling these numbers out of my arse
+                                if(peerManager.allPeers.Length < 10)
+                                    System.Threading.Thread.Sleep(250);
+                                else if (peerManager.allPeers.Length < 30)
+                                    System.Threading.Thread.Sleep(100);
+                                else if (peerManager.allPeers.Length < 50)
+                                    System.Threading.Thread.Sleep(50);
                             }
                         }
                     }
