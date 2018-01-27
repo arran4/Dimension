@@ -85,11 +85,14 @@ namespace Dimension.Model
                 System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
                 lock (circles)
                 {
+                    ulong lanHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes("LAN".ToLower())), 0);
                     foreach (string s in circles)
                     {
                         byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()));
                         ulong circleId = (BitConverter.ToUInt64(hash, 0));
 
+                        if (circleId == lanHash)
+                            continue;
                         List<Peer> potentials = new List<Peer>();
 
                         Peer[] allPeers = peerManager.allPeersInCircle(circleId, false);
@@ -922,10 +925,7 @@ namespace Dimension.Model
                     System.Threading.Thread.Sleep(10);
                 if (disposed)
                     return;
-
-
-                byte[] b = Program.serializer.serialize(generateHello());
-
+                
 
                 Commands.MiniHello mini = new Commands.MiniHello();
                 mini.helloHash = helloHash;
@@ -983,19 +983,33 @@ namespace Dimension.Model
                                 //Program.globalUpCounter.addBytes(b.Length);
                                 try
                                 {
-                                     
+
+                                    Program.udpSend(m2, p.actualEndpoint);
                                     if (p.maybeDead)
                                     {
-                                        Program.udpSend(m2, p.actualEndpoint);
-                                        Program.udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
-                                        Program.udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                        if (p.isLocal)
+                                        {
+                                            if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
+                                                Program.udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                        }
+                                        else
+                                        {
+                                            if (p.publicAddress.ToString() != p.actualEndpoint.Address.ToString())
+                                                Program.udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                        }
                                     }
                                     else
                                     {
-                                        if(p.isLocal)
-                                            Program.udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                        if (p.isLocal)
+                                        {
+                                            if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
+                                                Program.udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                        }
                                         else
-                                            Program.udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                        {
+                                            if (p.publicAddress.ToString() != p.actualEndpoint.Address.ToString())
+                                                Program.udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                        }
                                     }
                                 }
                                 catch
