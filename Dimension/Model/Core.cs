@@ -346,6 +346,8 @@ namespace Dimension.Model
                             if(p.internalAddress != null)
                                 if(p.internalAddress[0].ToString() == sender.Address.ToString())
                                     knownPeer = true;
+                if (!knownPeer)
+                    request = true;
                 lock (requestedHashes)
                 {
                     string ip = sender.Address.ToString() + "\n" + sender.Port.ToString();
