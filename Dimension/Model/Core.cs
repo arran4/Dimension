@@ -942,12 +942,6 @@ namespace Dimension.Model
                 //Program.udpSend(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
                 Program.udpSend(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
                 
-
-                if (((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port != NetConstants.controlPort)
-                {
-                    //Program.udpSend(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
-                    Program.udpSend(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, ((System.Net.IPEndPoint)Program.udp.Client.LocalEndPoint).Port));
-                }
                 System.Threading.Thread.Sleep(1000);
                 if (disposed)
                     return;
@@ -955,11 +949,12 @@ namespace Dimension.Model
                 lock (toHello)
                     foreach (System.Net.IPEndPoint p in toHello)
                     {
+                        bool skip = false;
                         foreach (Peer p2 in peerManager.allPeers)
-                            if(p2.internalAddress != null)
+                            if (p2.internalAddress != null)
                                 if (p2.internalAddress[0].ToString() == p.Address.ToString() || p2.publicAddress.ToString() == p.Address.ToString())
-                                    continue;
-                        if (p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
+                                    skip = true;
+                        if (!skip && p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
                         {
                             try
                             {
