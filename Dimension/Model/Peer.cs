@@ -387,8 +387,6 @@ namespace Dimension.Model
                         {
                             response?.Invoke("Attempting to initiate reverse connection.");
 
-                            byte[] b = Program.serializer.serialize(new Commands.ConnectToMe() { myId = Program.theCore.id } );
-                            Program.udpSend(b, b.Length, actualEndpoint);
                             return;
                         }
                     }

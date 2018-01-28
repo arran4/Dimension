@@ -106,6 +106,16 @@ namespace Dimension.Model
         }
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
+            if (Program.isMono)
+            {
+                string newName = "";
+                for (int i = 0; i < h.username.Length; i++)
+                    if (char.IsLetterOrDigit(h.username[i]))
+                        newName += h.username[i];
+                    else
+                        newName += "?";
+                h.username = newName;
+            }
             bool wasQuit = false;
             List<ulong> channels = new List<ulong>();
             List<ulong> oldChannels = new List<ulong>();
