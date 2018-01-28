@@ -340,11 +340,11 @@ namespace Dimension.Model
                 bool knownPeer = false;
                 foreach (Peer p in peerManager.allPeers)
                     if(!p.quit && !p.maybeDead)
-                        if (p.publicAddress.ToString() == sender.Address.ToString())
+                        if (p.publicAddress.ToString() == sender.Address.ToString() && (sender.Port == p.externalControlPort || sender.Port == p.localControlPort))
                             knownPeer = true;
                         else
                             if(p.internalAddress != null)
-                                if(p.internalAddress[0].ToString() == sender.Address.ToString())
+                                if(p.internalAddress[0].ToString() == sender.Address.ToString() && (sender.Port == p.externalControlPort || sender.Port == p.localControlPort))
                                     knownPeer = true;
                 if (!knownPeer)
                     request = true;
