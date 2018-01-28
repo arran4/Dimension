@@ -353,7 +353,7 @@ namespace Dimension.Model
                     string ip = sender.Address.ToString() + "\n" + sender.Port.ToString();
                     if (!requestedHashes.ContainsKey(ip))
                         requestedHashes[ip] = new List<int>();
-                    if (!requestedHashes[ip].Contains(helloHash))   //Brand new hash code, wipe out all other ones in case we go back
+                    if (!requestedHashes[ip].Contains(hash))   //Brand new hash code, wipe out all other ones in case we go back
                         requestedHashes[ip].Clear();
                     if (request)
                     {
@@ -374,7 +374,7 @@ namespace Dimension.Model
                         p.internalAddresses = new string[] { p.internalAddress };
                     if (!peerManager.havePeerWithAddress(p.internalAddresses, System.Net.IPAddress.Parse(p.publicAddress)))
                     {
-
+                        generateHello();    //update hello hash, not actually using it
                         Commands.MiniHello mini = new Commands.MiniHello();
                         mini.helloHash = helloHash;
                         mini.id = id;
@@ -932,7 +932,8 @@ namespace Dimension.Model
                     System.Threading.Thread.Sleep(10);
                 if (disposed)
                     return;
-                
+
+                generateHello();    //update out local hello hash, don't actually use the value
 
                 Commands.MiniHello mini = new Commands.MiniHello();
                 mini.helloHash = helloHash;
