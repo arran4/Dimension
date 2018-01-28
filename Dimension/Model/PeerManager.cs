@@ -110,11 +110,19 @@ namespace Dimension.Model
             {
                 string newName = "";
                 for (int i = 0; i < h.username.Length; i++)
-                    if (char.IsLetterOrDigit(h.username[i]))
+                    if (char.IsLetterOrDigit(h.username[i]) || h.username[i] == ' ' || char.IsPunctuation(h.username[i]))
                         newName += h.username[i];
                     else
                         newName += "?";
                 h.username = newName;
+
+                newName = "";
+                for (int i = 0; i < h.description.Length; i++)
+                    if (char.IsLetterOrDigit(h.description[i]) || h.description[i] == ' ' || char.IsPunctuation(h.description[i]))
+                        newName += h.description[i];
+                    else
+                        newName += "?";
+                h.description = newName;
             }
             bool wasQuit = false;
             List<ulong> channels = new List<ulong>();
