@@ -98,10 +98,11 @@ namespace Dimension.Model
                         Peer[] allPeers = peerManager.allPeersInCircle(circleId, false);
 
                         Random r = new Random();
+                        int peerCount = peerManager.allPeersInCircle(circleId, false).Length;
                         foreach (Peer p in allPeers)
                             lock (p.peerCount)
                                 if (p.peerCount.ContainsKey(circleId))
-                                    if (p.peerCount[circleId] != peerManager.allPeersInCircle(circleId, false).Length)
+                                    if (p.peerCount[circleId] != peerCount)
                                         if (p.lastGossipPeerCount == null || DateTime.Now.Subtract(p.lastGossipTime).TotalSeconds > 30)
                                             potentials.Insert(r.Next(0, potentials.Count + 1), p);
                                         else
