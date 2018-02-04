@@ -33,6 +33,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.updateWithoutPromptingBox = new System.Windows.Forms.CheckBox();
             this.autoRejoinBox = new System.Windows.Forms.CheckBox();
             this.playSoundsBox = new System.Windows.Forms.CheckBox();
             this.showAFKBox = new System.Windows.Forms.CheckBox();
@@ -47,6 +48,7 @@
             this.usernameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.reverseDefaultBox = new System.Windows.Forms.CheckBox();
             this.dhtPortBox = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.useUDTBox = new System.Windows.Forms.CheckBox();
@@ -68,8 +70,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.updateWithoutPromptingBox = new System.Windows.Forms.CheckBox();
-            this.reverseDefaultBox = new System.Windows.Forms.CheckBox();
+            this.alwaysRendezvousButton = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -136,6 +137,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "User";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // updateWithoutPromptingBox
+            // 
+            this.updateWithoutPromptingBox.AutoSize = true;
+            this.updateWithoutPromptingBox.Location = new System.Drawing.Point(98, 202);
+            this.updateWithoutPromptingBox.Name = "updateWithoutPromptingBox";
+            this.updateWithoutPromptingBox.Size = new System.Drawing.Size(151, 17);
+            this.updateWithoutPromptingBox.TabIndex = 13;
+            this.updateWithoutPromptingBox.Text = "Update Without Prompting";
+            this.updateWithoutPromptingBox.UseVisualStyleBackColor = true;
             // 
             // autoRejoinBox
             // 
@@ -262,6 +273,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.alwaysRendezvousButton);
             this.tabPage2.Controls.Add(this.reverseDefaultBox);
             this.tabPage2.Controls.Add(this.dhtPortBox);
             this.tabPage2.Controls.Add(this.label8);
@@ -281,6 +293,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Network";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // reverseDefaultBox
+            // 
+            this.reverseDefaultBox.AutoSize = true;
+            this.reverseDefaultBox.Location = new System.Drawing.Point(17, 179);
+            this.reverseDefaultBox.Name = "reverseDefaultBox";
+            this.reverseDefaultBox.Size = new System.Drawing.Size(161, 17);
+            this.reverseDefaultBox.TabIndex = 11;
+            this.reverseDefaultBox.Text = "Reverse Connect By Default";
+            this.reverseDefaultBox.UseVisualStyleBackColor = true;
             // 
             // dhtPortBox
             // 
@@ -473,25 +495,15 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
-            // updateWithoutPromptingBox
+            // alwaysRendezvousButton
             // 
-            this.updateWithoutPromptingBox.AutoSize = true;
-            this.updateWithoutPromptingBox.Location = new System.Drawing.Point(98, 202);
-            this.updateWithoutPromptingBox.Name = "updateWithoutPromptingBox";
-            this.updateWithoutPromptingBox.Size = new System.Drawing.Size(151, 17);
-            this.updateWithoutPromptingBox.TabIndex = 13;
-            this.updateWithoutPromptingBox.Text = "Update Without Prompting";
-            this.updateWithoutPromptingBox.UseVisualStyleBackColor = true;
-            // 
-            // reverseDefaultBox
-            // 
-            this.reverseDefaultBox.AutoSize = true;
-            this.reverseDefaultBox.Location = new System.Drawing.Point(17, 179);
-            this.reverseDefaultBox.Name = "reverseDefaultBox";
-            this.reverseDefaultBox.Size = new System.Drawing.Size(161, 17);
-            this.reverseDefaultBox.TabIndex = 11;
-            this.reverseDefaultBox.Text = "Reverse Connect By Default";
-            this.reverseDefaultBox.UseVisualStyleBackColor = true;
+            this.alwaysRendezvousButton.AutoSize = true;
+            this.alwaysRendezvousButton.Location = new System.Drawing.Point(17, 203);
+            this.alwaysRendezvousButton.Name = "alwaysRendezvousButton";
+            this.alwaysRendezvousButton.Size = new System.Drawing.Size(122, 17);
+            this.alwaysRendezvousButton.TabIndex = 12;
+            this.alwaysRendezvousButton.Text = "Always Rendezvous";
+            this.alwaysRendezvousButton.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -565,5 +577,6 @@
         private System.Windows.Forms.CheckBox autoRejoinBox;
         private System.Windows.Forms.CheckBox updateWithoutPromptingBox;
         private System.Windows.Forms.CheckBox reverseDefaultBox;
+        private System.Windows.Forms.CheckBox alwaysRendezvousButton;
     }
 }

@@ -55,8 +55,9 @@ namespace Dimension.UI
             updateWithoutPromptingBox.Checked = Program.settings.getBool("Update Without Prompting", false);
 
             reverseDefaultBox.Checked = Program.settings.getBool("Default to Reverse Connection", false);
+            alwaysRendezvousButton.Checked = Program.settings.getBool("Always Rendezvous", false);
 
-                fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
+            fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
             if (Program.comicSansOnly)
             {
                 fontSelectBox.Items.Clear();
@@ -114,8 +115,8 @@ namespace Dimension.UI
             Program.settings.setBool("Show AFK", showAFKBox.Checked);
             Program.settings.setBool("Auto Rejoin on Startup", autoRejoinBox.Checked);
             Program.settings.setBool("Update Without Prompting", updateWithoutPromptingBox.Checked);
-
-
+            
+            Program.settings.setBool("Always Rendezvous", alwaysRendezvousButton.Checked);
             Program.settings.setBool("Default to Reverse Connection", reverseDefaultBox.Checked);
 
             Program.settings.save();
