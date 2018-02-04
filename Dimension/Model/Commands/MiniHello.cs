@@ -11,5 +11,6 @@ namespace Dimension.Model.Commands
         public int helloHash;
         public ulong id;
         public bool? unknown = null;
+        public bool? afk;
     }
 }

@@ -20,6 +20,28 @@ namespace Dimension.Model
         public int buildNumber;
         public string description;
         System.Net.IPAddress _actualAddr;
+        List<System.Net.IPEndPoint> endpointHistory = new List<System.Net.IPEndPoint>();
+
+        public bool endpointIsInHistory(System.Net.IPEndPoint ep)
+        {
+            lock (endpointHistory)
+            {
+                foreach (System.Net.IPEndPoint e in endpointHistory)
+                    if (e.Address.ToString() == ep.Address.ToString() && e.Port == ep.Port)
+                        return true;
+                return false;
+            }
+        }
+        public void addEndpointToHistory(System.Net.IPEndPoint ep)
+        {
+            lock (endpointHistory)
+            {
+                foreach (System.Net.IPEndPoint e in endpointHistory)
+                    if (e.Address.ToString() == ep.Address.ToString() && e.Port == ep.Port)
+                        return;
+                endpointHistory.Add(ep);
+            }
+        }
         public System.Net.IPEndPoint actualEndpoint
         {
             get
@@ -50,7 +72,7 @@ namespace Dimension.Model
         {
             get
             {
-                if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 5000)
+                if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 15000)
                     return true;
                 else
                     return false;
@@ -60,7 +82,7 @@ namespace Dimension.Model
         {
             get
             {
-                if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 20000)
+                if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 30000)
                     return true;
                 else
                     return false;

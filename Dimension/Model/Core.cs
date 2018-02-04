@@ -340,13 +340,9 @@ namespace Dimension.Model
 
                 bool knownPeer = false;
                 foreach (Peer p in peerManager.allPeers)
-                    if(!p.quit && !p.maybeDead)
-                        if (p.publicAddress.ToString() == sender.Address.ToString() && (sender.Port == p.externalControlPort || sender.Port == p.localControlPort))
+                    if (!p.quit && !p.maybeDead)
+                        if(p.endpointIsInHistory(sender))
                             knownPeer = true;
-                        else
-                            if(p.internalAddress != null)
-                                if(p.internalAddress[0].ToString() == sender.Address.ToString() && (sender.Port == p.externalControlPort || sender.Port == p.localControlPort))
-                                    knownPeer = true;
                 if (!knownPeer)
                     request = true;
                 lock (requestedHashes)
@@ -380,6 +376,7 @@ namespace Dimension.Model
                         mini.helloHash = helloHash;
                         mini.id = id;
                         mini.unknown = true;
+                        mini.afk = isAFK();
                         byte[] m = Program.serializer.serialize(mini);
                         //send it to both, whatever
                         Program.udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
@@ -806,6 +803,20 @@ namespace Dimension.Model
 
             return (uint)Environment.TickCount - lastInput.dwTime;
         }
+        bool isAFK()
+        {
+            if (!Program.settings.getBool("Show AFK", true))
+                return false;
+
+            try
+            {
+                return getIdleTime() > 60 * 1000;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public System.Net.IPAddress[] internalIPs = new System.Net.IPAddress[] { };
         int helloHash = 0;
         public Commands.HelloCommand generateHello()
@@ -819,16 +830,7 @@ namespace Dimension.Model
             c.useUDT = Program.settings.getBool("Use UDT", true);
             c.description = Program.settings.getString("Description", "");
 
-            try
-            {
-                c.afk = getIdleTime() > 60 * 1000;
-            }
-            catch
-            {
-                c.afk = false;
-            }
-            if (!Program.settings.getBool("Show AFK", true))
-                c.afk = false;
+            c.afk = false;
 
             Dictionary<ulong, int> counts = new Dictionary<ulong, int>();
             foreach (Peer p in peerManager.allPeers)
@@ -937,6 +939,7 @@ namespace Dimension.Model
                 generateHello();    //update out local hello hash, don't actually use the value
 
                 Commands.MiniHello mini = new Commands.MiniHello();
+                mini.afk = isAFK();
                 mini.helloHash = helloHash;
                 mini.id = id;
                 mini.unknown = false;
@@ -951,32 +954,35 @@ namespace Dimension.Model
                 if (disposed)
                     return;
 
-                lock (toHello)
-                    foreach (System.Net.IPEndPoint p in toHello)
-                    {
-                        bool skip = false;
-                        foreach (Peer p2 in peerManager.allPeers)
+                if (iteration == 0)
+                {
+                    lock (toHello)
+                        foreach (System.Net.IPEndPoint p in toHello)
                         {
-                            if (p2.publicAddress.ToString() == p.Address.ToString() && p2.externalControlPort == p.Port)
-                                skip = true;
-                            if (p2.internalAddress != null)
-                                if (p2.internalAddress[0].ToString() == p.Address.ToString() && p2.localControlPort == p.Port)
+                            bool skip = false;
+                            foreach (Peer p2 in peerManager.allPeers)
+                            {
+                                if (p2.publicAddress.ToString() == p.Address.ToString() && p2.externalControlPort == p.Port)
                                     skip = true;
-                        }
-                        if (!skip && p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
-                        {
-                            try
-                            {
-                                //Program.udpSend(b, b.Length, p);
-                                Program.udpSend(m2, m2.Length, p);
+                                if (p2.internalAddress != null)
+                                    if (p2.internalAddress[0].ToString() == p.Address.ToString() && p2.localControlPort == p.Port)
+                                        skip = true;
                             }
-                            catch
+                            if (!skip && p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
                             {
-                                //probably invalid IP, ignore
+                                try
+                                {
+                                    //Program.udpSend(b, b.Length, p);
+                                    Program.udpSend(m2, m2.Length, p);
+                                }
+                                catch
+                                {
+                                    //probably invalid IP, ignore
+                                }
+                                System.Threading.Thread.Sleep(100);
                             }
-                            System.Threading.Thread.Sleep(100);
                         }
-                    }
+                }
                 System.Threading.Thread.Sleep(1000);
                 if (disposed)
                     return;
@@ -1039,9 +1045,9 @@ namespace Dimension.Model
                     }
                 }
                 iteration++;
-                if (iteration >= 10)
+                if (iteration >= 5)
                     iteration = 0;
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(5000);
                 if (disposed)
                     return;
             }

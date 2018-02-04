@@ -93,7 +93,19 @@ namespace Dimension.Model
                                 peerAdded?.Invoke(p, u, true);
 
                     }
-                    p.quit = false;
+                    if (h.afk.HasValue)
+                    {
+                        if (p.afk != h.afk.Value)
+                        {
+                            p.afk = h.afk.Value;
+                            peerUpdated?.Invoke(peers[h.id]);
+                        }
+                    }
+                    if (p.quit)
+                    {
+                        p.quit = false;
+                        peerUpdated?.Invoke(peers[h.id]);
+                    }
                     p.lastContact = DateTime.Now;
                 }
             }
@@ -191,6 +203,7 @@ namespace Dimension.Model
                     peers[h.id].description = h.description;
                     updated = true;
                 }
+                peers[h.id].addEndpointToHistory(sender);
                 peers[h.id].behindDoubleNAT = h.behindDoubleNAT;
                 peers[h.id].externalControlPort = h.externalControlPort;
                 peers[h.id].externalDataPort = h.externalDataPort;
@@ -202,11 +215,6 @@ namespace Dimension.Model
                     oldName = peers[h.id].username;
                     peers[h.id].username = h.username;
                     renamed = true;
-                }
-                if (peers[h.id].afk != h.afk)
-                {
-                    peers[h.id].afk = h.afk;
-                    updated = true;
                 }
                 peers[h.id].quit = false;
                 lock(peers[h.id].peerCount)
