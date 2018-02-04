@@ -307,6 +307,8 @@ namespace Dimension.Model
                     if (v.Address.ToString() == p.Address.ToString() && v.Port == p.Port)
                         return;
                 toHello.Add(p);
+                var h = generateHello();
+                Program.udpSend(Program.serializer.serialize(h), p);
             }
         }
 
