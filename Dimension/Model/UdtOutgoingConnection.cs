@@ -11,18 +11,6 @@ namespace Dimension.Model
         public static int successfulConnections = 0;
         Udt.Socket socket;
         public override event CommandReceived commandReceived;
-        public UdtOutgoingConnection(System.Net.IPAddress addr, int port)
-        {
-            socket= new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
-            socket.Connect(addr, port);
-
-            send(Program.theCore.generateHello());
-            successfulConnections++;
-            System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
-            t.IsBackground = true;
-            t.Name = "UDT receive loop";
-            t.Start();
-        }
         public UdtOutgoingConnection(Udt.Socket s)
         {
             socket = s;
@@ -102,11 +90,17 @@ namespace Dimension.Model
             {
                 try
                 {
-                    socket.Send(BitConverter.GetBytes(len));
-                    Program.globalUpCounter.addBytes(4);
-
                     int pos = 0;
                     int read = 1;
+                    while (pos < 4)
+                    {
+                        read = socket.Send(BitConverter.GetBytes(len), pos, 4 - pos);
+                        Program.globalUpCounter.addBytes((ulong)read);
+                        pos += read;
+                    }
+                    pos = 0;
+                    Program.globalUpCounter.addBytes(4);
+
                     while (pos < b.Length)
                     {
                         read = socket.Send(b, pos, b.Length - pos);

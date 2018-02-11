@@ -423,8 +423,8 @@ namespace Dimension.Model
                             response?.Invoke("Successfully bound to UDP endepoint " + udp.LocalEndPoint.ToString());
 
                             response?.Invoke("Sending UDP punch.");
-                            byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id });
-                            udp.SendTo(b, actualEndpoint);
+                            byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id, port = (ushort)((System.Net.IPEndPoint) udp.LocalEndPoint).Port });
+                            Program.udpSend(b, actualEndpoint);
                             
 
                             response?.Invoke("Waiting for UDP response.");
@@ -439,7 +439,7 @@ namespace Dimension.Model
                             s.Bind(udp);
 
                             s.Rendezvous = true;
-
+                            
                             response?.Invoke("Performing UDT control rendezvous...");
                             s.Connect(rendezvousAddress);
 
@@ -503,11 +503,11 @@ namespace Dimension.Model
                         System.Net.Sockets.Socket udp = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
                         udp.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 0));
                         
-                        response?.Invoke("Successfully bound to UDP endepoint " + udp.LocalEndPoint.ToString());
+                        response?.Invoke("Successfully bound to UDP endpoint " + udp.LocalEndPoint.ToString());
 
                         response?.Invoke("Sending UDP punch.");
-                        byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id });
-                        udp.SendTo(b, actualEndpoint);
+                        byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id, port = (ushort)((System.Net.IPEndPoint)udp.LocalEndPoint).Port });
+                        Program.udpSend(b, actualEndpoint);
 
                         response?.Invoke("Waiting for UDP response.");
                         rendezvousSemaphore.WaitOne();
@@ -541,18 +541,26 @@ namespace Dimension.Model
         }
         public void endPunch(System.Net.IPEndPoint sender)
         {
+            SystemLog.addEntry("Received BeginPunch from " + sender.ToString());
             System.Net.Sockets.Socket udp = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
 
             udp.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 0));
+            SystemLog.addEntry("Bound " + udp.LocalEndPoint.ToString());
 
-            byte[] b = Program.serializer.serialize(new Commands.EndPunchCommand() { myId = Program.theCore.id });
+            byte[] b = Program.serializer.serialize(new Commands.EndPunchCommand() { myId = Program.theCore.id, port= (ushort)((System.Net.IPEndPoint)udp.LocalEndPoint).Port });
             if (isLocal)
             {
                 foreach (System.Net.IPAddress a in internalAddress)
-                    udp.SendTo(b, new System.Net.IPEndPoint(a, localControlPort));
+                {
+                    SystemLog.addEntry("Sent EndPunch to " + new System.Net.IPEndPoint(a, localControlPort));
+                    Program.udpSend(b, new System.Net.IPEndPoint(a, localControlPort));
+                }
             }
             else
-                udp.SendTo(b, actualEndpoint);
+            {
+                SystemLog.addEntry("Sent EndPunch to " + actualEndpoint);
+                Program.udpSend(b, actualEndpoint);
+            }
             System.Threading.Thread t = new System.Threading.Thread(delegate ()
             {
                 try
@@ -561,10 +569,12 @@ namespace Dimension.Model
                     s.ReuseAddress = true;
                     s.Bind(udp);
                     s.Rendezvous = true;
+                    SystemLog.addEntry("Beginning rendezvous...");
                     s.Connect(sender);
 
                     Program.theCore.addIncomingConnection(new UdtIncomingConnection(s));
-                    
+
+                    SystemLog.addEntry("Rendezvous successful!");
                 }
                 catch (Exception e)
                 {

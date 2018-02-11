@@ -233,23 +233,23 @@ namespace Dimension.UI
             {
                 if (filesView.SelectedItems[0].Text == "..")
                 {
+                    filesView.Items.Clear();
                     currentPath = currentPath.TrimEnd('/');
                     currentPath = currentPath.Substring(0, currentPath.LastIndexOf('/'));
                     if (currentPath == "")
                         currentPath = "/";
                     p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
-                    filesView.Items.Clear();
                     return;
                 }
                 Model.Commands.FSListing tag = (Model.Commands.FSListing)filesView.SelectedItems[0].Tag;
                 if (tag.isFolder)
                 {
+                    filesView.Items.Clear();
                     if (currentPath == "/")
                         currentPath += tag.name;
                     else
                         currentPath += "/" + tag.name;
                     p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
-                    filesView.Items.Clear();
                 }
                 else
                 {

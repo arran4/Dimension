@@ -51,7 +51,7 @@ namespace Dimension.Model
                 }
                 catch
                 {
-                    return;
+                    continue;
                 }
                 Commands.Command c = Program.serializer.deserialize(dataByte);
                 if (c is Commands.DataCommand)
@@ -84,11 +84,19 @@ namespace Dimension.Model
             {
                 try
                 {
-                    socket.Send(BitConverter.GetBytes(len));
-                    Program.globalUpCounter.addBytes(4);
-
                     int pos = 0;
                     int read = 1;
+
+
+                    while (pos < 4)
+                    {
+                        read = socket.Send(BitConverter.GetBytes(len), pos, 4 - pos);
+                        Program.globalUpCounter.addBytes((ulong)read);
+                        pos += read;
+                    }
+                    pos = 0;
+                    Program.globalUpCounter.addBytes(4);
+
                     while (pos < b.Length)
                     {
                         read = socket.Send(b, pos, b.Length - pos);
@@ -120,7 +128,14 @@ namespace Dimension.Model
         {
             get
             {
-                return socket.State != Udt.SocketState.Closed;
+                try
+                {
+                    return socket.State != Udt.SocketState.Closed;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
     }

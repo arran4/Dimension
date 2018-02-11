@@ -390,7 +390,7 @@ namespace Dimension.Model
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
                     if (p.id == ((Commands.BeginPunchCommand)c).myId)
                     {
-                        p.endPunch(sender);
+                        p.endPunch(new  System.Net.IPEndPoint(sender.Address, ((Commands.BeginPunchCommand)c).port));
                         return;
                     }
             }
@@ -399,7 +399,7 @@ namespace Dimension.Model
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
                     if (p.id == ((Commands.EndPunchCommand)c).myId)
                     {
-                        p.releasePunch(sender);
+                        p.releasePunch(new System.Net.IPEndPoint(sender.Address, ((Commands.EndPunchCommand)c).port));
                         return;
                     }
             }
