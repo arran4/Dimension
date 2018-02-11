@@ -8,5 +8,6 @@ namespace Dimension.Model.Commands
 {
     public abstract class PunchCommand : Command
     {
+        public ulong myId;
     }
 }

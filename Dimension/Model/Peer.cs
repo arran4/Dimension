@@ -295,6 +295,7 @@ namespace Dimension.Model
                 Program.theCore.addIncomingConnection(c);
             }
         }
+
         System.Net.Sockets.TcpClient attemptConnection()
         {
 
@@ -388,7 +389,13 @@ namespace Dimension.Model
                         bool reverseConnect = false;
                         if (Program.settings.getBool("Default to Reverse Connection", false))
                             reverseConnect = true;
-                        if (!reverseConnect)
+                        bool rendezvousConnect = false;
+                        if (Program.settings.getBool("Always Rendezvous", false))
+                        {
+                            reverseConnect = false;
+                            rendezvousConnect = true;
+                        }
+                        if (!reverseConnect && !rendezvousConnect)
                         {
                             try
                             {
@@ -421,6 +428,37 @@ namespace Dimension.Model
 
                             return;
                         }
+                    if (rendezvousConnect)
+                    {
+
+                        response?.Invoke("Attempting to initiate rendezvous connection.");
+
+                        response?.Invoke("Binding to random socket.");
+                        System.Net.Sockets.UdpClient udp = new System.Net.Sockets.UdpClient(0);
+
+                        response?.Invoke("Successfully bound to UDP endepoint " + udp.Client.LocalEndPoint.ToString());
+
+                        response?.Invoke("Sending UDP punch.");
+                        byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id });
+                        udp.Send(b, b.Length, actualEndpoint);
+
+                        response?.Invoke("Waiting for UDP response.");
+                        rendezvousSemaphore.WaitOne();
+
+                        response?.Invoke("Received a UDP response! Remote endpoint is " + rendezvousAddress.ToString());
+
+
+                        response?.Invoke("Binding UDT to UDP socket.");
+                        Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                        s.Bind(udp.Client);
+                        s.Rendezvous = true;
+
+                        response?.Invoke("Performing UDT rendezvous...");
+                        s.Connect(rendezvousAddress);
+
+                        response?.Invoke("Rendezvous connection successful!");
+                        return;
+                    }
                     }
                 }
                 else
@@ -430,7 +468,14 @@ namespace Dimension.Model
                     bool reverseConnect = false;
                     if (Program.settings.getBool("Default to Reverse Connection", false))
                         reverseConnect = true;
-                    if (!reverseConnect)
+                    bool rendezvousConnect = false;
+                    if (Program.settings.getBool("Always Rendezvous", false))
+                    {
+                        reverseConnect = false;
+                        rendezvousConnect = true;
+                    }
+        
+                    if (!reverseConnect && !rendezvousConnect)
                     {
                         try
                         {
@@ -458,6 +503,39 @@ namespace Dimension.Model
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe() { myId = Program.theCore.id });
                         Program.udpSend(b, b.Length, actualEndpoint);
                         return;
+                        
+                    }
+
+                    if (rendezvousConnect)
+                    {
+
+                        response?.Invoke("Attempting to initiate rendezvous connection.");
+
+                        response?.Invoke("Binding to random socket.");
+                        System.Net.Sockets.UdpClient udp = new System.Net.Sockets.UdpClient(0);
+
+                        response?.Invoke("Successfully bound to UDP endepoint " + udp.Client.LocalEndPoint.ToString());
+
+                        response?.Invoke("Sending UDP punch.");
+                        byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id });
+                        udp.Send(b, b.Length, actualEndpoint);
+
+                        response?.Invoke("Waiting for UDP response.");
+                        rendezvousSemaphore.WaitOne();
+
+                        response?.Invoke("Received a UDP response! Remote endpoint is " + rendezvousAddress.ToString());
+
+
+                        response?.Invoke("Binding UDT to UDP socket.");
+                        Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                        s.Bind(udp.Client);
+                        s.Rendezvous = true;
+
+                        response?.Invoke("Performing UDT rendezvous...");
+                        s.Connect(rendezvousAddress);
+
+                        response?.Invoke("Rendezvous connection successful!");
+                        return;
                     }
                 }
 
@@ -470,6 +548,20 @@ namespace Dimension.Model
             if (createUdt && udtConnection != null)
                 udtConnection.commandReceived += commandReceived;
         }
+        public void endPunch(System.Net.IPEndPoint sender)
+        {
+            System.Net.Sockets.UdpClient udp = new System.Net.Sockets.UdpClient(0);
+            byte[] b = Program.serializer.serialize(new Commands.EndPunchCommand() { myId = Program.theCore.id });
+            udp.Send(b, b.Length, actualEndpoint);
+
+            Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+            s.Bind(udp.Client);
+            s.Rendezvous = true;
+            s.Connect(sender);
+
+        }
+        System.Net.IPEndPoint rendezvousAddress = null;
+        System.Threading.Semaphore rendezvousSemaphore = new System.Threading.Semaphore(0, int.MaxValue);
         List<int> usedIds = new List<int>();
         public void chatReceived(Commands.RoomChatCommand r)
         {

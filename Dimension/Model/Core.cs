@@ -387,6 +387,15 @@ namespace Dimension.Model
                 if (g.requestingGossipBack)
                     sendGossip(g.circleId, sender, false);
             }
+            if (c is Commands.BeginPunchCommand)
+            {
+                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                    if (p.id == ((Commands.BeginPunchCommand)c).myId)
+                    {
+                        p.endPunch(sender);
+                        return;
+                    }
+            }
             if (c is Commands.ConnectToMe)
             {
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
