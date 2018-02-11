@@ -23,6 +23,16 @@ namespace Dimension.Model
             t.Name = "UDT receive loop";
             t.Start();
         }
+        public UdtOutgoingConnection(Udt.Socket s)
+        {
+            socket = s;
+            send(Program.theCore.generateHello());
+            successfulConnections++;
+            System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
+            t.IsBackground = true;
+            t.Name = "UDT receive loop";
+            t.Start();
+        }
         void receiveLoop()
         {
             while (connected)

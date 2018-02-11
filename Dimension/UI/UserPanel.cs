@@ -269,9 +269,7 @@ namespace Dimension.UI
         {
 
             bool useUDT = false;
-
-            if (p.udtConnection != null && p.useUDT && Program.settings.getBool("Use UDT", true))
-                useUDT = true;
+            
             Model.Transfer t;
             lock (p.transfers)
             {
@@ -328,16 +326,9 @@ namespace Dimension.UI
                 {
                     c = new Model.Commands.RequestChunks() { allChunks = true, path = s, startingByte = startingByte };
                 }
-                if (useUDT)
-                {
-                    t.con = p.udtConnection;
-                    p.udtConnection.send(c);
-                }
-                else
-                {
-                    t.con = p.dataConnection;
-                    p.dataConnection.send(c);
-                }
+                t.con = p.dataConnection;
+                p.dataConnection.send(c);
+                
             });
             t2.IsBackground = true;
             t2.Name = "Download request thread";

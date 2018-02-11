@@ -14,7 +14,6 @@ namespace Dimension.Model
         public Dictionary<ulong, int> peerCount = new Dictionary<ulong, int>();
         public OutgoingConnection dataConnection;
         public OutgoingConnection controlConnection;
-        public OutgoingConnection udtConnection;
         public System.Net.IPAddress publicAddress;
         public System.Net.IPAddress[] internalAddress;
         public int buildNumber;
@@ -138,9 +137,6 @@ namespace Dimension.Model
             if (c is Commands.CancelCommand)
             {
                 OutgoingConnection c3 = null;
-                if (udtConnection != null)
-                    if (udtConnection.connected)
-                        c3 = udtConnection;
                 if (dataConnection != null)
                     if (dataConnection.connected)
                         c3 = dataConnection;
@@ -245,9 +241,6 @@ namespace Dimension.Model
         void updateTransferRate(Transfer t)
         {
             OutgoingConnection c3 = null;
-            if (udtConnection != null)
-                if (udtConnection.connected)
-                    c3 = udtConnection;
             if (dataConnection != null)
                 if (dataConnection.connected)
                     if (dataConnection.rate > 0)
@@ -357,12 +350,6 @@ namespace Dimension.Model
             if (controlConnection != null)
                 if (controlConnection.connected)
                     createControl = false;
-            bool createUdt = true;
-            if (udtConnection != null)
-                if (udtConnection.connected)
-                    createUdt = false;
-            if (!useUDT || !Program.settings.getBool("Use UDT", true))
-                createUdt = false;
             if (id == Program.theCore.id)
             {
                 response?.Invoke("Loopback peer found, creating loopback connection...");
@@ -370,7 +357,6 @@ namespace Dimension.Model
                     controlConnection = new LoopbackOutgoingConnection();
                 if (createData)
                     dataConnection = new LoopbackOutgoingConnection();
-                createUdt = false;
             }
             else
             {
@@ -399,11 +385,6 @@ namespace Dimension.Model
                         {
                             try
                             {
-                                if (createUdt && udtConnection == null)
-                                {
-                                    response?.Invoke("Creating UDT connection to " + actualEndpoint.Address.ToString() + ":" + localUDTPort.ToString());
-                                    udtConnection = new UdtOutgoingConnection(actualEndpoint.Address, localUDTPort);
-                                }
                                 if (createControl && controlConnection == null)
                                 {
                                     response?.Invoke("Creating TCP connection to " + actualEndpoint.Address.ToString() + ":" + localDataPort.ToString());
@@ -428,43 +409,60 @@ namespace Dimension.Model
 
                             return;
                         }
-                    if (rendezvousConnect)
-                    {
+                        if (rendezvousConnect)
+                        {
 
-                        response?.Invoke("Attempting to initiate rendezvous connection.");
+                            response?.Invoke("Attempting to initiate rendezvous connection.");
 
-                        response?.Invoke("Binding to random socket.");
-                        System.Net.Sockets.UdpClient udp = new System.Net.Sockets.UdpClient(0);
+                            response?.Invoke("Binding to random socket.");
+                            System.Net.Sockets.UdpClient udp = new System.Net.Sockets.UdpClient(0);
 
-                        response?.Invoke("Successfully bound to UDP endepoint " + udp.Client.LocalEndPoint.ToString());
+                            response?.Invoke("Successfully bound to UDP endepoint " + udp.Client.LocalEndPoint.ToString());
 
-                        response?.Invoke("Sending UDP punch.");
-                        byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id });
-                        udp.Send(b, b.Length, actualEndpoint);
+                            response?.Invoke("Sending UDP punch.");
+                            byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id });
+                            udp.Send(b, b.Length, actualEndpoint);
 
-                        response?.Invoke("Waiting for UDP response.");
-                        rendezvousSemaphore.WaitOne();
+                            response?.Invoke("Waiting for UDP response.");
+                            rendezvousSemaphore.WaitOne();
 
-                        response?.Invoke("Received a UDP response! Remote endpoint is " + rendezvousAddress.ToString());
+                            response?.Invoke("Received a UDP response! Remote endpoint is " + rendezvousAddress.ToString());
 
+                            response?.Invoke("Binding UDT to UDP socket.");
+                            Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                            s.ReuseAddress = true;
+                            s.Bind(udp.Client);
+                            s.Rendezvous = true;
 
-                        response?.Invoke("Binding UDT to UDP socket.");
-                        Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
-                        s.Bind(udp.Client);
-                        s.Rendezvous = true;
+                            response?.Invoke("Performing UDT control rendezvous...");
+                            s.Connect(rendezvousAddress);
 
-                        response?.Invoke("Performing UDT rendezvous...");
-                        s.Connect(rendezvousAddress);
+                            controlConnection = new UdtOutgoingConnection(s);
+                            controlConnection.commandReceived += commandReceived;
 
-                        response?.Invoke("Rendezvous connection successful!");
-                        return;
-                    }
+                            response?.Invoke("Control rendezvous successful!");
+                            System.Threading.Thread.Sleep(500);
+
+                            s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                            s.ReuseAddress = true;
+                            s.Bind(udp.Client);
+                            s.Rendezvous = true;
+
+                            response?.Invoke("Performing UDT data rendezvous...");
+                            s.Connect(rendezvousAddress);
+
+                            dataConnection = new UdtOutgoingConnection(s);
+                            dataConnection.commandReceived += commandReceived;
+
+                            response?.Invoke("Rendezvous connection successful!");
+                            System.Threading.Thread.Sleep(500);
+                            return;
+                        }
                     }
                 }
                 else
                 {
-
-                    createUdt = false;
+                    
                     bool reverseConnect = false;
                     if (Program.settings.getBool("Default to Reverse Connection", false))
                         reverseConnect = true;
@@ -474,7 +472,7 @@ namespace Dimension.Model
                         reverseConnect = false;
                         rendezvousConnect = true;
                     }
-        
+
                     if (!reverseConnect && !rendezvousConnect)
                     {
                         try
@@ -503,7 +501,7 @@ namespace Dimension.Model
                         byte[] b = Program.serializer.serialize(new Commands.ConnectToMe() { myId = Program.theCore.id });
                         Program.udpSend(b, b.Length, actualEndpoint);
                         return;
-                        
+
                     }
 
                     if (rendezvousConnect)
@@ -528,36 +526,83 @@ namespace Dimension.Model
 
                         response?.Invoke("Binding UDT to UDP socket.");
                         Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                        s.ReuseAddress = true;
                         s.Bind(udp.Client);
                         s.Rendezvous = true;
 
-                        response?.Invoke("Performing UDT rendezvous...");
+                        response?.Invoke("Performing UDT control rendezvous...");
+                        s.Connect(rendezvousAddress);
+                        controlConnection = new UdtOutgoingConnection(s);
+                        controlConnection.commandReceived += commandReceived;
+
+                        response?.Invoke("Control rendezvous successful!");
+                        System.Threading.Thread.Sleep(500);
+
+                        s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                        s.ReuseAddress = true;
+                        s.Bind(udp.Client);
+                        s.Rendezvous = true;
+
+                        response?.Invoke("Performing UDT data rendezvous...");
                         s.Connect(rendezvousAddress);
 
+                        dataConnection = new UdtOutgoingConnection(s);
+                        dataConnection.commandReceived += commandReceived;
+
                         response?.Invoke("Rendezvous connection successful!");
+                        System.Threading.Thread.Sleep(500);
                         return;
                     }
                 }
 
             }
             if (createData)
-                if(dataConnection != null)
+                if (dataConnection != null)
                     dataConnection.commandReceived += commandReceived;
             if (createControl && controlConnection != null)
                 controlConnection.commandReceived += commandReceived;
-            if (createUdt && udtConnection != null)
-                udtConnection.commandReceived += commandReceived;
         }
         public void endPunch(System.Net.IPEndPoint sender)
         {
             System.Net.Sockets.UdpClient udp = new System.Net.Sockets.UdpClient(0);
             byte[] b = Program.serializer.serialize(new Commands.EndPunchCommand() { myId = Program.theCore.id });
-            udp.Send(b, b.Length, actualEndpoint);
+            if (isLocal)
+            {
+                foreach (System.Net.IPAddress a in internalAddress)
+                    udp.Send(b, b.Length, new System.Net.IPEndPoint(a, localControlPort));
+            }
+            else
+                udp.Send(b, b.Length, actualEndpoint);
+            System.Threading.Thread t = new System.Threading.Thread(delegate ()
+            {
+                try
+                {
+                    Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                    s.ReuseAddress = true;
+                    s.Bind(udp.Client);
+                    s.Rendezvous = true;
+                    s.Connect(sender);
 
-            Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
-            s.Bind(udp.Client);
-            s.Rendezvous = true;
-            s.Connect(sender);
+                    Program.theCore.addIncomingConnection(new UdtIncomingConnection(s));
+
+                    System.Threading.Thread.Sleep(500);
+                    
+                    s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+                    s.ReuseAddress = true;
+                    s.Bind(udp.Client);
+                    s.Rendezvous = true;
+                    s.Connect(sender);
+
+                    Program.theCore.addIncomingConnection(new UdtIncomingConnection(s));
+                }
+                catch (Exception e)
+                {
+                    SystemLog.addEntry("Error rendezvous'ing to " + sender.ToString() + " - " + e.Message);
+                }
+            });
+            t.Name = "Rendezvous thread";
+            t.IsBackground = true;
+            t.Start();
 
         }
         public void releasePunch(System.Net.IPEndPoint sender)

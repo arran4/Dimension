@@ -228,9 +228,6 @@ namespace Dimension.Model
                         c.send(k);
                 foreach (Peer p in peerManager.allPeers)
                 {
-                    if (p.udtConnection != null)
-                        if (p.udtConnection.connected)
-                            p.udtConnection.send(k);
                     if (p.dataConnection != null)
                         if (p.dataConnection.connected)
                             p.dataConnection.send(k);

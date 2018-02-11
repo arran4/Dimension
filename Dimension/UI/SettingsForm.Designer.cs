@@ -48,10 +48,10 @@
             this.usernameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.alwaysRendezvousButton = new System.Windows.Forms.CheckBox();
             this.reverseDefaultBox = new System.Windows.Forms.CheckBox();
             this.dhtPortBox = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
-            this.useUDTBox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -70,7 +70,6 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.alwaysRendezvousButton = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -277,7 +276,6 @@
             this.tabPage2.Controls.Add(this.reverseDefaultBox);
             this.tabPage2.Controls.Add(this.dhtPortBox);
             this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Controls.Add(this.useUDTBox);
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.label3);
@@ -293,6 +291,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Network";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // alwaysRendezvousButton
+            // 
+            this.alwaysRendezvousButton.AutoSize = true;
+            this.alwaysRendezvousButton.Location = new System.Drawing.Point(17, 203);
+            this.alwaysRendezvousButton.Name = "alwaysRendezvousButton";
+            this.alwaysRendezvousButton.Size = new System.Drawing.Size(122, 17);
+            this.alwaysRendezvousButton.TabIndex = 12;
+            this.alwaysRendezvousButton.Text = "Always Rendezvous";
+            this.alwaysRendezvousButton.UseVisualStyleBackColor = true;
             // 
             // reverseDefaultBox
             // 
@@ -324,16 +332,6 @@
             this.label8.Size = new System.Drawing.Size(81, 13);
             this.label8.TabIndex = 9;
             this.label8.Text = "UDP DHT Port:";
-            // 
-            // useUDTBox
-            // 
-            this.useUDTBox.AutoSize = true;
-            this.useUDTBox.Location = new System.Drawing.Point(17, 155);
-            this.useUDTBox.Name = "useUDTBox";
-            this.useUDTBox.Size = new System.Drawing.Size(71, 17);
-            this.useUDTBox.TabIndex = 8;
-            this.useUDTBox.Text = "Use UDT";
-            this.useUDTBox.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -495,16 +493,6 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
-            // alwaysRendezvousButton
-            // 
-            this.alwaysRendezvousButton.AutoSize = true;
-            this.alwaysRendezvousButton.Location = new System.Drawing.Point(17, 203);
-            this.alwaysRendezvousButton.Name = "alwaysRendezvousButton";
-            this.alwaysRendezvousButton.Size = new System.Drawing.Size(122, 17);
-            this.alwaysRendezvousButton.TabIndex = 12;
-            this.alwaysRendezvousButton.Text = "Always Rendezvous";
-            this.alwaysRendezvousButton.UseVisualStyleBackColor = true;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -565,7 +553,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Button deleteShareButton;
-        private System.Windows.Forms.CheckBox useUDTBox;
         private System.Windows.Forms.NumericUpDown dhtPortBox;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox fontSelectBox;
