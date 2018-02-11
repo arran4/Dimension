@@ -88,6 +88,16 @@ namespace Dimension.Model
                     return false;
             }
         }
+        public bool assumingDead
+        {
+            get
+            {
+                if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 60000)
+                    return true;
+                else
+                    return false;
+            }
+        }
         public bool isLocal
         {
             get

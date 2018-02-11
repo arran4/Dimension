@@ -21,8 +21,9 @@ namespace Dimension.Model
             foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
             {
                 Program.udpSend(b, b.Length, p.actualEndpoint);
-                foreach(System.Net.IPAddress ip in p.internalAddress)
-                    Program.udpSend(b, b.Length, new System.Net.IPEndPoint(ip,p.localControlPort));
+                if(p.internalAddress != null)
+                    foreach(System.Net.IPAddress ip in p.internalAddress)
+                        Program.udpSend(b, b.Length, new System.Net.IPEndPoint(ip,p.localControlPort));
                 Program.udpSend(b, b.Length, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
             }
             foreach (System.Net.IPEndPoint e in toHello)
@@ -998,33 +999,35 @@ namespace Dimension.Model
                                 //Program.globalUpCounter.addBytes(b.Length);
                                 try
                                 {
-
-                                    if (p.maybeDead)
+                                    if (!p.assumingDead)
                                     {
-                                        Program.udpSend(m2, p.actualEndpoint);
-                                        if (p.isLocal)
+                                        if (p.maybeDead)
                                         {
-                                            if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
-                                                Program.udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                            Program.udpSend(m2, p.actualEndpoint);
+                                            if (p.isLocal)
+                                            {
+                                                if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
+                                                    Program.udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                            }
+                                            else
+                                            {
+                                                if (p.publicAddress.ToString() != p.actualEndpoint.Address.ToString())
+                                                    Program.udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                            }
                                         }
                                         else
                                         {
-                                            if (p.publicAddress.ToString() != p.actualEndpoint.Address.ToString())
-                                                Program.udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Program.udpSend(m, p.actualEndpoint);
-                                        if (p.isLocal)
-                                        {
-                                            if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
-                                                Program.udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
-                                        }
-                                        else
-                                        {
-                                            if (p.publicAddress.ToString() != p.actualEndpoint.Address.ToString())
-                                                Program.udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                            Program.udpSend(m, p.actualEndpoint);
+                                            if (p.isLocal)
+                                            {
+                                                if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
+                                                    Program.udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                            }
+                                            else
+                                            {
+                                                if (p.publicAddress.ToString() != p.actualEndpoint.Address.ToString())
+                                                    Program.udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                            }
                                         }
                                     }
                                 }
