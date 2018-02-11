@@ -29,17 +29,24 @@ namespace Dimension.Model
                 try
                 {
                     byte[] lenByte = new byte[4];
-                    socket.Receive(lenByte);
+                    while (pos < lenByte.Length)
+                    {
+                        read = socket.Receive(lenByte, pos, lenByte.Length - pos);
+                        pos += read;
+                        Program.globalDownCounter.addBytes((ulong)read);
+                    }
+                    pos = 0;
                     Program.globalDownCounter.addBytes(4);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
 
-                    if (dataByte.Length == 0)
-                        return;
-                    while (pos < dataByte.Length)
+                    if (dataByte.Length > 0)
                     {
-                        read = socket.Receive(dataByte, pos, dataByte.Length - pos);
-                        pos += read;
-                        Program.globalDownCounter.addBytes((ulong)read);
+                        while (pos < dataByte.Length)
+                        {
+                            read = socket.Receive(dataByte, pos, dataByte.Length - pos);
+                            pos += read;
+                            Program.globalDownCounter.addBytes((ulong)read);
+                        }
                     }
                 }
                 catch

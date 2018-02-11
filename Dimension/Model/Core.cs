@@ -231,9 +231,10 @@ namespace Dimension.Model
                     if (p.dataConnection != null)
                         if (p.dataConnection.connected)
                             p.dataConnection.send(k);
-                    if (p.controlConnection != null)
-                        if (p.controlConnection.connected)
-                            p.controlConnection.send(k);
+                    if(p.controlConnection != p.dataConnection)
+                        if (p.controlConnection != null)
+                            if (p.controlConnection.connected)
+                                p.controlConnection.send(k);
                 }
                 System.Threading.Thread.Sleep(5000);
             }

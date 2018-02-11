@@ -43,18 +43,24 @@ namespace Dimension.Model
                 try
                 {
                     byte[] lenByte = new byte[4];
-                    socket.Receive(lenByte);
-                    Program.globalDownCounter.addBytes((ulong)lenByte.Length);
-                    dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
-                    
-                    if (dataByte.Length == 0)
-                        return;
-
-                    while (pos < dataByte.Length)
+                    while (pos < lenByte.Length)
                     {
-                        read = socket.Receive(dataByte, pos, dataByte.Length - pos);
+                        read = socket.Receive(lenByte, pos, lenByte.Length - pos);
                         pos += read;
                         Program.globalDownCounter.addBytes((ulong)read);
+                    }
+                    pos = 0;
+                    Program.globalDownCounter.addBytes((ulong)lenByte.Length);
+                    dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
+
+                    if (dataByte.Length > 0)
+                    {
+                        while (pos < dataByte.Length)
+                        {
+                            read = socket.Receive(dataByte, pos, dataByte.Length - pos);
+                            pos += read;
+                            Program.globalDownCounter.addBytes((ulong)read);
+                        }
                     }
                 }
                 catch
@@ -79,7 +85,8 @@ namespace Dimension.Model
                     ((Commands.DataCommand)c).data = chunk;
                     sw.Stop();
 
-                    rate = (ulong)((chunk.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
+                    if(sw.ElapsedTicks > 0)
+                        rate = (ulong)((chunk.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
                 }
                 commandReceived?.Invoke(c);
             }
