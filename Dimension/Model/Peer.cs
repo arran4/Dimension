@@ -541,22 +541,25 @@ namespace Dimension.Model
         }
         public void endPunch(System.Net.IPEndPoint sender)
         {
-            System.Net.Sockets.UdpClient udp = new System.Net.Sockets.UdpClient(0);
+            System.Net.Sockets.Socket udp = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
+
+            udp.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 0));
+
             byte[] b = Program.serializer.serialize(new Commands.EndPunchCommand() { myId = Program.theCore.id });
             if (isLocal)
             {
                 foreach (System.Net.IPAddress a in internalAddress)
-                    udp.Send(b, b.Length, new System.Net.IPEndPoint(a, localControlPort));
+                    udp.SendTo(b, new System.Net.IPEndPoint(a, localControlPort));
             }
             else
-                udp.Send(b, b.Length, actualEndpoint);
+                udp.SendTo(b, actualEndpoint);
             System.Threading.Thread t = new System.Threading.Thread(delegate ()
             {
                 try
                 {
                     Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
                     s.ReuseAddress = true;
-                    s.Bind(udp.Client);
+                    s.Bind(udp);
                     s.Rendezvous = true;
                     s.Connect(sender);
 
