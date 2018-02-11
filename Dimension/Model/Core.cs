@@ -399,7 +399,7 @@ namespace Dimension.Model
             if (c is Commands.EndPunchCommand)
             {
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
-                    if (p.id == ((Commands.BeginPunchCommand)c).myId)
+                    if (p.id == ((Commands.EndPunchCommand)c).myId)
                     {
                         p.releasePunch(sender);
                         return;
