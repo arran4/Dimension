@@ -238,6 +238,7 @@ namespace Dimension.UI
                     if (currentPath == "")
                         currentPath = "/";
                     p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
+                    filesView.Items.Clear();
                     return;
                 }
                 Model.Commands.FSListing tag = (Model.Commands.FSListing)filesView.SelectedItems[0].Tag;
@@ -248,6 +249,7 @@ namespace Dimension.UI
                     else
                         currentPath += "/" + tag.name;
                     p.controlConnection.send(new Model.Commands.GetFileListing(currentPath));
+                    filesView.Items.Clear();
                 }
                 else
                 {
