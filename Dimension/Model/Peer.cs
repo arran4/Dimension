@@ -560,6 +560,11 @@ namespace Dimension.Model
             s.Connect(sender);
 
         }
+        public void releasePunch(System.Net.IPEndPoint sender)
+        {
+            rendezvousAddress = sender;
+            rendezvousSemaphore.Release();
+        }
         System.Net.IPEndPoint rendezvousAddress = null;
         System.Threading.Semaphore rendezvousSemaphore = new System.Threading.Semaphore(0, int.MaxValue);
         List<int> usedIds = new List<int>();

@@ -396,6 +396,15 @@ namespace Dimension.Model
                         return;
                     }
             }
+            if (c is Commands.EndPunchCommand)
+            {
+                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                    if (p.id == ((Commands.BeginPunchCommand)c).myId)
+                    {
+                        p.releasePunch(sender);
+                        return;
+                    }
+            }
             if (c is Commands.ConnectToMe)
             {
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
