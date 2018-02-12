@@ -289,10 +289,10 @@ namespace Dimension.UI
                     if (p.dataConnection is Model.LoopbackOutgoingConnection)
                         t.protocol = "Loopback";
                     else
-                        if (useUDT)
-                        t.protocol = "UDT";
-                    else
-                        t.protocol = "TCP";
+                        if (p.dataConnection is Model.UdtOutgoingConnection)
+                            t.protocol = "UDT";
+                        else
+                            t.protocol = "TCP";
 
                     p.transfers[t.path] = t;
                     lock (Model.Transfer.transfers)

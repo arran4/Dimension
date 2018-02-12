@@ -360,7 +360,7 @@ namespace Dimension.Model
             }
             else
             {
-                if (isLocal)
+                if (isLocal && internalAddress != null)
                 {
                     response?.Invoke("Local peer found.");
                     if (internalAddress.Length > 1)
@@ -435,6 +435,7 @@ namespace Dimension.Model
 
                             response?.Invoke("Binding UDT to UDP socket.");
                             Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+
                             s.ReuseAddress = true;
                             s.Bind(udp);
 
@@ -443,7 +444,9 @@ namespace Dimension.Model
                             response?.Invoke("Performing UDT control rendezvous...");
                             s.Connect(rendezvousAddress);
 
-                            controlConnection = new UdtOutgoingConnection(s);
+                            while (s.State == Udt.SocketState.Connecting)
+                                System.Threading.Thread.Sleep(10);
+                            controlConnection = new UdtOutgoingConnection(s, udp);
                             dataConnection = controlConnection;
 
                             response?.Invoke("Rendezvous connection successful!");
@@ -517,15 +520,18 @@ namespace Dimension.Model
 
                         response?.Invoke("Binding UDT to UDP socket.");
                         Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+
                         s.ReuseAddress = true;
                         s.Bind(udp);
-                        
+
                         s.Rendezvous = true;
 
                         response?.Invoke("Performing UDT control rendezvous...");
                         s.Connect(rendezvousAddress);
 
-                        controlConnection = new UdtOutgoingConnection(s);
+                        while (s.State == Udt.SocketState.Connecting)
+                            System.Threading.Thread.Sleep(10);
+                        controlConnection = new UdtOutgoingConnection(s, udp);
                         dataConnection = controlConnection;
 
                         response?.Invoke("Rendezvous connection successful!");
@@ -567,12 +573,14 @@ namespace Dimension.Model
                 {
                     Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
                     s.ReuseAddress = true;
+                    
                     s.Bind(udp);
                     s.Rendezvous = true;
                     SystemLog.addEntry("Beginning rendezvous...");
                     s.Connect(sender);
-
-                    Program.theCore.addIncomingConnection(new UdtIncomingConnection(s));
+                    while (s.State == Udt.SocketState.Connecting)
+                        System.Threading.Thread.Sleep(10);
+                    Program.theCore.addIncomingConnection(new UdtIncomingConnection(s, udp));
 
                     SystemLog.addEntry("Rendezvous successful!");
                 }

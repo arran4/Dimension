@@ -10,8 +10,10 @@ namespace Dimension.Model
     {
         Udt.Socket socket;
         public override event CommandReceived commandReceived;
-        public UdtIncomingConnection(Udt.Socket socket)
+        System.Net.Sockets.Socket underlying;
+        public UdtIncomingConnection(Udt.Socket socket, System.Net.Sockets.Socket underlying)
         {
+            this.underlying = underlying;
             this.socket = socket;
 
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
@@ -38,7 +40,7 @@ namespace Dimension.Model
                     pos = 0;
                     Program.globalDownCounter.addBytes(4);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
-
+                    
                     if (dataByte.Length > 0)
                     {
                         while (pos < dataByte.Length)
@@ -70,6 +72,8 @@ namespace Dimension.Model
                 }
                 if (c is Commands.HelloCommand)
                     hello = (Commands.HelloCommand)c;
+                while (commandReceived == null && connected)
+                    System.Threading.Thread.Sleep(10);
                 commandReceived?.Invoke(c, this);
             }
         }
@@ -86,7 +90,6 @@ namespace Dimension.Model
                 {
                     int pos = 0;
                     int read = 1;
-
 
                     while (pos < 4)
                     {
@@ -121,6 +124,21 @@ namespace Dimension.Model
                 catch
                 {
                     return;
+                }
+            }
+        }
+        public bool connecting
+        {
+            get
+            {
+
+                try
+                {
+                    return socket.State == Udt.SocketState.Connecting;
+                }
+                catch
+                {
+                    return false;
                 }
             }
         }

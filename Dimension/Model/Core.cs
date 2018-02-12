@@ -134,7 +134,6 @@ namespace Dimension.Model
                 return Type.GetType("Mono.Runtime") != null;
             }
         }
-        public UDTHolder udtHolder;
         public ulong id;
         public Core()
         {
@@ -146,19 +145,6 @@ namespace Dimension.Model
             id = (ulong)Program.settings.getULong("ID", randomId);
             Program.settings.setULong("ID", id);
 
-            if (!isMono)
-            {
-                try
-                {
-                    Model.SystemLog.addEntry("Creating a UDT listener...");
-                    udtHolder = new UDTHolder();
-                }
-                catch
-                {
-                    Model.SystemLog.addEntry("Microsoft Visual C++ Runtime v10 x86 was not installed. UDT will be disabled.");
-                    Program.settings.setBool("Use UDT", false);
-                }
-            }
 
 
             Model.SystemLog.addEntry("Creating a Peer Manager...");
@@ -176,11 +162,6 @@ namespace Dimension.Model
 
 
             Model.SystemLog.addEntry("Launching network keep alive loops...");
-            if (!isMono)
-            {
-                if(udtHolder != null)
-                    udtHolder.launchLoop();
-            }
             t = new System.Threading.Thread(transferRefreshLoop);
             t.IsBackground = true;
             t.Name = "transferRefreshLoop";
@@ -563,15 +544,6 @@ namespace Dimension.Model
                 con.hello = Program.theCore.generateHello();
             lock (con)
             {
-                if (c is Commands.PrivateChatCommand)
-                {
-                    if (con.hello != null)
-                    {
-                        foreach (Peer p in peerManager.allPeers)
-                            if (p.id == con.hello.id)
-                                p.commandReceived(c);
-                    }
-                }
                 if (c is Commands.CancelCommand)
                 {
                     toCancel.Add(((Commands.CancelCommand)c).path);
@@ -882,13 +854,6 @@ namespace Dimension.Model
             {
                 c.useUDT = false;
                 c.internalUdtPort = 0;
-            }
-            else
-            {
-                if (udtHolder != null)
-                    c.internalUdtPort = udtHolder.listenPort;
-                else
-                    c.internalUdtPort = 0;
             }
             c.buildNumber = Program.buildNumber;
             c.behindDoubleNAT = Program.bootstrap.behindDoubleNAT;

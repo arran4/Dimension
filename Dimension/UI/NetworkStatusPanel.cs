@@ -47,11 +47,7 @@ namespace Dimension.UI
 
             s += "Internal Kademlia (UDP) Port: " + Program.bootstrap.internalDHTPort.ToString() + Environment.NewLine;
             s += "External Kademlia (UDP) Port: " + Program.bootstrap.publicDHTPort.ToString() + Environment.NewLine;
-
-            if (Program.theCore.udtHolder != null)
-                s += "Internal UDT (UDP) Port: " + Program.theCore.udtHolder.udtInternalPort.ToString() + Environment.NewLine;
-            else
-                s += "UDT disabled.";
+            
 
             portsTextBox.Text = s;
 

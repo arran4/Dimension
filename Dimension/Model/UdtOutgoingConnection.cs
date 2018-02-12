@@ -11,8 +11,10 @@ namespace Dimension.Model
         public static int successfulConnections = 0;
         Udt.Socket socket;
         public override event CommandReceived commandReceived;
-        public UdtOutgoingConnection(Udt.Socket s)
+        System.Net.Sockets.Socket underlying;
+        public UdtOutgoingConnection(Udt.Socket s, System.Net.Sockets.Socket underlying)
         {
+            this.underlying = underlying;
             socket = s;
             send(Program.theCore.generateHello());
             successfulConnections++;
@@ -40,7 +42,7 @@ namespace Dimension.Model
                     pos = 0;
                     Program.globalDownCounter.addBytes((ulong)lenByte.Length);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
-
+                    
                     if (dataByte.Length > 0)
                     {
                         while (pos < dataByte.Length)
@@ -53,7 +55,7 @@ namespace Dimension.Model
                 }
                 catch
                 {
-                    return;
+                    continue;
                 }
                 Commands.Command c = Program.serializer.deserialize(dataByte);
                 if (c is Commands.DataCommand)
@@ -76,6 +78,8 @@ namespace Dimension.Model
                     if(sw.ElapsedTicks > 0)
                         rate = (ulong)((chunk.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
                 }
+                while (commandReceived == null && connected)
+                    System.Threading.Thread.Sleep(10);
                 commandReceived?.Invoke(c);
             }
         }
@@ -124,6 +128,21 @@ namespace Dimension.Model
                 catch
                 {
                     return;
+                }
+            }
+        }
+        public bool connecting
+        {
+            get
+            {
+
+                try
+                {
+                    return socket.State == Udt.SocketState.Connecting;
+                }
+                catch
+                {
+                    return false;
                 }
             }
         }
