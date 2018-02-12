@@ -131,7 +131,7 @@ namespace Dimension.UI
 
                 while (listView.Items[i].SubItems.Count < w.Length)
                     listView.Items[i].SubItems.Add("");
-                for (int x = 0; x < 9; x++)
+                for (int x = 0; x <10; x++)
                     if (listView.Items[i].SubItems[x].Text != w[x])
                         listView.Items[i].SubItems[x].Text = w[x];
                 listView.Items[i].Tag = z[i];
