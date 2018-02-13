@@ -407,51 +407,12 @@ namespace Dimension.Model
                         }
                         if (reverseConnect)
                         {
-                            response?.Invoke("Attempting to initiate reverse connection.");
-
+                            doReverseConnection(response);
                             return;
                         }
                         if (rendezvousConnect)
                         {
-
-
-                            response?.Invoke("Attempting to initiate rendezvous connection.");
-
-                            response?.Invoke("Binding to random socket.");
-                            System.Net.Sockets.Socket udp = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp );
-                            
-                            udp.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 0));
-
-                            response?.Invoke("Successfully bound to UDP endepoint " + udp.LocalEndPoint.ToString());
-
-                            response?.Invoke("Sending UDP punch.");
-                            byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id, port = (ushort)((System.Net.IPEndPoint) udp.LocalEndPoint).Port });
-                            Program.udpSend(b, actualEndpoint);
-                            
-
-                            response?.Invoke("Waiting for UDP response.");
-                            rendezvousSemaphore.WaitOne();
-
-                            response?.Invoke("Received a UDP response! Remote endpoint is " + rendezvousAddress.ToString());
-
-
-                            response?.Invoke("Binding UDT to UDP socket.");
-                            Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
-
-                            s.ReuseAddress = true;
-                            s.Bind(udp);
-
-                            s.Rendezvous = true;
-                            
-                            response?.Invoke("Performing UDT control rendezvous...");
-                            s.Connect(rendezvousAddress);
-
-                            while (s.State == Udt.SocketState.Connecting)
-                                System.Threading.Thread.Sleep(10);
-                            controlConnection = new UdtOutgoingConnection(s, udp);
-                            dataConnection = controlConnection;
-
-                            response?.Invoke("Rendezvous connection successful!");
+                            doRendezvous(response);
                         }
                     }
                 }
@@ -491,59 +452,12 @@ namespace Dimension.Model
                     }
                     if (reverseConnect)
                     {
-                        response?.Invoke("Attempting to initiate reverse connection.");
-
-                        byte[] b = Program.serializer.serialize(new Commands.ConnectToMe() { myId = Program.theCore.id });
-                        Program.udpSend(b, b.Length, actualEndpoint);
+                        doReverseConnection(response);
                         return;
-
                     }
-
                     if (rendezvousConnect)
                     {
-
-                        response?.Invoke("Attempting to initiate rendezvous connection.");
-
-                        response?.Invoke("Binding to random socket.");
-                        System.Net.Sockets.Socket udp = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
-                        udp.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 0));
-                        
-                        response?.Invoke("Successfully bound to UDP endpoint " + udp.LocalEndPoint.ToString());
-
-                        response?.Invoke("Sending UDP punch.");
-                        byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id, port = (ushort)((System.Net.IPEndPoint)udp.LocalEndPoint).Port });
-                        Program.udpSend(b, actualEndpoint);
-
-                        response?.Invoke("Waiting for UDP response.");
-                        rendezvousSemaphore.WaitOne();
-
-                        response?.Invoke("Received a UDP response! Remote endpoint is " + rendezvousAddress.ToString());
-
-
-                        response?.Invoke("Binding UDT to UDP socket.");
-                        Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
-
-                        s.ReuseAddress = true;
-                        s.Bind(udp);
-
-                        s.Rendezvous = true;
-
-                        response?.Invoke("Performing UDT control rendezvous...");
-                        try
-                        {
-                            s.Connect(rendezvousAddress);
-                        }
-                        catch
-                        {
-                            return;
-                        }
-
-                        while (s.State == Udt.SocketState.Connecting)
-                            System.Threading.Thread.Sleep(10);
-                        controlConnection = new UdtOutgoingConnection(s, udp);
-                        dataConnection = controlConnection;
-
-                        response?.Invoke("Rendezvous connection successful!");
+                        doRendezvous(response);
                     }
                 }
 
@@ -554,6 +468,74 @@ namespace Dimension.Model
             if (createControl && controlConnection != null)
                 controlConnection.commandReceived += commandReceived;
             System.Threading.Thread.Sleep(500);
+        }
+        void doRendezvous(MessageResponseDelegate response)
+        {
+
+            response?.Invoke("Attempting to initiate rendezvous connection.");
+
+            response?.Invoke("Binding to random socket.");
+            System.Net.Sockets.Socket udp = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
+            udp.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 0));
+
+            response?.Invoke("Successfully bound to UDP endpoint " + udp.LocalEndPoint.ToString());
+
+            response?.Invoke("Sending UDP punch.");
+            byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id, port = (ushort)((System.Net.IPEndPoint)udp.LocalEndPoint).Port });
+            Program.udpSend(b, actualEndpoint);
+
+            response?.Invoke("Waiting for UDP response.");
+            rendezvousSemaphore.WaitOne();
+
+            response?.Invoke("Received a UDP response! Remote endpoint is " + rendezvousAddress.ToString());
+
+
+            response?.Invoke("Binding UDT to UDP socket.");
+            Udt.Socket s = new Udt.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream);
+
+            s.ReuseAddress = true;
+            s.Bind(udp);
+
+            s.Rendezvous = true;
+
+            response?.Invoke("Performing UDT control rendezvous...");
+            try
+            {
+                s.Connect(rendezvousAddress);
+            }
+            catch
+            {
+                return;
+            }
+
+            while (s.State == Udt.SocketState.Connecting)
+                System.Threading.Thread.Sleep(10);
+            controlConnection = new UdtOutgoingConnection(s, udp);
+            dataConnection = controlConnection;
+
+            response?.Invoke("Rendezvous connection successful!");
+        }
+        void doReverseConnection(MessageResponseDelegate response)
+        {
+
+            response?.Invoke("Attempting to initiate reverse connection.");
+
+            byte[] b = Program.serializer.serialize(new Commands.ConnectToMe() { myId = Program.theCore.id });
+            Program.udpSend(b, b.Length, actualEndpoint);
+
+            System.Threading.Thread t = new System.Threading.Thread(delegate ()
+            {
+                System.Threading.Thread.Sleep(15000);
+
+                if (dataConnection == null || controlConnection == null)
+                {
+                    response?.Invoke("Failed to initiate reverse connection. Attempting rendezvous connection...");
+                }
+                
+            });
+            t.Name = "Reverse connection timeout thread";
+            t.IsBackground = true;
+            t.Start();
         }
         public void endPunch(System.Net.IPEndPoint sender)
         {
