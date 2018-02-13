@@ -530,8 +530,8 @@ namespace Dimension.Model
                 if (dataConnection == null || controlConnection == null)
                 {
                     response?.Invoke("Failed to initiate reverse connection. Attempting rendezvous connection...");
+                    doRendezvous(response);
                 }
-                
             });
             t.Name = "Reverse connection timeout thread";
             t.IsBackground = true;
