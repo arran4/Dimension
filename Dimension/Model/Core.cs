@@ -523,13 +523,13 @@ namespace Dimension.Model
         List<IncomingConnection> incomings = new List<IncomingConnection>();
         public void addIncomingConnection(IncomingConnection c)
         {
+            c.commandReceived += commandReceived;
             if (c is ReliableIncomingConnection)
                 incomingTcpConnections++;
             if (c is UdtIncomingConnection)
                 incomingUdtConnections++;
             lock (incomings)
                 incomings.Add(c);
-            c.commandReceived += commandReceived;
         }
         public void removeIncomingConnection(IncomingConnection c)
         {

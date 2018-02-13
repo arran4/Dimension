@@ -350,6 +350,8 @@ namespace Dimension.Model
             if (controlConnection != null)
                 if (controlConnection.connected)
                     createControl = false;
+            if (createControl == false && createData == false)
+                return;
             if (id == Program.theCore.id)
             {
                 response?.Invoke("Loopback peer found, creating loopback connection...");
@@ -527,7 +529,14 @@ namespace Dimension.Model
                         s.Rendezvous = true;
 
                         response?.Invoke("Performing UDT control rendezvous...");
-                        s.Connect(rendezvousAddress);
+                        try
+                        {
+                            s.Connect(rendezvousAddress);
+                        }
+                        catch
+                        {
+                            return;
+                        }
 
                         while (s.State == Udt.SocketState.Connecting)
                             System.Threading.Thread.Sleep(10);
@@ -544,6 +553,7 @@ namespace Dimension.Model
                     dataConnection.commandReceived += commandReceived;
             if (createControl && controlConnection != null)
                 controlConnection.commandReceived += commandReceived;
+            System.Threading.Thread.Sleep(500);
         }
         public void endPunch(System.Net.IPEndPoint sender)
         {
