@@ -378,7 +378,7 @@ namespace Dimension.Model
                         if (Program.settings.getBool("Default to Reverse Connection", false))
                             reverseConnect = true;
                         bool rendezvousConnect = false;
-                        if (Program.settings.getBool("Always Rendezvous", false))
+                        if (Program.settings.getBool("Always Rendezvous", false) && useUDT)
                         {
                             reverseConnect = false;
                             rendezvousConnect = true;
@@ -462,7 +462,7 @@ namespace Dimension.Model
                     if (Program.settings.getBool("Default to Reverse Connection", false))
                         reverseConnect = true;
                     bool rendezvousConnect = false;
-                    if (Program.settings.getBool("Always Rendezvous", false))
+                    if (Program.settings.getBool("Always Rendezvous", false) && useUDT)
                     {
                         reverseConnect = false;
                         rendezvousConnect = true;
