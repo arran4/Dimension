@@ -194,7 +194,7 @@ namespace Dimension.Model
                 tryAgain:
                 try
                 {
-                    System.IO.FileStream f = new System.IO.FileStream(filename, System.IO.FileMode.OpenOrCreate);
+                    System.IO.FileStream f = new System.IO.FileStream(filename + ".incomplete", System.IO.FileMode.OpenOrCreate);
                     f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
                     f.Write(chunk.data, 0, chunk.data.Length);
                     f.Close();
@@ -219,6 +219,7 @@ namespace Dimension.Model
                             t.completed += (ulong)chunk.data.Length;
                             if (t.completed >= t.size)
                             {
+                                System.IO.File.Move(filename + ".incomplete", filename);
                                 lock (Transfer.transfers)
                                 {
                                     transfers.Remove(chunk.originalPath);
