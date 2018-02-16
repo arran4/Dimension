@@ -413,6 +413,7 @@ namespace Dimension.Model
                         if (rendezvousConnect)
                         {
                             doRendezvous(response);
+                            return;
                         }
                     }
                 }
@@ -458,6 +459,7 @@ namespace Dimension.Model
                     if (rendezvousConnect)
                     {
                         doRendezvous(response);
+                        return;
                     }
                 }
 
@@ -514,6 +516,10 @@ namespace Dimension.Model
             dataConnection = controlConnection;
 
             response?.Invoke("Rendezvous connection successful!");
+            controlConnection.send(new Model.Commands.GetFileListing("/"));
+            
+            dataConnection.commandReceived += commandReceived;
+            controlConnection.commandReceived += commandReceived;
         }
         void doReverseConnection(MessageResponseDelegate response)
         {

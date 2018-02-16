@@ -53,11 +53,17 @@ namespace Dimension.UI
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(new Action(delegate ()
+                try
                 {
-                    ListViewItem i = new ListViewItem(s);
-                    filesView.Items.Add(i);
-                }));
+                    this.Invoke(new Action(delegate ()
+                    {
+                        ListViewItem i = new ListViewItem(s);
+                        filesView.Items.Add(i);
+                    }));
+                }
+                catch (InvalidOperationException)
+                {
+                }
             }
             else
             {
@@ -174,25 +180,39 @@ namespace Dimension.UI
                 foreach (string s in chat.content.Split('\n'))
                 {
                     string w = DateTime.Now.ToShortTimeString() + " " + p.username + ": " + s;
-                    if (this.InvokeRequired)
-                        this.Invoke(new Action(delegate () { addLine(w); }));
-                    else
-                        addLine(w);
+                    try
+                    {
+                        if (this.InvokeRequired)
+                            this.Invoke(new Action(delegate () { addLine(w); }));
+                        else
+                            addLine(w);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
                 }
             }
             if (c is Model.Commands.FileListing)
             {
                 Model.Commands.FileListing f = (Model.Commands.FileListing)c;
+                lastFileListing = f;
                 if (f.path == currentPath)
                 {
-                    if (this.InvokeRequired)
-                        this.Invoke(new Action(delegate () { doUpdate(f); }));
-                    else
-                        doUpdate(f);
+                    try
+                    {
+                        if (this.InvokeRequired)
+                            this.Invoke(new Action(delegate () { doUpdate(f); }));
+                        else
+                            doUpdate(f);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
                 }
 
             }
         }
+        Model.Commands.FileListing lastFileListing=null;
         public void addLine(string s)
         {
             historyBox.Text += s + Environment.NewLine;
@@ -289,10 +309,10 @@ namespace Dimension.UI
                     if (p.dataConnection is Model.LoopbackOutgoingConnection)
                         t.protocol = "Loopback";
                     else
-                        if (p.dataConnection is Model.UdtOutgoingConnection)
-                            t.protocol = "UDT";
-                        else
+                        if (p.dataConnection is Model.ReliableOutgoingConnection)
                             t.protocol = "TCP";
+                        else
+                            t.protocol = "UDT";
 
                     p.transfers[t.path] = t;
                     lock (Model.Transfer.transfers)
@@ -420,6 +440,17 @@ namespace Dimension.UI
         private void filterBox_TextChanged(object sender, EventArgs e)
         {
             updateFilterList();
+        }
+
+        bool haveRendered = false;
+        private void firstRenderTimer_Tick(object sender, EventArgs e)
+        {
+            if (!haveRendered && lastFileListing != null)
+            {
+                firstRenderTimer.Enabled = false;
+                haveRendered = true;
+                doUpdate(lastFileListing);
+            }
         }
     }
 }

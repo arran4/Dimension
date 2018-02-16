@@ -132,29 +132,29 @@ namespace Dimension.Model
             {
                 WebRequest r = WebRequest.Create(address + "?port=" + publicControlEndPoint.Port.ToString());
                 response = (new StreamReader(r.GetResponse().GetResponseStream())).ReadToEnd();
+                string[] split = response.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                List<string> nonDuplicates = new List<string>();
+                foreach (string s in split)
+                    if (!nonDuplicates.Contains(s))
+                        nonDuplicates.Add(s);
+                split = nonDuplicates.ToArray();
+                IPEndPoint[] output = new IPEndPoint[split.Length];
+                for (int i = 0; i < split.Length; i++)
+                    try
+                    {
+                        output[i] = new IPEndPoint(IPAddress.Parse(split[i].Split(' ')[0]), int.Parse(split[i].Split(' ')[1]));
+                    }
+                    catch
+                    {
+                        output[i] = null;
+                    }
+
+                return output;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new IPEndPoint[] { };
             }
-            string[] split = response.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            List<string> nonDuplicates = new List<string>();
-            foreach (string s in split)
-                if (!nonDuplicates.Contains(s))
-                    nonDuplicates.Add(s);
-            split = nonDuplicates.ToArray();
-            IPEndPoint[] output = new IPEndPoint[split.Length];
-            for (int i = 0; i < split.Length; i++)
-                try
-                {
-                    output[i] = new IPEndPoint(IPAddress.Parse(split[i].Split(' ')[0]), int.Parse(split[i].Split(' ')[1]));
-                }
-                catch
-                {
-                    output[i] = null;
-                }
-
-            return output;
         }
         public UdpClient unreliableClient;
         public TcpListener listener;

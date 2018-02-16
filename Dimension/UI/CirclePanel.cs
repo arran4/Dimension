@@ -300,8 +300,10 @@ namespace Dimension.UI
             }
             bool highlight = false;
 
+
             int count = new Regex(Regex.Escape(Program.settings.getString("Username", "Username").ToLower())).Matches(s.ToLower()).Count;
-            if (p.id == Program.theCore.id)
+            
+            if (p?.id == Program.theCore.id)
             {
                 if (count > 1)
                     highlight = true;

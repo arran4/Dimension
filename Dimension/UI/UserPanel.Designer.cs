@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.foldersView = new System.Windows.Forms.TreeView();
+            this.filterBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.filesView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -41,8 +43,7 @@
             this.inputBox = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
-            this.filterBox = new System.Windows.Forms.TextBox();
+            this.firstRenderTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -84,6 +85,25 @@
             this.foldersView.TabIndex = 0;
             this.foldersView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.foldersView_AfterSelect);
             // 
+            // filterBox
+            // 
+            this.filterBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.filterBox.Location = new System.Drawing.Point(41, 3);
+            this.filterBox.Name = "filterBox";
+            this.filterBox.Size = new System.Drawing.Size(427, 20);
+            this.filterBox.TabIndex = 2;
+            this.filterBox.TextChanged += new System.EventHandler(this.filterBox_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 6);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Filter:";
+            // 
             // filesView
             // 
             this.filesView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -96,7 +116,7 @@
             this.filesView.Location = new System.Drawing.Point(0, 25);
             this.filesView.Margin = new System.Windows.Forms.Padding(2);
             this.filesView.Name = "filesView";
-            this.filesView.Size = new System.Drawing.Size(470, 428);
+            this.filesView.Size = new System.Drawing.Size(471, 428);
             this.filesView.TabIndex = 0;
             this.filesView.UseCompatibleStateImageBehavior = false;
             this.filesView.View = System.Windows.Forms.View.Details;
@@ -188,24 +208,10 @@
             this.downloadToolStripMenuItem.Text = "Download";
             this.downloadToolStripMenuItem.Click += new System.EventHandler(this.downloadToolStripMenuItem_Click);
             // 
-            // label1
+            // firstRenderTimer
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Filter:";
-            // 
-            // filterBox
-            // 
-            this.filterBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.filterBox.Location = new System.Drawing.Point(41, 3);
-            this.filterBox.Name = "filterBox";
-            this.filterBox.Size = new System.Drawing.Size(426, 20);
-            this.filterBox.TabIndex = 2;
-            this.filterBox.TextChanged += new System.EventHandler(this.filterBox_TextChanged);
+            this.firstRenderTimer.Enabled = true;
+            this.firstRenderTimer.Tick += new System.EventHandler(this.firstRenderTimer_Tick);
             // 
             // UserPanel
             // 
@@ -246,5 +252,6 @@
         private System.Windows.Forms.ToolStripMenuItem downloadToolStripMenuItem;
         private System.Windows.Forms.TextBox filterBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer firstRenderTimer;
     }
 }
