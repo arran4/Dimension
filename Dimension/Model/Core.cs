@@ -101,16 +101,17 @@ namespace Dimension.Model
                         Random r = new Random();
                         int peerCount = peerManager.allPeersInCircle(circleId, false).Length;
                         foreach (Peer p in allPeers)
-                            lock (p.peerCount)
-                                if (p.peerCount.ContainsKey(circleId))
-                                    if (p.peerCount[circleId] != peerCount)
-                                        if (p.lastGossipPeerCount == null || DateTime.Now.Subtract(p.lastGossipTime).TotalSeconds > 30)
-                                            potentials.Insert(r.Next(0, potentials.Count + 1), p);
-                                        else
-                                            lock (p.lastGossipPeerCount)
-                                                if(p.lastGossipPeerCount.ContainsKey(circleId))
-                                                    if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
-                                                        potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                            if(!p.assumingDead)
+                                lock (p.peerCount)
+                                    if (p.peerCount.ContainsKey(circleId))
+                                        if (p.peerCount[circleId] != peerCount)
+                                            if (p.lastGossipPeerCount == null || DateTime.Now.Subtract(p.lastGossipTime).TotalSeconds > 30)
+                                                potentials.Insert(r.Next(0, potentials.Count + 1), p);
+                                            else
+                                                lock (p.lastGossipPeerCount)
+                                                    if(p.lastGossipPeerCount.ContainsKey(circleId))
+                                                        if (p.lastGossipPeerCount[circleId] != p.peerCount[circleId])
+                                                            potentials.Insert(r.Next(0, potentials.Count + 1), p);
 
                         if (potentials.Count > 0)
                         {
