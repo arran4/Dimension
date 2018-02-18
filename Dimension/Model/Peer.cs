@@ -155,7 +155,7 @@ namespace Dimension.Model
             if (c is Commands.FileChunk)
             {
                 var chunk = (Commands.FileChunk)c;
-                
+             
                 string s = Program.settings.getString("Default Download Folder", "C:\\Downloads");
                 if (!System.IO.Directory.Exists(s))
                     System.IO.Directory.CreateDirectory(s);

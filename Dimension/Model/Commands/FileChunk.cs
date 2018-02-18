@@ -9,6 +9,7 @@ namespace Dimension.Model.Commands
     public class FileChunk : DataCommand
     {
         public long start;
+        public long totalSize;
         public string path;
         public string originalPath;
     }

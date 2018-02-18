@@ -659,6 +659,7 @@ namespace Dimension.Model
             {
                 Commands.FileChunk c = new Commands.FileChunk();
                 c.start = pos;
+                c.totalSize = f.Length;
                 c.originalPath = originalPath;
 
                 lock (con)
