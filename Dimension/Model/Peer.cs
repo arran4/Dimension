@@ -198,6 +198,8 @@ namespace Dimension.Model
                     f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
                     f.Write(chunk.data, 0, chunk.data.Length);
                     f.Close();
+                    if(f.Length >= chunk.totalSize)
+                        System.IO.File.Move(filename + ".incomplete", filename);
                 }
                 catch(Exception e)
                 {
@@ -219,7 +221,6 @@ namespace Dimension.Model
                             t.completed += (ulong)chunk.data.Length;
                             if (t.completed >= t.size)
                             {
-                                System.IO.File.Move(filename + ".incomplete", filename);
                                 lock (Transfer.transfers)
                                 {
                                     transfers.Remove(chunk.originalPath);
