@@ -197,14 +197,20 @@ namespace Dimension.Model
                     System.IO.FileStream f = new System.IO.FileStream(filename + ".incomplete", System.IO.FileMode.OpenOrCreate);
                     f.Seek(chunk.start, System.IO.SeekOrigin.Begin);
                     f.Write(chunk.data, 0, chunk.data.Length);
-                    f.Close();
-                    if(f.Length >= chunk.totalSize)
+                    if (f.Length >= chunk.totalSize && chunk.totalSize > 0)
+                    {
+                        f.Close();
                         System.IO.File.Move(filename + ".incomplete", filename);
+                    }
+                    else
+                    {
+                        f.Close();
+                    }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     //if (attempts > 10)
-                        //throw e;
+                    //throw e;
                     System.Threading.Thread.Sleep(50);
                     attempts++;
                     goto tryAgain;

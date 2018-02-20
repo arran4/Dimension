@@ -47,7 +47,7 @@ namespace Dimension.UI
                 s = "LAN";
             if (circleType == CircleType.bootstrap && s != "LAN")
             {
-                    e = Program.bootstrap.join(s);
+                     e = Program.bootstrap.join(s);
                     if (e.Length == 0)
                     {
                         MessageBox.Show("Invalid bootstrap URL.");
