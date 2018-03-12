@@ -325,9 +325,9 @@ namespace Dimension.UI
             {
                 long startingByte = 0;
                 string downloadPath = Model.Peer.downloadFilePath(s);
-                if (System.IO.File.Exists(downloadPath))
+                if (System.IO.File.Exists(downloadPath + ".incomplete"))
                 {
-                    startingByte = new System.IO.FileInfo(downloadPath).Length;
+                    startingByte = new System.IO.FileInfo(downloadPath + ".incomplete").Length;
                     t.completed = (ulong)startingByte;
                 }
                 if (startingByte >= (long)tag.size) //we already have the file
