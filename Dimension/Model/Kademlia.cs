@@ -46,7 +46,13 @@ namespace Dimension.Model
         {
             if (dht.State == OctoTorrent.DhtState.Ready && !ready)
             {
-                dhtWait.Release();
+                try
+                {
+                    dhtWait.Release();
+                }
+                catch
+                {
+                }
                 ready = true;
             }
         }
