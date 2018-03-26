@@ -15,7 +15,7 @@ namespace Dimension
         public MainForm()
         {
             InitializeComponent();
-            Text = "Dimension Private Alpha #" + Program.buildNumber.ToString();
+            Text = "Dimension Public Alpha #" + Program.buildNumber.ToString();
             setColors();
         }
 
@@ -514,6 +514,27 @@ namespace Dimension
             t.IsBackground = true;
             t.Name = "Check for updates thread";
             t.Start();
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                if (Program.settings.getBool("Minimize to Tray", true))
+                {
+                    Visible = false;
+                    WindowState = FormWindowState.Normal;
+                    notifyIcon.Visible = true;
+
+                }
+            }
+        }
+
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            Visible = true;
+            WindowState = FormWindowState.Normal;
+            notifyIcon.Visible = false;
         }
     }
 }

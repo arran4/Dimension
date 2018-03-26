@@ -70,6 +70,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.minimizeToTrayBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -115,6 +116,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.minimizeToTrayBox);
             this.tabPage1.Controls.Add(this.updateWithoutPromptingBox);
             this.tabPage1.Controls.Add(this.autoRejoinBox);
             this.tabPage1.Controls.Add(this.playSoundsBox);
@@ -493,6 +495,16 @@
             // 
             this.columnHeader4.Text = "Hashed";
             // 
+            // minimizeToTrayBox
+            // 
+            this.minimizeToTrayBox.AutoSize = true;
+            this.minimizeToTrayBox.Location = new System.Drawing.Point(98, 225);
+            this.minimizeToTrayBox.Name = "minimizeToTrayBox";
+            this.minimizeToTrayBox.Size = new System.Drawing.Size(102, 17);
+            this.minimizeToTrayBox.TabIndex = 14;
+            this.minimizeToTrayBox.Text = "Minimize to Tray";
+            this.minimizeToTrayBox.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -565,5 +577,6 @@
         private System.Windows.Forms.CheckBox updateWithoutPromptingBox;
         private System.Windows.Forms.CheckBox reverseDefaultBox;
         private System.Windows.Forms.CheckBox alwaysRendezvousButton;
+        private System.Windows.Forms.CheckBox minimizeToTrayBox;
     }
 }

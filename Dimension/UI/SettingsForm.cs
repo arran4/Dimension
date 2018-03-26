@@ -49,6 +49,7 @@ namespace Dimension.UI
             flashNameDropBox.Checked = Program.settings.getBool("Flash on Name Drop", true);
             playSoundsBox.Checked = Program.settings.getBool("Play sounds", true);
 
+            minimizeToTrayBox.Checked = Program.settings.getBool("Minimize to Tray", true);
             autoRejoinBox.Checked = Program.settings.getBool("Auto Rejoin on Startup", true);
             showAFKBox.Checked = Program.settings.getBool("Show AFK", true);
 
@@ -107,6 +108,7 @@ namespace Dimension.UI
             Program.settings.setString("Font", fontSelectBox.Text);
 
             Program.settings.setBool("Flash on Name Drop", flashNameDropBox.Checked);
+            Program.settings.setBool("Minimize to Tray", minimizeToTrayBox.Checked);
 
             Program.settings.setBool("Play sounds", playSoundsBox.Checked);
 

@@ -62,6 +62,7 @@
             this.closeAllSearchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.invertedColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
@@ -83,7 +84,7 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateLogTimer = new System.Windows.Forms.Timer(this.components);
             this.transferRateTimer = new System.Windows.Forms.Timer(this.components);
-            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.statusStrip.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -361,9 +362,16 @@
             // invertedColorsToolStripMenuItem
             // 
             this.invertedColorsToolStripMenuItem.Name = "invertedColorsToolStripMenuItem";
-            this.invertedColorsToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.invertedColorsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.invertedColorsToolStripMenuItem.Text = "Inverted Colors";
             this.invertedColorsToolStripMenuItem.Click += new System.EventHandler(this.invertedColorsToolStripMenuItem_Click);
+            // 
+            // checkForUpdatesToolStripMenuItem
+            // 
+            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
+            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkForUpdatesToolStripMenuItem.Text = "Check for Updates...";
+            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -510,7 +518,7 @@
             this.splitContainer1.Panel1.Controls.Add(this.contentPanel);
             this.splitContainer1.Panel1.Controls.Add(this.windowToolStrip);
             this.splitContainer1.Size = new System.Drawing.Size(724, 324);
-            this.splitContainer1.SplitterDistance = 201;
+            this.splitContainer1.SplitterDistance = 202;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -519,7 +527,7 @@
             this.contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.contentPanel.Location = new System.Drawing.Point(0, 25);
             this.contentPanel.Name = "contentPanel";
-            this.contentPanel.Size = new System.Drawing.Size(724, 176);
+            this.contentPanel.Size = new System.Drawing.Size(724, 177);
             this.contentPanel.TabIndex = 1;
             // 
             // windowToolStrip
@@ -556,12 +564,11 @@
             this.transferRateTimer.Interval = 1000;
             this.transferRateTimer.Tick += new System.EventHandler(this.transferRateTimer_Tick);
             // 
-            // checkForUpdatesToolStripMenuItem
+            // notifyIcon
             // 
-            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.checkForUpdatesToolStripMenuItem.Text = "Check for Updates...";
-            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "Dimension";
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
             // MainForm
             // 
@@ -580,6 +587,7 @@
             this.Text = "Dimension";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -652,6 +660,7 @@
         private System.Windows.Forms.Timer updateLogTimer;
         private System.Windows.Forms.Timer transferRateTimer;
         private System.Windows.Forms.ToolStripMenuItem checkForUpdatesToolStripMenuItem;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
     }
 }
 
