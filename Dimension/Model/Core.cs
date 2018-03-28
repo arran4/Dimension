@@ -519,9 +519,9 @@ namespace Dimension.Model
                         var folder = Program.fileList.getFolder(u);
                         
                         if(file.isFolder)
-                            folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified) });
+                            folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified), fullPath = Program.fileList.getFullPath(folder) });
                         else
-                            fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified) });
+                            fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified), fullPath = Program.fileList.getFullPath(file) });
                     }
                     
                     var output = new Commands.SearchResultCommand();

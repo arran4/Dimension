@@ -123,6 +123,18 @@ namespace Dimension.Model
         {
             return Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
         }
+        public string getFullPath(FSListing item)
+        {
+            string output = item.name;
+            while (item != null)
+            {
+                item = getFolder(item.parentId);
+                output = item.name + "/" + output;
+                if (item.parentId == 0)
+                    break;
+            }
+            return output;
+        }
         public FSListing getFSListing(string path, bool folder)
         {
             string[] split = path.Split('/');
