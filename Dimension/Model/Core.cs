@@ -299,6 +299,8 @@ namespace Dimension.Model
             }
         }
 
+        public delegate void SearchResultCallback(Commands.SearchResultCommand c);
+        public event SearchResultCallback searchResult;
 
         public Dictionary<string, ulong> incomingTraffic = new Dictionary<string, ulong>();
         public Dictionary<string, ulong> outgoingTraffic = new Dictionary<string, ulong>();
@@ -307,6 +309,11 @@ namespace Dimension.Model
         Dictionary<string, List<int>> requestedHashes = new  Dictionary<string, List<int>>();
         void parse(Commands.Command c, System.Net.IPEndPoint sender, string originalText)
         {
+            if (c is Commands.SearchResultCommand)
+            {
+                if (searchResult != null)
+                    searchResult((Commands.SearchResultCommand)c);
+            }
             if (c is Commands.MiniHello)
             {
                 int hash = ((Commands.MiniHello)c).helloHash;

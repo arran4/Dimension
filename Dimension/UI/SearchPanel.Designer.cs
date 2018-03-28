@@ -100,6 +100,7 @@
             this.columnHeader2,
             this.columnHeader3});
             this.resultsBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.resultsBox.FullRowSelect = true;
             this.resultsBox.Location = new System.Drawing.Point(0, 0);
             this.resultsBox.Name = "resultsBox";
             this.resultsBox.Size = new System.Drawing.Size(381, 405);
