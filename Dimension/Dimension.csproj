@@ -188,6 +188,7 @@
     <Compile Include="UI\CirclePanel.Designer.cs">
       <DependentUpon>CirclePanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\DateFormatter.cs" />
     <Compile Include="UI\DoubleBufferedListView.cs">
       <SubType>Component</SubType>
     </Compile>

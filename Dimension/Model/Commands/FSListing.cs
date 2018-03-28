@@ -11,5 +11,6 @@ namespace Dimension.Model.Commands
         public string name;
         public ulong size;
         public bool isFolder;
+        public DateTime updated;
     }
 }

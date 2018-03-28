@@ -127,6 +127,7 @@ namespace Dimension.UI
                 l.Text = i.name;
                 l.Name = i.name;
                 l.SubItems.Add(ByteFormatter.formatBytes(i.size));
+                l.SubItems.Add(DateFormatter.formatDate(i.updated));
                 l.Tag = i;
                 filesView.Items.Add(l);
 
@@ -147,6 +148,7 @@ namespace Dimension.UI
                 l.Text = i.name;
                 l.Name = i.name;
                 l.SubItems.Add(ByteFormatter.formatBytes(i.size));
+                l.SubItems.Add(DateFormatter.formatDate(i.updated));
                 l.Tag = i;
                 filesView.Items.Add(l);
 

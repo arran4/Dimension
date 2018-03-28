@@ -737,7 +737,7 @@ namespace Dimension.Model
                 output.folders = new Commands.FSListing[sizes.Count];
                 int z = 0;
                 foreach (string s in sizes.Keys) {
-                    output.folders[z] = new Commands.FSListing() { isFolder = true, name = s, size = sizes[s] };
+                    output.folders[z] = new Commands.FSListing() { isFolder = true, name = s, size = sizes[s], updated = new DateTime(m[z].lastModified) };
                     z++;
                 }
             }
@@ -751,8 +751,8 @@ namespace Dimension.Model
                     for (int i = 0; i < f.folderIds.Length; i++)
                     {
                         FSListing z = Program.fileList.getFolder(f.folderIds[i]);
-                        if(z != null)
-                            folders.Add(new Commands.FSListing() { isFolder = true, name = z.name, size = z.size });
+                        if (z != null)
+                            folders.Add(new Commands.FSListing() { isFolder = true, name = z.name, size = z.size, updated = new DateTime(z.lastModified) });
                     }
                     output.folders = folders.ToArray();
 
@@ -761,7 +761,7 @@ namespace Dimension.Model
                     {
                         FSListing z = Program.fileList.getFile(f.fileIds[i]);
                         if (z != null)
-                            files.Add(new Commands.FSListing() { isFolder = false, name = z.name, size = z.size });
+                            files.Add(new Commands.FSListing() { isFolder = false, name = z.name, size = z.size, updated = new DateTime(z.lastModified) });
                     }
                     output.files = files.ToArray();
 

@@ -44,6 +44,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.downloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.firstRenderTimer = new System.Windows.Forms.Timer(this.components);
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -91,7 +92,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.filterBox.Location = new System.Drawing.Point(41, 3);
             this.filterBox.Name = "filterBox";
-            this.filterBox.Size = new System.Drawing.Size(427, 20);
+            this.filterBox.Size = new System.Drawing.Size(428, 20);
             this.filterBox.TabIndex = 2;
             this.filterBox.TextChanged += new System.EventHandler(this.filterBox_TextChanged);
             // 
@@ -111,12 +112,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.filesView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
-            this.columnHeader2});
+            this.columnHeader2,
+            this.columnHeader3});
             this.filesView.FullRowSelect = true;
             this.filesView.Location = new System.Drawing.Point(0, 25);
             this.filesView.Margin = new System.Windows.Forms.Padding(2);
             this.filesView.Name = "filesView";
-            this.filesView.Size = new System.Drawing.Size(471, 428);
+            this.filesView.Size = new System.Drawing.Size(472, 428);
             this.filesView.TabIndex = 0;
             this.filesView.UseCompatibleStateImageBehavior = false;
             this.filesView.View = System.Windows.Forms.View.Details;
@@ -213,6 +215,11 @@
             this.firstRenderTimer.Enabled = true;
             this.firstRenderTimer.Tick += new System.EventHandler(this.firstRenderTimer_Tick);
             // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Updated";
+            this.columnHeader3.Width = 86;
+            // 
             // UserPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -253,5 +260,6 @@
         private System.Windows.Forms.TextBox filterBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer firstRenderTimer;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }
