@@ -32,11 +32,19 @@ namespace Dimension.UI
                 {
                     return; //disposed
                 }
+                string username = "";
+                foreach (var v in Program.theCore.peerManager.allPeers)
+                    if (v.id == c.myId)
+                    {
+                        username = v.username;
+                        break;
+                    }
                 foreach (Dimension.Model.Commands.FSListing f in c.folders)
                 {
                     ListViewItem i = new ListViewItem();
                     i.Text = f.name;
                     i.SubItems.Add(ByteFormatter.formatBytes(f.size));
+                    i.SubItems.Add(username);
                     this.Invoke(new Action(delegate
                     {
                         resultsBox.Items.Add(i);
@@ -47,6 +55,7 @@ namespace Dimension.UI
                     ListViewItem i = new ListViewItem();
                     i.Text = f.name;
                     i.SubItems.Add(ByteFormatter.formatBytes(f.size));
+                    i.SubItems.Add(username);
                     this.Invoke(new Action(delegate
                     {
                         resultsBox.Items.Add(i);

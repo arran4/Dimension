@@ -525,6 +525,7 @@ namespace Dimension.Model
                     }
                     
                     var output = new Commands.SearchResultCommand();
+                    output.myId = Program.theCore.id;
                     output.keyword = k.keyword;
                     output.files = fileOutputs.ToArray();
                     output.folders = folderOutputs.ToArray();
@@ -916,11 +917,14 @@ namespace Dimension.Model
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
             List<ulong> circles = new List<ulong>();
-            foreach (string s in this.circles)
+            lock (this.circles)
             {
-                byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()));
-                circles.Add(BitConverter.ToUInt64(hash, 0));
-                
+                foreach (string s in this.circles)
+                {
+                    byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()));
+                    circles.Add(BitConverter.ToUInt64(hash, 0));
+
+                }
             }
             c.myCircles = circles.ToArray();
 

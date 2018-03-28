@@ -8,6 +8,7 @@ namespace Dimension.Model.Commands
 {
     public class SearchResultCommand : Command
     {
+        public ulong myId;
         public string keyword;
         public FSListing[] files = new FSListing[] { };
         public FSListing[] folders = new FSListing[] { };
