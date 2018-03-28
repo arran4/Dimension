@@ -607,13 +607,13 @@ namespace Dimension.Model
         }
         System.Net.IPEndPoint rendezvousAddress = null;
         System.Threading.Semaphore rendezvousSemaphore = new System.Threading.Semaphore(0, int.MaxValue);
-        List<int> usedIds = new List<int>();
+        int highestId = -1;
         public void chatReceived(Commands.RoomChatCommand r)
         {
-             if (usedIds.Contains(r.sequenceId))
+            if (r.sequenceId <= highestId && highestId- r.sequenceId > 1000)
                 return;
-            usedIds.Add(r.sequenceId);
-
+            highestId = r.sequenceId;
+            
             foreach (string s in r.content.Split('\n'))
             {
                 string s2 = s;

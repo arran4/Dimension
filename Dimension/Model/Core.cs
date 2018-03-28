@@ -322,7 +322,7 @@ namespace Dimension.Model
                 bool knownPeer = false;
                 foreach (Peer p in peerManager.allPeers)
                     if (!p.quit && !p.maybeDead)
-                        if(p.endpointIsInHistory(sender))
+                        if (p.endpointIsInHistory(sender))
                             knownPeer = true;
                 if (!knownPeer)
                     request = true;
@@ -372,7 +372,7 @@ namespace Dimension.Model
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
                     if (p.id == ((Commands.BeginPunchCommand)c).myId)
                     {
-                        p.endPunch(new  System.Net.IPEndPoint(sender.Address, ((Commands.BeginPunchCommand)c).port));
+                        p.endPunch(new System.Net.IPEndPoint(sender.Address, ((Commands.BeginPunchCommand)c).port));
                         return;
                     }
             }
@@ -404,9 +404,9 @@ namespace Dimension.Model
                 h.peerCount = null;
                 var sha = new System.Security.Cryptography.SHA512Managed();
                 int helloHash = BitConverter.ToInt32(sha.ComputeHash(Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(h).Trim())), 0);
-                
+
                 //if (!h.requestingHelloBack)
-                    knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
+                knownHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()] = helloHash;
                 /*lock (requestedHashes)
                     if(requestedHashes.ContainsKey(sender.Address.ToString() + "\n" + sender.Port.ToString()))
                         if (requestedHashes[sender.Address.ToString() + "\n" + sender.Port.ToString()].Contains(helloHash))
@@ -433,7 +433,7 @@ namespace Dimension.Model
                     Program.udpSend(b, sender);
                 }
                 peerManager.parseHello(h, sender);
-                lock(toHello)
+                lock (toHello)
                     if (toHello.Contains(sender))
                         toHello.Remove(sender);
             }
@@ -452,7 +452,7 @@ namespace Dimension.Model
                                 received = true;
                             }
                         }
-                    if(!received)
+                    if (!received)
                         if (p.internalAddress != null)
                             foreach (System.Net.IPAddress ip in p.internalAddress)
                                 if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port)
@@ -460,7 +460,7 @@ namespace Dimension.Model
                                     p.chatReceived(r);
                                     received = true;
                                 }
-                    if(received)
+                    if (received)
                         break;
                 }
                 if (!received)
@@ -471,7 +471,7 @@ namespace Dimension.Model
             {
                 Commands.Quitting r = (Commands.Quitting)c;
                 foreach (Peer p in Program.theCore.peerManager.allPeers)
-                    if (!p.quit || DateTime.Now.Subtract(p.timeQuit).TotalSeconds >1)
+                    if (!p.quit || DateTime.Now.Subtract(p.timeQuit).TotalSeconds > 1)
                     {
                         if (p.id == r.id)
                         {
@@ -481,8 +481,7 @@ namespace Dimension.Model
                         }
                     }
             }
-            }
-        List<int> usedIds = new List<int>();
+        }
         public void sendChat(string content, ulong hash)
         {
             if (content.StartsWith("/"))
@@ -508,17 +507,18 @@ namespace Dimension.Model
 
             //TODO: Make this more gracefully handle collisions
             Random r = new Random();
-            int id = r.Next();
-            while (usedIds.Contains(id))
-                id = r.Next();
+            int id = lastSequenceId;
+            lastSequenceId++;
+            if (lastSequenceId >= int.MaxValue - 1)
+                lastSequenceId = 0;
             c.sequenceId = id;
-            usedIds.Add(id);
 
             foreach (Peer p in peerManager.allPeersInCircle(hash))
             {
                 p.sendCommand(c);
             }
         }
+        int lastSequenceId = 0;
         public int incomingTcpConnections = 0;
         public int incomingUdtConnections = 0;
         List<IncomingConnection> incomings = new List<IncomingConnection>();
