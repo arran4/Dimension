@@ -23,7 +23,7 @@ namespace Dimension.UI
         }
         public void selectChat()
         {
-            tabControl1.SelectedIndex = 1;
+            tabControl1.SelectedIndex = 0;
         }
         Model.Peer p;
         public UserPanel(Model.Peer p)
@@ -296,27 +296,30 @@ namespace Dimension.UI
                 {
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-
-
-                    if (p.controlConnection == null)
-                        addLine("Error - haven't connected to other peer yet.");
-                    else
+                    
+                    if (p.id != App.theCore.id)
                     {
-                        if(p.id != App.theCore.id)
-                            p.controlConnection.send(new Model.Commands.PrivateChatCommand() { content = inputBox.Text });
-
-
-                        foreach (string s in inputBox.Text.Split('\n'))
+                        byte[] b = App.serializer.serialize(new Model.Commands.PrivateChatCommand() { content = inputBox.Text });
+                        if (p.isLocal)
                         {
-                            string w = DateTime.Now.ToShortTimeString() + " " + App.settings.getString("Username", "Username") + ": " + s;
-                            if (this.InvokeRequired)
-                                this.Invoke(new Action(delegate () { addLine(w); }));
-                            else
-                                addLine(w);
+                            foreach(System.Net.IPAddress a in p.internalAddress)
+                               App.udpSend(b, new System.Net.IPEndPoint(a, p.localControlPort));
+
                         }
-                        inputBox.Text = "";
-                        inputBox.Height = 22;
+                        else
+                            App.udpSend(b, p.actualEndpoint);
                     }
+                    foreach (string s in inputBox.Text.Split('\n'))
+                    {
+                        string w = DateTime.Now.ToShortTimeString() + " " + App.settings.getString("Username", "Username") + ": " + s;
+                        if (this.InvokeRequired)
+                            this.Invoke(new Action(delegate () { addLine(w); }));
+                        else
+                            addLine(w);
+                    }
+                    inputBox.Text = "";
+                    inputBox.Height = 22;
+                    
                 }
 
             }

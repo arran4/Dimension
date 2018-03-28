@@ -309,6 +309,15 @@ namespace Dimension.Model
         Dictionary<string, List<int>> requestedHashes = new  Dictionary<string, List<int>>();
         void parse(Commands.Command c, System.Net.IPEndPoint sender, string originalText)
         {
+            if (c is Commands.PrivateChatCommand)
+            {
+                foreach (var p in App.theCore.peerManager.allPeers)
+                    if (p.actualEndpoint.Address.ToString() == sender.Address.ToString() && p.externalControlPort == sender.Port || p.localControlPort == sender.Port)
+                    {
+                        App.doPrivateChatReceived(((Commands.PrivateChatCommand)c), p);
+                        break;
+                    }
+            }
             if (c is Commands.SearchResultCommand)
             {
                 if (searchResult != null)
