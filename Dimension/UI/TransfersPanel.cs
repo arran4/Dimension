@@ -68,8 +68,8 @@ namespace Dimension.UI
                 listView.Items.RemoveAt(listView.Items.Count - 1);
 
 
-            ulong upLimit = Program.settings.getULong("Global Upload Rate Limit", 0);
-            ulong downLimit = Program.settings.getULong("Global Download Rate Limit", 0);
+            ulong upLimit = App.settings.getULong("Global Upload Rate Limit", 0);
+            ulong downLimit = App.settings.getULong("Global Download Rate Limit", 0);
             for (int i = 0; i < z.Length; i++)
             {
                 string[] w = new string[10];
@@ -216,10 +216,10 @@ namespace Dimension.UI
             if (listView.SelectedItems.Count > 0)
             {
                 Model.Transfer t = (Model.Transfer)listView.SelectedItems[0].Tag;
-                foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
+                foreach (Model.Peer p in App.theCore.peerManager.allPeers)
                     if (p.id== t.userId)
                     {
-                        Program.mainForm.selectUser(p);
+                        ((MainForm)App.mainForm).selectUser(p);
                         return;
                     }
             }

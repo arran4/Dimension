@@ -11,7 +11,7 @@ using Open.Nat;
 
 namespace Dimension.Model
 {
-    class Bootstrap : System.Diagnostics.TraceListener, IDisposable
+    public class Bootstrap : System.Diagnostics.TraceListener, IDisposable
     {
         //TODO: Add capability to simply disable UPnP
         //TODO: Gracefully handle web request failing if the bootstrap is down
@@ -28,7 +28,7 @@ namespace Dimension.Model
         }
         public void Dispose()
         {
-            if (Program.settings.getBool("Use UPnP", true) && UPnPActive && !LANMode)
+            if (App.settings.getBool("Use UPnP", true) && UPnPActive && !LANMode)
                 unMapPorts().Wait();
         }
 
@@ -170,7 +170,7 @@ namespace Dimension.Model
         {
             SystemLog.addEntry("Beginning network setup...");
             SystemLog.addEntry("Deleting old UPnP mappings...");
-            if (Program.settings.getBool("Use UPnP", true))
+            if (App.settings.getBool("Use UPnP", true))
             {
 
                 bool done = false;
@@ -197,18 +197,18 @@ namespace Dimension.Model
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
 
-            listener = new TcpListener(IPAddress.Any,Program.settings.getInt("Default Data Port", 0));
+            listener = new TcpListener(IPAddress.Any,App.settings.getInt("Default Data Port", 0));
 
             listener.Start();
             internalDataPort = ((IPEndPoint)listener.Server.LocalEndPoint).Port;
             SystemLog.addEntry("Binding to TCP port " + internalDataPort.ToString());
-            int control = Program.settings.getInt("Default Control Port", 0);
+            int control = App.settings.getInt("Default Control Port", 0);
             if (control == Dimension.Model.NetConstants.controlPort)
                 control = 0;
             unreliableClient = new UdpClient(control);
             internalControlPort = ((IPEndPoint)unreliableClient.Client.LocalEndPoint).Port;
             if (control == 0)
-                Program.settings.setInt("Default Control Port", internalControlPort);
+                App.settings.setInt("Default Control Port", internalControlPort);
             SystemLog.addEntry("Successfully bound to UDP control port " + internalControlPort);
 
             publicControlEndPoint = (IPEndPoint)unreliableClient.Client.LocalEndPoint;
@@ -216,7 +216,7 @@ namespace Dimension.Model
             
             tryAgain:
 
-            if (Program.settings.getBool("Use UPnP", true) == false || LANMode || !UPnPActive || behindDoubleNAT)
+            if (App.settings.getBool("Use UPnP", true) == false || LANMode || !UPnPActive || behindDoubleNAT)
             {
                 SystemLog.addEntry("STUNning NAT");
                 try
@@ -251,11 +251,11 @@ namespace Dimension.Model
            
 
             Random r = new Random();
-            internalDHTPort = Program.settings.getInt("Default DHT Port", 0);
+            internalDHTPort = App.settings.getInt("Default DHT Port", 0);
             if (internalDHTPort == 0)
                 internalDHTPort = r.Next(short.MaxValue - 1000) + 1000;
             publicDHTPort = internalDHTPort;
-            if (Program.settings.getBool("Use UPnP", true) && !LANMode && UPnPActive && !behindDoubleNAT)
+            if (App.settings.getBool("Use UPnP", true) && !LANMode && UPnPActive && !behindDoubleNAT)
             {
                 SystemLog.addEntry("UPnP enabled. Attempting to map UPnP ports...");
 

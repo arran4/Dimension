@@ -23,10 +23,10 @@ namespace Dimension.UI
         }
         void updateFont()
         {
-            eventsBox.Font = Program.getFont();
-            portsTextBox.Font = Program.getFont();
-            trafficBox.Font = Program.getFont();
-            systemLogBox.Font = Program.getFont();
+            eventsBox.Font = App.getFont();
+            portsTextBox.Font = App.getFont();
+            trafficBox.Font = App.getFont();
+            systemLogBox.Font = App.getFont();
         }
 
         void update()
@@ -34,27 +34,27 @@ namespace Dimension.UI
             string s = "";
 
             s += "Internal IP Addresses: ";
-            foreach (System.Net.IPAddress a in Program.theCore.internalIPs)
+            foreach (System.Net.IPAddress a in App.theCore.internalIPs)
                 s += a.ToString() + " ";
             s += Environment.NewLine;
-            s += "External IP Address: " + Program.bootstrap.publicDataEndPoint.Address.ToString() + Environment.NewLine;
+            s += "External IP Address: " + App.bootstrap.publicDataEndPoint.Address.ToString() + Environment.NewLine;
 
-            s += "Internal TCP Port: " + Program.bootstrap.internalDataPort.ToString() + Environment.NewLine;
-            s += "External TCP Port: " + Program.bootstrap.publicDataEndPoint.Port.ToString() + Environment.NewLine;
+            s += "Internal TCP Port: " + App.bootstrap.internalDataPort.ToString() + Environment.NewLine;
+            s += "External TCP Port: " + App.bootstrap.publicDataEndPoint.Port.ToString() + Environment.NewLine;
 
-            s += "Internal UDP Port: " + Program.bootstrap.internalControlPort.ToString() + Environment.NewLine;
-            s += "External UDP Port: " + Program.bootstrap.publicControlEndPoint.Port.ToString() + Environment.NewLine;
+            s += "Internal UDP Port: " + App.bootstrap.internalControlPort.ToString() + Environment.NewLine;
+            s += "External UDP Port: " + App.bootstrap.publicControlEndPoint.Port.ToString() + Environment.NewLine;
 
-            s += "Internal Kademlia (UDP) Port: " + Program.bootstrap.internalDHTPort.ToString() + Environment.NewLine;
-            s += "External Kademlia (UDP) Port: " + Program.bootstrap.publicDHTPort.ToString() + Environment.NewLine;
+            s += "Internal Kademlia (UDP) Port: " + App.bootstrap.internalDHTPort.ToString() + Environment.NewLine;
+            s += "External Kademlia (UDP) Port: " + App.bootstrap.publicDHTPort.ToString() + Environment.NewLine;
             
 
             portsTextBox.Text = s;
 
             s = "";
-            s += "Successful UDP command receives from other machines: " + Program.theCore.udpCommandsNotFromUs.ToString() + Environment.NewLine;
-            s += "Successful incoming TCP connections: " + Program.theCore.incomingTcpConnections.ToString() + Environment.NewLine;
-            s += "Successful incoming UDT connections: " + Program.theCore.incomingUdtConnections.ToString() + Environment.NewLine;
+            s += "Successful UDP command receives from other machines: " + App.theCore.udpCommandsNotFromUs.ToString() + Environment.NewLine;
+            s += "Successful incoming TCP connections: " + App.theCore.incomingTcpConnections.ToString() + Environment.NewLine;
+            s += "Successful incoming UDT connections: " + App.theCore.incomingUdtConnections.ToString() + Environment.NewLine;
             s += "Successful outgoing TCP connections: " + Model.ReliableOutgoingConnection.successfulConnections + Environment.NewLine;
             s += "Successful outgoing UDT connections: " + Model.UdtOutgoingConnection.successfulConnections.ToString() + Environment.NewLine;
 
@@ -65,15 +65,15 @@ namespace Dimension.UI
             s += "(Excluding bulk data such as file transfers)" + Environment.NewLine;
             s += Environment.NewLine;
             s += "*** Incoming ***" + Environment.NewLine;
-            lock (Program.theCore.incomingTraffic)
-                foreach (string t in Program.theCore.incomingTraffic.Keys)
-                    s += t + ": " + ByteFormatter.formatBytes(Program.theCore.incomingTraffic[t]) + Environment.NewLine;
+            lock (App.theCore.incomingTraffic)
+                foreach (string t in App.theCore.incomingTraffic.Keys)
+                    s += t + ": " + ByteFormatter.formatBytes(App.theCore.incomingTraffic[t]) + Environment.NewLine;
 
             s += Environment.NewLine;
             s += "*** Outgoing ***" + Environment.NewLine;
-            lock (Program.theCore.outgoingTraffic)
-                foreach (string t in Program.theCore.outgoingTraffic.Keys)
-                    s += t + ": " + ByteFormatter.formatBytes(Program.theCore.outgoingTraffic[t]) + Environment.NewLine;
+            lock (App.theCore.outgoingTraffic)
+                foreach (string t in App.theCore.outgoingTraffic.Keys)
+                    s += t + ": " + ByteFormatter.formatBytes(App.theCore.outgoingTraffic[t]) + Environment.NewLine;
 
             trafficBox.Text = s;
 

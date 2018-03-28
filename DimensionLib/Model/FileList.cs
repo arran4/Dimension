@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class FileList : IDisposable
+    public class FileList : IDisposable
     {
         public event UpdateCompleteEvent updateComplete;
         public delegate void UpdateCompleteEvent();
@@ -18,7 +18,7 @@ namespace Dimension.Model
             lock (updateLock)
             {
                 SystemLog.addEntry("Updating all shares" + (urgent ? " (urgently)" : ""));
-                RootShare[] shares = Program.fileListDatabase.getRootShares();
+                RootShare[] shares = App.fileListDatabase.getRootShares();
                 foreach (RootShare r in shares)
                     if (r != null)
                     {
@@ -68,7 +68,7 @@ namespace Dimension.Model
             lock (updateLock)
             {
                 quitComplete = false;
-                RootShare[] shares = Program.fileListDatabase.getRootShares();
+                RootShare[] shares = App.fileListDatabase.getRootShares();
                 string path = e.FullPath.Replace('\\', '/');
                 SystemLog.addEntry("Partial filesystem update to " + path.Replace('/', System.IO.Path.DirectorySeparatorChar));
 
@@ -113,15 +113,15 @@ namespace Dimension.Model
         //TODO: Make this cache in the key-value store instead of just iterating
         public RootShare getRootShare(ulong id)
         {
-            return Program.fileListDatabase.getObject<RootShare>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+            return App.fileListDatabase.getObject<RootShare>(App.fileListDatabase.fileList, "FSListing " + id.ToString());
         }
         public FSListing getFolder(ulong id)
         {
-            return Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+            return App.fileListDatabase.getObject<Folder>(App.fileListDatabase.fileList, "FSListing " + id.ToString());
         }
         public FSListing getFile(ulong id)
         {
-            return Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+            return App.fileListDatabase.getObject<File>(App.fileListDatabase.fileList, "FSListing " + id.ToString());
         }
         public string getFullPath(FSListing item)
         {
@@ -143,7 +143,7 @@ namespace Dimension.Model
             else
             {
 
-                RootShare[] shares = Program.fileListDatabase.getRootShares();
+                RootShare[] shares = App.fileListDatabase.getRootShares();
                 foreach (RootShare r in shares)
                     if (r != null)
                     {
@@ -177,7 +177,7 @@ namespace Dimension.Model
                 bool found = false;
                 foreach (ulong id in parent.folderIds)
                 {
-                    Folder f = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                    Folder f = App.fileListDatabase.getObject<Folder>(App.fileListDatabase.fileList, "FSListing " + id.ToString());
 
                     if (f == null)
                     {
@@ -196,7 +196,7 @@ namespace Dimension.Model
                 }
                 foreach (ulong id in parent.fileIds)
                 {
-                    File f = Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                    File f = App.fileListDatabase.getObject<File>(App.fileListDatabase.fileList, "FSListing " + id.ToString());
                     if (f.name == split[i] && i == split.Length - 1)
                     {
                         return f;
@@ -224,7 +224,7 @@ namespace Dimension.Model
                 toSave.Clear();
             if (quitting)
                 return;
-            f.id = Program.fileListDatabase.allocateId();
+            f.id = App.fileListDatabase.allocateId();
             ulong size = 0;
             SystemLog.addEntry("Updating root share " + f.fullPath.Replace('/', System.IO.Path.DirectorySeparatorChar) + "...");
             sw = new System.Diagnostics.Stopwatch();
@@ -261,7 +261,7 @@ namespace Dimension.Model
             string s2 = "";
             foreach (ulong id in f.fileIds)
             {
-                File i = Program.fileListDatabase.getObject<File>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                File i = App.fileListDatabase.getObject<File>(App.fileListDatabase.fileList, "FSListing " + id.ToString());
 
                 if (i != null)
                 {
@@ -272,7 +272,7 @@ namespace Dimension.Model
             }
             foreach (ulong id in f.folderIds)
             {
-                Folder i = Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                Folder i = App.fileListDatabase.getObject<Folder>(App.fileListDatabase.fileList, "FSListing " + id.ToString());
 
                 if (i != null)
                 {
@@ -293,7 +293,7 @@ namespace Dimension.Model
                     toSave["FSListing " + f.id] = f;
                 if (!quitting)
                 {
-                    Program.fileListDatabase.setObject(Program.settings.settings, "Root Share " + f.index.ToString(), f);
+                    App.fileListDatabase.setObject(App.settings.settings, "Root Share " + f.index.ToString(), f);
                     doSave();
                 }
             }
@@ -305,7 +305,7 @@ namespace Dimension.Model
             lock (toSave)
             {
                 foreach (string s3 in toSave.Keys)
-                    Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
+                    App.fileListDatabase.setObject(App.fileListDatabase.fileList, s3, toSave[s3]);
 
                 foreach (string s3 in toSave.Keys)
                 {
@@ -324,14 +324,14 @@ namespace Dimension.Model
         }
         void addId(string s, ulong id)
         {
-            ulong[] ids = Program.fileListDatabase.getObject<ulong[]>(Program.fileListDatabase.searchList, s);
+            ulong[] ids = App.fileListDatabase.getObject<ulong[]>(App.fileListDatabase.searchList, s);
             if (ids == null)
                 ids = new ulong[0];
             if (ids.Contains(id))
                 return;
             Array.Resize(ref ids, ids.Length + 1);
             ids[ids.Length - 1] = id;
-            Program.fileListDatabase.setObject<ulong[]>(Program.fileListDatabase.searchList, s, ids);
+            App.fileListDatabase.setObject<ulong[]>(App.fileListDatabase.searchList, s, ids);
         }
         public void startUpdate(bool urgent)
         {
@@ -371,7 +371,7 @@ namespace Dimension.Model
                     }
                     wait(urgent);
                     File output = new File();
-                    output.id = Program.fileListDatabase.allocateId();
+                    output.id = App.fileListDatabase.allocateId();
                     output.name = z.Name;
                     output.parentId = f.id;
                     output.size = (ulong)z.Length;
@@ -393,7 +393,7 @@ namespace Dimension.Model
                     }
                     wait(urgent);
                     Folder output = new Folder();
-                    output.id = Program.fileListDatabase.allocateId();
+                    output.id = App.fileListDatabase.allocateId();
                     output.name = z.Name;
                     output.parentId = f.id;
                     output.size = loadFolder(output, urgent, realLocation + "/" + z.Name);
@@ -439,26 +439,26 @@ namespace Dimension.Model
             {
                 wait(urgent);
                 if(id != f.id)  
-                   deleteFolder(Program.fileListDatabase.getObject<Folder>(Program.fileListDatabase.fileList, "FSListing " + id.ToString()), urgent);
+                   deleteFolder(App.fileListDatabase.getObject<Folder>(App.fileListDatabase.fileList, "FSListing " + id.ToString()), urgent);
             }
 
             foreach (ulong id in f.fileIds)
             {
                 wait(urgent);
-                Program.fileListDatabase.deleteObject(Program.fileListDatabase.fileList, "FSListing " + id.ToString());
+                App.fileListDatabase.deleteObject(App.fileListDatabase.fileList, "FSListing " + id.ToString());
             }
             
-            Program.fileListDatabase.deleteObject(Program.fileListDatabase.fileList, "FSListing " + f.id.ToString());
+            App.fileListDatabase.deleteObject(App.fileListDatabase.fileList, "FSListing " + f.id.ToString());
 
             if (f is RootShare)
             {
-                var x= Program.fileListDatabase.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + ((RootShare)f).index.ToString());
+                var x= App.fileListDatabase.getObject<Model.RootShare>(App.settings.settings, "Root Share " + ((RootShare)f).index.ToString());
                 if (x == null)
                     return;
                 x.totalBytes = 0;
                 x.fileIds = new ulong[] { };
                 x.folderIds = new ulong[] { };
-                Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + ((RootShare)f).index.ToString(),x);
+                App.fileListDatabase.setObject<Model.RootShare>(App.settings.settings, "Root Share " + ((RootShare)f).index.ToString(),x);
             }
             }
     }

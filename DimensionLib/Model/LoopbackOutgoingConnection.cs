@@ -15,15 +15,15 @@ namespace Dimension.Model
         public LoopbackOutgoingConnection()
         {
             c = new LoopbackIncomingConnection(this);
-            Program.theCore.addIncomingConnection(c);
+            App.theCore.addIncomingConnection(c);
         }
         public override void send(Commands.Command c)
         {
             if (c is Commands.DataCommand)
             {
-                Program.globalUpCounter.addBytes(((Commands.DataCommand)c).data.Length);
+                App.globalUpCounter.addBytes(((Commands.DataCommand)c).data.Length);
                 upCounter.addBytes(((Commands.DataCommand)c).data.Length);
-                Program.speedLimiter.limitUpload((ulong)((Commands.DataCommand)c).data.Length, rateLimiterDisabled);
+                App.speedLimiter.limitUpload((ulong)((Commands.DataCommand)c).data.Length, rateLimiterDisabled);
             }
             this.c.received(c);
         }
@@ -31,9 +31,9 @@ namespace Dimension.Model
         {
             if (c is Commands.DataCommand)
             {
-                Program.globalDownCounter.addBytes(((Commands.DataCommand)c).data.Length);
+                App.globalDownCounter.addBytes(((Commands.DataCommand)c).data.Length);
                 downCounter.addBytes(((Commands.DataCommand)c).data.Length);
-                Program.speedLimiter.limitDownload((ulong)((Commands.DataCommand)c).data.Length, rateLimiterDisabled);
+                App.speedLimiter.limitDownload((ulong)((Commands.DataCommand)c).data.Length, rateLimiterDisabled);
             }
             commandReceived?.Invoke(c);
         }

@@ -27,7 +27,7 @@ namespace Dimension.UI
             {
 
                 urlBox.Text = "#Test";
-                if (!Program.kademlia.ready)
+                if (!App.kademlia.ready)
                 {
                     joinButton.Enabled = false;
                     kadInitLabel.Visible = true;
@@ -47,7 +47,7 @@ namespace Dimension.UI
                 s = "LAN";
             if (circleType == CircleType.bootstrap && s != "LAN")
             {
-                     e = Program.bootstrap.join(s);
+                     e = App.bootstrap.join(s);
                     if (e.Length == 0)
                     {
                         MessageBox.Show("Invalid bootstrap URL.");
@@ -57,18 +57,18 @@ namespace Dimension.UI
             {
                 e = new System.Net.IPEndPoint[] { };
                 //takes too long, display the thing later
-                //e = Program.kademlia.doLookup(s.ToLower().Trim());
+                //e = App.kademlia.doLookup(s.ToLower().Trim());
             }
-            if (Program.mainForm.InvokeRequired)
+            if (App.mainForm.InvokeRequired)
             {
-                Program.mainForm.Invoke(new Action(delegate ()
+                App.mainForm.Invoke(new Action(delegate ()
                 {
-                    Program.mainForm.addInternetCircle(e, s, circleType);
+                    ((MainForm)App.mainForm).addInternetCircle(e, s, circleType);
                 }));
             }
             else
             {
-                Program.mainForm.addInternetCircle(e, s, circleType);
+                ((MainForm)App.mainForm).addInternetCircle(e, s, circleType);
             }
         }
 
@@ -125,7 +125,7 @@ namespace Dimension.UI
             if (circleType == CircleType.kademlia)
             {
                 
-                if (Program.kademlia.ready)
+                if (App.kademlia.ready)
                 {
                     joinButton.Enabled =true;
                     kadInitLabel.Visible = false;

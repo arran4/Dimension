@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class GlobalSpeedLimiter : IDisposable
+    public class GlobalSpeedLimiter : IDisposable
     {
         bool disposed = false;
         public void Dispose()
@@ -28,15 +28,15 @@ namespace Dimension.Model
         ulong currentUploadLimit;
         void updateLoop()
         {
-            while (Program.settings == null)
+            while (App.settings == null)
                 System.Threading.Thread.Sleep(100);
             while (!disposed)
             {
                 totalDownload = 0;
                 totalUpload = 0;
 
-                currentDownloadLimit = Program.settings.getULong("Global Download Rate Limit", 0);
-                currentUploadLimit = Program.settings.getULong("Global Upload Rate Limit", 0);
+                currentDownloadLimit = App.settings.getULong("Global Download Rate Limit", 0);
+                currentUploadLimit = App.settings.getULong("Global Upload Rate Limit", 0);
 
 
                 System.Threading.Thread.Sleep(100);

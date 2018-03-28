@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model.Commands
 {
-    class FileListing : Command
+    public class FileListing : Command
     {
         public string path;
         public FSListing[] files = new FSListing[] { };

@@ -20,7 +20,7 @@ namespace Dimension.UI
         }
         private void usernameBox_TextChanged(object sender, EventArgs e)
         {
-            if (Program.comicSansOnly)
+            if (App.comicSansOnly)
             {
                 fontSelectBox.Items.Clear();
                 fontSelectBox.Items.Add("Comic Sans MS");
@@ -29,7 +29,7 @@ namespace Dimension.UI
         }
         void load()
         {
-            if (Program.settings.getBool("Use UPnP", true))
+            if (App.settings.getBool("Use UPnP", true))
             {
                 UPnPButton.Checked = true;
                 manuallyForwardPortsButton.Checked = false;
@@ -39,37 +39,37 @@ namespace Dimension.UI
                 UPnPButton.Checked = false;
                 manuallyForwardPortsButton.Checked = true;
             }
-            udpDataPortBox.Value = Program.settings.getInt("Default Data Port", 0);
-            dhtPortBox.Value = Program.settings.getInt("Default DHT Port", 0);
-            udpControlPortBox.Value = Program.settings.getInt("Default Control Port", Model.NetConstants.controlPort);
-            usernameBox.Text = Program.settings.getString("Username", Environment.MachineName);
-            descriptionBox.Text = Program.settings.getString("Description", "");
+            udpDataPortBox.Value = App.settings.getInt("Default Data Port", 0);
+            dhtPortBox.Value = App.settings.getInt("Default DHT Port", 0);
+            udpControlPortBox.Value = App.settings.getInt("Default Control Port", Model.NetConstants.controlPort);
+            usernameBox.Text = App.settings.getString("Username", Environment.MachineName);
+            descriptionBox.Text = App.settings.getString("Description", "");
 
-            downloadFolderInput.Text = Program.settings.getString("Default Download Folder", "C:\\Downloads");
-            flashNameDropBox.Checked = Program.settings.getBool("Flash on Name Drop", true);
-            playSoundsBox.Checked = Program.settings.getBool("Play sounds", true);
+            downloadFolderInput.Text = App.settings.getString("Default Download Folder", "C:\\Downloads");
+            flashNameDropBox.Checked = App.settings.getBool("Flash on Name Drop", true);
+            playSoundsBox.Checked = App.settings.getBool("Play sounds", true);
 
-            minimizeToTrayBox.Checked = Program.settings.getBool("Minimize to Tray", true);
-            autoRejoinBox.Checked = Program.settings.getBool("Auto Rejoin on Startup", true);
-            showAFKBox.Checked = Program.settings.getBool("Show AFK", true);
+            minimizeToTrayBox.Checked = App.settings.getBool("Minimize to Tray", true);
+            autoRejoinBox.Checked = App.settings.getBool("Auto Rejoin on Startup", true);
+            showAFKBox.Checked = App.settings.getBool("Show AFK", true);
 
-            updateWithoutPromptingBox.Checked = Program.settings.getBool("Update Without Prompting", false);
+            updateWithoutPromptingBox.Checked = App.settings.getBool("Update Without Prompting", false);
 
-            reverseDefaultBox.Checked = Program.settings.getBool("Default to Reverse Connection", false);
-            alwaysRendezvousButton.Checked = Program.settings.getBool("Always Rendezvous", false);
+            reverseDefaultBox.Checked = App.settings.getBool("Default to Reverse Connection", false);
+            alwaysRendezvousButton.Checked = App.settings.getBool("Always Rendezvous", false);
 
-            fontSelectBox.Text = Program.settings.getString("Font", "Lucida Console");
-            if (Program.comicSansOnly)
+            fontSelectBox.Text = App.settings.getString("Font", "Lucida Console");
+            if (App.comicSansOnly)
             {
                 fontSelectBox.Items.Clear();
                 fontSelectBox.Items.Add("Comic Sans MS");
                 fontSelectBox.SelectedIndex = 0;
             }
-            int numShares = Program.fileListDatabase.getInt(Program.settings.settings, "Root Share Count", 0);
+            int numShares = App.fileListDatabase.getInt(App.settings.settings, "Root Share Count", 0);
 
             for (int i = 0; i < numShares; i++)
             {
-                Model.RootShare r = Program.fileListDatabase.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString());
+                Model.RootShare r = App.fileListDatabase.getObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString());
 
                 if (r != null)
                 {
@@ -87,9 +87,9 @@ namespace Dimension.UI
             if (usernameBox.Text.Trim() == "")
                 usernameBox.Text = Environment.MachineName;
 
-            Program.settings.setBool("Use UPnP", UPnPButton.Checked);
+            App.settings.setBool("Use UPnP", UPnPButton.Checked);
 
-            Program.settings.setInt("Default Data Port", (int)udpDataPortBox.Value);
+            App.settings.setInt("Default Data Port", (int)udpDataPortBox.Value);
 
             if (udpControlPortBox.Value == Model.NetConstants.controlPort)
             {
@@ -97,29 +97,29 @@ namespace Dimension.UI
                 udpControlPortBox.Value = 0;
             }
 
-            Program.settings.setInt("Default Control Port", (int)udpControlPortBox.Value);
-            Program.settings.setInt("Default DHT Port", (int)dhtPortBox.Value);
+            App.settings.setInt("Default Control Port", (int)udpControlPortBox.Value);
+            App.settings.setInt("Default DHT Port", (int)dhtPortBox.Value);
     
-            Program.settings.setString("Username", usernameBox.Text);
-            Program.settings.setString("Description", descriptionBox.Text);
-            Program.settings.setString("Default Download Folder", downloadFolderInput.Text);
+            App.settings.setString("Username", usernameBox.Text);
+            App.settings.setString("Description", descriptionBox.Text);
+            App.settings.setString("Default Download Folder", downloadFolderInput.Text);
             
 
-            Program.settings.setString("Font", fontSelectBox.Text);
+            App.settings.setString("Font", fontSelectBox.Text);
 
-            Program.settings.setBool("Flash on Name Drop", flashNameDropBox.Checked);
-            Program.settings.setBool("Minimize to Tray", minimizeToTrayBox.Checked);
+            App.settings.setBool("Flash on Name Drop", flashNameDropBox.Checked);
+            App.settings.setBool("Minimize to Tray", minimizeToTrayBox.Checked);
 
-            Program.settings.setBool("Play sounds", playSoundsBox.Checked);
+            App.settings.setBool("Play sounds", playSoundsBox.Checked);
 
-            Program.settings.setBool("Show AFK", showAFKBox.Checked);
-            Program.settings.setBool("Auto Rejoin on Startup", autoRejoinBox.Checked);
-            Program.settings.setBool("Update Without Prompting", updateWithoutPromptingBox.Checked);
+            App.settings.setBool("Show AFK", showAFKBox.Checked);
+            App.settings.setBool("Auto Rejoin on Startup", autoRejoinBox.Checked);
+            App.settings.setBool("Update Without Prompting", updateWithoutPromptingBox.Checked);
             
-            Program.settings.setBool("Always Rendezvous", alwaysRendezvousButton.Checked);
-            Program.settings.setBool("Default to Reverse Connection", reverseDefaultBox.Checked);
+            App.settings.setBool("Always Rendezvous", alwaysRendezvousButton.Checked);
+            App.settings.setBool("Default to Reverse Connection", reverseDefaultBox.Checked);
 
-            Program.settings.save();
+            App.settings.save();
             
             Close();
         }
@@ -127,7 +127,7 @@ namespace Dimension.UI
         private void saveButton_Click(object sender, EventArgs e)
         {
             save();
-            Program.fileList.startUpdate(false);
+            App.fileList.startUpdate(false);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -151,7 +151,7 @@ namespace Dimension.UI
                 while (!clear)
                 {
                     clear = true;
-                    foreach (Model.RootShare q in Program.fileListDatabase.getRootShares())
+                    foreach (Model.RootShare q in App.fileListDatabase.getRootShares())
                         if(q != null)
                             if (q.name == name)
                                 clear = false;
@@ -160,9 +160,9 @@ namespace Dimension.UI
 
                 }
 
-                /*int numShares = Program.fileList.getInt(Program.settings.settings, "Root Share Count", 0);
+                /*int numShares = App.fileList.getInt(App.settings.settings, "Root Share Count", 0);
                 for (int i = 0; i < numShares; i++)
-                    if (Program.fileList.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString()).fullPath.ToLower() == fullPath.ToLower())
+                    if (App.fileList.getObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString()).fullPath.ToLower() == fullPath.ToLower())
                     {
                         MessageBox.Show("You have already added that share.");
                         return;
@@ -171,7 +171,7 @@ namespace Dimension.UI
                 Model.RootShare r = new Model.RootShare();
                 r.name = name;
                 r.fullPath = fullPath;
-                r.id = Program.fileListDatabase.allocateId();
+                r.id = App.fileListDatabase.allocateId();
 
                 ListViewItem li = new ListViewItem(r.name);
                 li.SubItems.Add(r.fullPath.Replace('/', System.IO.Path.DirectorySeparatorChar));
@@ -192,14 +192,14 @@ namespace Dimension.UI
 
         void upsertShare(Model.RootShare r)
         {
-            int numShares = Program.fileListDatabase.getInt(Program.settings.settings, "Root Share Count", 0);
+            int numShares = App.fileListDatabase.getInt(App.settings.settings, "Root Share Count", 0);
             for (int i = 0; i < numShares; i++)
             {
-                Model.RootShare g = Program.fileListDatabase.getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString());
+                Model.RootShare g = App.fileListDatabase.getObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString());
                 if (g == null)
                 {
                     r.index = i;
-                    Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString(), r);
+                    App.fileListDatabase.setObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString(), r);
                     updateSharesNamed(r, i);
                     return;
                 }
@@ -208,7 +208,7 @@ namespace Dimension.UI
                     if (g.fullPath == r.fullPath)
                     {
 
-                        Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString(), r);
+                        App.fileListDatabase.setObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString(), r);
                         updateSharesNamed(r, i);
                         return;
 
@@ -218,9 +218,9 @@ namespace Dimension.UI
             }
 
             r.index = numShares;
-            Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + numShares.ToString(), r);
+            App.fileListDatabase.setObject<Model.RootShare>(App.settings.settings, "Root Share " + numShares.ToString(), r);
 
-            Program.fileListDatabase.setInt(Program.settings.settings, "Root Share Count", numShares + 1);
+            App.fileListDatabase.setInt(App.settings.settings, "Root Share Count", numShares + 1);
             updateSharesNamed(r, numShares);
 
         }
@@ -234,13 +234,13 @@ namespace Dimension.UI
 
                 Model.RootShare r = (Model.RootShare)i.Tag;
 
-                Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + r.index, null);
+                App.fileListDatabase.setObject<Model.RootShare>(App.settings.settings, "Root Share " + r.index, null);
 
                 removeSharesNamed(r.name, r.index);
             }
             foreach (ListViewItem i in toRemove)
                 sharesListView.Items.Remove(i);
-            Program.fileListDatabase.setInt(Program.settings.settings, "Root Share Count", sharesListView.Items.Count);
+            App.fileListDatabase.setInt(App.settings.settings, "Root Share Count", sharesListView.Items.Count);
         }
 
         private void browseDownloadsButton_Click(object sender, EventArgs e)
@@ -265,7 +265,7 @@ namespace Dimension.UI
                 r2.name = r.theName;
                 i.Text = r2.name;
 
-                Program.fileListDatabase.setObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.Index, r2);
+                App.fileListDatabase.setObject<Model.RootShare>(App.settings.settings, "Root Share " + i.Index, r2);
                 
             }
         }

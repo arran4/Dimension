@@ -23,12 +23,12 @@ namespace Dimension
             if (!started)
             {
                 started = true;
-                System.Threading.Thread t = new System.Threading.Thread(Program.doLoad);
+                System.Threading.Thread t = new System.Threading.Thread(App.doLoad);
                 t.Name = "Loading Thread";
                 t.Start();
             }
             label1.Text = "Dimension - " + Model.SystemLog.lastLine;
-            if (Program.doneLoading)
+            if (App.doneLoading)
                 this.Close();
             }
     }

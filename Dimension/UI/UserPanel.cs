@@ -18,8 +18,8 @@ namespace Dimension.UI
         }
         void updateFont()
         {
-            historyBox.Font = Program.getFont();
-            inputBox.Font = Program.getFont();
+            historyBox.Font = App.getFont();
+            inputBox.Font = App.getFont();
         }
         public void selectChat()
         {
@@ -302,13 +302,13 @@ namespace Dimension.UI
                         addLine("Error - haven't connected to other peer yet.");
                     else
                     {
-                        if(p.id != Program.theCore.id)
+                        if(p.id != App.theCore.id)
                             p.controlConnection.send(new Model.Commands.PrivateChatCommand() { content = inputBox.Text });
 
 
                         foreach (string s in inputBox.Text.Split('\n'))
                         {
-                            string w = DateTime.Now.ToShortTimeString() + " " + Program.settings.getString("Username", "Username") + ": " + s;
+                            string w = DateTime.Now.ToShortTimeString() + " " + App.settings.getString("Username", "Username") + ": " + s;
                             if (this.InvokeRequired)
                                 this.Invoke(new Action(delegate () { addLine(w); }));
                             else

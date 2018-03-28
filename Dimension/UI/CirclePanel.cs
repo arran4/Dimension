@@ -15,13 +15,13 @@ namespace Dimension.UI
     {
         public void close()
         {
-            Program.theCore.leaveCircle(url);
+            App.theCore.leaveCircle(url);
             if (url == "LAN")
-                Program.settings.setBool("Joined LAN Circle", false);
+                App.settings.setBool("Joined LAN Circle", false);
             if (circleType == JoinCircleForm.CircleType.bootstrap)
-                Program.settings.removeStringToArrayNoDup("Bootstrap Circles Open", url);
+                App.settings.removeStringToArrayNoDup("Bootstrap Circles Open", url);
             if (circleType == JoinCircleForm.CircleType.kademlia)
-                Program.settings.removeStringToArrayNoDup("Kademlia Circles Open", url);
+                App.settings.removeStringToArrayNoDup("Kademlia Circles Open", url);
         }
         List<string> haveAdded = new List<string>();
         void joinLoop()
@@ -32,14 +32,14 @@ namespace Dimension.UI
 
                 if (circleType == JoinCircleForm.CircleType.bootstrap)
                 {
-                    e = Program.bootstrap.join(url);
+                    e = App.bootstrap.join(url);
 
                 }
                 else if (circleType == JoinCircleForm.CircleType.kademlia)
                 {
-                    Program.kademlia.announce(url.ToLower().Trim());
+                    App.kademlia.announce(url.ToLower().Trim());
                     System.Threading.Thread.Sleep(10000);
-                    e = Program.kademlia.doLookup(url.ToLower().Trim());
+                    e = App.kademlia.doLookup(url.ToLower().Trim());
                 }
                 foreach (var z in e)
                 {
@@ -49,7 +49,7 @@ namespace Dimension.UI
                         if (!haveAdded.Contains(s))
                         {
                             haveAdded.Add(s);
-                            Program.theCore.addPeer(z);
+                            App.theCore.addPeer(z);
 
                         }
                     }
@@ -76,10 +76,10 @@ namespace Dimension.UI
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
             circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url.ToLower())), 0);
-            Program.theCore.joinCircle(url);
-            Program.theCore.chatReceivedEvent += chatReceived;
+            App.theCore.joinCircle(url);
+            App.theCore.chatReceivedEvent += chatReceived;
             MainForm.colorChange += colorChanged;
-            Program.mainForm.setColors();
+            ((MainForm)App.mainForm).setColors();
 
 
             System.Threading.Thread t = new System.Threading.Thread(joinLoop);
@@ -89,11 +89,11 @@ namespace Dimension.UI
 
             if (circleType == JoinCircleForm.CircleType.bootstrap)
             {
-                Program.settings.addStringToArrayNoDup("Bootstrap Circles Open", url);
+                App.settings.addStringToArrayNoDup("Bootstrap Circles Open", url);
             }
             else if (circleType == JoinCircleForm.CircleType.kademlia)
             {
-                Program.settings.addStringToArrayNoDup("Kademlia Circles Open", url);
+                App.settings.addStringToArrayNoDup("Kademlia Circles Open", url);
             }
             if (isMono)
             {
@@ -116,22 +116,22 @@ namespace Dimension.UI
         void initLAN()
         {
             url = "LAN";
-            Program.theCore.joinCircle(url);
+            App.theCore.joinCircle(url);
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
 
             circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url.ToLower())), 0);
-            Program.theCore.chatReceivedEvent += chatReceived;
+            App.theCore.chatReceivedEvent += chatReceived;
             MainForm.colorChange += colorChanged;
-            Program.mainForm.setColors();
+            ((MainForm)App.mainForm).setColors();
 
-            Program.settings.setBool("Joined LAN Circle", true);
+            App.settings.setBool("Joined LAN Circle", true);
         }
         ulong circleHash;
         Model.Peer[] allPeersInCircle
         {
             get
             {
-                return Program.theCore.peerManager.allPeersInCircle(circleHash);
+                return App.theCore.peerManager.allPeersInCircle(circleHash);
             }
         }
         void doUpdateUserList()
@@ -253,10 +253,10 @@ namespace Dimension.UI
         void setupUserList()
         {
             updateUserList(null, circleHash);
-            Program.theCore.peerManager.peerRemoved += peerLeft;
-            Program.theCore.peerManager.peerAdded += peerJoined;
-            Program.theCore.peerManager.peerUpdated += peerUpdated;
-            Program.theCore.peerManager.peerRenamed += peerRenamed;
+            App.theCore.peerManager.peerRemoved += peerLeft;
+            App.theCore.peerManager.peerAdded += peerJoined;
+            App.theCore.peerManager.peerUpdated += peerUpdated;
+            App.theCore.peerManager.peerRenamed += peerRenamed;
         }
         void peerRenamed(string oldName, Model.Peer p)
         {
@@ -295,15 +295,15 @@ namespace Dimension.UI
                 return;
             if (IsDisposed)
             {
-                Program.theCore.chatReceivedEvent -= chatReceived;
+                App.theCore.chatReceivedEvent -= chatReceived;
                 return;
             }
             bool highlight = false;
 
 
-            int count = new Regex(Regex.Escape(Program.settings.getString("Username", "Username").ToLower())).Matches(s.ToLower()).Count;
+            int count = new Regex(Regex.Escape(App.settings.getString("Username", "Username").ToLower())).Matches(s.ToLower()).Count;
             
-            if (p?.id == Program.theCore.id)
+            if (p?.id == App.theCore.id)
             {
                 if (count > 1)
                     highlight = true;
@@ -332,12 +332,12 @@ namespace Dimension.UI
                         historyBox.SelectionLength = s.Length;
                         historyBox.SelectionBackColor = SystemColors.Highlight;
                         historyBox.SelectionColor = SystemColors.HighlightText;
-                        Program.mainForm.flash();
+                        App.doFlash();
                     }
 
                     historyBox.SelectionStart = historyBox.Text.Length - (s.Length + 1);
                     historyBox.SelectionLength = s.Length + 1;
-                    historyBox.SelectionFont = Program.getFont();
+                    historyBox.SelectionFont = App.getFont();
                     
                     if (p != null)
                         if (p.behindDoubleNAT)
@@ -374,7 +374,7 @@ namespace Dimension.UI
                 if (s.Contains('\t')) s = s.Substring(s.LastIndexOf('\t') + 1);
                 if (s.Contains('\n')) s = s.Substring(s.LastIndexOf('\n') + 1);
 
-                foreach (Model.Peer p in Program.theCore.peerManager.allPeersInCircle(circleHash))
+                foreach (Model.Peer p in App.theCore.peerManager.allPeersInCircle(circleHash))
                 {
                     if (p.username.ToLower().StartsWith(s.ToLower()) && s.Trim() != "" && p.username.Trim() != "")
                     {
@@ -384,7 +384,7 @@ namespace Dimension.UI
                     }
 
                 }
-                if (Program.settings.getBool("Play sounds", true))
+                if (App.settings.getBool("Play sounds", true))
                 {
                     System.Media.SoundPlayer p = new System.Media.SoundPlayer(Properties.Resources.Bell);
                     p.Play();
@@ -447,7 +447,7 @@ namespace Dimension.UI
                         chatHistory.Add(inputBox.Text);
                         while (chatHistory.Count > 10)
                             chatHistory.RemoveAt(0);
-                        Program.theCore.sendChat(inputBox.Text, circleHash);
+                        App.theCore.sendChat(inputBox.Text, circleHash);
                         inputBox.Text = "";
                         inputBox.Height = 22;
                     }
@@ -464,7 +464,7 @@ namespace Dimension.UI
                 UserPanel b = new UserPanel(z);
                 b.Dock = DockStyle.Fill;
 
-                Program.mainForm.addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
+                ((MainForm)App.mainForm).addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
             }
         }
 

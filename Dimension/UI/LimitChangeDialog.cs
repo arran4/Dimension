@@ -30,9 +30,9 @@ namespace Dimension.UI
 
             ulong value = 0;
             if (whichLimit == WhichLimit.up)
-                value = Program.settings.getULong("Global Upload Rate Limit", 0);
+                value = App.settings.getULong("Global Upload Rate Limit", 0);
             if (whichLimit == WhichLimit.down)
-                value = Program.settings.getULong("Global Download Rate Limit", 0);
+                value = App.settings.getULong("Global Download Rate Limit", 0);
 
             unitComboBox.SelectedIndex = 0;
             if (value == 0)
@@ -67,9 +67,9 @@ namespace Dimension.UI
             }
 
             if (whichLimit == WhichLimit.up)
-                Program.settings.setULong("Global Upload Rate Limit", value);
+                App.settings.setULong("Global Upload Rate Limit", value);
             if (whichLimit == WhichLimit.down)
-                Program.settings.setULong("Global Download Rate Limit", value);
+                App.settings.setULong("Global Download Rate Limit", value);
             this.Close();
         }
 

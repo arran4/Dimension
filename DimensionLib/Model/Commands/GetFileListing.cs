@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model.Commands
 {
-    class GetFileListing : Command
+    public class GetFileListing : Command
     {
         public string path = "/";
         public GetFileListing(string path)

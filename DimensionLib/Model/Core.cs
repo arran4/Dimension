@@ -16,24 +16,24 @@ namespace Dimension.Model
             disposed = true;
 
             Model.Commands.Quitting c = new Model.Commands.Quitting();
-            c.id = Program.theCore.id;
-            byte[] b = Program.serializer.serialize(c);
-            foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
+            c.id = App.theCore.id;
+            byte[] b = App.serializer.serialize(c);
+            foreach (Model.Peer p in App.theCore.peerManager.allPeers)
             {
-                Program.udpSend(b, b.Length, p.actualEndpoint);
+                App.udpSend(b, b.Length, p.actualEndpoint);
                 if(p.internalAddress != null)
                     foreach(System.Net.IPAddress ip in p.internalAddress)
-                        Program.udpSend(b, b.Length, new System.Net.IPEndPoint(ip,p.localControlPort));
-                Program.udpSend(b, b.Length, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                        App.udpSend(b, b.Length, new System.Net.IPEndPoint(ip,p.localControlPort));
+                App.udpSend(b, b.Length, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
             }
             foreach (System.Net.IPEndPoint e in toHello)
             {
-                Program.udpSend(b, b.Length, e);
+                App.udpSend(b, b.Length, e);
             }
             }
         public void beginSearch(Model.Commands.SearchCommand c)
         {
-            foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
+            foreach (Model.Peer p in App.theCore.peerManager.allPeers)
                 p.sendCommand(c);
 
         }
@@ -76,13 +76,13 @@ namespace Dimension.Model
                 };
 
             }
-            byte[] b = Program.serializer.serialize(new Commands.GossipCommand()
+            byte[] b = App.serializer.serialize(new Commands.GossipCommand()
             {
                 peers = peers,
                 requestingGossipBack = requestingResponse,
                 circleId = circleId
             });
-            Program.udpSend(b, b.Length, target);
+            App.udpSend(b, b.Length, target);
         }
 
         void gossipLoop()
@@ -149,8 +149,8 @@ namespace Dimension.Model
             ulong randomId = (ulong)r.Next();
             randomId = randomId << 32;
             randomId |= (uint)r.Next();
-            id = (ulong)Program.settings.getULong("ID", randomId);
-            Program.settings.setULong("ID", id);
+            id = (ulong)App.settings.getULong("ID", randomId);
+            App.settings.setULong("ID", id);
 
 
 
@@ -162,10 +162,10 @@ namespace Dimension.Model
             t.Start();
 
             Model.SystemLog.addEntry("Starting UDP async receive...");
-            doReceive(Program.udp);
-            if(Program.udp2 != null)
-                doReceive(Program.udp2);
-            Program.fileList.updateComplete += updateIncomings;
+            doReceive(App.udp);
+            if(App.udp2 != null)
+                doReceive(App.udp2);
+            App.fileList.updateComplete += updateIncomings;
 
 
             Model.SystemLog.addEntry("Launching network keep alive loops...");
@@ -261,7 +261,7 @@ namespace Dimension.Model
             foreach (System.Net.IPAddress a in internalIPs)
                 if (sender.Address.ToString() == a.ToString())
                     notFromUs = false;
-            if (Program.bootstrap.publicControlEndPoint.Address.ToString() == sender.Address.ToString())
+            if (App.bootstrap.publicControlEndPoint.Address.ToString() == sender.Address.ToString())
                 notFromUs = false;
             if (notFromUs)
                 udpCommandsNotFromUs++;
@@ -270,7 +270,7 @@ namespace Dimension.Model
             {
                 lock (incomingTraffic)
                 {
-                    string t = Program.serializer.getType(data);
+                    string t = App.serializer.getType(data);
                     if (!incomingTraffic.ContainsKey(t))
                         incomingTraffic[t] = 0;
                     incomingTraffic[t] += (ulong)data.Length;
@@ -281,9 +281,9 @@ namespace Dimension.Model
                 //whatever
             }
 
-            Program.globalDownCounter.addBytes(data.Length);
-            if (data.Length > 32 && Program.theCore != null) //Ignore extraneous STUN info
-                parse(Program.serializer.deserialize(data), sender, Program.serializer.getText(data));
+            App.globalDownCounter.addBytes(data.Length);
+            if (data.Length > 32 && App.theCore != null) //Ignore extraneous STUN info
+                parse(App.serializer.deserialize(data), sender, App.serializer.getText(data));
         }
         List<System.Net.IPEndPoint> toHello = new List<System.Net.IPEndPoint>();
         public void addPeer(System.Net.IPEndPoint p)
@@ -295,7 +295,7 @@ namespace Dimension.Model
                         return;
                 toHello.Add(p);
                 var h = generateHello();
-                Program.udpSend(Program.serializer.serialize(h), p);
+                App.udpSend(App.serializer.serialize(h), p);
             }
         }
 
@@ -351,8 +351,8 @@ namespace Dimension.Model
                         requestedHashes[ip].Add(((Commands.MiniHello)c).helloHash);
                         var h = generateHello();
                         h.requestingHelloBack = true;
-                        byte[] b = Program.serializer.serialize(h);
-                        Program.udpSend(b, sender);
+                        byte[] b = App.serializer.serialize(h);
+                        App.udpSend(b, sender);
                     }
                 }
             }
@@ -371,10 +371,10 @@ namespace Dimension.Model
                         mini.id = id;
                         mini.unknown = true;
                         mini.afk = isAFK();
-                        byte[] m = Program.serializer.serialize(mini);
+                        byte[] m = App.serializer.serialize(mini);
                         //send it to both, whatever
-                        Program.udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
-                        Program.udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.internalAddress), p.internalControlPort));
+                        App.udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.publicAddress), p.publicControlPort));
+                        App.udpSend(m, new System.Net.IPEndPoint(System.Net.IPAddress.Parse(p.internalAddress), p.internalControlPort));
                     }
                 }
                 if (g.requestingGossipBack)
@@ -382,7 +382,7 @@ namespace Dimension.Model
             }
             if (c is Commands.BeginPunchCommand)
             {
-                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                foreach (Peer p in App.theCore.peerManager.allPeers)
                     if (p.id == ((Commands.BeginPunchCommand)c).myId)
                     {
                         p.endPunch(new System.Net.IPEndPoint(sender.Address, ((Commands.BeginPunchCommand)c).port));
@@ -391,7 +391,7 @@ namespace Dimension.Model
             }
             if (c is Commands.EndPunchCommand)
             {
-                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                foreach (Peer p in App.theCore.peerManager.allPeers)
                     if (p.id == ((Commands.EndPunchCommand)c).myId)
                     {
                         p.releasePunch(new System.Net.IPEndPoint(sender.Address, ((Commands.EndPunchCommand)c).port));
@@ -400,7 +400,7 @@ namespace Dimension.Model
             }
             if (c is Commands.ConnectToMe)
             {
-                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                foreach (Peer p in App.theCore.peerManager.allPeers)
                     if (p.id == ((Commands.ConnectToMe)c).myId)
                     {
                         p.reverseConnect();
@@ -427,12 +427,12 @@ namespace Dimension.Model
                 h.peerCount = z;
 
                 if (h.debugBuild.HasValue)
-                    if (!h.debugBuild.Value && h.buildNumber > Program.buildNumber)
+                    if (!h.debugBuild.Value && h.buildNumber > App.buildNumber)
                     {
 
                         System.Threading.Thread t = new System.Threading.Thread(delegate ()
                         {
-                            Program.checkForUpdates();
+                            App.checkForUpdates();
                         });
                         t.IsBackground = true;
                         t.Name = "Program update thread";
@@ -442,8 +442,8 @@ namespace Dimension.Model
                 {
                     var h2 = generateHello();
                     h2.requestingHelloBack = false;
-                    byte[] b = Program.serializer.serialize(h2);
-                    Program.udpSend(b, sender);
+                    byte[] b = App.serializer.serialize(h2);
+                    App.udpSend(b, sender);
                 }
                 peerManager.parseHello(h, sender);
                 lock (toHello)
@@ -454,7 +454,7 @@ namespace Dimension.Model
             {
                 Commands.RoomChatCommand r = (Commands.RoomChatCommand)c;
                 bool received = false;
-                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                foreach (Peer p in App.theCore.peerManager.allPeers)
                 {
                     if (p.actualEndpoint.Address.ToString() == sender.Address.ToString())
                         if (r.userId.HasValue)
@@ -477,20 +477,20 @@ namespace Dimension.Model
                         break;
                 }
                 if (!received)
-                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " (Unknown): " + r.content.Trim('\r'), r.roomId, null);
+                    App.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " (Unknown): " + r.content.Trim('\r'), r.roomId, null);
 
             }
             if (c is Commands.Quitting)
             {
                 Commands.Quitting r = (Commands.Quitting)c;
-                foreach (Peer p in Program.theCore.peerManager.allPeers)
+                foreach (Peer p in App.theCore.peerManager.allPeers)
                     if (!p.quit || DateTime.Now.Subtract(p.timeQuit).TotalSeconds > 1)
                     {
                         if (p.id == r.id)
                         {
                             p.quit = true;
                             p.timeQuit = DateTime.Now;
-                            Program.theCore.peerManager.doPeerRemoved(p);
+                            App.theCore.peerManager.doPeerRemoved(p);
                         }
                     }
             }
@@ -501,13 +501,13 @@ namespace Dimension.Model
                     var k = (Commands.KeywordSearchCommand)c;
 
                     HashSet<ulong> outputIDs = new HashSet<ulong>();
-                    var q = Program.fileListDatabase.getObject<ulong[]>(Program.fileListDatabase.searchList, k.keyword);
+                    var q = App.fileListDatabase.getObject<ulong[]>(App.fileListDatabase.searchList, k.keyword);
                     if(q != null)
                         outputIDs.UnionWith(q);
                     foreach (string g in k.keyword.Split(new char[] { ' ', '.', '_', '-', '[', ']', '(', ')' }))
                     {
                         string s = g.Trim().ToLower();
-                        var q2 = Program.fileListDatabase.getObject<ulong[]>(Program.fileListDatabase.searchList, s);
+                        var q2 = App.fileListDatabase.getObject<ulong[]>(App.fileListDatabase.searchList, s);
                         if(q2 != null)
                             outputIDs.UnionWith(q2);
                     }
@@ -521,23 +521,23 @@ namespace Dimension.Model
                         for(int z = 0; z < 100 && i + z < listIDs.Count; z++)
                         {
                             ulong u = listIDs[i + z];
-                            var file = Program.fileList.getFile(u);
-                            var folder = Program.fileList.getFolder(u);
+                            var file = App.fileList.getFile(u);
+                            var folder = App.fileList.getFolder(u);
 
                             if (file.isFolder)
-                                folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified), fullPath = Program.fileList.getFullPath(folder) });
+                                folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified), fullPath = App.fileList.getFullPath(folder) });
                             else
-                                fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified), fullPath = Program.fileList.getFullPath(file) });
+                                fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified), fullPath = App.fileList.getFullPath(file) });
                         }
 
                         var output = new Commands.SearchResultCommand();
-                        output.myId = Program.theCore.id;
+                        output.myId = App.theCore.id;
                         output.keyword = k.keyword;
                         output.files = fileOutputs.ToArray();
                         output.folders = folderOutputs.ToArray();
 
-                        byte[] b = Program.serializer.serialize(output);
-                        Program.udpSend(b, sender);
+                        byte[] b = App.serializer.serialize(output);
+                        App.udpSend(b, sender);
                         System.Threading.Thread.Sleep(10);
                     }
                 }
@@ -555,7 +555,7 @@ namespace Dimension.Model
                     {
                         if (s.Length > 16)
                             s = s.Substring(0, 16);
-                        Program.settings.setString("Username", s);
+                        App.settings.setString("Username", s);
                         return;
                     }
                     }
@@ -564,7 +564,7 @@ namespace Dimension.Model
                 }
             Model.Commands.RoomChatCommand c = new Commands.RoomChatCommand();
             c.content = content;
-            c.userId = Program.theCore.id;
+            c.userId = App.theCore.id;
             c.roomId = hash;
 
             //TODO: Make this more gracefully handle collisions
@@ -604,7 +604,7 @@ namespace Dimension.Model
         void commandReceived(Commands.Command c, IncomingConnection con)
         {
             if (con is LoopbackIncomingConnection && con.hello == null)
-                con.hello = Program.theCore.generateHello();
+                con.hello = App.theCore.generateHello();
             lock (con)
             {
                 if (c is Commands.CancelCommand)
@@ -623,16 +623,16 @@ namespace Dimension.Model
                         path = ((Commands.RequestChunks)c).path;
                     if (c is Commands.RequestFolderContents)
                         path = ((Commands.RequestFolderContents)c).path;
-                    FSListing f = Program.fileList.getFSListing(path, false);
+                    FSListing f = App.fileList.getFSListing(path, false);
                     FSListing parent = f;
                     string fullPath = "";
 
                     while (parent != null)
                     {
-                        FSListing p = Program.fileList.getFolder(parent.parentId);
+                        FSListing p = App.fileList.getFolder(parent.parentId);
                         if (p == null)
                         {
-                            p = Program.fileList.getRootShare(parent.id);
+                            p = App.fileList.getRootShare(parent.id);
                             if (((RootShare)p).fullPath.StartsWith("//"))
                                 fullPath = "\\\\" + ((RootShare)p).fullPath.Substring(2).Replace('/', '\\') + "\\" + fullPath.Replace('/', '\\');
                             else
@@ -692,7 +692,7 @@ namespace Dimension.Model
 
             if (con is LoopbackIncomingConnection)
             {
-                t.username = Program.settings.getString("Username", "Username");
+                t.username = App.settings.getString("Username", "Username");
                 t.userId = id;
             }
             else
@@ -756,8 +756,8 @@ namespace Dimension.Model
                     if (con is LoopbackIncomingConnection)
                     {
                         t.rate = ((LoopbackIncomingConnection)con).upCounter.frontBuffer;
-                        t.username = Program.settings.getString("Username", "Username");
-                        t.userId = Program.theCore.id;
+                        t.username = App.settings.getString("Username", "Username");
+                        t.userId = App.theCore.id;
                     }
                     else
                     {
@@ -786,7 +786,7 @@ namespace Dimension.Model
 
             if (path == "/")
             {
-                RootShare[] m = Program.fileListDatabase.getRootShares();
+                RootShare[] m = App.fileListDatabase.getRootShares();
 
                 Dictionary<string, ulong> sizes = new Dictionary<string, ulong>();
                 for (int i = 0; i < m.Length; i++)
@@ -806,14 +806,14 @@ namespace Dimension.Model
             }
             else
             {
-                Folder q = (Folder)Program.fileList.getFSListing(path, true);
+                Folder q = (Folder)App.fileList.getFSListing(path, true);
                 if (q is Folder)
                 {
                     Folder f = (Folder)q;
                     List<Commands.FSListing> folders = new List<Commands.FSListing>();
                     for (int i = 0; i < f.folderIds.Length; i++)
                     {
-                        FSListing z = Program.fileList.getFolder(f.folderIds[i]);
+                        FSListing z = App.fileList.getFolder(f.folderIds[i]);
                         if (z != null)
                             folders.Add(new Commands.FSListing() { isFolder = true, name = z.name, size = z.size, updated = new DateTime(z.lastModified) });
                     }
@@ -822,7 +822,7 @@ namespace Dimension.Model
                    List <Commands.FSListing> files = new List<Commands.FSListing>();
                     for (int i = 0; i < f.fileIds.Length; i++)
                     {
-                        FSListing z = Program.fileList.getFile(f.fileIds[i]);
+                        FSListing z = App.fileList.getFile(f.fileIds[i]);
                         if (z != null)
                             files.Add(new Commands.FSListing() { isFolder = false, name = z.name, size = z.size, updated = new DateTime(z.lastModified) });
                     }
@@ -859,7 +859,7 @@ namespace Dimension.Model
         }
         bool isAFK()
         {
-            if (!Program.settings.getBool("Show AFK", true))
+            if (!App.settings.getBool("Show AFK", true))
                 return false;
 
             try
@@ -877,12 +877,12 @@ namespace Dimension.Model
         {
             Commands.HelloCommand c = new Commands.HelloCommand();
             c.id = id;
-            c.username = Program.settings.getString("Username", "Username");
+            c.username = App.settings.getString("Username", "Username");
             if (isMono)
-                Program.settings.setBool("Use UDT", false);
+                App.settings.setBool("Use UDT", false);
 
-            c.useUDT = Program.settings.getBool("Use UDT", true);
-            c.description = Program.settings.getString("Description", "");
+            c.useUDT = App.settings.getBool("Use UDT", true);
+            c.description = App.settings.getString("Description", "");
 
             c.afk = false;
 
@@ -904,24 +904,24 @@ namespace Dimension.Model
             c.debugBuild  = false;
 #endif
             c.peerCount = counts;
-            if (Program.bootstrap.publicControlEndPoint != null)
+            if (App.bootstrap.publicControlEndPoint != null)
             {
-                c.externalIP = Program.bootstrap.publicControlEndPoint.Address.ToString();
-                c.externalControlPort = Program.bootstrap.publicControlEndPoint.Port;
+                c.externalIP = App.bootstrap.publicControlEndPoint.Address.ToString();
+                c.externalControlPort = App.bootstrap.publicControlEndPoint.Port;
             }
-            if (Program.bootstrap.publicDataEndPoint != null)
+            if (App.bootstrap.publicDataEndPoint != null)
             {
-                c.externalDataPort = Program.bootstrap.publicDataEndPoint.Port;
+                c.externalDataPort = App.bootstrap.publicDataEndPoint.Port;
             }
-            c.internalControlPort = Program.bootstrap.internalControlPort;
-            c.internalDataPort = Program.bootstrap.internalDataPort;
+            c.internalControlPort = App.bootstrap.internalControlPort;
+            c.internalDataPort = App.bootstrap.internalDataPort;
             if (isMono)
             {
                 c.useUDT = false;
                 c.internalUdtPort = 0;
             }
-            c.buildNumber = Program.buildNumber;
-            c.behindDoubleNAT = Program.bootstrap.behindDoubleNAT;
+            c.buildNumber = App.buildNumber;
+            c.behindDoubleNAT = App.bootstrap.behindDoubleNAT;
 
             System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
             List<ulong> circles = new List<ulong>();
@@ -937,7 +937,7 @@ namespace Dimension.Model
             c.myCircles = circles.ToArray();
 
             ulong share = 0;
-            foreach (RootShare r in Program.fileListDatabase.getRootShares())
+            foreach (RootShare r in App.fileListDatabase.getRootShares())
                 if (r != null)
                     share += r.size;
             c.myShare = share;
@@ -979,9 +979,9 @@ namespace Dimension.Model
         {
             while (!disposed)
             {
-                while (Program.theCore == null && !disposed)
+                while (App.theCore == null && !disposed)
                     System.Threading.Thread.Sleep(10);
-                while (!Program.doneLoading && !disposed)
+                while (!App.doneLoading && !disposed)
                     System.Threading.Thread.Sleep(10);
                 if (disposed)
                     return;
@@ -993,12 +993,12 @@ namespace Dimension.Model
                 mini.helloHash = helloHash;
                 mini.id = id;
                 mini.unknown = false;
-                byte[] m = Program.serializer.serialize(mini);
+                byte[] m = App.serializer.serialize(mini);
                 mini.unknown = true;
-                byte[] m2 = Program.serializer.serialize(mini);
+                byte[] m2 = App.serializer.serialize(mini);
                 
-                //Program.udpSend(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
-                Program.udpSend(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
+                //App.udpSend(b, b.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
+                App.udpSend(m, m.Length, new System.Net.IPEndPoint(System.Net.IPAddress.Broadcast, NetConstants.controlPort));
                 
                 System.Threading.Thread.Sleep(1000);
                 if (disposed)
@@ -1018,12 +1018,12 @@ namespace Dimension.Model
                                     if (p2.internalAddress[0].ToString() == p.Address.ToString() && p2.localControlPort == p.Port)
                                         skip = true;
                             }
-                            if (!skip && p.Address.ToString() != Program.bootstrap.publicControlEndPoint.Address.ToString())
+                            if (!skip && p.Address.ToString() != App.bootstrap.publicControlEndPoint.Address.ToString())
                             {
                                 try
                                 {
-                                    //Program.udpSend(b, b.Length, p);
-                                    Program.udpSend(m2, m2.Length, p);
+                                    //App.udpSend(b, b.Length, p);
+                                    App.udpSend(m2, m2.Length, p);
                                 }
                                 catch
                                 {
@@ -1040,42 +1040,42 @@ namespace Dimension.Model
                 {
                     //if (DateTime.Now.Subtract(p.lastTimeHelloSent).TotalSeconds > 30 || lastHelloHash != helloHash)
                     {
-                        //if (p.id != Program.theCore.id)
+                        //if (p.id != App.theCore.id)
                         {
                             //if (!p.quit)
                             {
-                                //Program.udpSend(b, b.Length, p.actualEndpoint);
-                                //Program.globalUpCounter.addBytes(b.Length);
+                                //App.udpSend(b, b.Length, p.actualEndpoint);
+                                //App.globalUpCounter.addBytes(b.Length);
                                 try
                                 {
                                     if (!p.assumingDead)
                                     {
                                         if (p.maybeDead)
                                         {
-                                            Program.udpSend(m2, p.actualEndpoint);
+                                            App.udpSend(m2, p.actualEndpoint);
                                             if (p.isLocal)
                                             {
                                                 if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
-                                                    Program.udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                                    App.udpSend(m2, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
                                             }
                                             else
                                             {
                                                 if (p.publicAddress.ToString() != p.actualEndpoint.Address.ToString())
-                                                    Program.udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                                    App.udpSend(m2, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                                             }
                                         }
                                         else
                                         {
-                                            Program.udpSend(m, p.actualEndpoint);
+                                            App.udpSend(m, p.actualEndpoint);
                                             if (p.isLocal)
                                             {
                                                 if (p.internalAddress[0].ToString() != p.actualEndpoint.Address.ToString())
-                                                    Program.udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
+                                                    App.udpSend(m, new System.Net.IPEndPoint(p.internalAddress[0], p.localControlPort));
                                             }
                                             else
                                             {
                                                 if (p.publicAddress.ToString() != p.actualEndpoint.Address.ToString())
-                                                    Program.udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
+                                                    App.udpSend(m, new System.Net.IPEndPoint(p.publicAddress, p.externalControlPort));
                                             }
                                         }
                                     }

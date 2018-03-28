@@ -40,9 +40,9 @@ namespace Dimension.Model
         }
         public bool havePeerWithAddress(string[] i, System.Net.IPAddress e)
         {
-            if (Program.theCore.internalIPs.Contains(e))
+            if (App.theCore.internalIPs.Contains(e))
                 return true;
-            if (e.ToString() == Program.bootstrap.publicControlEndPoint.Address.ToString())
+            if (e.ToString() == App.bootstrap.publicControlEndPoint.Address.ToString())
             {
                 //they're local
                 foreach (Peer p in allPeers)
@@ -118,7 +118,7 @@ namespace Dimension.Model
         }
         public void parseHello(Commands.HelloCommand h, System.Net.IPEndPoint sender)
         {
-            if (Program.isMono)
+            if (App.isMono)
             {
                 string newName = "";
                 for (int i = 0; i < h.username.Length; i++)

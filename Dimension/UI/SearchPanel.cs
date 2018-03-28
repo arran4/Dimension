@@ -15,7 +15,7 @@ namespace Dimension.UI
         public SearchPanel()
         {
             InitializeComponent();
-            Program.theCore.searchResult += searchCallback;
+            App.theCore.searchResult += searchCallback;
         }
         void searchCallback(Model.Commands.SearchResultCommand c)
         {
@@ -33,7 +33,7 @@ namespace Dimension.UI
                     return; //disposed
                 }
                 string username = "";
-                foreach (var v in Program.theCore.peerManager.allPeers)
+                foreach (var v in App.theCore.peerManager.allPeers)
                     if (v.id == c.myId)
                     {
                         username = v.username;
@@ -82,7 +82,7 @@ namespace Dimension.UI
             Model.Commands.KeywordSearchCommand c = new Model.Commands.KeywordSearchCommand();
             c.keyword = searchInputBox.Text;
             keyword = c.keyword;
-            Program.theCore.beginSearch(c);
+            App.theCore.beginSearch(c);
         }
         private void searchInputBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -105,7 +105,7 @@ namespace Dimension.UI
             {
                 foreach (SearchThingy q in toDownload)
                 {
-                    foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
+                    foreach (Model.Peer p in App.theCore.peerManager.allPeers)
                         if (p.id == q.userId)
                         {
                             if (p.controlConnection == null || p.dataConnection == null)

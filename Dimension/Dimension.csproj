@@ -123,61 +123,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Bootstrap.cs" />
-    <Compile Include="Model\ByteCounter.cs" />
-    <Compile Include="Model\ClosableTab.cs" />
-    <Compile Include="Model\Commands\BeginPunchCommand.cs" />
-    <Compile Include="Model\Commands\CancelCommand.cs" />
-    <Compile Include="Model\Commands\Command.cs" />
-    <Compile Include="Model\Commands\ConnectToMe.cs" />
-    <Compile Include="Model\Commands\EndPunchCommand.cs" />
-    <Compile Include="Model\Commands\InitRendezvous.cs" />
-    <Compile Include="Model\Commands\DataCommand.cs" />
-    <Compile Include="Model\Commands\FileChunk.cs" />
-    <Compile Include="Model\Commands\FSListing.cs" />
-    <Compile Include="Model\Commands\FileListing.cs" />
-    <Compile Include="Model\Commands\GetFileListing.cs" />
-    <Compile Include="Model\Commands\GossipCommand.cs" />
-    <Compile Include="Model\Commands\GossipPeer.cs" />
-    <Compile Include="Model\Commands\HelloCommand.cs" />
-    <Compile Include="Model\Commands\KeepAlive.cs" />
-    <Compile Include="Model\Commands\KeywordSearchCommand.cs" />
-    <Compile Include="Model\Commands\MiniHello.cs" />
-    <Compile Include="Model\Commands\PeerList.cs" />
-    <Compile Include="Model\Commands\PrivateChatCommand.cs" />
-    <Compile Include="Model\Commands\PunchCommand.cs" />
-    <Compile Include="Model\Commands\Quitting.cs" />
-    <Compile Include="Model\Commands\RequestChunks.cs" />
-    <Compile Include="Model\Commands\RequestFolderContents.cs" />
-    <Compile Include="Model\Commands\ReverseConnectionType.cs" />
-    <Compile Include="Model\Commands\RoomChatCommand.cs" />
-    <Compile Include="Model\Commands\SearchCommand.cs" />
-    <Compile Include="Model\Commands\SearchResultCommand.cs" />
-    <Compile Include="Model\Connection.cs" />
-    <Compile Include="Model\Core.cs" />
-    <Compile Include="Model\File.cs" />
-    <Compile Include="Model\FileList.cs" />
-    <Compile Include="Model\FileListDatabase.cs" />
-    <Compile Include="Model\Folder.cs" />
-    <Compile Include="Model\GlobalSpeedLimiter.cs" />
-    <Compile Include="Model\IncomingConnection.cs" />
-    <Compile Include="Model\FSListing.cs" />
-    <Compile Include="Model\Kademlia.cs" />
-    <Compile Include="Model\LoopbackIncomingConnection.cs" />
-    <Compile Include="Model\NetConstants.cs" />
-    <Compile Include="Model\OutgoingConnection.cs" />
-    <Compile Include="Model\Peer.cs" />
-    <Compile Include="Model\PeerManager.cs" />
-    <Compile Include="Model\RootShare.cs" />
-    <Compile Include="Model\Serializer.cs" />
-    <Compile Include="Model\Settings.cs" />
-    <Compile Include="Model\SystemLog.cs" />
-    <Compile Include="Model\LoopbackOutgoingConnection.cs" />
-    <Compile Include="Model\ReliableIncomingConnection.cs" />
-    <Compile Include="Model\ReliableOutgoingConnection.cs" />
-    <Compile Include="Model\Transfer.cs" />
-    <Compile Include="Model\UdtIncomingConnection.cs" />
-    <Compile Include="Model\UdtOutgoingConnection.cs" />
     <Compile Include="UI\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -362,6 +307,10 @@
     <None Include="Resources\Bell.wav" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DimensionLib\DimensionLib.csproj">
+      <Project>{a21c22b8-b75b-41b3-9185-85c686e1bfa5}</Project>
+      <Name>DimensionLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Updater\Updater.csproj">
       <Project>{b842e979-ae63-41b0-a8a4-1520d001711f}</Project>
       <Name>Updater</Name>

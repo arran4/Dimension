@@ -178,10 +178,10 @@ namespace Dimension.Model
             get
             {
                 //TODO: Add more conditions
-                if (id == Program.theCore.id)
+                if (id == App.theCore.id)
                     return true;
-                if (Program.bootstrap.publicDataEndPoint != null)
-                    if (publicAddress.ToString() == Program.bootstrap.publicDataEndPoint.Address.ToString())
+                if (App.bootstrap.publicDataEndPoint != null)
+                    if (publicAddress.ToString() == App.bootstrap.publicDataEndPoint.Address.ToString())
                         return true;
                 return false;
             }
@@ -193,7 +193,7 @@ namespace Dimension.Model
 
         public static string downloadFilePath(string s)
         {
-            string s2 = Program.settings.getString("Default Download Folder", "C:\\Downloads");
+            string s2 = App.settings.getString("Default Download Folder", "C:\\Downloads");
             string x = s;
             if (x.Contains("/"))
                 x = x.Substring(x.LastIndexOf("/") + 1);
@@ -206,7 +206,7 @@ namespace Dimension.Model
             if (c is Commands.PrivateChatCommand)
             {
                 Commands.PrivateChatCommand chat = (Commands.PrivateChatCommand)c;
-                Program.mainForm.privateChatReceived((Commands.PrivateChatCommand)c, this);
+                App.doPrivateChatReceived((Commands.PrivateChatCommand)c, this);
 
             }
 
@@ -232,7 +232,7 @@ namespace Dimension.Model
             {
                 var chunk = (Commands.FileChunk)c;
              
-                string s = Program.settings.getString("Default Download Folder", "C:\\Downloads");
+                string s = App.settings.getString("Default Download Folder", "C:\\Downloads");
                 if (!System.IO.Directory.Exists(s))
                     System.IO.Directory.CreateDirectory(s);
                 System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(s);
@@ -329,7 +329,7 @@ namespace Dimension.Model
                 if (dataConnection.connected)
                     if (dataConnection.rate > 0)
                         c3 = dataConnection;
-            if (id == Program.theCore.id)
+            if (id == App.theCore.id)
             {
                 t.rate = ((LoopbackOutgoingConnection)dataConnection).downCounter.frontBuffer;
                 t.username = username;
@@ -343,14 +343,14 @@ namespace Dimension.Model
         }
         public void sendCommand(Commands.Command c)
         {
-            byte[] b = Program.serializer.serialize(c);
+            byte[] b = App.serializer.serialize(c);
             if (isLocal)
             {
                 foreach(System.Net.IPAddress a in internalAddress)
-                    Program.udpSend(b, b.Length, new System.Net.IPEndPoint(a, localControlPort));
+                    App.udpSend(b, b.Length, new System.Net.IPEndPoint(a, localControlPort));
             }
             else
-                Program.udpSend(b, b.Length, actualEndpoint);
+                App.udpSend(b, b.Length, actualEndpoint);
         }
         public void reverseConnect()
         {
@@ -360,16 +360,16 @@ namespace Dimension.Model
             if (t != null)
             {
                 ReliableIncomingConnection c = new ReliableIncomingConnection(t);
-                c.send(new Commands.ReverseConnectionType() { makeControl = true, id = Program.theCore.id });
-                Program.theCore.addIncomingConnection(c);
+                c.send(new Commands.ReverseConnectionType() { makeControl = true, id = App.theCore.id });
+                App.theCore.addIncomingConnection(c);
             }
             t = attemptConnection();
             if (t != null)
             {
 
                 ReliableIncomingConnection c = new ReliableIncomingConnection(t);
-                c.send(new Commands.ReverseConnectionType() { makeData = true, id = Program.theCore.id });
-                Program.theCore.addIncomingConnection(c);
+                c.send(new Commands.ReverseConnectionType() { makeData = true, id = App.theCore.id });
+                App.theCore.addIncomingConnection(c);
             }
         }
 
@@ -436,7 +436,7 @@ namespace Dimension.Model
                     createControl = false;
             if (createControl == false && createData == false)
                 return;
-            if (id == Program.theCore.id)
+            if (id == App.theCore.id)
             {
                 response?.Invoke("Loopback peer found, creating loopback connection...");
                 if (createControl)
@@ -459,10 +459,10 @@ namespace Dimension.Model
                         actualEndpoint = new System.Net.IPEndPoint(internalAddress[i], localControlPort);
 
                         bool reverseConnect = false;
-                        if (Program.settings.getBool("Default to Reverse Connection", false))
+                        if (App.settings.getBool("Default to Reverse Connection", false))
                             reverseConnect = true;
                         bool rendezvousConnect = false;
-                        if (Program.settings.getBool("Always Rendezvous", false) && useUDT)
+                        if (App.settings.getBool("Always Rendezvous", false) && useUDT)
                         {
                             reverseConnect = false;
                             rendezvousConnect = true;
@@ -505,10 +505,10 @@ namespace Dimension.Model
                 {
                     
                     bool reverseConnect = false;
-                    if (Program.settings.getBool("Default to Reverse Connection", false))
+                    if (App.settings.getBool("Default to Reverse Connection", false))
                         reverseConnect = true;
                     bool rendezvousConnect = false;
-                    if (Program.settings.getBool("Always Rendezvous", false) && useUDT)
+                    if (App.settings.getBool("Always Rendezvous", false) && useUDT)
                     {
                         reverseConnect = false;
                         rendezvousConnect = true;
@@ -567,8 +567,8 @@ namespace Dimension.Model
             response?.Invoke("Successfully bound to UDP endpoint " + udp.LocalEndPoint.ToString());
 
             response?.Invoke("Sending UDP punch.");
-            byte[] b = Program.serializer.serialize(new Commands.BeginPunchCommand() { myId = Program.theCore.id, port = (ushort)((System.Net.IPEndPoint)udp.LocalEndPoint).Port });
-            Program.udpSend(b, actualEndpoint);
+            byte[] b = App.serializer.serialize(new Commands.BeginPunchCommand() { myId = App.theCore.id, port = (ushort)((System.Net.IPEndPoint)udp.LocalEndPoint).Port });
+            App.udpSend(b, actualEndpoint);
 
             response?.Invoke("Waiting for UDP response.");
             rendezvousSemaphore.WaitOne();
@@ -610,8 +610,8 @@ namespace Dimension.Model
 
             response?.Invoke("Attempting to initiate reverse connection.");
 
-            byte[] b = Program.serializer.serialize(new Commands.ConnectToMe() { myId = Program.theCore.id });
-            Program.udpSend(b, b.Length, actualEndpoint);
+            byte[] b = App.serializer.serialize(new Commands.ConnectToMe() { myId = App.theCore.id });
+            App.udpSend(b, b.Length, actualEndpoint);
 
             System.Threading.Thread t = new System.Threading.Thread(delegate ()
             {
@@ -635,19 +635,19 @@ namespace Dimension.Model
             udp.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 0));
             SystemLog.addEntry("Bound " + udp.LocalEndPoint.ToString());
 
-            byte[] b = Program.serializer.serialize(new Commands.EndPunchCommand() { myId = Program.theCore.id, port= (ushort)((System.Net.IPEndPoint)udp.LocalEndPoint).Port });
+            byte[] b = App.serializer.serialize(new Commands.EndPunchCommand() { myId = App.theCore.id, port= (ushort)((System.Net.IPEndPoint)udp.LocalEndPoint).Port });
             if (isLocal)
             {
                 foreach (System.Net.IPAddress a in internalAddress)
                 {
                     SystemLog.addEntry("Sent EndPunch to " + new System.Net.IPEndPoint(a, localControlPort));
-                    Program.udpSend(b, new System.Net.IPEndPoint(a, localControlPort));
+                    App.udpSend(b, new System.Net.IPEndPoint(a, localControlPort));
                 }
             }
             else
             {
                 SystemLog.addEntry("Sent EndPunch to " + actualEndpoint);
-                Program.udpSend(b, actualEndpoint);
+                App.udpSend(b, actualEndpoint);
             }
             System.Threading.Thread t = new System.Threading.Thread(delegate ()
             {
@@ -662,7 +662,7 @@ namespace Dimension.Model
                     s.Connect(sender);
                     while (s.State == Udt.SocketState.Connecting)
                         System.Threading.Thread.Sleep(10);
-                    Program.theCore.addIncomingConnection(new UdtIncomingConnection(s, udp));
+                    App.theCore.addIncomingConnection(new UdtIncomingConnection(s, udp));
 
                     SystemLog.addEntry("Rendezvous successful!");
                 }
@@ -695,16 +695,16 @@ namespace Dimension.Model
                 string s2 = s;
                 if (s2.Contains("hunter2"))
                     s2 = s2.Replace("hunter2", "*******");
-                if (r.content.ToLower().Contains(Program.settings.getString("Username", Environment.MachineName)))
-                    Program.mainForm.flash();
+                if (r.content.ToLower().Contains(App.settings.getString("Username", Environment.MachineName)))
+                    App.doFlash();
                 if (s2.StartsWith("/me"))
                 {
-                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " *** " + username + " " + s2.Trim('\r').Substring(4), r.roomId, this);
+                    App.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " *** " + username + " " + s2.Trim('\r').Substring(4), r.roomId, this);
 
                 }
                 else
                 {
-                    Program.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s2.Trim('\r'), r.roomId, this);
+                    App.theCore.chatReceived(DateTime.Now.ToShortTimeString() + " " + username + ": " + s2.Trim('\r'), r.roomId, this);
                 }
             }
 

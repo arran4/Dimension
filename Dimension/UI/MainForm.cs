@@ -15,7 +15,7 @@ namespace Dimension
         public MainForm()
         {
             InitializeComponent();
-            Text = "Dimension Public Alpha #" + Program.buildNumber.ToString();
+            Text = "Dimension Public Alpha #" + App.buildNumber.ToString();
             setColors();
         }
 
@@ -32,7 +32,7 @@ namespace Dimension
         {
             UI.UserPanel b = new UI.UserPanel(z);
             b.Dock = DockStyle.Fill;
-            Program.mainForm.addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
+            ((MainForm)App.mainForm).addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
 
         }
         public void privateChatReceived(Model.Commands.PrivateChatCommand c, Model.Peer z)
@@ -42,7 +42,7 @@ namespace Dimension
 
             this.Invoke(new Action(delegate ()
             {
-                Control p = Program.mainForm.addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
+                Control p = ((MainForm)App.mainForm).addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
 
                 ((UI.UserPanel)p).selectChat();
                 ((UI.UserPanel)p).addLine(DateTime.Now.ToShortTimeString() + " " + z.username + ": " + c.content);
@@ -59,9 +59,9 @@ namespace Dimension
                     {
                         if (!UI.FlashWindow.ApplicationIsActivated())
                         {
-                                if (Program.settings.getBool("Flash on Name Drop", true))
+                                if (App.settings.getBool("Flash on Name Drop", true))
                                     UI.FlashWindow.Flash(this);
-                                if (Program.settings.getBool("Play sounds", true))
+                                if (App.settings.getBool("Play sounds", true))
                                 {
                                     System.Media.SoundPlayer p = new System.Media.SoundPlayer(Properties.Resources.Bell);
                                     p.Play();
@@ -101,6 +101,8 @@ namespace Dimension
             UI.HTMLPanel hp = new UI.HTMLPanel();
             hp.Dock = DockStyle.Fill;
             addOrSelectPanel("Welcome", hp, "Welcome");
+            App.privateChatReceived += privateChatReceived;
+            App.flash += flash;
             
         }
         void deselect()
@@ -400,7 +402,7 @@ namespace Dimension
         {
             if (logStatus.Text != Model.SystemLog.lastLine)
                 logStatus.Text = Model.SystemLog.lastLine;
-            if (Program.kademlia.ready)
+            if (App.kademlia.ready)
                 kadReadyLabel.Visible = true;
 
             Model.Transfer[] z;
@@ -421,10 +423,10 @@ namespace Dimension
 
         private void transferRateTimer_Tick(object sender, EventArgs e)
         {
-            speedLabel.Text = UI.ByteFormatter.formatBytes(Program.globalUpCounter.frontBuffer) + "/s up; " +
-                UI.ByteFormatter.formatBytes(Program.globalDownCounter.frontBuffer) + "/s down. Total " +
-                 UI.ByteFormatter.formatBytes(Program.globalUpCounter.totalBytes) + " up; " +
-                UI.ByteFormatter.formatBytes(Program.globalDownCounter.totalBytes) + " down.";
+            speedLabel.Text = UI.ByteFormatter.formatBytes(App.globalUpCounter.frontBuffer) + "/s up; " +
+                UI.ByteFormatter.formatBytes(App.globalDownCounter.frontBuffer) + "/s down. Total " +
+                 UI.ByteFormatter.formatBytes(App.globalUpCounter.totalBytes) + " up; " +
+                UI.ByteFormatter.formatBytes(App.globalDownCounter.totalBytes) + " down.";
         }
         
 
@@ -437,7 +439,7 @@ namespace Dimension
         }
         void openDownloadFolder()
         {
-            string s = Program.settings.getString("Default Download Folder", "C:\\Downloads");
+            string s = App.settings.getString("Default Download Folder", "C:\\Downloads");
             if (System.IO.Directory.Exists(s))
                 System.Diagnostics.Process.Start(s);
         }
@@ -454,14 +456,14 @@ namespace Dimension
 
         private void limitButton_Click(object sender, EventArgs e)
         {
-            if (Program.settings.getULong("Global Upload Rate Limit", 0) == 0)
+            if (App.settings.getULong("Global Upload Rate Limit", 0) == 0)
                 uploadSpeedToolStripMenuItem.Text = "Upload Speed: None";
             else
-                uploadSpeedToolStripMenuItem.Text = "Upload Speed: " + UI.ByteFormatter.formatBytes(Program.settings.getULong("Global Upload Rate Limit", 0))+"/s";
-            if (Program.settings.getULong("Global Download Rate Limit", 0) == 0)
+                uploadSpeedToolStripMenuItem.Text = "Upload Speed: " + UI.ByteFormatter.formatBytes(App.settings.getULong("Global Upload Rate Limit", 0))+"/s";
+            if (App.settings.getULong("Global Download Rate Limit", 0) == 0)
                 downloadSpeedToolStripMenuItem.Text = "Download Speed: None";
             else
-                downloadSpeedToolStripMenuItem.Text = "Download Speed: " + UI.ByteFormatter.formatBytes(Program.settings.getULong("Global Download Rate Limit", 0)) + "/s";
+                downloadSpeedToolStripMenuItem.Text = "Download Speed: " + UI.ByteFormatter.formatBytes(App.settings.getULong("Global Download Rate Limit", 0)) + "/s";
 
         }
 
@@ -480,13 +482,13 @@ namespace Dimension
 
         private void invertedColorsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Program.settings.setBool("Invert Colors", !invertedColorsToolStripMenuItem.Checked);
+            App.settings.setBool("Invert Colors", !invertedColorsToolStripMenuItem.Checked);
             setColors();
         }
         public void setColors()
         {
-            invertedColorsToolStripMenuItem.Checked = Program.settings.getBool("Invert Colors", false);
-            colorChange?.Invoke(Program.settings.getBool("Invert Colors", false));
+            invertedColorsToolStripMenuItem.Checked = App.settings.getBool("Invert Colors", false);
+            colorChange?.Invoke(App.settings.getBool("Invert Colors", false));
         }
         public delegate void ColorChangeEvent(bool inverted = false);
         public static event ColorChangeEvent colorChange;
@@ -494,13 +496,13 @@ namespace Dimension
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-            if (Program.settings.getBool("Auto Rejoin on Startup", true))
+            if (App.settings.getBool("Auto Rejoin on Startup", true))
             {
-                if (Program.settings.getBool("Joined LAN Circle", false))
+                if (App.settings.getBool("Joined LAN Circle", false))
                     joinLANCircle();
-                foreach (string s in Program.settings.getStringArray("Bootstrap Circles Open"))
+                foreach (string s in App.settings.getStringArray("Bootstrap Circles Open"))
                     UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.bootstrap);
-                foreach (string s in Program.settings.getStringArray("Kademlia Circles Open"))
+                foreach (string s in App.settings.getStringArray("Kademlia Circles Open"))
                     UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.kademlia);
             }
         }
@@ -509,7 +511,7 @@ namespace Dimension
         {
             System.Threading.Thread t = new System.Threading.Thread(delegate ()
             {
-                Program.checkForUpdates();
+                App.checkForUpdates();
             });
             t.IsBackground = true;
             t.Name = "Check for updates thread";
@@ -520,7 +522,7 @@ namespace Dimension
         {
             if (WindowState == FormWindowState.Minimized)
             {
-                if (Program.settings.getBool("Minimize to Tray", true))
+                if (App.settings.getBool("Minimize to Tray", true))
                 {
                     Visible = false;
                     WindowState = FormWindowState.Normal;

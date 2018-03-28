@@ -21,8 +21,8 @@ namespace Dimension.Model
         string peerCachePath = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dimension"),"DHT Peer Cache.bin");
         public void initialize()
         {
-            OctoTorrent.Client.ClientEngine client = new OctoTorrent.Client.ClientEngine(new OctoTorrent.Client.EngineSettings(), Program.theCore.id.ToString());
-             OctoTorrent.Dht.Listeners.DhtListener dhtl = new OctoTorrent.Dht.Listeners.DhtListener(new IPEndPoint(IPAddress.Any, Program.bootstrap.internalDHTPort));
+            OctoTorrent.Client.ClientEngine client = new OctoTorrent.Client.ClientEngine(new OctoTorrent.Client.EngineSettings(), App.theCore.id.ToString());
+             OctoTorrent.Dht.Listeners.DhtListener dhtl = new OctoTorrent.Dht.Listeners.DhtListener(new IPEndPoint(IPAddress.Any, App.bootstrap.internalDHTPort));
              dht = new OctoTorrent.Dht.DhtEngine(dhtl);
 
              dht.PeersFound += peersFound;
@@ -74,7 +74,7 @@ namespace Dimension.Model
                 try
                 {
                     byte[] hash = doHash(key);
-                    dht.Announce(new OctoTorrent.InfoHash(hash), Program.bootstrap.publicControlEndPoint.Port);
+                    dht.Announce(new OctoTorrent.InfoHash(hash), App.bootstrap.publicControlEndPoint.Port);
                 }
                 catch (ObjectDisposedException)
                 {

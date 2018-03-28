@@ -6,18 +6,16 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model
 {
-    class UdtOutgoingConnection : OutgoingConnection
+    class UdtIncomingConnection : IncomingConnection
     {
-        public static int successfulConnections = 0;
         Udt.Socket socket;
         public override event CommandReceived commandReceived;
         System.Net.Sockets.Socket underlying;
-        public UdtOutgoingConnection(Udt.Socket s, System.Net.Sockets.Socket underlying)
+        public UdtIncomingConnection(Udt.Socket socket, System.Net.Sockets.Socket underlying)
         {
             this.underlying = underlying;
-            socket = s;
-            send(Program.theCore.generateHello());
-            successfulConnections++;
+            this.socket = socket;
+
             System.Threading.Thread t = new System.Threading.Thread(receiveLoop);
             t.IsBackground = true;
             t.Name = "UDT receive loop";
@@ -37,10 +35,10 @@ namespace Dimension.Model
                     {
                         read = socket.Receive(lenByte, pos, lenByte.Length - pos);
                         pos += read;
-                        Program.globalDownCounter.addBytes((ulong)read);
+                        App.globalDownCounter.addBytes((ulong)read);
                     }
                     pos = 0;
-                    Program.globalDownCounter.addBytes((ulong)lenByte.Length);
+                    App.globalDownCounter.addBytes(4);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
                     
                     if (dataByte.Length > 0)
@@ -49,7 +47,7 @@ namespace Dimension.Model
                         {
                             read = socket.Receive(dataByte, pos, dataByte.Length - pos);
                             pos += read;
-                            Program.globalDownCounter.addBytes((ulong)read);
+                            App.globalDownCounter.addBytes((ulong)read);
                         }
                     }
                 }
@@ -57,30 +55,26 @@ namespace Dimension.Model
                 {
                     continue;
                 }
-                Commands.Command c = Program.serializer.deserialize(dataByte);
+                Commands.Command c = App.serializer.deserialize(dataByte);
                 if (c is Commands.DataCommand)
                 {
                     pos = 0;
                     read = 1;
-                    System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-                    sw.Start();
-                    
+                    App.speedLimiter.limitDownload((ulong)((Commands.DataCommand)c).data.Length);
                     byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                     while (pos < chunk.Length)
                     {
-                        read = socket.Receive(chunk, pos, (int)Program.speedLimiter.limitDownload((ulong)(chunk.Length - pos), rateLimiterDisabled));
+                        read = socket.Receive(chunk, pos, (int)App.speedLimiter.limitDownload((ulong)(chunk.Length - pos), rateLimiterDisabled));
                         pos += read;
-                        Program.globalDownCounter.addBytes((ulong)read);
+                        App.globalDownCounter.addBytes((ulong)read);
                     }
                     ((Commands.DataCommand)c).data = chunk;
-                    sw.Stop();
-
-                    if(sw.ElapsedTicks > 0)
-                        rate = (ulong)((chunk.Length) / (sw.ElapsedTicks / (double)System.Diagnostics.Stopwatch.Frequency));
                 }
+                if (c is Commands.HelloCommand)
+                    hello = (Commands.HelloCommand)c;
                 while (commandReceived == null && connected)
                     System.Threading.Thread.Sleep(10);
-                commandReceived?.Invoke(c);
+                commandReceived?.Invoke(c, this);
             }
         }
         object sendLock = new object();
@@ -88,7 +82,7 @@ namespace Dimension.Model
         {
             if (c is Commands.DataCommand)
                 ((Commands.DataCommand)c).dataLength = ((Commands.DataCommand)c).data.Length;
-            byte[] b = Program.serializer.serialize(c);
+            byte[] b = App.serializer.serialize(c);
             int len = b.Length;
             lock (sendLock)
             {
@@ -96,21 +90,23 @@ namespace Dimension.Model
                 {
                     int pos = 0;
                     int read = 1;
+
                     while (pos < 4)
                     {
                         read = socket.Send(BitConverter.GetBytes(len), pos, 4 - pos);
-                        Program.globalUpCounter.addBytes((ulong)read);
+                        App.globalUpCounter.addBytes((ulong)read);
                         pos += read;
                     }
                     pos = 0;
-                    Program.globalUpCounter.addBytes(4);
+                    App.globalUpCounter.addBytes(4);
 
                     while (pos < b.Length)
                     {
                         read = socket.Send(b, pos, b.Length - pos);
+                        App.globalUpCounter.addBytes((ulong)read);
                         pos += read;
-                        Program.globalUpCounter.addBytes((ulong)read);
                     }
+
                     if (c is Commands.DataCommand)
                     {
                         b = ((Commands.DataCommand)c).data;
@@ -118,9 +114,9 @@ namespace Dimension.Model
                         read = 1;
                         while (pos < b.Length)
                         {
-                            int amt = (int)Program.speedLimiter.limitUpload((ulong)(b.Length - pos), rateLimiterDisabled);
+                            int amt = (int)App.speedLimiter.limitUpload((ulong)(b.Length - pos), rateLimiterDisabled);
                             read = socket.Send(b, pos, amt);
-                            Program.globalUpCounter.addBytes((ulong)read);
+                            App.globalUpCounter.addBytes((ulong)read);
                             pos += read;
                         }
                     }
@@ -158,7 +154,7 @@ namespace Dimension.Model
                 {
                     return false;
                 }
-                }
+            }
         }
     }
 }

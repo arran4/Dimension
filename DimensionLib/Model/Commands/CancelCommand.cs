@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimension.Model.Commands
 {
-    class CancelCommand : Command
+    public class CancelCommand : Command
     {
         public string path;
     }

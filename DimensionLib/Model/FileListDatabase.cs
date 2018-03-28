@@ -72,10 +72,10 @@ namespace Dimension.Model
         }
         public RootShare[] getRootShares()
         {
-            int numShares = getInt(Program.settings.settings, "Root Share Count", 0);
+            int numShares = getInt(App.settings.settings, "Root Share Count", 0);
             RootShare[] output = new RootShare[numShares];
             for (int i = 0; i < numShares; i++)
-                output[i] = getObject<Model.RootShare>(Program.settings.settings, "Root Share " + i.ToString());
+                output[i] = getObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString());
             return output;
         }
         public void deleteObject(RaptorDB.RaptorDB<string> db, string name)
