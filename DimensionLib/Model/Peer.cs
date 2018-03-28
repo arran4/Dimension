@@ -686,7 +686,7 @@ namespace Dimension.Model
         int highestId = -1;
         public void chatReceived(Commands.RoomChatCommand r)
         {
-            if (r.sequenceId <= highestId && highestId- r.sequenceId > 1000)
+            if (r.sequenceId <= highestId && Math.Abs(highestId- r.sequenceId) < 1000)
                 return;
             highestId = r.sequenceId;
             

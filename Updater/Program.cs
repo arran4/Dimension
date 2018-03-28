@@ -23,7 +23,7 @@ namespace Updater
             string s = (new System.IO.StreamReader(System.Net.WebRequest.CreateHttp(latestPath).GetResponse().GetResponseStream())).ReadToEnd();
             return s.Split('\n')[1];
         }
-        public const string latestPath = "https://raw.githubusercontent.com/wolfmother/Dimension/master/Latest.txt";
+        public const string latestPath = "https://raw.githubusercontent.com/wolfmother/Dimension/master/latest.txt";
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

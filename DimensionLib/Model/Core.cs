@@ -477,7 +477,7 @@ namespace Dimension.Model
                     if (!received)
                         if (p.internalAddress != null)
                             foreach (System.Net.IPAddress ip in p.internalAddress)
-                                if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port)
+                                if (ip.ToString() == sender.Address.ToString() && p.localControlPort == sender.Port && !received)
                                 {
                                     p.chatReceived(r);
                                     received = true;
