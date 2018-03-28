@@ -21,10 +21,17 @@ namespace Dimension.UI
         {
             if (c.keyword == keyword)
             {
-                this.Invoke(new Action(delegate
+                try
                 {
-                    resultsBox.BeginUpdate();
-                }));
+                    this.Invoke(new Action(delegate
+                    {
+                        resultsBox.BeginUpdate();
+                    }));
+                }
+                catch
+                {
+                    return; //disposed
+                }
                 foreach (Dimension.Model.Commands.FSListing f in c.folders)
                 {
                     ListViewItem i = new ListViewItem();
