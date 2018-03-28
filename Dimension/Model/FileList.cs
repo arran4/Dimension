@@ -303,8 +303,8 @@ namespace Dimension.Model
                     addId(s, obj.id);
 
                     foreach (string g in s.Split(new char[] { ' ', '.', '_', '-', '[', ']', '(', ')' }))
-                        if (g.Length >= 4)
-                            addId(g, obj.id);
+                        if (g.Trim().Length >= 4)
+                            addId(g.Trim().ToLower(), obj.id);
                 }
                 toSave.Clear();
             }
