@@ -1,2 +1,2 @@
-48
-DimensionNetTest48-x86.zip
+108
+https://github.com/wolfmother/Dimension/releases/download/108/Dimension108.zip

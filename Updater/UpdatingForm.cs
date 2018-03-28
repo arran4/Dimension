@@ -38,11 +38,9 @@ namespace Updater
                     try
                     {
                         System.Net.WebClient w = new System.Net.WebClient();
-                        byte[] b = w.DownloadData("http://9cstatic.nfshost.com/Dimension/" + url);
+                        byte[] b = w.DownloadData("http://www.9thcircle.net/projects/Dimension/latest");
                         string tempFolder = System.IO.Path.GetTempPath();
-
-
-
+                        
                         this.Invoke(new Action(delegate ()
                         {
                             label1.Text = "Installing new version of Dimension...";
@@ -66,7 +64,9 @@ namespace Updater
 
                         if (System.IO.File.Exists(System.IO.Path.Combine(tempFolder, "newversion.zip")))
                             System.IO.File.Delete(System.IO.Path.Combine(tempFolder, "newversion.zip"));
-
+                        
+                        if (System.IO.Directory.Exists(System.IO.Path.Combine(tempFolder, "DimensionTemp")))
+                            System.IO.Directory.Delete(System.IO.Path.Combine(tempFolder, "DimensionTemp"), true);
 
 
                         this.Invoke(new Action(delegate ()

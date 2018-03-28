@@ -23,17 +23,17 @@ namespace Updater
             string s = (new System.IO.StreamReader(System.Net.WebRequest.CreateHttp(latestPath).GetResponse().GetResponseStream())).ReadToEnd();
             return s.Split('\n')[1];
         }
-        public const string latestPath = "http://9cstatic.nfshost.com/Dimension/latest.txt";
+        public const string latestPath = "https://raw.githubusercontent.com/wolfmother/Dimension/master/Latest.txt";
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-                Application.Run(new UpdatingForm(downloadPath()));
+            Application.Run(new UpdatingForm(downloadPath()));
             
         }
     }
