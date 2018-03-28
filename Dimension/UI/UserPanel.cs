@@ -281,82 +281,12 @@ namespace Dimension.UI
                         s = "/" + tag.name;
                     else
                         s = currentPath + "/" + tag.name;
-                    downloadElement(s, tag);
+                    p.downloadElement(s, tag);
                 }
             }
 
         }
 
-        void downloadElement(string s, Model.Commands.FSListing tag)
-        {
-
-            bool useUDT = false;
-            
-            Model.Transfer t;
-            lock (p.transfers)
-            {
-                if (!p.transfers.ContainsKey(s))
-                {
-                    t = new Model.Transfer();
-                    t.thePeer = p;
-                    p.transfers[s] = t;
-                    t.originalPath = s;
-                    t.path = s;
-                    t.username = p.username;
-                    t.userId = p.id;
-                    t.filename = tag.name;
-                    t.download = true;
-                    t.size = tag.size;
-                    t.completed = 0;
-                    if (p.dataConnection is Model.LoopbackOutgoingConnection)
-                        t.protocol = "Loopback";
-                    else
-                        if (p.dataConnection is Model.ReliableOutgoingConnection)
-                            t.protocol = "TCP";
-                        else
-                            t.protocol = "UDT";
-
-                    p.transfers[t.path] = t;
-                    lock (Model.Transfer.transfers)
-                        Model.Transfer.transfers.Add(t);
-                }
-                else
-                    t = p.transfers[s];
-            }
-            System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
-            {
-                long startingByte = 0;
-                string downloadPath = Model.Peer.downloadFilePath(s);
-                if (System.IO.File.Exists(downloadPath + ".incomplete"))
-                {
-                    startingByte = new System.IO.FileInfo(downloadPath + ".incomplete").Length;
-                    t.completed = (ulong)startingByte;
-                    t.startingByte = t.completed;
-                }
-                if (startingByte >= (long)tag.size) //we already have the file
-                {
-                    p.transfers.Remove(t.path);
-                    lock (Model.Transfer.transfers)
-                        Model.Transfer.transfers.Remove(t);
-                    return;
-                }
-                Model.Commands.Command c;
-                if (tag.isFolder)
-                {
-                    c = new Model.Commands.RequestFolderContents { path = s };
-                }
-                else
-                {
-                    c = new Model.Commands.RequestChunks() { allChunks = true, path = s, startingByte = startingByte };
-                }
-                t.con = p.dataConnection;
-                p.dataConnection.send(c);
-                
-            });
-            t2.IsBackground = true;
-            t2.Name = "Download request thread";
-            t2.Start();
-        }
 
         private void inputBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -422,7 +352,7 @@ namespace Dimension.UI
                     s = "/" + tag.name;
                 else
                     s = currentPath + "/" + tag.name;
-                downloadElement(s, tag);
+                p.downloadElement(s, tag);
             }
         }
 

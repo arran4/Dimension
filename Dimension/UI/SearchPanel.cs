@@ -45,6 +45,7 @@ namespace Dimension.UI
                     i.Text = f.name;
                     i.SubItems.Add(ByteFormatter.formatBytes(f.size));
                     i.SubItems.Add(username);
+                    i.Tag = new SearchThingy() { fsListing = f, userId = c.myId };
                     this.Invoke(new Action(delegate
                     {
                         resultsBox.Items.Add(i);
@@ -56,6 +57,7 @@ namespace Dimension.UI
                     i.Text = f.name;
                     i.SubItems.Add(ByteFormatter.formatBytes(f.size));
                     i.SubItems.Add(username);
+                    i.Tag = new SearchThingy() { fsListing = f, userId = c.myId };
                     this.Invoke(new Action(delegate
                     {
                         resultsBox.Items.Add(i);
@@ -90,5 +92,43 @@ namespace Dimension.UI
                 doSearch();
             }
         }
+
+        private void resultsBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            List<SearchThingy> toDownload = new List<SearchThingy>();
+            foreach (ListViewItem z in resultsBox.SelectedItems)
+            {
+                var t = (SearchThingy)z.Tag;
+                toDownload.Add(t);
+            }
+                System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
+            {
+                foreach (SearchThingy q in toDownload)
+                {
+                    foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
+                        if (p.id == q.userId)
+                        {
+                            if (p.controlConnection == null || p.dataConnection == null)
+                                p.createConnection();
+
+                            //current folder = "/" + q.fsListing.fullPath.Substring(0,q.fsListing.fullPath.LastIndexOf("/"))
+                            p.downloadElement(q.fsListing.fullPath, q.fsListing);
+
+                            break;
+                        }
+                }
+
+                
+            });
+            t2.IsBackground = true;
+            t2.Name = "Search download trigger thread";
+            t2.Start();
+        }
+    }
+    class SearchThingy
+    {
+        public Model.Commands.FSListing fsListing;
+        public ulong userId;
+
     }
 }

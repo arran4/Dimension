@@ -21,6 +21,76 @@ namespace Dimension.Model
         System.Net.IPAddress _actualAddr;
         List<System.Net.IPEndPoint> endpointHistory = new List<System.Net.IPEndPoint>();
 
+        public void downloadElement(string s, Model.Commands.FSListing tag)
+        {
+
+            bool useUDT = false;
+
+            Model.Transfer t;
+            lock (transfers)
+            {
+                if (!transfers.ContainsKey(s))
+                {
+                    t = new Model.Transfer();
+                    t.thePeer = this;
+                    transfers[s] = t;
+                    t.originalPath = s;
+                    t.path = s;
+                    t.username = username;
+                    t.userId = id;
+                    t.filename = tag.name;
+                    t.download = true;
+                    t.size = tag.size;
+                    t.completed = 0;
+                    if (dataConnection is Model.LoopbackOutgoingConnection)
+                        t.protocol = "Loopback";
+                    else
+                        if (dataConnection is Model.ReliableOutgoingConnection)
+                        t.protocol = "TCP";
+                    else
+                        t.protocol = "UDT";
+
+                    transfers[t.path] = t;
+                    lock (Model.Transfer.transfers)
+                        Model.Transfer.transfers.Add(t);
+                }
+                else
+                    t = transfers[s];
+            }
+            System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
+            {
+                long startingByte = 0;
+                string downloadPath = Model.Peer.downloadFilePath(s);
+                if (System.IO.File.Exists(downloadPath + ".incomplete"))
+                {
+                    startingByte = new System.IO.FileInfo(downloadPath + ".incomplete").Length;
+                    t.completed = (ulong)startingByte;
+                    t.startingByte = t.completed;
+                }
+                if (startingByte >= (long)tag.size) //we already have the file
+                {
+                    transfers.Remove(t.path);
+                    lock (Model.Transfer.transfers)
+                        Model.Transfer.transfers.Remove(t);
+                    return;
+                }
+                Model.Commands.Command c;
+                if (tag.isFolder)
+                {
+                    c = new Model.Commands.RequestFolderContents { path = s };
+                }
+                else
+                {
+                    c = new Model.Commands.RequestChunks() { allChunks = true, path = s, startingByte = startingByte };
+                }
+                t.con = dataConnection;
+                dataConnection.send(c);
+
+            });
+            t2.IsBackground = true;
+            t2.Name = "Download request thread";
+            t2.Start();
+        }
         public bool endpointIsInHistory(System.Net.IPEndPoint ep)
         {
             lock (endpointHistory)
