@@ -80,6 +80,7 @@
             this.searchInputBox.Name = "searchInputBox";
             this.searchInputBox.Size = new System.Drawing.Size(185, 20);
             this.searchInputBox.TabIndex = 1;
+            this.searchInputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.searchInputBox_KeyDown);
             // 
             // searchButton
             // 
@@ -90,6 +91,7 @@
             this.searchButton.TabIndex = 2;
             this.searchButton.Text = "Search";
             this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
             // 
             // resultsBox
             // 

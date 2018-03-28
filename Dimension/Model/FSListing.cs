@@ -13,5 +13,6 @@ namespace Dimension.Model
         public string name;
         public ulong size;
         public long lastModified;
+        public bool isFolder;
     }
 }

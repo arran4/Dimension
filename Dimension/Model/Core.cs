@@ -31,6 +31,12 @@ namespace Dimension.Model
                 Program.udpSend(b, b.Length, e);
             }
             }
+        public void beginSearch(Model.Commands.SearchCommand c)
+        {
+            foreach (Model.Peer p in Program.theCore.peerManager.allPeers)
+                p.sendCommand(c);
+
+        }
         public void leaveCircle(string s)
         {
             lock (circles)
@@ -480,6 +486,46 @@ namespace Dimension.Model
                             Program.theCore.peerManager.doPeerRemoved(p);
                         }
                     }
+            }
+            if (c is Commands.SearchCommand)
+            {
+                if (c is Commands.KeywordSearchCommand)
+                {
+                    var k = (Commands.KeywordSearchCommand)c;
+
+                    HashSet<ulong> outputIDs = new HashSet<ulong>();
+                    var q = Program.fileListDatabase.getObject<ulong[]>(Program.fileListDatabase.searchList, k.keyword);
+                    if(q != null)
+                        outputIDs.UnionWith(q);
+                    foreach (string g in k.keyword.Split(new char[] { ' ', '.', '_', '-', '[', ']', '(', ')' }))
+                    {
+                        string s = g.Trim().ToLower();
+                        var q2 = Program.fileListDatabase.getObject<ulong[]>(Program.fileListDatabase.searchList, s);
+                        if(q2 != null)
+                            outputIDs.UnionWith(q2);
+                    }
+                    List<Commands.FSListing> folderOutputs = new List<Commands.FSListing>();
+                    List<Commands.FSListing> fileOutputs = new List<Commands.FSListing>();
+                    foreach (ulong u in outputIDs)
+                    {
+                        var file = Program.fileList.getFile(u);
+                        var folder = Program.fileList.getFolder(u);
+                        
+                        if(file.isFolder)
+                            folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified) });
+                        else
+                            fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified) });
+                    }
+                    
+                    var output = new Commands.SearchResultCommand();
+                    output.keyword = k.keyword;
+                    output.files = fileOutputs.ToArray();
+                    output.folders = folderOutputs.ToArray();
+
+                    byte[] b = Program.serializer.serialize(output);
+                    Program.udpSend(b, sender);
+                }
+
             }
         }
         public void sendChat(string content, ulong hash)

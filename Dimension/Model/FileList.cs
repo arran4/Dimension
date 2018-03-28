@@ -364,6 +364,7 @@ namespace Dimension.Model
                     output.parentId = f.id;
                     output.size = (ulong)z.Length;
                     output.lastModified = z.LastWriteTimeUtc.Ticks;
+                    output.isFolder = false;
                     total += output.size;
                     fileChildren[fi] = output;
                     fi++;
@@ -385,6 +386,7 @@ namespace Dimension.Model
                     output.parentId = f.id;
                     output.size = loadFolder(output, urgent, realLocation + "/" + z.Name);
                     output.lastModified = z.LastWriteTimeUtc.Ticks;
+                    output.isFolder = true;
                     total += output.size;
                     folderChildren[fi] = output;
                     fi++;

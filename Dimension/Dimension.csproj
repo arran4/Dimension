@@ -141,6 +141,7 @@
     <Compile Include="Model\Commands\GossipPeer.cs" />
     <Compile Include="Model\Commands\HelloCommand.cs" />
     <Compile Include="Model\Commands\KeepAlive.cs" />
+    <Compile Include="Model\Commands\KeywordSearchCommand.cs" />
     <Compile Include="Model\Commands\MiniHello.cs" />
     <Compile Include="Model\Commands\PeerList.cs" />
     <Compile Include="Model\Commands\PrivateChatCommand.cs" />
@@ -150,6 +151,8 @@
     <Compile Include="Model\Commands\RequestFolderContents.cs" />
     <Compile Include="Model\Commands\ReverseConnectionType.cs" />
     <Compile Include="Model\Commands\RoomChatCommand.cs" />
+    <Compile Include="Model\Commands\SearchCommand.cs" />
+    <Compile Include="Model\Commands\SearchResultCommand.cs" />
     <Compile Include="Model\Connection.cs" />
     <Compile Include="Model\Core.cs" />
     <Compile Include="Model\File.cs" />
