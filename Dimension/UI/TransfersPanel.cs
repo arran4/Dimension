@@ -109,14 +109,18 @@ namespace Dimension.UI
                 string eta;
                 var timeElapsed = DateTime.Now.Subtract(z[i].timeCreated);
                 float fraction=0;
-                if(z[i].completed > 0 && z[i].size > 0)
+                float proportionateFraction = 0f;
+                if (z[i].completed > 0 && z[i].size > 0)
+                {
                     fraction = z[i].completed / (float)z[i].size;
+                    proportionateFraction = (z[i].completed-z[i].startingByte) / (float)(z[i].size - z[i].startingByte);
+        }
                 double seconds;
 
                 if (fraction == 0)
                     seconds = 0;
                 else
-                    seconds = (timeElapsed.TotalSeconds * (1.0f/fraction))- timeElapsed.TotalSeconds;
+                    seconds = (timeElapsed.TotalSeconds * (1.0f/proportionateFraction))- timeElapsed.TotalSeconds;
                 TimeSpan timeSpan = new TimeSpan(0, 0, (int)seconds);
                 eta = timeSpan.ToString();
 

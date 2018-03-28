@@ -72,7 +72,10 @@ namespace Dimension.Model
             get
             {
                 if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 15000)
+                {
+                    highestId = -1;
                     return true;
+                }
                 else
                     return false;
             }
@@ -82,7 +85,10 @@ namespace Dimension.Model
             get
             {
                 if (DateTime.Now.Subtract(lastContact).TotalMilliseconds > 30000)
+                {
+                    highestId = -1;
                     return true;
+                }
                 else
                     return false;
             }

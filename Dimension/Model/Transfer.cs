@@ -16,6 +16,7 @@ namespace Dimension.Model
         public string protocol;
         public string filename;
         public ulong size;
+        public ulong startingByte;
         public ulong completed;
         public string username = "";
         public ulong rate;

@@ -642,6 +642,7 @@ namespace Dimension.Model
             t.download = false;
             t.completed = (ulong) startingByte;
             t.size = (ulong)f.Length;
+            t.startingByte = (ulong)startingByte;
             t.con = con;
             t.path = requestPath;
             t.originalPath = originalPath;

@@ -331,6 +331,7 @@ namespace Dimension.UI
                 {
                     startingByte = new System.IO.FileInfo(downloadPath + ".incomplete").Length;
                     t.completed = (ulong)startingByte;
+                    t.startingByte = t.completed;
                 }
                 if (startingByte >= (long)tag.size) //we already have the file
                 {
