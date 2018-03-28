@@ -12,6 +12,9 @@ namespace Dimension.UI
         {
             TimeSpan s = DateTime.Now.Subtract(d);
 
+            if (d.Year == DateTime.MinValue.Year)
+                return "Updating...";
+
             if (s.TotalSeconds < 0)
                 return "";
             if (s.TotalMinutes < 60)
