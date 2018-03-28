@@ -9,6 +9,7 @@ namespace Dimension.Model
 {
     public class FileListDatabase
     {
+        public RaptorDB.RaptorDB<string> searchList;
         public RaptorDB.RaptorDB<string> fileList;
         public RaptorDB.RaptorDB<string> remoteFileLists;
         public RaptorDB.RaptorDB<string> quickHashes;
@@ -17,6 +18,7 @@ namespace Dimension.Model
 
         public void close()
         {
+            close(searchList);
             close(fileList);
             close(remoteFileLists);
             close(quickHashes);
@@ -44,6 +46,8 @@ namespace Dimension.Model
             downloadQueue = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "DownloadQueue"), false);
             SystemLog.addEntry("Loading Remote File Lists...");
             remoteFileLists = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "RemoteFileLists"), false);
+            SystemLog.addEntry("Loading Search Lists...");
+            searchList = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "SearchLists"), false);
 
             SystemLog.addEntry("All Databases Loaded.");
         }

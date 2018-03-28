@@ -295,9 +295,31 @@ namespace Dimension.Model
                 foreach (string s3 in toSave.Keys)
                     Program.fileListDatabase.setObject(Program.fileListDatabase.fileList, s3, toSave[s3]);
 
+                foreach (string s3 in toSave.Keys)
+                {
+                    var obj = toSave[s3];
+                    string s = obj.name;
+
+                    addId(s, obj.id);
+
+                    foreach (string g in s.Split(new char[] { ' ', '.', '_', '-', '[', ']', '(', ')' }))
+                        if (g.Length >= 4)
+                            addId(g, obj.id);
+                }
                 toSave.Clear();
             }
 
+        }
+        void addId(string s, ulong id)
+        {
+            ulong[] ids = Program.fileListDatabase.getObject<ulong[]>(Program.fileListDatabase.searchList, s);
+            if (ids == null)
+                ids = new ulong[0];
+            if (ids.Contains(id))
+                return;
+            Array.Resize(ref ids, ids.Length + 1);
+            ids[ids.Length - 1] = id;
+            Program.fileListDatabase.setObject<ulong[]>(Program.fileListDatabase.searchList, s, ids);
         }
         public void startUpdate(bool urgent)
         {
