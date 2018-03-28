@@ -19,7 +19,7 @@ namespace Dimension
                 App.settings = new Model.Settings();
 #if DEBUG
 #else
-                if (checkForUpdates())
+                if (App.checkForUpdates())
                     return;
 #endif
                 if (!mutex.WaitOne(0, false))
@@ -28,25 +28,7 @@ namespace Dimension
                     return;
                 }
 
-
-                string tempFolder = System.IO.Path.GetTempPath();
-                string updaterPath = System.IO.Path.Combine(tempFolder, System.IO.Path.Combine("DimensionTemp", "Updater.exe"));
-                if (System.IO.File.Exists(updaterPath) && System.IO.File.Exists("Updater.exe"))
-                {
-                    System.Threading.Thread.Sleep(1000);
-                    try
-                    {
-                        System.IO.File.Delete("Updater.exe");
-                        System.IO.File.Copy(updaterPath, "Updater.exe");
-                    }
-                    catch
-                    {
-                        //Probably not elevated, oh well no updater update for you
-                    }
-                }
-                if (System.IO.Directory.Exists(System.IO.Path.Combine(tempFolder, "DimensionTemp")))
-                    System.IO.Directory.Delete(System.IO.Path.Combine(tempFolder, "DimensionTemp"), true);
-
+                
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
