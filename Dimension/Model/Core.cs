@@ -256,6 +256,7 @@ namespace Dimension.Model
                 doReceive((System.Net.Sockets.UdpClient)ar.AsyncState);
                 return;
             }
+            doReceive((System.Net.Sockets.UdpClient)ar.AsyncState);
             bool notFromUs = true;
             foreach (System.Net.IPAddress a in internalIPs)
                 if (sender.Address.ToString() == a.ToString())
@@ -283,7 +284,6 @@ namespace Dimension.Model
             Program.globalDownCounter.addBytes(data.Length);
             if (data.Length > 32 && Program.theCore != null) //Ignore extraneous STUN info
                 parse(Program.serializer.deserialize(data), sender, Program.serializer.getText(data));
-            doReceive((System.Net.Sockets.UdpClient)ar.AsyncState);
         }
         List<System.Net.IPEndPoint> toHello = new List<System.Net.IPEndPoint>();
         public void addPeer(System.Net.IPEndPoint p)
@@ -511,27 +511,35 @@ namespace Dimension.Model
                         if(q2 != null)
                             outputIDs.UnionWith(q2);
                     }
+                    List<ulong> listIDs = new List<ulong>(outputIDs);
                     List<Commands.FSListing> folderOutputs = new List<Commands.FSListing>();
                     List<Commands.FSListing> fileOutputs = new List<Commands.FSListing>();
-                    foreach (ulong u in outputIDs)
+                    for (int i = 0; i < listIDs.Count; i+= 100)
                     {
-                        var file = Program.fileList.getFile(u);
-                        var folder = Program.fileList.getFolder(u);
-                        
-                        if(file.isFolder)
-                            folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified), fullPath = Program.fileList.getFullPath(folder) });
-                        else
-                            fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified), fullPath = Program.fileList.getFullPath(file) });
-                    }
-                    
-                    var output = new Commands.SearchResultCommand();
-                    output.myId = Program.theCore.id;
-                    output.keyword = k.keyword;
-                    output.files = fileOutputs.ToArray();
-                    output.folders = folderOutputs.ToArray();
+                        fileOutputs.Clear();
+                        folderOutputs.Clear();
+                        for(int z = 0; z < 100 && i + z < listIDs.Count; z++)
+                        {
+                            ulong u = listIDs[i + z];
+                            var file = Program.fileList.getFile(u);
+                            var folder = Program.fileList.getFolder(u);
 
-                    byte[] b = Program.serializer.serialize(output);
-                    Program.udpSend(b, sender);
+                            if (file.isFolder)
+                                folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified), fullPath = Program.fileList.getFullPath(folder) });
+                            else
+                                fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified), fullPath = Program.fileList.getFullPath(file) });
+                        }
+
+                        var output = new Commands.SearchResultCommand();
+                        output.myId = Program.theCore.id;
+                        output.keyword = k.keyword;
+                        output.files = fileOutputs.ToArray();
+                        output.folders = folderOutputs.ToArray();
+
+                        byte[] b = Program.serializer.serialize(output);
+                        Program.udpSend(b, sender);
+                        System.Threading.Thread.Sleep(10);
+                    }
                 }
 
             }
