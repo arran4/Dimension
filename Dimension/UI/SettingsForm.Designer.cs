@@ -509,11 +509,11 @@
             // 
             // refreshSharesButton
             // 
-            this.refreshSharesButton.Location = new System.Drawing.Point(246, 240);
+            this.refreshSharesButton.Location = new System.Drawing.Point(365, 240);
             this.refreshSharesButton.Name = "refreshSharesButton";
             this.refreshSharesButton.Size = new System.Drawing.Size(75, 23);
             this.refreshSharesButton.TabIndex = 4;
-            this.refreshSharesButton.Text = "Refresh";
+            this.refreshSharesButton.Text = "Purge";
             this.refreshSharesButton.UseVisualStyleBackColor = true;
             this.refreshSharesButton.Click += new System.EventHandler(this.refreshSharesButton_Click);
             // 

@@ -281,7 +281,6 @@ namespace Dimension.UI
                 System.Threading.Thread t = new System.Threading.Thread(delegate ()
                 {
                     App.fileList.clear();
-                    App.fileList.update(false);
                 });
                 t.IsBackground = true;
                 t.Name = "File list update thread";
