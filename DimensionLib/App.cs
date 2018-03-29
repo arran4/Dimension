@@ -8,7 +8,7 @@ namespace Dimension
 {
     public class App
     {
-        public const int buildNumber = 108;
+        public const int buildNumber = 109;
         public static Model.GlobalSpeedLimiter speedLimiter;
         public static System.Windows.Forms.Form mainForm;
         public static Model.ByteCounter globalUpCounter = new Model.ByteCounter();
