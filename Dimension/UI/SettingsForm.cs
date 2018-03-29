@@ -278,6 +278,7 @@ namespace Dimension.UI
             }
             else
             {
+                App.fileList.clear();
                 System.Threading.Thread t = new System.Threading.Thread(delegate ()
                 {
                     int numShares = App.fileListDatabase.getInt(App.settings.settings, "Root Share Count", 0);
@@ -291,7 +292,6 @@ namespace Dimension.UI
                         }
                     }
 
-                    App.fileList.clear();
                 });
                 t.IsBackground = true;
                 t.Name = "File list update thread";
