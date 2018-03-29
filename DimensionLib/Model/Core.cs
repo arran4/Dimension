@@ -692,7 +692,7 @@ namespace Dimension.Model
         void sendCompleteFile(string realPath, string requestPath, string originalPath, IncomingConnection con, long startingByte)
         {
             
-            int chunkSize = 64 * 1024;
+            int chunkSize = 48 * 1024;
             long pos = startingByte;
 
             System.IO.FileInfo f = new System.IO.FileInfo(realPath);
