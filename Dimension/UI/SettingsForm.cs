@@ -288,7 +288,6 @@ namespace Dimension.UI
                         {
                             g.lastModified = 0;
                             App.fileListDatabase.setObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString(), g);
-                            return;
                         }
                     }
 
