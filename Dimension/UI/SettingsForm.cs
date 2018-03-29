@@ -280,6 +280,18 @@ namespace Dimension.UI
             {
                 System.Threading.Thread t = new System.Threading.Thread(delegate ()
                 {
+                    int numShares = App.fileListDatabase.getInt(App.settings.settings, "Root Share Count", 0);
+                    for (int i = 0; i < numShares; i++)
+                    {
+                        Model.RootShare g = App.fileListDatabase.getObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString());
+                        if (g != null)
+                        {
+                            g.lastModified = 0;
+                            App.fileListDatabase.setObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString(), g);
+                            return;
+                        }
+                    }
+
                     App.fileList.clear();
                 });
                 t.IsBackground = true;
