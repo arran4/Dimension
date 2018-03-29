@@ -13,6 +13,7 @@ namespace Dimension
             Model.SystemLog.addEntry("Exception!");
             Model.SystemLog.addEntry(e.Exception.Message);
             Model.SystemLog.addEntry(e.Exception.StackTrace);
+            Application.Exit();
         }
         /// <summary>
         /// The main entry point for the application.
