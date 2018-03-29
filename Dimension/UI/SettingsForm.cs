@@ -272,8 +272,21 @@ namespace Dimension.UI
 
         private void refreshSharesButton_Click(object sender, EventArgs e)
         {
-            App.fileList.clear();
-            App.fileList.update(false);
+            if (App.fileList.isUpdating)
+            {
+                MessageBox.Show("Already in the process of updating.");
+            }
+            else
+            {
+                System.Threading.Thread t = new System.Threading.Thread(delegate ()
+                {
+                    App.fileList.clear();
+                    App.fileList.update(false);
+                });
+                t.IsBackground = true;
+                t.Name = "File list update thread";
+                t.Start();
+            }
         }
     }
 }

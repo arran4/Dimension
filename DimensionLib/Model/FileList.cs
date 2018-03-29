@@ -8,6 +8,7 @@ namespace Dimension.Model
 {
     public class FileList : IDisposable
     {
+        public bool isUpdating = false;
         public event UpdateCompleteEvent updateComplete;
         public delegate void UpdateCompleteEvent();
         Dictionary<string, System.IO.FileSystemWatcher> watchers = new Dictionary<string, System.IO.FileSystemWatcher>();
@@ -17,6 +18,7 @@ namespace Dimension.Model
         {
             lock (updateLock)
             {
+                isUpdating = true;
                 SystemLog.addEntry("Updating all shares" + (urgent ? " (urgently)" : ""));
                 RootShare[] shares = App.fileListDatabase.getRootShares();
                 foreach (RootShare r in shares)
@@ -48,6 +50,7 @@ namespace Dimension.Model
             }
             quitComplete = true;
             quitSemaphore.Release();
+            isUpdating = false;
             SystemLog.addEntry("Share update complete.");
             if (updateComplete != null)
                 updateComplete();
