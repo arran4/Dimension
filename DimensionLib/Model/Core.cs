@@ -521,22 +521,23 @@ namespace Dimension.Model
                             outputIDs.UnionWith(q2);
                     }
                     List<ulong> listIDs = new List<ulong>(outputIDs);
-                    List<Commands.FSListing> folderOutputs = new List<Commands.FSListing>();
-                    List<Commands.FSListing> fileOutputs = new List<Commands.FSListing>();
-                    for (int i = 0; i < listIDs.Count; i+= 100)
+                    for (int i = 0; i < listIDs.Count; i+= 50)
                     {
-                        fileOutputs.Clear();
-                        folderOutputs.Clear();
-                        for(int z = 0; z < 100 && i + z < listIDs.Count; z++)
+                        List<Commands.FSListing> folderOutputs = new List<Commands.FSListing>();
+                        List<Commands.FSListing> fileOutputs = new List<Commands.FSListing>();
+                        for (int z = 0; z < 50 && i + z < listIDs.Count; z++)
                         {
                             ulong u = listIDs[i + z];
                             var file = App.fileList.getFile(u);
                             var folder = App.fileList.getFolder(u);
 
-                            if (file.isFolder)
-                                folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified), fullPath = App.fileList.getFullPath(folder) });
-                            else
-                                fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified), fullPath = App.fileList.getFullPath(file) });
+                            if (file != null)
+                            {
+                                if (file.isFolder)
+                                    folderOutputs.Add(new Commands.FSListing() { isFolder = true, name = folder.name, size = folder.size, updated = new DateTime(folder.lastModified), fullPath = App.fileList.getFullPath(folder) });
+                                else
+                                    fileOutputs.Add(new Commands.FSListing() { isFolder = false, name = file.name, size = file.size, updated = new DateTime(file.lastModified), fullPath = App.fileList.getFullPath(file) });
+                            }
                         }
 
                         var output = new Commands.SearchResultCommand();

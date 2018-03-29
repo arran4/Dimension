@@ -52,6 +52,22 @@ namespace Dimension.Model
             if (updateComplete != null)
                 updateComplete();
         }
+        public void clear()
+        {
+            App.fileListDatabase.fileList.Dispose();
+            App.fileListDatabase.searchList.Dispose();
+
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            folder = System.IO.Path.Combine(folder, "Dimension");
+
+            foreach (System.IO.FileInfo i in (new System.IO.DirectoryInfo(folder)).GetFiles())
+                if(i.Name.StartsWith("SearchLists.") || i.Name.StartsWith("FileList."))
+                    System.IO.File.Delete(i.FullName);
+            
+
+            App.fileListDatabase.fileList = new RaptorDB.RaptorDB<string>(App.fileListDatabase.fileListPath,false);
+            App.fileListDatabase.searchList = new RaptorDB.RaptorDB<string>(App.fileListDatabase.searchListsPath, false);
+        }
         public void Dispose()
         {
             quitting = true;

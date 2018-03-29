@@ -269,5 +269,11 @@ namespace Dimension.UI
                 
             }
         }
+
+        private void refreshSharesButton_Click(object sender, EventArgs e)
+        {
+            App.fileList.clear();
+            App.fileList.update(false);
+        }
     }
 }

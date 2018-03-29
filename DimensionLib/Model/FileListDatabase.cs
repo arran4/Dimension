@@ -29,6 +29,8 @@ namespace Dimension.Model
         {
             db.Dispose();
         }
+        public string fileListPath;
+        public string searchListsPath;
         public FileListDatabase()
         {
             SystemLog.addEntry("Loading Databases...");
@@ -37,7 +39,8 @@ namespace Dimension.Model
             folder = Path.Combine(folder, "Dimension");
 
             SystemLog.addEntry("Loading File List...");
-            fileList = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "FileList"), false);
+            fileListPath = Path.Combine(folder, "FileList");
+            fileList = new RaptorDB.RaptorDB<string>(fileListPath, false);
             SystemLog.addEntry("Loading Quick Hashes...");
             quickHashes = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "QuickHashes"), false);
             SystemLog.addEntry("Loading Full Hashes...");
@@ -47,7 +50,8 @@ namespace Dimension.Model
             SystemLog.addEntry("Loading Remote File Lists...");
             remoteFileLists = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "RemoteFileLists"), false);
             SystemLog.addEntry("Loading Search Lists...");
-            searchList = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "SearchLists"), false);
+            searchListsPath = Path.Combine(folder, "SearchLists");
+            searchList = new RaptorDB.RaptorDB<string>(searchListsPath, false);
 
             SystemLog.addEntry("All Databases Loaded.");
         }

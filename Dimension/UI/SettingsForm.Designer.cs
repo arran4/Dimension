@@ -71,6 +71,7 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.minimizeToTrayBox = new System.Windows.Forms.CheckBox();
+            this.refreshSharesButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -421,6 +422,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.refreshSharesButton);
             this.tabPage3.Controls.Add(this.renameButton);
             this.tabPage3.Controls.Add(this.deleteShareButton);
             this.tabPage3.Controls.Add(this.addShareButton);
@@ -505,6 +507,16 @@
             this.minimizeToTrayBox.Text = "Minimize to Tray";
             this.minimizeToTrayBox.UseVisualStyleBackColor = true;
             // 
+            // refreshSharesButton
+            // 
+            this.refreshSharesButton.Location = new System.Drawing.Point(246, 240);
+            this.refreshSharesButton.Name = "refreshSharesButton";
+            this.refreshSharesButton.Size = new System.Drawing.Size(75, 23);
+            this.refreshSharesButton.TabIndex = 4;
+            this.refreshSharesButton.Text = "Refresh";
+            this.refreshSharesButton.UseVisualStyleBackColor = true;
+            this.refreshSharesButton.Click += new System.EventHandler(this.refreshSharesButton_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -578,5 +590,6 @@
         private System.Windows.Forms.CheckBox reverseDefaultBox;
         private System.Windows.Forms.CheckBox alwaysRendezvousButton;
         private System.Windows.Forms.CheckBox minimizeToTrayBox;
+        private System.Windows.Forms.Button refreshSharesButton;
     }
 }
