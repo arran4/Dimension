@@ -8,6 +8,12 @@ namespace Dimension
 {
     static class Program
     {
+        static void threadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            Model.SystemLog.addEntry("Exception!");
+            Model.SystemLog.addEntry(e.Exception.Message);
+            Model.SystemLog.addEntry(e.Exception.StackTrace);
+        }
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -28,7 +34,7 @@ namespace Dimension
                     return;
                 }
 
-                
+                Application.ThreadException += threadException;
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
