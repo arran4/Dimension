@@ -39,4 +39,8 @@ This file contains instructions and context for agents working on this repositor
 - Temporary follow-up: wire `HTMLPanel` and `DownloadQueuePanel` to `MainForm`/transfer state adapters once those larger UI surfaces are fully ported.
 - Temporary follow-up: connect `LoadingStatusSource` and `NetworkStatusProvider` to real app bootstrap/core adapters once `App` and `MainForm` orchestration is fully ported.
 - Environment note (2026-02-28): this container currently does not have `flutter` or `dart` on PATH, so formatting/analyze/test commands must run in CI or a provisioned dev environment until SDK tooling is installed.
+- `lib/program.dart` is now a pure-Dart startup orchestrator with injected single-instance/update abstractions and deterministic static update helpers (`needsUpdate` / `downloadPath`) for mock-driven tests.
+- `lib/updating_form.dart` now provides a pure-Dart `UpdatingFormController` pipeline with injectable mutex/downloader/installer/launcher dependencies to avoid direct filesystem/network coupling in tests.
+- `lib/ui/hash_progress_form.dart`, `lib/ui/settings_form.dart`, and `lib/ui/icon_reader.dart` now provide Flutter/Dart-native implementations with injectable adapters and deterministic fallback behavior (no Win32 interop required).
+- Temporary follow-up: wire production platform adapters for startup mutex/updater installation and optional native icon extraction once desktop shell integration is finalized.
 

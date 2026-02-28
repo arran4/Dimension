@@ -1,131 +1,70 @@
-/*
- * Original C# Source File: Updater/UpdatingForm.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Security.Principal;
+import 'dart:typed_data';
 
-namespace Updater
-{
-    public partial class UpdatingForm : Form
-    {
-        public UpdatingForm(string url)
-        {
-            InitializeComponent();
-            label1.Text = "Waiting for Dimension to close...";
-            System.Threading.Thread t = new System.Threading.Thread(delegate ()
-            {
-
-                using (System.Threading.Mutex mutex = new System.Threading.Mutex(false, "Global\\DimensionMutex"))
-                {
-                    try
-                    {
-                        while (!mutex.WaitOne(0, false))
-                            System.Threading.Thread.Sleep(100);
-                    }
-                    catch
-                    {
-                    }
-
-                    this.Invoke(new Action(delegate ()
-                    {
-                        label1.Text = "Downloading new version of Dimension...";
-                    }));
-                    try
-                    {
-                        System.Net.WebClient w = new System.Net.WebClient();
-                        byte[] b = w.DownloadData("http://www.9thcircle.net/projects/Dimension/latest");
-                        string tempFolder = System.IO.Path.GetTempPath();
-                        
-                        this.Invoke(new Action(delegate ()
-                        {
-                            label1.Text = "Installing new version of Dimension...";
-                        }));
-
-                        if (System.IO.File.Exists(System.IO.Path.Combine(tempFolder, "newversion.zip")))
-                            System.IO.File.Delete(System.IO.Path.Combine(tempFolder, "newversion.zip"));
-                        System.IO.File.WriteAllBytes(System.IO.Path.Combine(tempFolder, "newversion.zip"), b);
-                        if (System.IO.Directory.Exists(System.IO.Path.Combine(tempFolder, "DimensionTemp")))
-                            System.IO.Directory.Delete(System.IO.Path.Combine(tempFolder, "DimensionTemp"), true);
-                        System.IO.Directory.CreateDirectory(System.IO.Path.Combine(tempFolder, "DimensionTemp"));
-                        System.IO.Compression.ZipFile.ExtractToDirectory(System.IO.Path.Combine(tempFolder, "newversion.zip"), System.IO.Path.Combine(tempFolder, "DimensionTemp"));
-                        foreach (System.IO.FileInfo f in new System.IO.DirectoryInfo(System.IO.Path.Combine(tempFolder, "DimensionTemp")).GetFiles())
-                            if (f.Name != "Updater.exe")
-                            {
-                                System.IO.File.Copy(f.FullName, f.Name, true);
-
-                                System.IO.File.Open(f.Name + ":Zone.Identifier", System.IO.FileMode.Create).Close();
-                            }
-
-
-                        if (System.IO.File.Exists(System.IO.Path.Combine(tempFolder, "newversion.zip")))
-                            System.IO.File.Delete(System.IO.Path.Combine(tempFolder, "newversion.zip"));
-                        
-                        if (System.IO.Directory.Exists(System.IO.Path.Combine(tempFolder, "DimensionTemp")))
-                            System.IO.Directory.Delete(System.IO.Path.Combine(tempFolder, "DimensionTemp"), true);
-
-
-                        this.Invoke(new Action(delegate ()
-                        {
-                            label1.Text = "Launching new version of Dimension...";
-                        }));
-
-                        if (!isAdmin())
-                            System.Diagnostics.Process.Start("Dimension.exe");
-                        Application.Exit();
-                    }
-                    catch (AccessViolationException)
-                    {
-                        elevate();
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        elevate();
-                    }
-                }
-            });
-            t.IsBackground = true;
-            t.Name = "Download thread";
-            t.Start();
-        }
-        static void elevate()
-        {
-
-            if (isAdmin())
-            {
-                MessageBox.Show("Error - could not access temp folder. Failing...");
-                Application.Exit();
-                return;
-
-            }
-            else
-            {
-                System.Diagnostics.Process p = new System.Diagnostics.Process();
-                p.StartInfo.FileName = System.Reflection.Assembly.GetEntryAssembly().Location;
-                p.StartInfo.Verb = "runas";
-                p.StartInfo.UseShellExecute = true;
-                p.Start();
-
-                p.WaitForExit();
-                System.Diagnostics.Process.Start("Dimension.exe");
-                Application.Exit();
-
-            }
-        }
-        static bool isAdmin()
-        {
-            WindowsIdentity identity = WindowsIdentity.GetCurrent();
-            WindowsPrincipal principal = new WindowsPrincipal(identity);
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
-        }
-        }
+abstract class UpdaterMutex {
+  Future<void> waitUntilReleased();
 }
 
-*/
+abstract class UpdaterDownloader {
+  Future<Uint8List> downloadLatestPackage();
+}
+
+abstract class UpdaterInstaller {
+  Future<void> install(Uint8List packageBytes);
+}
+
+abstract class UpdaterLauncher {
+  Future<void> launchDimension();
+}
+
+class UpdaterStatus {
+  const UpdaterStatus(this.message);
+
+  final String message;
+
+  static const waitingForClose = UpdaterStatus('Waiting for Dimension to close...');
+  static const downloading = UpdaterStatus('Downloading new version of Dimension...');
+  static const installing = UpdaterStatus('Installing new version of Dimension...');
+  static const launching = UpdaterStatus('Launching new version of Dimension...');
+  static const done = UpdaterStatus('Done.');
+}
+
+class UpdatingFormController {
+  UpdatingFormController({
+    required this.mutex,
+    required this.downloader,
+    required this.installer,
+    required this.launcher,
+    this.onStatusChanged,
+  });
+
+  final UpdaterMutex mutex;
+  final UpdaterDownloader downloader;
+  final UpdaterInstaller installer;
+  final UpdaterLauncher launcher;
+  final void Function(UpdaterStatus status)? onStatusChanged;
+
+  UpdaterStatus _status = UpdaterStatus.waitingForClose;
+
+  UpdaterStatus get status => _status;
+
+  Future<void> run() async {
+    _setStatus(UpdaterStatus.waitingForClose);
+    await mutex.waitUntilReleased();
+
+    _setStatus(UpdaterStatus.downloading);
+    final packageBytes = await downloader.downloadLatestPackage();
+
+    _setStatus(UpdaterStatus.installing);
+    await installer.install(packageBytes);
+
+    _setStatus(UpdaterStatus.launching);
+    await launcher.launchDimension();
+
+    _setStatus(UpdaterStatus.done);
+  }
+
+  void _setStatus(UpdaterStatus status) {
+    _status = status;
+    onStatusChanged?.call(status);
+  }
+}
