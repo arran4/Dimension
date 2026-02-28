@@ -1,18 +1,5 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/KeywordSearchCommand.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'search_command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class KeywordSearchCommand : SearchCommand
-    {
-        public string keyword;
-    }
+class KeywordSearchCommand extends SearchCommand {
+  String keyword = '';
 }
-
-*/

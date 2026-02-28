@@ -1,20 +1,8 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/GossipCommand.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'gossip_peer.dart';
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class GossipCommand : Command
-    {
-        public GossipPeer[] peers;
-        public bool requestingGossipBack;
-        public ulong circleId;
-    }
+class GossipCommand extends Command {
+  List<GossipPeer> peers = [];
+  bool requestingGossipBack = false;
+  int circleId = 0;
 }
-
-*/

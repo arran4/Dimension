@@ -1,21 +1,8 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/RoomChatCommand.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class RoomChatCommand : Command
-    {
-        public string content;
-        public int sequenceId;
-        public ulong roomId;
-        public ulong? userId;
-    }
+class RoomChatCommand extends Command {
+  String content = '';
+  int sequenceId = 0;
+  int roomId = 0;
+  int? userId;
 }
-
-*/

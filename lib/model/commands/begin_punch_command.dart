@@ -1,17 +1,4 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/BeginPunchCommand.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'punch_command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class BeginPunchCommand : PunchCommand
-    {
-    }
+class BeginPunchCommand extends PunchCommand {
 }
-
-*/

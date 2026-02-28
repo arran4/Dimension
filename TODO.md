@@ -235,9 +235,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/FSListing.cs`
 
-- [ ] Port `FSListing.cs` to Dart
+- [x] Port `FSListing.cs` to Dart
   - **Classes**:
-    - [ ] `class FSListing`
+    - [x] `class FSListing`
 
 ## File: `./DimensionLib/Model/Transfer.cs`
 
@@ -296,165 +296,165 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Commands/BeginPunchCommand.cs`
 
-- [ ] Port `BeginPunchCommand.cs` to Dart
+- [x] Port `BeginPunchCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class BeginPunchCommand`
+    - [x] `class BeginPunchCommand`
 
 ## File: `./DimensionLib/Model/Commands/RoomChatCommand.cs`
 
-- [ ] Port `RoomChatCommand.cs` to Dart
+- [x] Port `RoomChatCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class RoomChatCommand`
+    - [x] `class RoomChatCommand`
 
 ## File: `./DimensionLib/Model/Commands/SearchResultCommand.cs`
 
-- [ ] Port `SearchResultCommand.cs` to Dart
+- [x] Port `SearchResultCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class SearchResultCommand`
+    - [x] `class SearchResultCommand`
 
 ## File: `./DimensionLib/Model/Commands/Quitting.cs`
 
-- [ ] Port `Quitting.cs` to Dart
+- [x] Port `Quitting.cs` to Dart
   - **Classes**:
-    - [ ] `class Quitting`
+    - [x] `class Quitting`
 
 ## File: `./DimensionLib/Model/Commands/InitRendezvous.cs`
 
-- [ ] Port `InitRendezvous.cs` to Dart
+- [x] Port `InitRendezvous.cs` to Dart
   - **Classes**:
-    - [ ] `class InitRendezvous`
+    - [x] `class InitRendezvous`
 
 ## File: `./DimensionLib/Model/Commands/FileListing.cs`
 
-- [ ] Port `FileListing.cs` to Dart
+- [x] Port `FileListing.cs` to Dart
   - **Classes**:
-    - [ ] `class FileListing`
+    - [x] `class FileListing`
 
 ## File: `./DimensionLib/Model/Commands/CancelCommand.cs`
 
-- [ ] Port `CancelCommand.cs` to Dart
+- [x] Port `CancelCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class CancelCommand`
+    - [x] `class CancelCommand`
 
 ## File: `./DimensionLib/Model/Commands/RequestChunks.cs`
 
-- [ ] Port `RequestChunks.cs` to Dart
+- [x] Port `RequestChunks.cs` to Dart
   - **Classes**:
-    - [ ] `class RequestChunks`
+    - [x] `class RequestChunks`
 
 ## File: `./DimensionLib/Model/Commands/PrivateChatCommand.cs`
 
-- [ ] Port `PrivateChatCommand.cs` to Dart
+- [x] Port `PrivateChatCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class PrivateChatCommand`
+    - [x] `class PrivateChatCommand`
 
 ## File: `./DimensionLib/Model/Commands/KeepAlive.cs`
 
-- [ ] Port `KeepAlive.cs` to Dart
+- [x] Port `KeepAlive.cs` to Dart
   - **Classes**:
-    - [ ] `class KeepAlive`
+    - [x] `class KeepAlive`
 
 ## File: `./DimensionLib/Model/Commands/GetFileListing.cs`
 
-- [ ] Port `GetFileListing.cs` to Dart
+- [x] Port `GetFileListing.cs` to Dart
   - **Classes**:
-    - [ ] `class GetFileListing`
+    - [x] `class GetFileListing`
 
 ## File: `./DimensionLib/Model/Commands/GossipCommand.cs`
 
-- [ ] Port `GossipCommand.cs` to Dart
+- [x] Port `GossipCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class GossipCommand`
+    - [x] `class GossipCommand`
 
 ## File: `./DimensionLib/Model/Commands/FileChunk.cs`
 
-- [ ] Port `FileChunk.cs` to Dart
+- [x] Port `FileChunk.cs` to Dart
   - **Classes**:
-    - [ ] `class FileChunk`
+    - [x] `class FileChunk`
 
 ## File: `./DimensionLib/Model/Commands/PeerList.cs`
 
-- [ ] Port `PeerList.cs` to Dart
+- [x] Port `PeerList.cs` to Dart
   - **Classes**:
-    - [ ] `class PeerList`
+    - [x] `class PeerList`
 
 ## File: `./DimensionLib/Model/Commands/KeywordSearchCommand.cs`
 
-- [ ] Port `KeywordSearchCommand.cs` to Dart
+- [x] Port `KeywordSearchCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class KeywordSearchCommand`
+    - [x] `class KeywordSearchCommand`
 
 ## File: `./DimensionLib/Model/Commands/ConnectToMe.cs`
 
-- [ ] Port `ConnectToMe.cs` to Dart
+- [x] Port `ConnectToMe.cs` to Dart
   - **Classes**:
-    - [ ] `class ConnectToMe`
+    - [x] `class ConnectToMe`
 
 ## File: `./DimensionLib/Model/Commands/HelloCommand.cs`
 
-- [ ] Port `HelloCommand.cs` to Dart
+- [x] Port `HelloCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class HelloCommand`
+    - [x] `class HelloCommand`
 
 ## File: `./DimensionLib/Model/Commands/Command.cs`
 
-- [ ] Port `Command.cs` to Dart
+- [x] Port `Command.cs` to Dart
   - **Classes**:
-    - [ ] `class Command`
+    - [x] `class Command`
 
 ## File: `./DimensionLib/Model/Commands/FSListing.cs`
 
-- [ ] Port `FSListing.cs` to Dart
+- [x] Port `FSListing.cs` to Dart
   - **Classes**:
-    - [ ] `class FSListing`
+    - [x] `class FSListing`
 
 ## File: `./DimensionLib/Model/Commands/SearchCommand.cs`
 
-- [ ] Port `SearchCommand.cs` to Dart
+- [x] Port `SearchCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class SearchCommand`
+    - [x] `class SearchCommand`
 
 ## File: `./DimensionLib/Model/Commands/PunchCommand.cs`
 
-- [ ] Port `PunchCommand.cs` to Dart
+- [x] Port `PunchCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class PunchCommand`
+    - [x] `class PunchCommand`
 
 ## File: `./DimensionLib/Model/Commands/EndPunchCommand.cs`
 
-- [ ] Port `EndPunchCommand.cs` to Dart
+- [x] Port `EndPunchCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class EndPunchCommand`
+    - [x] `class EndPunchCommand`
 
 ## File: `./DimensionLib/Model/Commands/GossipPeer.cs`
 
-- [ ] Port `GossipPeer.cs` to Dart
+- [x] Port `GossipPeer.cs` to Dart
   - **Classes**:
-    - [ ] `class GossipPeer`
+    - [x] `class GossipPeer`
 
 ## File: `./DimensionLib/Model/Commands/DataCommand.cs`
 
-- [ ] Port `DataCommand.cs` to Dart
+- [x] Port `DataCommand.cs` to Dart
   - **Classes**:
-    - [ ] `class DataCommand`
+    - [x] `class DataCommand`
 
 ## File: `./DimensionLib/Model/Commands/RequestFolderContents.cs`
 
-- [ ] Port `RequestFolderContents.cs` to Dart
+- [x] Port `RequestFolderContents.cs` to Dart
   - **Classes**:
-    - [ ] `class RequestFolderContents`
+    - [x] `class RequestFolderContents`
 
 ## File: `./DimensionLib/Model/Commands/MiniHello.cs`
 
-- [ ] Port `MiniHello.cs` to Dart
+- [x] Port `MiniHello.cs` to Dart
   - **Classes**:
-    - [ ] `class MiniHello`
+    - [x] `class MiniHello`
 
 ## File: `./DimensionLib/Model/Commands/ReverseConnectionType.cs`
 
-- [ ] Port `ReverseConnectionType.cs` to Dart
+- [x] Port `ReverseConnectionType.cs` to Dart
   - **Classes**:
-    - [ ] `class ReverseConnectionType`
+    - [x] `class ReverseConnectionType`
 
 ## File: `./Updater/UpdatingForm.cs`
 

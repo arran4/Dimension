@@ -1,18 +1,5 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/RequestFolderContents.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class RequestFolderContents : Command
-    {
-        public string path;
-    }
+class RequestFolderContents extends Command {
+  String path = '';
 }
-
-*/

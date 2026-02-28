@@ -716,3 +716,6 @@ namespace Dimension.Model
 }
 
 */
+class Peer {
+  // Stub for flutter analyze
+}
