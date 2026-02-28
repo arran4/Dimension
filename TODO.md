@@ -248,16 +248,17 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/UdtIncomingConnection.cs`
 
-- [ ] Port `UdtIncomingConnection.cs` to Dart
+- [x] Port `UdtIncomingConnection.cs` to Dart
   - **Classes**:
-    - [ ] `class UdtIncomingConnection`
+    - [x] `class UdtIncomingConnection`
   - **Public Methods**:
-    - [ ] `send()`
+    - [x] `send()`
   - **Public Properties**:
-    - [ ] `connecting`
+    - [x] `connecting`
   - **TODO**:
     - [ ] Implement UDT via Dart FFI (wrapping C/C++ library) or rewrite using `RawDatagramSocket`. Currently, Dart implementations are stubs.
     - [ ] Currently porting `dart-udt`; in the meantime, use a mock transport or mark related behavior as not implemented until the port is ready. Additional details will be added later.
+    - [ ] Remove temporary compatibility shim exports once all imports have been consolidated on `lib/model/udt_connection.dart`.
 
 ## File: `./DimensionLib/Model/Peer.cs`
 
