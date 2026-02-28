@@ -12,3 +12,9 @@ This file contains instructions and context for agents working on this repositor
 - **Modern UI:** The user interface should look similar to the original C# desktop application in terms of layout and feature set, but it must use modern UI/UX principles.
 - **Mobile Scalability:** The application is built with Flutter and should be responsive. Ensure that panels, lists, and controls scale down gracefully to mobile device screens. Use Flutter's layout widgets (e.g., `LayoutBuilder`, `Flexible`, `Expanded`, `MediaQuery`) to adapt the UI for both desktop and mobile form factors.
 - **Libraries:** Feel free to incorporate modern, well-maintained Flutter UI libraries to achieve a polished look and feel, as long as they fit within the general design goals of the app.
+
+## Porting Notes (2026-02)
+- `lib/model/file_list_database.dart` is now a pure-Dart implementation backed by an injected `StringKeyValueStore` abstraction.
+- Default storage is in-memory (`InMemoryStringKeyValueStore`) to keep unit tests deterministic and avoid filesystem/network dependencies.
+- `getObject`/`setObject` rely on explicit JSON serializers instead of reflection, which keeps code mockable and Dart-native.
+- Temporary bridge: `FileListDatabase` includes a `settingsStore` until `Settings` is fully ported and wired.

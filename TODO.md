@@ -48,21 +48,21 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/FileListDatabase.cs`
 
-- [ ] Port `FileListDatabase.cs` to Dart
+- [x] Port `FileListDatabase.cs` to Dart
   - **Classes**:
-    - [ ] `class FileListDatabase`
+    - [x] `class FileListDatabase`
   - **Public Methods**:
-    - [ ] `close()`
-    - [ ] `close()`
-    - [ ] `setString()`
-    - [ ] `getString()`
-    - [ ] `allocateId()`
-    - [ ] `getRootShares()`
-    - [ ] `deleteObject()`
-    - [ ] `setInt()`
-    - [ ] `setULong()`
-    - [ ] `getInt()`
-    - [ ] `getULong()`
+    - [x] `close()`
+    - [x] `close()`
+    - [x] `setString()`
+    - [x] `getString()`
+    - [x] `allocateId()`
+    - [x] `getRootShares()`
+    - [x] `deleteObject()`
+    - [x] `setInt()`
+    - [x] `setULong()`
+    - [x] `getInt()`
+    - [x] `getULong()`
 
 ## File: `./DimensionLib/Model/NetConstants.cs`
 
@@ -146,6 +146,8 @@ This document outlines the tasks required to port the C# application to a Dart/F
 ## File: `./DimensionLib/Model/Settings.cs`
 
 - [ ] Port `Settings.cs` to Dart
+  - **TODO**:
+    - [ ] Replace `FileListDatabase.settingsStore` temporary bridge with the concrete Dart `Settings` implementation once available.
   - **Classes**:
     - [ ] `class Settings`
   - **Public Methods**:
@@ -154,14 +156,14 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `addStringToArrayNoDup()`
     - [ ] `removeStringToArrayNoDup()`
     - [ ] `setStringArray()`
-    - [ ] `getULong()`
+    - [x] `getULong()`
     - [ ] `setBool()`
     - [ ] `getBool()`
-    - [ ] `setString()`
-    - [ ] `getString()`
-    - [ ] `setULong()`
-    - [ ] `setInt()`
-    - [ ] `getInt()`
+    - [x] `setString()`
+    - [x] `getString()`
+    - [x] `setULong()`
+    - [x] `setInt()`
+    - [x] `getInt()`
 
 ## File: `./DimensionLib/Model/UdtIncomingConnection.cs`
 
@@ -600,7 +602,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **Classes**:
     - [ ] `class CirclePanel`
   - **Public Methods**:
-    - [ ] `close()`
+    - [x] `close()`
     - [ ] `chatReceived()`
     - [ ] `select()`
     - [ ] `unselect()`
@@ -619,7 +621,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **Classes**:
     - [ ] `class UserPanel`
   - **Public Methods**:
-    - [ ] `close()`
+    - [x] `close()`
     - [ ] `selectChat()`
     - [ ] `displayMessage()`
     - [ ] `addLine()`

@@ -1,148 +1,191 @@
-/*
- * Original C# Source File: DimensionLib/Model/FileListDatabase.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+import 'dart:convert';
 
-namespace Dimension.Model
-{
-    public class FileListDatabase
-    {
-        public RaptorDB.RaptorDB<string> searchList;
-        public RaptorDB.RaptorDB<string> fileList;
-        public RaptorDB.RaptorDB<string> remoteFileLists;
-        public RaptorDB.RaptorDB<string> quickHashes;
-        public RaptorDB.RaptorDB<string> fullHashes;
-        public RaptorDB.RaptorDB<string> downloadQueue;
+import 'fs_listing.dart';
 
-        public void close()
-        {
-            close(searchList);
-            close(fileList);
-            close(remoteFileLists);
-            close(quickHashes);
-            close(fullHashes);
-            close(downloadQueue);
-        }
-        public void close(RaptorDB.RaptorDB<string> db)
-        {
-            db.Dispose();
-        }
-        public string fileListPath;
-        public string searchListsPath;
-        public FileListDatabase()
-        {
-            SystemLog.addEntry("Loading Databases...");
-
-            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            folder = Path.Combine(folder, "Dimension");
-
-            SystemLog.addEntry("Loading File List...");
-            fileListPath = Path.Combine(folder, "FileList");
-            fileList = new RaptorDB.RaptorDB<string>(fileListPath, false);
-            SystemLog.addEntry("Loading Quick Hashes...");
-            quickHashes = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "QuickHashes"), false);
-            SystemLog.addEntry("Loading Full Hashes...");
-            fullHashes = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "FullHashes"), false);
-            SystemLog.addEntry("Loading Download Queue...");
-            downloadQueue = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "DownloadQueue"), false);
-            SystemLog.addEntry("Loading Remote File Lists...");
-            remoteFileLists = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "RemoteFileLists"), false);
-            SystemLog.addEntry("Loading Search Lists...");
-            searchListsPath = Path.Combine(folder, "SearchLists");
-            searchList = new RaptorDB.RaptorDB<string>(searchListsPath, false);
-
-            SystemLog.addEntry("All Databases Loaded.");
-        }
-        public void setString(RaptorDB.RaptorDB<string> db, string name, string val)
-        {
-            db.Set("s" + name, val);
-        }
-        public string getString(RaptorDB.RaptorDB<string> db, string name, string def)
-        {
-            string s = def;
-            db.Get("s" + name, out s);
-            if (s == "" || s == null)
-                s = def.ToString();
-            return s;
-        }
-        public ulong allocateId()
-        {
-            ulong u = getULong(fileList, "Current FSListing ID", 0);
-            u++;
-            setULong(fileList, "Current FSListing ID", u);
-            return u;
-        }
-        public RootShare[] getRootShares()
-        {
-            int numShares = getInt(App.settings.settings, "Root Share Count", 0);
-            RootShare[] output = new RootShare[numShares];
-            for (int i = 0; i < numShares; i++)
-                output[i] = getObject<Model.RootShare>(App.settings.settings, "Root Share " + i.ToString());
-            return output;
-        }
-        public void deleteObject(RaptorDB.RaptorDB<string> db, string name)
-        {
-            db.RemoveKey("o" + name);
-        }
-        public void setObject<T>(RaptorDB.RaptorDB<string> db, string name, T val)
-        {
-            db.Set("o" + name, Newtonsoft.Json.JsonConvert.SerializeObject(val));
-        }
-        public T getObject<T>(RaptorDB.RaptorDB<string> db, string name)
-        {
-            string s = null;
-            db.Get("o" + name, out s);
-            if (s == null)
-                return default(T);
-            else
-                return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(s);
-        }
-        public void setInt(RaptorDB.RaptorDB<string> db, string name, int val)
-        {
-
-            db.Set("i" + name, val.ToString());
-        }
-        public void setULong(RaptorDB.RaptorDB<string> db, string name, ulong val)
-        {
-
-            db.Set("i" + name, val.ToString());
-        }
-        public int getInt(RaptorDB.RaptorDB<string> db, string name, int def)
-        {
-            string s = def.ToString();
-            try
-            {
-                db.Get("i" + name, out s);
-            }
-            catch
-            {
-                return def;
-            }
-            if (s == "" || s == null)
-                s = def.ToString();
-            return int.Parse(s);
-        }
-        public ulong getULong(RaptorDB.RaptorDB<string> db, string name, ulong def)
-        {
-            string s = def.ToString();
-            try
-            {
-                db.Get("i" + name, out s);
-            }
-            catch
-            {
-                return def;
-            }
-            if (s == "" || s == null)
-                s = def.ToString();
-            return ulong.Parse(s);
-        }
-    }
+/// Minimal key-value store abstraction so production code can use a persistent
+/// backend later while tests can inject in-memory fakes/mocks.
+abstract class StringKeyValueStore {
+  void set(String key, String value);
+  String? get(String key);
+  void remove(String key);
+  void dispose();
 }
 
-*/
+/// Pure-Dart in-memory implementation used by default and by tests.
+class InMemoryStringKeyValueStore implements StringKeyValueStore {
+  final Map<String, String> _values = <String, String>{};
+
+  @override
+  void set(String key, String value) {
+    _values[key] = value;
+  }
+
+  @override
+  String? get(String key) => _values[key];
+
+  @override
+  void remove(String key) {
+    _values.remove(key);
+  }
+
+  @override
+  void dispose() {
+    _values.clear();
+  }
+}
+
+/// Stores all file-list related key-value stores.
+class FileListDatabase {
+  FileListDatabase({
+    StringKeyValueStore? searchList,
+    StringKeyValueStore? fileList,
+    StringKeyValueStore? remoteFileLists,
+    StringKeyValueStore? quickHashes,
+    StringKeyValueStore? fullHashes,
+    StringKeyValueStore? downloadQueue,
+    StringKeyValueStore? settingsStore,
+  })  : searchList = searchList ?? InMemoryStringKeyValueStore(),
+        fileList = fileList ?? InMemoryStringKeyValueStore(),
+        remoteFileLists = remoteFileLists ?? InMemoryStringKeyValueStore(),
+        quickHashes = quickHashes ?? InMemoryStringKeyValueStore(),
+        fullHashes = fullHashes ?? InMemoryStringKeyValueStore(),
+        downloadQueue = downloadQueue ?? InMemoryStringKeyValueStore(),
+        settingsStore = settingsStore ?? InMemoryStringKeyValueStore();
+
+  final StringKeyValueStore searchList;
+  final StringKeyValueStore fileList;
+  final StringKeyValueStore remoteFileLists;
+  final StringKeyValueStore quickHashes;
+  final StringKeyValueStore fullHashes;
+  final StringKeyValueStore downloadQueue;
+
+  /// Temporary bridge while Settings is still being ported.
+  final StringKeyValueStore settingsStore;
+
+  void close() {
+    for (final store in <StringKeyValueStore>[
+      searchList,
+      fileList,
+      remoteFileLists,
+      quickHashes,
+      fullHashes,
+      downloadQueue,
+      settingsStore,
+    ]) {
+      store.dispose();
+    }
+  }
+
+  void setString(StringKeyValueStore db, String name, String value) {
+    db.set('s$name', value);
+  }
+
+  String getString(StringKeyValueStore db, String name, String defaultValue) {
+    final value = db.get('s$name');
+    if (value == null || value.isEmpty) {
+      return defaultValue;
+    }
+    return value;
+  }
+
+  int allocateId() {
+    final current = getULong(fileList, 'Current FSListing ID', 0);
+    final next = current + 1;
+    setULong(fileList, 'Current FSListing ID', next);
+    return next;
+  }
+
+  List<RootShare> getRootShares() {
+    final shareCount = getInt(settingsStore, 'Root Share Count', 0);
+    final shares = <RootShare>[];
+    for (var i = 0; i < shareCount; i++) {
+      final share = getObject<RootShare>(
+        settingsStore,
+        'Root Share $i',
+        RootShare.fromJson,
+      );
+      if (share != null) {
+        shares.add(share);
+      }
+    }
+    return shares;
+  }
+
+  void deleteObject(StringKeyValueStore db, String name) {
+    db.remove('o$name');
+  }
+
+  void setObject<T>(
+    StringKeyValueStore db,
+    String name,
+    T value,
+    Map<String, dynamic> Function(T value) toJson,
+  ) {
+    db.set('o$name', jsonEncode(toJson(value)));
+  }
+
+  T? getObject<T>(
+    StringKeyValueStore db,
+    String name,
+    T Function(Map<String, dynamic> json) fromJson,
+  ) {
+    final value = db.get('o$name');
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+
+    final decoded = jsonDecode(value);
+    if (decoded is! Map<String, dynamic>) {
+      return null;
+    }
+
+    return fromJson(decoded);
+  }
+
+  void setInt(StringKeyValueStore db, String name, int value) {
+    db.set('i$name', '$value');
+  }
+
+  void setULong(StringKeyValueStore db, String name, int value) {
+    db.set('i$name', '$value');
+  }
+
+  int getInt(StringKeyValueStore db, String name, int defaultValue) {
+    final rawValue = db.get('i$name');
+    if (rawValue == null || rawValue.isEmpty) {
+      return defaultValue;
+    }
+    return int.tryParse(rawValue) ?? defaultValue;
+  }
+
+  int getULong(StringKeyValueStore db, String name, int defaultValue) {
+    final rawValue = db.get('i$name');
+    if (rawValue == null || rawValue.isEmpty) {
+      return defaultValue;
+    }
+    return int.tryParse(rawValue) ?? defaultValue;
+  }
+}
+
+extension on RootShare {
+  static RootShare fromJson(Map<String, dynamic> json) {
+    final output = RootShare();
+    output.id = json['id'] as int? ?? 0;
+    output.parentId = json['parentId'] as int? ?? 0;
+    output.name = json['name'] as String? ?? '';
+    output.size = json['size'] as int? ?? 0;
+    output.lastModified = json['lastModified'] as int? ?? 0;
+    output.index = json['index'] as int? ?? 0;
+    output.fullPath = json['fullPath'] as String? ?? '';
+    output.totalBytes = json['totalBytes'] as int? ?? 0;
+    output.quickHashedBytes = json['quickHashedBytes'] as int? ?? 0;
+    output.fullHashedBytes = json['fullHashedBytes'] as int? ?? 0;
+    output.folderIds = (json['folderIds'] as List<dynamic>? ?? <dynamic>[])
+        .map((value) => value as int)
+        .toList();
+    output.fileIds = (json['fileIds'] as List<dynamic>? ?? <dynamic>[])
+        .map((value) => value as int)
+        .toList();
+    return output;
+  }
+}
