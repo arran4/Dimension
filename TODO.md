@@ -154,7 +154,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **Classes**:
     - [ ] `class Core`
   - **Public Methods**:
-    - [ ] `Dispose()`
+    - [x] `Dispose()`
     - [ ] `beginSearch()`
     - [ ] `leaveCircle()`
     - [ ] `joinCircle()`
@@ -175,7 +175,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **Public Methods**:
     - [ ] `update()`
     - [ ] `clear()`
-    - [ ] `Dispose()`
+    - [x] `Dispose()`
     - [ ] `getRootShare()`
     - [ ] `getFolder()`
     - [ ] `getFile()`
@@ -187,14 +187,16 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Bootstrap.cs`
 
-- [ ] Port `Bootstrap.cs` to Dart
+- [x] Port `Bootstrap.cs` to Dart
   - **Classes**:
-    - [ ] `class Bootstrap`
+    - [x] `class Bootstrap`
   - **Public Methods**:
-    - [ ] `Dispose()`
-    - [ ] `WriteLine()`
-    - [ ] `Write()`
-    - [ ] `join()`
+    - [x] `Dispose()`
+    - [x] `WriteLine()`
+    - [x] `Write()`
+    - [x] `join()`
+  - **TODO**:
+    - [ ] Port `launch()` network bootstrap/NAT traversal path with injectable socket + STUN abstractions (currently intentionally omitted to keep tests pure-Dart and mock-driven).
 
 ## File: `./DimensionLib/Model/IncomingConnection.cs`
 
@@ -349,7 +351,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **Classes**:
     - [ ] `class Kademlia`
   - **Public Methods**:
-    - [ ] `Dispose()`
+    - [x] `Dispose()`
     - [ ] `initialize()`
     - [ ] `announce()`
     - [ ] `doLookup()`
