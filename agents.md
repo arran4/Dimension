@@ -14,6 +14,9 @@ This file contains instructions and context for agents working on this repositor
 - **Libraries:** Feel free to incorporate modern, well-maintained Flutter UI libraries to achieve a polished look and feel, as long as they fit within the general design goals of the app.
 
 ## Porting Notes (2026-02)
+- `lib/model/system_log.dart` now provides a pure-Dart `SystemLog` with injectable clock/disposal/writer hooks so logging remains deterministic in tests and avoids direct filesystem coupling.
+- `lib/model/kademlia.dart` now uses an injected `KademliaBackend` interface and pure-Dart hashing/deduped lookup behavior, so announce/lookup logic can be tested with mocks before wiring real DHT transport.
+- `lib/model/peer.dart` now tracks endpoint history via pure-Dart `PeerEndpoint` value objects (with dedupe + bounded history) to preserve migration parity without networking dependencies.
 - `lib/model/file_list_database.dart` is now a pure-Dart implementation backed by an injected `StringKeyValueStore` abstraction.
 - Default storage is in-memory (`InMemoryStringKeyValueStore`) to keep unit tests deterministic and avoid filesystem/network dependencies.
 - `getObject`/`setObject` rely on explicit JSON serializers instead of reflection, which keeps code mockable and Dart-native.
