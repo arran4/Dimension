@@ -2,6 +2,78 @@
 
 This document outlines the tasks required to port the C# application to a Dart/Flutter application.
 
+## UI Port Plan (Flutter: Mobile, Desktop, Web)
+
+- [ ] Build and track the Flutter UI port as a first-class stream alongside backend model parity.
+
+### 1) UI Architecture and Design System
+- [ ] Define a shared design system for all targets.
+  - [ ] Create `ThemeData` for light/dark themes, typography scale, spacing tokens, and semantic color roles.
+  - [ ] Standardize reusable components (buttons, inputs, dialogs, list rows, status indicators, transfer progress bars).
+  - [ ] Add a responsive breakpoint strategy (`compact`, `medium`, `expanded`) for layout switching.
+- [ ] Introduce app-level navigation that supports deep-linkable routes (especially required for web).
+- [ ] Choose and document state management approach for UI (e.g., Provider/Riverpod/Bloc) and enforce it consistently.
+
+### 2) Core Screens and Flows (Shared Across All Platforms)
+- [ ] Port the primary screens from the C# client into Flutter widgets.
+  - [ ] Circles / server list management
+  - [ ] Peer list and peer details
+  - [ ] Chat view (public + private conversations)
+  - [ ] Search + result list + download actions
+  - [ ] Transfers queue (uploads/downloads, status, speed, ETA)
+  - [ ] Settings / preferences
+  - [ ] System log / diagnostics panel
+- [ ] Create loading, empty, and error states for every major screen.
+- [ ] Add optimistic UI updates and status feedback for long-running network operations.
+
+### 3) Mobile Plan (Android/iOS)
+- [ ] Implement compact mobile layouts for portrait and landscape orientations.
+  - [ ] Replace multi-pane desktop layouts with tabbed or stacked navigation flows.
+  - [ ] Ensure touch targets meet accessibility guidance.
+  - [ ] Add pull-to-refresh and platform-appropriate gestures where helpful.
+- [ ] Validate safe-area handling, keyboard avoidance, and small-screen overflow behavior.
+- [ ] Add mobile-specific QA checklist (low-memory behavior, background/foreground transitions, intermittent network).
+
+### 4) Desktop Plan (Windows/macOS/Linux)
+- [ ] Implement expanded desktop layouts with multi-pane information density.
+  - [ ] Persistent side navigation / split-view interactions.
+  - [ ] Resizable columns and tables for peers, searches, and transfers.
+  - [ ] Keyboard shortcuts for power-user workflows.
+- [ ] Add native-feeling desktop affordances:
+  - [ ] Right-click context menus.
+  - [ ] Hover states and tooltips.
+  - [ ] Window size persistence and restoration.
+- [ ] Validate behavior at common desktop resolutions and ultrawide layouts.
+
+### 5) Web Plan (Flutter Web)
+- [ ] Build a web-ready shell with responsive navigation and browser-friendly route handling.
+- [ ] Ensure links, history navigation, and refresh behavior preserve application state where possible.
+- [ ] Address web input patterns (focus traversal, scroll behavior, text selection, copy/paste).
+- [ ] Validate compatibility and layout fidelity on Chromium, Firefox, and Safari-class browsers.
+- [ ] Optimize initial load bundle and defer non-critical UI modules when possible.
+
+### 6) Cross-Platform Accessibility, Performance, and Quality
+- [ ] Accessibility
+  - [ ] Semantic labels for interactive controls.
+  - [ ] High-contrast compliance and scalable text support.
+  - [ ] Keyboard-only navigation and focus indicators.
+- [ ] Performance
+  - [ ] Profile and optimize list-heavy screens (chat, search results, transfers) using lazy builders and pagination.
+  - [ ] Reduce unnecessary widget rebuilds and monitor frame timing on low-end devices.
+- [ ] Quality and testing
+  - [ ] Add widget tests for core UI components and screen states.
+  - [ ] Add golden tests for major breakpoints (mobile, desktop, web widths).
+  - [ ] Add integration tests covering critical user journeys end-to-end.
+
+### 7) Release Readiness by Platform
+- [ ] Mobile release readiness
+  - [ ] Final pass for Android + iOS permissions, icons, splash screens, and store metadata.
+- [ ] Desktop release readiness
+  - [ ] Platform packaging, signing/notarization strategy, and updater workflow alignment.
+- [ ] Web release readiness
+  - [ ] Production hosting config, cache strategy, and version rollout plan.
+- [ ] Maintain a per-platform parity checklist to verify each major C# UI feature is represented in Flutter.
+
 ## File: `./DimensionLib/App.cs`
 
 - [ ] Port `App.cs` to Dart
