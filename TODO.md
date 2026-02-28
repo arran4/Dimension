@@ -167,7 +167,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **Public Properties**:
     - [x] `isMono`
   - **TODO**:
-    - [ ] Wire `TransfersPanel` row actions (cancel/retry/open) to finalized transfer commands once `MainForm` command routing is fully ported.
+    - [ ] Pending line-by-line parity for peer lifecycle, search fan-out, and transfer routing against the original C# flow.
 
 ## File: `./DimensionLib/Model/FileList.cs`
 
@@ -655,9 +655,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **Public Properties**:
     - [x] `isMono`
   - **TODO**:
-    - [ ] Wire `TransfersPanel` row actions (cancel/retry/open) to finalized transfer commands once `MainForm` command routing is fully ported.
-  - **TODO**:
     - [ ] Hook `HTMLPanel` join-circle callbacks into the final `JoinCircleForm`/`MainForm` flow once those Flutter ports are in place.
+  - **TODO**:
+    - [ ] Centralize user-facing invalid-link messaging in app-level notification/translation plumbing once available.
 
 ## File: `./Dimension/UI/SettingsForm.cs`
 
@@ -764,17 +764,18 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/MainForm.cs`
 
-- [ ] Port `MainForm.cs` to Dart
+- [x] Port `MainForm.cs` to Dart
   - **Classes**:
-    - [ ] `class MainForm`
+    - [x] `class MainForm`
   - **Public Methods**:
-    - [ ] `selectUser()`
-    - [ ] `privateChatReceived()`
-    - [ ] `flash()`
-    - [ ] `addOrSelectPanel()`
-    - [ ] `addInternetCircle()`
-    - [ ] `setColors()`
+    - [x] `selectUser()`
+    - [x] `privateChatReceived()`
+    - [x] `flash()`
+    - [x] `addOrSelectPanel()`
+    - [x] `addInternetCircle()`
+    - [x] `setColors()`
   - **Public Properties**:
     - [x] `isMono`
   - **TODO**:
     - [ ] Wire `TransfersPanel` row actions (cancel/retry/open) to finalized transfer commands once `MainForm` command routing is fully ported.
+    - [ ] Replace temporary in-controller tab registry with route-aware navigation state once app-wide deep linking is introduced.
