@@ -39,6 +39,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `connecting`
   - **TODO**:
     - [ ] Implement UDT via Dart FFI (wrapping C/C++ library) or rewrite using `RawDatagramSocket`. Currently, Dart implementations are stubs.
+    - [ ] Currently porting `dart-udt`; in the meantime, use a mock transport or mark related behavior as not implemented until the port is ready. Additional details will be added later.
 
 ## File: `./DimensionLib/Model/OutgoingConnection.cs`
 
@@ -176,6 +177,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `connecting`
   - **TODO**:
     - [ ] Implement UDT via Dart FFI (wrapping C/C++ library) or rewrite using `RawDatagramSocket`. Currently, Dart implementations are stubs.
+    - [ ] Currently porting `dart-udt`; in the meantime, use a mock transport or mark related behavior as not implemented until the port is ready. Additional details will be added later.
 
 ## File: `./DimensionLib/Model/Peer.cs`
 
