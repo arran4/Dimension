@@ -1,546 +1,263 @@
-/*
- * Original C# Source File: Dimension/UI/MainForm.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+import 'dart:io';
 
-namespace Dimension
-{
-    public partial class MainForm : Form
-    {
-        public MainForm()
-        {
-            InitializeComponent();
-            Text = "Dimension Public Alpha #" + App.buildNumber.ToString();
-            setColors();
-        }
+import 'package:dimension/model/commands/private_chat_command.dart';
+import 'package:flutter/material.dart';
 
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
+import 'circle_panel.dart';
+import 'flash_window.dart';
+import 'join_circle_form.dart';
+import 'selectable_tab.dart';
+import 'user_panel.dart';
 
-        }
+class MainFormPeer {
+  const MainFormPeer({required this.id, required this.username});
 
-        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-        public void selectUser(Model.Peer z)
-        {
-            UI.UserPanel b = new UI.UserPanel(z);
-            b.Dock = DockStyle.Fill;
-            ((MainForm)App.mainForm).addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
-
-        }
-        public void privateChatReceived(Model.Commands.PrivateChatCommand c, Model.Peer z)
-        {
-            UI.UserPanel b = new UI.UserPanel(z);
-            b.Dock = DockStyle.Fill;
-
-            this.Invoke(new Action(delegate ()
-            {
-                Control p = ((MainForm)App.mainForm).addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
-
-                ((UI.UserPanel)p).selectChat();
-                ((UI.UserPanel)p).addLine(DateTime.Now.ToShortTimeString() + " " + z.username + ": " + c.content);
-                flash();
-            }));
-        }
-        public void flash()
-        {
-            try
-            {
-                this.Invoke(new Action(delegate ()
-                {
-                    try
-                    {
-                        if (!UI.FlashWindow.ApplicationIsActivated())
-                        {
-                                if (App.settings.getBool("Flash on Name Drop", true))
-                                    UI.FlashWindow.Flash(this);
-                                if (App.settings.getBool("Play sounds", true))
-                                {
-                                    System.Media.SoundPlayer p = new System.Media.SoundPlayer(Properties.Resources.Bell);
-                                    p.Play();
-                                }
-                            }
-                    }
-                    catch
-                    {
-
-                    }
-                }));
-            }
-            catch
-            {
-
-            }
-        }
-        public static bool isMono
-        {
-            get
-            {
-                return Type.GetType("Mono.Runtime") != null;
-            }
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            var t = new UI.TransfersPanel();
-            t.Dock = DockStyle.Fill;
-            splitContainer1.Panel2.Controls.Add(t);
-            
-
-            setColors();
-
-            windowToolStrip.Items.Clear();
-            
-            UI.HTMLPanel hp = new UI.HTMLPanel();
-            hp.Dock = DockStyle.Fill;
-            addOrSelectPanel("Welcome", hp, "Welcome");
-            App.privateChatReceived += privateChatReceived;
-            App.flash += flash;
-            
-        }
-        void deselect()
-        {
-            if (currentPanel is UI.SelectableTab)
-                ((UI.SelectableTab)currentPanel).unselect();
-
-            foreach (ToolStripItem z in windowToolStrip.Items)
-                ((ToolStripButton)z).Checked = false;
-
-        }
-        void select(ToolStripButton b)
-        {
-            deselect();
-            b.Checked = true;
-            contentPanel.Controls.Clear();
-            contentPanel.Controls.Add((Control)b.Tag);
-            currentPanel = (Control) b.Tag;
-            if (currentPanel is UI.SelectableTab)
-                ((UI.SelectableTab)currentPanel).select();
-
-        }
-        Control currentPanel = null;
-        public Control addOrSelectPanel(string text, Control panel, string tag)
-        {
-            foreach (ToolStripItem z in windowToolStrip.Items)
-            {
-                if ((string)((Control)z.Tag).Tag == tag)
-                {
-                    select((ToolStripButton)z);
-                    return (Control)z.Tag;
-                }
-            }
-            deselect();
-            ToolStripButton b = new ToolStripButton();
-            b.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-            b.Text = text;
-            b.Click += panelButtonClicked;
-            b.MouseDown += panelButtonMouseDown;
-            b.Checked = true;
-            b.Tag = panel;
-            contentPanel.Controls.Clear();
-            panel.Tag = tag;
-            contentPanel.Controls.Add(panel);
-            currentPanel = panel;
-            windowToolStrip.Items.Add(b);
-            if (currentPanel is UI.SelectableTab)
-                ((UI.SelectableTab)currentPanel).select();
-            return panel;
-        }
-        ToolStripButton rightClicked;
-
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (rightClicked != null)
-            {
-                closeTab(rightClicked);
-            }
-        }
-        void closeTab(ToolStripButton b)
-        {
-            if (b.Checked)
-                contentPanel.Controls.Clear();
-            if (b.Tag is Model.ClosableTab)
-                ((Model.ClosableTab)b.Tag).close();
-            if (b.Tag is Control)
-                ((Control)b.Tag).Dispose();
-            windowToolStrip.Items.Remove(b);
-            windowToolStrip.Refresh();
-        }
-        void panelButtonMouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                rightClicked = (ToolStripButton)sender;
-                contextMenuStrip.Show(Cursor.Position);
-            }
-            if (e.Button == MouseButtons.Middle)
-            {
-                closeTab((ToolStripButton)sender);
-            }
-        }
-        void panelButtonClicked(object sender, EventArgs e)
-        {
-            deselect();
-            ((ToolStripButton)sender).Checked = true;
-            select((ToolStripButton)sender);
-
-
-        }
-        
-        private void joinLANButton_Click(object sender, EventArgs e)
-        {
-            joinLANCircle();
-        }
-        private void joinLANCircleToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            joinLANCircle();
-        }
-        void joinLANCircle()
-        {
-            UI.CirclePanel c = new UI.CirclePanel();
-            c.Dock = DockStyle.Fill;
-            addOrSelectPanel("LAN", c, "LAN");
-        }
-
-        TabPage clickedPage;
-        
-
-        private void joinInternetCircle_Click(object sender, EventArgs e)
-        {
-            doJoinInternetCircle();
-        }
-        private void joinInternetCircleToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            doJoinInternetCircle();
-        }
-        void doJoinInternetCircle()
-        {
-            UI.JoinCircleForm j = new UI.JoinCircleForm(UI.JoinCircleForm.CircleType.bootstrap);
-            j.ShowDialog();
-        }
-        public void addInternetCircle(System.Net.IPEndPoint[] endpoints, string url, UI.JoinCircleForm.CircleType circleType)
-        {
-            for(int i=0; i<windowToolStrip.Items.Count; i++)
-                if(windowToolStrip.Items[i].Tag is UI.CirclePanel)
-                    if (((UI.CirclePanel)windowToolStrip.Items[i].Tag).url.ToLower() == url.ToLower())
-                        {
-                            select((ToolStripButton)windowToolStrip.Items[i]);
-                            return;
-                        }
-            TabPage p = new TabPage("Internet Circle");
-            if (url.StartsWith("#"))
-                p.Text = url;
-            else
-            {
-                string s = url;
-                if (s.Contains("//"))
-                    s = s.Substring(s.IndexOf("//") + 2);
-                if (s.Contains("/"))
-                    s = s.Substring(0, s.IndexOf("/"));
-                p.Text = s;
-            }
-            UI.CirclePanel c = new UI.CirclePanel(url, circleType);
-            c.Dock = DockStyle.Fill;
-
-            addOrSelectPanel(p.Text, c, url);
-        }
-        void showDownloadQueue()
-        {
-            UI.DownloadQueuePanel c = new UI.DownloadQueuePanel();
-            c.Dock = DockStyle.Fill;
-            addOrSelectPanel("Download Queue", c, "Download Queue");
-        }
-        private void downloadQueueToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            showDownloadQueue();
-        }
-
-        private void downloadQueueButton_Click(object sender, EventArgs e)
-        {
-            showDownloadQueue();
-        }
-        void showSettings()
-        {
-            UI.SettingsForm f = new UI.SettingsForm();
-            f.ShowDialog();
-        }
-        private void settingsButton_Click(object sender, EventArgs e)
-        {
-            showSettings();
-        }
-
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            showSettings();
-        }
-
-        void showCompletedDownloads()
-        {
-            UI.FinishedTransfersPanel c = new UI.FinishedTransfersPanel();
-            c.Dock = DockStyle.Fill;
-            addOrSelectPanel("Completed Downloads", c, "Completed Downloads");
-        }
-        private void completedDownloadsButton_Click(object sender, EventArgs e)
-        {
-            showCompletedDownloads();
-        }
-        void showCompletedUploads()
-        {
-            UI.FinishedTransfersPanel c = new UI.FinishedTransfersPanel();
-            c.Dock = DockStyle.Fill;
-            addOrSelectPanel("Completed Uploads", c, "Completed Uploads");
-
-        }
-
-        private void finishedDownloadsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            showCompletedDownloads();
-        }
-
-        private void completedUploadsButton_Click(object sender, EventArgs e)
-        {
-            showCompletedUploads();
-        }
-
-        private void finishedUploadsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            showCompletedUploads();
-        }
-
-        void showSearch()
-        {
-            UI.SearchPanel c = new UI.SearchPanel();
-            c.Dock = DockStyle.Fill;
-            addOrSelectPanel("Search", c, "Search");
-        }
-
-        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            showSearch();
-        }
-
-        private void searchButton_Click(object sender, EventArgs e)
-        {
-            showSearch();
-        }
-        void showHashProgress()
-        {
-            UI.HashProgressForm f = new UI.HashProgressForm();
-            f.ShowDialog();
-        }
-
-        private void hashingProgressToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            showHashProgress();
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UI.AboutForm f = new UI.AboutForm();
-            f.ShowDialog();
-        }
-
-        //TODO: Fix all Close All whatever options
-        private void closeAllCirclesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*for (int i = 0; i < tabControl.TabPages.Count; i++)
-            {
-                if (tabControl.TabPages[i].Controls[0] is UI.CirclePanel)
-                {
-                    //TODO: Actually leave the circles
-                    tabControl.TabPages.RemoveAt(i);
-                    i--;
-                }
-                }*/
-        }
-        
-        private void closeAllFileListsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            /*
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
-            {
-                if (tabControl.TabPages[i].Controls[0] is UI.UserPanel)
-                {
-                    tabControl.TabPages.RemoveAt(i);
-                    i--;
-                }
-            }*/
-        }
-
-        private void closeAllSearchesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            /*
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
-            {
-                if (tabControl.TabPages[i].Controls[0] is UI.SearchPanel)
-                {
-                    tabControl.TabPages.RemoveAt(i);
-                    i--;
-                }
-            }*/
-        }
-
-        private void dHTTestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void updateLogTimer_Tick(object sender, EventArgs e)
-        {
-            if (logStatus.Text != Model.SystemLog.lastLine)
-                logStatus.Text = Model.SystemLog.lastLine;
-            if (App.kademlia.ready)
-                kadReadyLabel.Visible = true;
-
-            Model.Transfer[] z;
-            lock (Model.Transfer.transfers)
-                z = Model.Transfer.transfers.ToArray();
-            if (z.Length == 0 && splitContainer1.Panel2Collapsed == false)
-                splitContainer1.Panel2Collapsed = true;
-            if (z.Length > 0 && splitContainer1.Panel2Collapsed == true)
-                splitContainer1.Panel2Collapsed = false;
-
-        }
-
-        private void joinKademliaCircleToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UI.JoinCircleForm j = new UI.JoinCircleForm(UI.JoinCircleForm.CircleType.kademlia);
-            j.ShowDialog();
-        }
-
-        private void transferRateTimer_Tick(object sender, EventArgs e)
-        {
-            speedLabel.Text = UI.ByteFormatter.formatBytes(App.globalUpCounter.frontBuffer) + "/s up; " +
-                UI.ByteFormatter.formatBytes(App.globalDownCounter.frontBuffer) + "/s down. Total " +
-                 UI.ByteFormatter.formatBytes(App.globalUpCounter.totalBytes) + " up; " +
-                UI.ByteFormatter.formatBytes(App.globalDownCounter.totalBytes) + " down.";
-        }
-        
-
-        private void networkStatusToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UI.NetworkStatusPanel s = new UI.NetworkStatusPanel();
-            s.Dock = DockStyle.Fill;
-
-            addOrSelectPanel("Network Status", s, "Network Status");
-        }
-        void openDownloadFolder()
-        {
-            string s = App.settings.getString("Default Download Folder", "C:\\Downloads");
-            if (System.IO.Directory.Exists(s))
-                System.Diagnostics.Process.Start(s);
-        }
-        private void openDownloadsFolderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            openDownloadFolder();
-        }
-
-        private void openDownloadsFolderButton_Click(object sender, EventArgs e)
-        {
-            openDownloadFolder();
-        }
-        
-
-        private void limitButton_Click(object sender, EventArgs e)
-        {
-            if (App.settings.getULong("Global Upload Rate Limit", 0) == 0)
-                uploadSpeedToolStripMenuItem.Text = "Upload Speed: None";
-            else
-                uploadSpeedToolStripMenuItem.Text = "Upload Speed: " + UI.ByteFormatter.formatBytes(App.settings.getULong("Global Upload Rate Limit", 0))+"/s";
-            if (App.settings.getULong("Global Download Rate Limit", 0) == 0)
-                downloadSpeedToolStripMenuItem.Text = "Download Speed: None";
-            else
-                downloadSpeedToolStripMenuItem.Text = "Download Speed: " + UI.ByteFormatter.formatBytes(App.settings.getULong("Global Download Rate Limit", 0)) + "/s";
-
-        }
-
-        private void downloadSpeedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UI.LimitChangeDialog d = new UI.LimitChangeDialog(UI.LimitChangeDialog.WhichLimit.down);
-            d.ShowDialog();
-        }
-
-        private void uploadSpeedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            UI.LimitChangeDialog d = new UI.LimitChangeDialog(UI.LimitChangeDialog.WhichLimit.up);
-            d.ShowDialog();
-        }
-
-        private void invertedColorsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            App.settings.setBool("Invert Colors", !invertedColorsToolStripMenuItem.Checked);
-            setColors();
-        }
-        public void setColors()
-        {
-            invertedColorsToolStripMenuItem.Checked = App.settings.getBool("Invert Colors", false);
-            colorChange?.Invoke(App.settings.getBool("Invert Colors", false));
-        }
-        public delegate void ColorChangeEvent(bool inverted = false);
-        public static event ColorChangeEvent colorChange;
-        
-
-        private void MainForm_Shown(object sender, EventArgs e)
-        {
-            if (App.settings.getBool("Auto Rejoin on Startup", true))
-            {
-                if (App.settings.getBool("Joined LAN Circle", false))
-                    joinLANCircle();
-                foreach (string s in App.settings.getStringArray("Bootstrap Circles Open"))
-                    UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.bootstrap);
-                foreach (string s in App.settings.getStringArray("Kademlia Circles Open"))
-                    UI.JoinCircleForm.joinCircle(s, UI.JoinCircleForm.CircleType.kademlia);
-            }
-        }
-
-        private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            System.Threading.Thread t = new System.Threading.Thread(delegate ()
-            {
-                App.checkForUpdates();
-            });
-            t.IsBackground = true;
-            t.Name = "Check for updates thread";
-            t.Start();
-        }
-
-        private void MainForm_Resize(object sender, EventArgs e)
-        {
-            if (WindowState == FormWindowState.Minimized)
-            {
-                if (App.settings.getBool("Minimize to Tray", true))
-                {
-                    Visible = false;
-                    WindowState = FormWindowState.Normal;
-                    notifyIcon.Visible = true;
-
-                }
-            }
-        }
-
-        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            Visible = true;
-            WindowState = FormWindowState.Normal;
-            notifyIcon.Visible = false;
-        }
-    }
+  final int id;
+  final String username;
 }
-*/
+
+abstract class MainFormSettings {
+  bool getBool(String key, bool defaultValue);
+}
+
+abstract class MainFormSoundPlayer {
+  Future<void> playBell();
+}
+
+class MainFormTab {
+  MainFormTab({
+    required this.text,
+    required this.tag,
+    required this.controller,
+    required this.builder,
+  });
+
+  final String text;
+  final String tag;
+  final Object controller;
+  final WidgetBuilder builder;
+}
+
+class MainFormController extends ChangeNotifier {
+  MainFormController({
+    required MainFormSettings settings,
+    required FlashWindowDriver flashDriver,
+    required MainFormSoundPlayer soundPlayer,
+    DateTime Function()? clock,
+  }) : _settings = settings,
+       _flashDriver = flashDriver,
+       _soundPlayer = soundPlayer,
+       _clock = clock ?? DateTime.now;
+
+  final MainFormSettings _settings;
+  final FlashWindowDriver _flashDriver;
+  final MainFormSoundPlayer _soundPlayer;
+  final DateTime Function() _clock;
+
+  final List<MainFormTab> _tabs = <MainFormTab>[];
+  int _selectedIndex = -1;
+  bool _invertedColors = false;
+
+  List<MainFormTab> get tabs => List<MainFormTab>.unmodifiable(_tabs);
+
+  int get selectedIndex => _selectedIndex;
+
+  bool get invertedColors => _invertedColors;
+
+  bool get isMono =>
+      Platform.environment.containsKey('MONO_ENV_OPTIONS') ||
+      Platform.environment.containsKey('MONO_PATH');
+
+  void selectIndex(int index) {
+    if (index < 0 || index >= _tabs.length || index == _selectedIndex) {
+      return;
+    }
+
+    _setSelectedState(false);
+    _selectedIndex = index;
+    _setSelectedState(true);
+    notifyListeners();
+  }
+
+  MainFormTab addOrSelectPanel(
+    String text,
+    Object panelController,
+    WidgetBuilder panelBuilder,
+    String tag,
+  ) {
+    final existingIndex = _tabs.indexWhere((tab) => tab.tag == tag);
+    if (existingIndex >= 0) {
+      selectIndex(existingIndex);
+      return _tabs[existingIndex];
+    }
+
+    _setSelectedState(false);
+
+    final tab = MainFormTab(
+      text: text,
+      tag: tag,
+      controller: panelController,
+      builder: panelBuilder,
+    );
+    _tabs.add(tab);
+    _selectedIndex = _tabs.length - 1;
+    _setSelectedState(true);
+    notifyListeners();
+    return tab;
+  }
+
+  UserPanelController selectUser(MainFormPeer peer) {
+    final existingIndex = _tabs.indexWhere(
+      (tab) => tab.tag == '(!) Files for ${peer.id}',
+    );
+    if (existingIndex >= 0) {
+      final controller = _tabs[existingIndex].controller as UserPanelController;
+      selectIndex(existingIndex);
+      return controller;
+    }
+
+    final controller = UserPanelController(username: peer.username);
+    addOrSelectPanel(
+      peer.username,
+      controller,
+      (_) => UserPanel(controller: controller, isMono: isMono),
+      '(!) Files for ${peer.id}',
+    );
+    return controller;
+  }
+
+  void privateChatReceived(PrivateChatCommand command, MainFormPeer peer) {
+    final panel = selectUser(peer);
+    panel.selectChat();
+
+    final now = _clock();
+    final hh = now.hour.toString().padLeft(2, '0');
+    final mm = now.minute.toString().padLeft(2, '0');
+    for (final line in command.content.split('\n')) {
+      if (line.trim().isEmpty) {
+        continue;
+      }
+      panel.addLine('$hh:$mm ${peer.username}: $line');
+    }
+
+    flash();
+  }
+
+  Future<void> flash() async {
+    if (_flashDriver.applicationIsActivated()) {
+      return;
+    }
+
+    if (_settings.getBool('Flash on Name Drop', true)) {
+      _flashDriver.flash();
+    }
+
+    if (_settings.getBool('Play sounds', true)) {
+      await _soundPlayer.playBell();
+    }
+  }
+
+  CirclePanelController addInternetCircle(
+    List<InternetAddressEndpoint> endpoints,
+    String url,
+    CircleType circleType,
+  ) {
+    final normalizedTag = 'circle:${url.toLowerCase()}';
+    final existingIndex = _tabs.indexWhere((tab) => tab.tag == normalizedTag);
+    if (existingIndex >= 0) {
+      selectIndex(existingIndex);
+      return _tabs[existingIndex].controller as CirclePanelController;
+    }
+
+    final displayName = switch (circleType) {
+      CircleType.lan => 'LAN',
+      CircleType.kademlia => 'Kademlia: $url',
+      CircleType.bootstrap => 'Internet: $url',
+    };
+
+    final controller = CirclePanelController(
+      circleName: displayName,
+      displayName: url,
+    )..connected = endpoints.isNotEmpty;
+
+    addOrSelectPanel(
+      displayName,
+      controller,
+      (_) => CirclePanel(controller: controller, isMono: isMono),
+      normalizedTag,
+    );
+    return controller;
+  }
+
+  void setColors() {
+    _invertedColors = _settings.getBool('Invert Colors', false);
+    notifyListeners();
+  }
+
+  void _setSelectedState(bool selected) {
+    if (_selectedIndex < 0 || _selectedIndex >= _tabs.length) {
+      return;
+    }
+
+    final controller = _tabs[_selectedIndex].controller;
+    if (controller is SelectableTab) {
+      if (selected) {
+        controller.select();
+      } else {
+        controller.unselect();
+      }
+    }
+  }
+}
+
+class MainForm extends StatelessWidget {
+  const MainForm({super.key, required this.controller});
+
+  final MainFormController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        final selectedTab = controller.selectedIndex >= 0
+            ? controller.tabs[controller.selectedIndex]
+            : null;
+
+        final colorScheme = controller.invertedColors
+            ? const ColorScheme.dark()
+            : const ColorScheme.light();
+
+        return Theme(
+          data: ThemeData.from(colorScheme: colorScheme),
+          child: Scaffold(
+            appBar: AppBar(title: const Text('Dimension')),
+            body: Row(
+              children: [
+                NavigationRail(
+                  selectedIndex: controller.selectedIndex < 0
+                      ? null
+                      : controller.selectedIndex,
+                  onDestinationSelected: controller.selectIndex,
+                  destinations: [
+                    for (final tab in controller.tabs)
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.tab),
+                        label: Text(tab.text),
+                      ),
+                  ],
+                ),
+                const VerticalDivider(width: 1),
+                Expanded(
+                  child: selectedTab == null
+                      ? const Center(child: Text('No panel selected.'))
+                      : selectedTab.builder(context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
