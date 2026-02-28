@@ -126,13 +126,16 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Serializer.cs`
 
-- [ ] Port `Serializer.cs` to Dart
+- [x] Port `Serializer.cs` to Dart
   - **Classes**:
-    - [ ] `class Serializer`
+    - [x] `class Serializer`
   - **Public Methods**:
-    - [ ] `serialize()`
-    - [ ] `getType()`
-    - [ ] `getText()`
+    - [x] `serialize()`
+    - [x] `getType()`
+    - [x] `getText()`
+
+  - **TODO**:
+    - [ ] Register all concrete command codecs in app startup so runtime networking paths can deserialize every command type.
 
 ## File: `./DimensionLib/Model/LoopbackIncomingConnection.cs`
 

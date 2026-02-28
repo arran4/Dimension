@@ -18,3 +18,5 @@ This file contains instructions and context for agents working on this repositor
 - Default storage is in-memory (`InMemoryStringKeyValueStore`) to keep unit tests deterministic and avoid filesystem/network dependencies.
 - `getObject`/`setObject` rely on explicit JSON serializers instead of reflection, which keeps code mockable and Dart-native.
 - Temporary bridge: `FileListDatabase` includes a `settingsStore` until `Settings` is fully ported and wired.
+- `lib/model/serializer.dart` is now a pure-Dart packet serializer with an explicit codec registry (`register<T>`), so command serialization/deserialization can be tested with mocks and does not rely on reflection.
+- Temporary follow-up: command codec registration is intentionally externalized; wire all command types during app bootstrap once `App`/startup flow is fully Dart-native.
