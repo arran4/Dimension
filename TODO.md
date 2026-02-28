@@ -221,20 +221,21 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Settings.cs`
 
-- [ ] Port `Settings.cs` to Dart
+- [x] Port `Settings.cs` to Dart
   - **TODO**:
     - [ ] Replace `FileListDatabase.settingsStore` temporary bridge with the concrete Dart `Settings` implementation once available.
+    - [ ] Optional persistence hook currently relies on `SavableStringKeyValueStore`; wire a real disk-backed settings store during app bootstrap.
   - **Classes**:
-    - [ ] `class Settings`
+    - [x] `class Settings`
   - **Public Methods**:
-    - [ ] `save()`
-    - [ ] `getStringArray()`
-    - [ ] `addStringToArrayNoDup()`
-    - [ ] `removeStringToArrayNoDup()`
-    - [ ] `setStringArray()`
+    - [x] `save()`
+    - [x] `getStringArray()`
+    - [x] `addStringToArrayNoDup()`
+    - [x] `removeStringToArrayNoDup()`
+    - [x] `setStringArray()`
     - [x] `getULong()`
-    - [ ] `setBool()`
-    - [ ] `getBool()`
+    - [x] `setBool()`
+    - [x] `getBool()`
     - [x] `setString()`
     - [x] `getString()`
     - [x] `setULong()`

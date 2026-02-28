@@ -1,198 +1,166 @@
-/*
- * Original C# Source File: DimensionLib/Model/Settings.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+import 'dart:convert';
 
-namespace Dimension.Model
-{
-    public class Settings
-    {
-        public RaptorDB.RaptorDB<string> settings;
-        Dictionary<string, string> cache = new Dictionary<string, string>();
+import 'file_list_database.dart';
 
-        public Settings()
-        {
-            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            folder = Path.Combine(folder, "Dimension");
-
-            SystemLog.addEntry("Loading Settings...");
-            settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);
-        }
-        public void save()
-        {
-            lock (saveLock)
-            {
-                settings.SaveIndex();
-                string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                folder = Path.Combine(folder, "Dimension");
-                SystemLog.addEntry("Saving Settings...");
-                /*settings.Dispose();
-                settings = new RaptorDB.RaptorDB<string>(Path.Combine(folder, "Settings"), false);*/
-            }
-        }
-        object saveLock = new object();
-
-        public string[] getStringArray(string name)
-        {
-            lock (saveLock)
-            {
-                if (cache.ContainsKey("qs" + name))
-                    return Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(cache["qs" + name]);
-                string z = "[]";
-                settings.Get("qs" + name, out z);
-                cache["qs" + name] = z;
-                if (z == "" || z == null)
-                    z = "[]";
-                return Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(z);
-            }
-        }
-        public void addStringToArrayNoDup(string name, string value)
-        {
-            lock (saveLock)
-            {
-                string[] q = getStringArray(name);
-                if (q == null)
-                    q = new string[] { };
-                if (q.Contains(value))
-                    return;
-                Array.Resize(ref q, q.Length + 1);
-                q[q.Length - 1] = value;
-                setStringArray(name, q);
-            }
-        }
-        public void removeStringToArrayNoDup(string name, string value)
-        {
-            lock (saveLock)
-            {
-                if (value == null || value == "")
-                    return;
-                string[] q = getStringArray(name);
-                if (q == null)
-                    q = new string[] { };
-                if (!q.Contains(value))
-                    return;
-                List<string> output = new List<string>();
-                output.Remove(value);
-                setStringArray(name, output.ToArray());
-            }
-        }
-        public void setStringArray(string name, string[] value)
-        {
-            lock (saveLock)
-            {
-                string data = Newtonsoft.Json.JsonConvert.SerializeObject(value);
-                cache["qs" + name] = data;
-                settings.Set("qs" + name, data);
-            }
-        }
-        public ulong getULong(string name, ulong def)
-        {
-            lock (saveLock)
-            {
-                if (cache.ContainsKey("i" + name))
-                    return ulong.Parse(cache["i" + name]);
-                string s = def.ToString();
-                settings.Get("i" + name, out s);
-                if (s == "" || s == null)
-                    s = def.ToString();
-                cache["i" + name] = s;
-                return ulong.Parse(s);
-            }
-        }
-        public void setBool(string name, bool val)
-        {
-            lock (saveLock)
-            {
-                cache["b" + name] = val.ToString();
-                settings.Set("b" + name, val.ToString());
-            }
-        }
-        public bool getBool(string name, bool def)
-        {
-            lock (saveLock)
-            {
-                if (cache.ContainsKey("b" + name))
-                    return bool.Parse(cache["b" + name]);
-                if (settings == null)
-                    return def;
-                string s = def.ToString();
-                settings.Get("b" + name, out s);
-                if (s == "" || s == null)
-                    s = def.ToString();
-                cache["b" + name] = s;
-                return bool.Parse(s);
-            }
-        }
-        public void setString(string name, string val)
-        {
-            lock (saveLock)
-            {
-                cache["s" + name] = val;
-                settings.Set("s" + name, val);
-            }
-        }
-        public string getString(string name, string def)
-        {
-            lock (saveLock)
-            {
-                if (cache.ContainsKey("s" + name))
-                    return cache["s" + name];
-                if (def == "")
-                    def = " ";
-                string s = def;
-                try
-                {
-                    settings.Get("s" + name, out s);
-                }
-                catch
-                {
-                    return def;
-                }
-                if (s == " " || s == "" || s == null)
-                    s = def;
-                cache["s" + name] = s;
-                return s;
-            }
-        }
-        public void setULong(string name, ulong val)
-        {
-            lock (saveLock)
-            {
-
-                cache["i" + name] = val.ToString();
-                settings.Set("i" + name, val.ToString());
-            }
-        }
-        public void setInt(string name, int val)
-        {
-            lock (saveLock)
-            {
-                cache["i" + name] = val.ToString();
-
-                settings.Set("i" + name, val.ToString());
-            }
-        }
-        public int getInt(string name, int def)
-        {
-            lock (saveLock)
-            {
-                if (cache.ContainsKey("i" + name))
-                    return int.Parse(cache["i" + name]);
-                string s = def.ToString();
-                settings.Get("i" + name, out s);
-                if (s == "" || s == null)
-                    s = def.ToString();
-                cache["i" + name] = s;
-                return int.Parse(s);
-            }
-
-        }
-    }
+/// Optional extension point for stores that support explicit persistence.
+abstract class SavableStringKeyValueStore implements StringKeyValueStore {
+  void save();
 }
 
-*/
+/// Pure-Dart settings store with injected key-value backend.
+class Settings {
+  Settings({StringKeyValueStore? store})
+      : _store = store ?? InMemoryStringKeyValueStore();
+
+  final StringKeyValueStore _store;
+  final Map<String, String> _cache = <String, String>{};
+
+  void save() {
+    if (_store is SavableStringKeyValueStore) {
+      (_store as SavableStringKeyValueStore).save();
+    }
+  }
+
+  List<String> getStringArray(String name) {
+    final key = 'qs$name';
+    final cached = _cache[key];
+    if (cached != null) {
+      return _decodeStringArray(cached);
+    }
+
+    final raw = _store.get(key);
+    final normalized = (raw == null || raw.isEmpty) ? '[]' : raw;
+    _cache[key] = normalized;
+    return _decodeStringArray(normalized);
+  }
+
+  void addStringToArrayNoDup(String name, String value) {
+    final values = getStringArray(name);
+    if (values.contains(value)) {
+      return;
+    }
+
+    setStringArray(name, <String>[...values, value]);
+  }
+
+  void removeStringToArrayNoDup(String name, String value) {
+    if (value.isEmpty) {
+      return;
+    }
+
+    final values = getStringArray(name);
+    if (!values.contains(value)) {
+      return;
+    }
+
+    setStringArray(
+      name,
+      values.where((entry) => entry != value).toList(growable: false),
+    );
+  }
+
+  void setStringArray(String name, List<String> value) {
+    final key = 'qs$name';
+    final encoded = jsonEncode(value);
+    _cache[key] = encoded;
+    _store.set(key, encoded);
+  }
+
+  int getULong(String name, int defaultValue) {
+    return _readInt('i$name', defaultValue);
+  }
+
+  void setBool(String name, bool value) {
+    final key = 'b$name';
+    final encoded = value.toString();
+    _cache[key] = encoded;
+    _store.set(key, encoded);
+  }
+
+  bool getBool(String name, bool defaultValue) {
+    final key = 'b$name';
+    final cached = _cache[key];
+    if (cached != null) {
+      return _parseBool(cached, defaultValue);
+    }
+
+    final raw = _store.get(key);
+    final normalized = raw == null || raw.isEmpty ? defaultValue.toString() : raw;
+    _cache[key] = normalized;
+    return _parseBool(normalized, defaultValue);
+  }
+
+  void setString(String name, String value) {
+    final key = 's$name';
+    _cache[key] = value;
+    _store.set(key, value);
+  }
+
+  String getString(String name, String defaultValue) {
+    final key = 's$name';
+    final cached = _cache[key];
+    if (cached != null) {
+      return cached;
+    }
+
+    final raw = _store.get(key);
+    if (raw == null || raw.isEmpty) {
+      return defaultValue;
+    }
+
+    _cache[key] = raw;
+    return raw;
+  }
+
+  void setULong(String name, int value) {
+    _writeInt('i$name', value);
+  }
+
+  void setInt(String name, int value) {
+    _writeInt('i$name', value);
+  }
+
+  int getInt(String name, int defaultValue) {
+    return _readInt('i$name', defaultValue);
+  }
+
+  List<String> _decodeStringArray(String encoded) {
+    final decoded = jsonDecode(encoded);
+    if (decoded is! List<dynamic>) {
+      return <String>[];
+    }
+    return decoded.map((entry) => '$entry').toList(growable: false);
+  }
+
+  bool _parseBool(String value, bool defaultValue) {
+    final normalized = value.trim().toLowerCase();
+    if (normalized == 'true') {
+      return true;
+    }
+    if (normalized == 'false') {
+      return false;
+    }
+    return defaultValue;
+  }
+
+  void _writeInt(String key, int value) {
+    final encoded = '$value';
+    _cache[key] = encoded;
+    _store.set(key, encoded);
+  }
+
+  int _readInt(String key, int defaultValue) {
+    final cached = _cache[key];
+    if (cached != null) {
+      return int.tryParse(cached) ?? defaultValue;
+    }
+
+    final raw = _store.get(key);
+    if (raw == null || raw.isEmpty) {
+      return defaultValue;
+    }
+
+    _cache[key] = raw;
+    return int.tryParse(raw) ?? defaultValue;
+  }
+}
