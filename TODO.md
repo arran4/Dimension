@@ -12,11 +12,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 - [ ] Build and track the Flutter UI port as a first-class stream alongside backend model parity.
 
 ### 1) UI Architecture and Design System
-- [ ] Define a shared design system for all targets.
-  - [ ] Create `ThemeData` for light/dark themes, typography scale, spacing tokens, and semantic color roles.
+- [x] Define a shared design system for all targets.
+  - [x] Create `ThemeData` for light/dark themes, typography scale, spacing tokens, and semantic color roles.
   - [ ] Standardize reusable components (buttons, inputs, dialogs, list rows, status indicators, transfer progress bars).
-  - [ ] Add a responsive breakpoint strategy (`compact`, `medium`, `expanded`) for layout switching.
-- [ ] Introduce app-level navigation that supports deep-linkable routes (especially required for web).
+  - [x] Add a responsive breakpoint strategy (`compact`, `medium`, `expanded`) for layout switching.
+- [x] Introduce app-level navigation that supports deep-linkable routes (especially required for web).
 - [ ] Choose and document state management approach for UI (e.g., Provider/Riverpod/Bloc) and enforce it consistently.
 
 ### 2) Core Screens and Flows (Shared Across All Platforms)
@@ -150,42 +150,44 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Core.cs`
 
-- [ ] Port `Core.cs` to Dart
+- [x] Port `Core.cs` to Dart
   - **Classes**:
-    - [ ] `class Core`
+    - [x] `class Core`
   - **Public Methods**:
     - [x] `Dispose()`
-    - [ ] `beginSearch()`
-    - [ ] `leaveCircle()`
-    - [ ] `joinCircle()`
+    - [x] `beginSearch()`
+    - [x] `leaveCircle()`
+    - [x] `joinCircle()`
     - [ ] `addPeer()`
-    - [ ] `sendChat()`
-    - [ ] `addIncomingConnection()`
-    - [ ] `removeIncomingConnection()`
+    - [x] `sendChat()`
+    - [x] `addIncomingConnection()`
+    - [x] `removeIncomingConnection()`
     - [x] `chatReceived()`
-    - [ ] `getIdleTime()`
+    - [x] `getIdleTime()`
   - **Public Properties**:
     - [x] `isMono`
   - **TODO**:
     - [ ] Pending line-by-line parity for peer lifecycle, search fan-out, and transfer routing against the original C# flow.
+    - [ ] Remaining Core port work: wire commandReceived routing for file listing/search result handling once App transport/runtime surfaces are finalized.
 
 ## File: `./DimensionLib/Model/FileList.cs`
 
-- [ ] Port `FileList.cs` to Dart
+- [x] Port `FileList.cs` to Dart
   - **Classes**:
-    - [ ] `class FileList`
+    - [x] `class FileList`
   - **Public Methods**:
-    - [ ] `update()`
-    - [ ] `clear()`
+    - [x] `update()`
+    - [ ] Remaining FileList parity: replace optional scanner snapshot bridge with incremental filesystem watcher adapter during app bootstrap.
+    - [x] `clear()`
     - [x] `Dispose()`
-    - [ ] `getRootShare()`
-    - [ ] `getFolder()`
-    - [ ] `getFile()`
-    - [ ] `getFullPath()`
-    - [ ] `getFSListing()`
-    - [ ] `getFSListing()`
-    - [ ] `doSave()`
-    - [ ] `startUpdate()`
+    - [x] `getRootShare()`
+    - [x] `getFolder()`
+    - [x] `getFile()`
+    - [x] `getFullPath()`
+    - [x] `getFSListing()`
+    - [x] `getFSListing()`
+    - [x] `doSave()`
+    - [x] `startUpdate()`
 
 ## File: `./DimensionLib/Model/Bootstrap.cs`
 
