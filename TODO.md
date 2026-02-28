@@ -219,23 +219,23 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Folder.cs`
 
-- [ ] Port `Folder.cs` to Dart
+- [x] Port `Folder.cs` to Dart
   - **Classes**:
-    - [ ] `class Folder`
+    - [x] `class Folder`
 
 ## File: `./DimensionLib/Model/PeerManager.cs`
 
-- [ ] Port `PeerManager.cs` to Dart
+- [x] Port `PeerManager.cs` to Dart
   - **Classes**:
-    - [ ] `class PeerManager`
+    - [x] `class PeerManager`
   - **Public Methods**:
-    - [ ] `allPeersInCircle()`
-    - [ ] `doPeerRemoved()`
-    - [ ] `havePeerWithAddress()`
-    - [ ] `parseMiniHello()`
-    - [ ] `parseHello()`
+    - [x] `allPeersInCircle()`
+    - [x] `doPeerRemoved()`
+    - [x] `havePeerWithAddress()`
+    - [x] `parseMiniHello()`
+    - [x] `parseHello()`
   - **Public Properties**:
-    - [ ] `allPeers`
+    - [x] `allPeers`
 
 ## File: `./DimensionLib/Model/FSListing.cs`
 
@@ -245,9 +245,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Transfer.cs`
 
-- [ ] Port `Transfer.cs` to Dart
+- [x] Port `Transfer.cs` to Dart
   - **Classes**:
-    - [ ] `class Transfer`
+    - [x] `class Transfer`
 
 ## File: `./DimensionLib/Model/ReliableOutgoingConnection.cs`
 
@@ -279,9 +279,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/RootShare.cs`
 
-- [ ] Port `RootShare.cs` to Dart
+- [x] Port `RootShare.cs` to Dart
   - **Classes**:
-    - [ ] `class RootShare`
+    - [x] `class RootShare`
 
 ## File: `./DimensionLib/Model/ByteCounter.cs`
 
@@ -294,9 +294,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/File.cs`
 
-- [ ] Port `File.cs` to Dart
+- [x] Port `File.cs` to Dart
   - **Classes**:
-    - [ ] `class File`
+    - [x] `class File`
 
 ## File: `./DimensionLib/Model/Commands/BeginPunchCommand.cs`
 
