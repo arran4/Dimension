@@ -24,10 +24,9 @@ This file contains instructions and context for agents working on this repositor
 - Temporary follow-up: `Settings.save()` only persists when the injected backend implements `SavableStringKeyValueStore`; wire a disk-backed implementation during app bootstrap.
 
 - `lib/model/udt_connection.dart` now uses a pure-Dart `UdtTransport` abstraction plus injected `Serializer`, replacing throw-only stubs and enabling deterministic unit tests with in-memory/mock transports.
-- `lib/model/udt_incoming_connection.dart` and `lib/model/udt_outgoing_connection.dart` are now temporary compatibility shims that export the pure-Dart `udt_connection.dart` classes, preventing accidental drift back to commented C# snapshots.
 - `lib/model/global_speed_limiter.dart` now supports injected settings lookup (`SpeedLimitProvider`) and configurable tick intervals so throttling behavior can be tested without filesystem/network dependencies.
 - Temporary follow-up: wire a production `UdtTransport` implementation (FFI or `RawDatagramSocket`) during bootstrap; current implementation intentionally focuses on command framing/callback behavior.
-- Temporary follow-up: after legacy imports are cleaned up, remove the UDT compatibility shim files and import `udt_connection.dart` directly everywhere.
+- `lib/model/udt_incoming_connection.dart` and `lib/model/udt_outgoing_connection.dart` compatibility shims were removed after consolidating imports on `lib/model/udt_connection.dart`; keep all future imports on the canonical file.
 - `lib/ui/flash_window.dart` is now a pure-Dart façade over an injectable `FlashWindowDriver`, so flash behavior can be mocked in tests without Win32 bindings.
 - Temporary follow-up: add a production desktop `FlashWindowDriver` (via platform channels or FFI) when the Flutter desktop shell is connected.
 - `lib/ui/limit_change_dialog.dart` is now a Flutter `AlertDialog` backed by pure-Dart conversion logic (`LimitChangeLogic`) and an injected `SpeedLimitSettings` abstraction for deterministic widget/unit tests.
@@ -39,3 +38,5 @@ This file contains instructions and context for agents working on this repositor
 - `lib/ui/rename_share_form.dart`, `lib/ui/double_buffered_list_view.dart`, and `lib/ui/download_queue_panel.dart` are now pure Flutter ports with deterministic widget behavior and no WinForms dependencies.
 - Temporary follow-up: wire `HTMLPanel` and `DownloadQueuePanel` to `MainForm`/transfer state adapters once those larger UI surfaces are fully ported.
 - Temporary follow-up: connect `LoadingStatusSource` and `NetworkStatusProvider` to real app bootstrap/core adapters once `App` and `MainForm` orchestration is fully ported.
+- Environment note (2026-02-28): this container currently does not have `flutter` or `dart` on PATH, so formatting/analyze/test commands must run in CI or a provisioned dev environment until SDK tooling is installed.
+
