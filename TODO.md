@@ -573,9 +573,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/DoubleBufferedListView.cs`
 
-- [ ] Port `DoubleBufferedListView.cs` to Dart
+- [x] Port `DoubleBufferedListView.cs` to Dart
   - **Classes**:
-    - [ ] `class DoubleBufferedListView`
+    - [x] `class DoubleBufferedListView`
 
 ## File: `./Dimension/UI/FlashWindow.cs`
 
@@ -593,9 +593,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/DownloadQueuePanel.cs`
 
-- [ ] Port `DownloadQueuePanel.cs` to Dart
+- [x] Port `DownloadQueuePanel.cs` to Dart
   - **Classes**:
-    - [ ] `class DownloadQueuePanel`
+    - [x] `class DownloadQueuePanel`
+  - **TODO**:
+    - [ ] Replace temporary empty-state panel with live queued-transfer data once `TransfersPanel` wiring is ported.
 
 ## File: `./Dimension/UI/LoadingForm.cs`
 
@@ -631,11 +633,13 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/HTMLPanel.cs`
 
-- [ ] Port `HTMLPanel.cs` to Dart
+- [x] Port `HTMLPanel.cs` to Dart
   - **Classes**:
-    - [ ] `class HTMLPanel`
+    - [x] `class HTMLPanel`
   - **Public Properties**:
-    - [ ] `isMono`
+    - [x] `isMono`
+  - **TODO**:
+    - [ ] Hook `HTMLPanel` join-circle callbacks into the final `JoinCircleForm`/`MainForm` flow once those Flutter ports are in place.
 
 ## File: `./Dimension/UI/SettingsForm.cs`
 
@@ -667,9 +671,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/RenameShareForm.cs`
 
-- [ ] Port `RenameShareForm.cs` to Dart
+- [x] Port `RenameShareForm.cs` to Dart
   - **Classes**:
-    - [ ] `class RenameShareForm`
+    - [x] `class RenameShareForm`
 
 ## File: `./Dimension/UI/SearchPanel.cs`
 

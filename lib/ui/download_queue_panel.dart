@@ -1,25 +1,17 @@
-/*
- * Original C# Source File: Dimension/UI/DownloadQueuePanel.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+import 'package:flutter/material.dart';
 
-namespace Dimension.UI
-{
-    public partial class DownloadQueuePanel : UserControl
-    {
-        public DownloadQueuePanel()
-        {
-            InitializeComponent();
-        }
-    }
+class DownloadQueuePanel extends StatelessWidget {
+  const DownloadQueuePanel({super.key, this.emptyMessage = 'No queued downloads.'});
+
+  final String emptyMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        emptyMessage,
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+    );
+  }
 }
-
-*/

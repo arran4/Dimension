@@ -33,4 +33,7 @@ This file contains instructions and context for agents working on this repositor
 - `lib/ui/about_form.dart` is now a Flutter `AlertDialog`-based implementation with injectable app/version/description content so UI behavior stays testable without native resources.
 - `lib/ui/loading_form.dart` is now a pure-Dart/Flutter loading widget driven by an injected `LoadingStatusSource`, enabling deterministic polling/startup tests with mocks.
 - `lib/ui/network_status_panel.dart` is now a Flutter panel backed by injectable snapshot/provider abstractions plus pure formatter helpers for deterministic unit/widget tests.
+- `lib/ui/html_panel.dart` is now a pure Flutter panel with explicit `dimensionbootstrap://` / `dimensionlan://` parsing and injectable join callbacks, so link-handling behavior is unit/widget testable without networking.
+- `lib/ui/rename_share_form.dart`, `lib/ui/double_buffered_list_view.dart`, and `lib/ui/download_queue_panel.dart` are now pure Flutter ports with deterministic widget behavior and no WinForms dependencies.
+- Temporary follow-up: wire `HTMLPanel` and `DownloadQueuePanel` to `MainForm`/transfer state adapters once those larger UI surfaces are fully ported.
 - Temporary follow-up: connect `LoadingStatusSource` and `NetworkStatusProvider` to real app bootstrap/core adapters once `App` and `MainForm` orchestration is fully ported.

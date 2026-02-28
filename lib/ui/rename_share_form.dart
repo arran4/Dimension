@@ -1,56 +1,58 @@
-/*
- * Original C# Source File: Dimension/UI/RenameShareForm.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+import 'package:flutter/material.dart';
 
-namespace Dimension.UI
-{
-    public partial class RenameShareForm : Form
-    {
-        public string theName;
-        public RenameShareForm(string theName)
-        {
-            InitializeComponent();
-            this.theName = theName;
-            textBox1.Text = theName;
-        }
+class RenameShareForm extends StatefulWidget {
+  const RenameShareForm({super.key, required this.initialName});
 
-        private void okayButton_Click(object sender, EventArgs e)
-        {
-            theName = textBox1.Text;
-            Close();
-        }
+  final String initialName;
 
-        private void textBox1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
+  static Future<String?> show(BuildContext context, {required String initialName}) {
+    return showDialog<String>(
+      context: context,
+      builder: (_) => RenameShareForm(initialName: initialName),
+    );
+  }
 
-                theName = textBox1.Text;
-                Close();
-            }
-        }
-
-        private void RenameShareForm_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-
-                theName = textBox1.Text;
-                Close();
-            }
-        }
-    }
+  @override
+  State<RenameShareForm> createState() => _RenameShareFormState();
 }
 
-*/
+class _RenameShareFormState extends State<RenameShareForm> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialName);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    Navigator.of(context).pop(_controller.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Rename Share'),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        textInputAction: TextInputAction.done,
+        onSubmitted: (_) => _submit(),
+        decoration: const InputDecoration(labelText: 'Share name'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(onPressed: _submit, child: const Text('OK')),
+      ],
+    );
+  }
+}
