@@ -1,18 +1,5 @@
-/*
- * Original C# Source File: DimensionLib/Model/NetConstants.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+class NetConstants {
+  static const int controlPort = 31542;
 
-namespace Dimension.Model
-{
-    public class NetConstants
-    {
-        public const int controlPort = 31542;
-    }
+  const NetConstants._();
 }
-
-*/
