@@ -1,139 +1,191 @@
-/*
- * Original C# Source File: Dimension/UI/SearchPanel.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+import 'package:dimension/model/commands/fs_listing.dart';
+import 'package:dimension/model/commands/search_result_command.dart';
+import 'package:dimension/ui/byte_formatter.dart';
+import 'package:flutter/material.dart';
 
-namespace Dimension.UI
-{
-    public partial class SearchPanel : UserControl
-    {
-        public SearchPanel()
-        {
-            InitializeComponent();
-            App.theCore.searchResult += searchCallback;
-        }
-        void searchCallback(Model.Commands.SearchResultCommand c)
-        {
-            if (c.keyword == keyword)
-            {
-                try
-                {
-                    this.Invoke(new Action(delegate
-                    {
-                        resultsBox.BeginUpdate();
-                    }));
-                }
-                catch
-                {
-                    return; //disposed
-                }
-                string username = "";
-                foreach (var v in App.theCore.peerManager.allPeers)
-                    if (v.id == c.myId)
-                    {
-                        username = v.username;
-                        break;
-                    }
-                foreach (Dimension.Model.Commands.FSListing f in c.folders)
-                {
-                    ListViewItem i = new ListViewItem();
-                    i.Text = f.name;
-                    i.SubItems.Add(ByteFormatter.formatBytes(f.size));
-                    i.SubItems.Add(username);
-                    i.Tag = new SearchThingy() { fsListing = f, userId = c.myId };
-                    this.Invoke(new Action(delegate
-                    {
-                        resultsBox.Items.Add(i);
-                    }));
-                }
-                foreach (Dimension.Model.Commands.FSListing f in c.files)
-                {
-                    ListViewItem i = new ListViewItem();
-                    i.Text = f.name;
-                    i.SubItems.Add(ByteFormatter.formatBytes(f.size));
-                    i.SubItems.Add(username);
-                    i.Tag = new SearchThingy() { fsListing = f, userId = c.myId };
-                    this.Invoke(new Action(delegate
-                    {
-                        resultsBox.Items.Add(i);
-                    }));
-                }
-                this.Invoke(new Action(delegate
-                {
-                    resultsBox.EndUpdate();
-                }));
+class SearchThingy {
+  const SearchThingy({required this.fsListing, required this.userId});
 
-            }
-        }
-        string keyword;
-
-        private void searchButton_Click(object sender, EventArgs e)
-        {
-            doSearch();
-        }
-        void doSearch()
-        {
-            resultsBox.Items.Clear();
-            Model.Commands.KeywordSearchCommand c = new Model.Commands.KeywordSearchCommand();
-            c.keyword = searchInputBox.Text;
-            keyword = c.keyword;
-            App.theCore.beginSearch(c);
-        }
-        private void searchInputBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                doSearch();
-            }
-        }
-
-        private void resultsBox_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            List<SearchThingy> toDownload = new List<SearchThingy>();
-            foreach (ListViewItem z in resultsBox.SelectedItems)
-            {
-                var t = (SearchThingy)z.Tag;
-                toDownload.Add(t);
-            }
-                System.Threading.Thread t2 = new System.Threading.Thread(delegate ()
-            {
-                foreach (SearchThingy q in toDownload)
-                {
-                    foreach (Model.Peer p in App.theCore.peerManager.allPeers)
-                        if (p.id == q.userId)
-                        {
-                            if (p.controlConnection == null || p.dataConnection == null)
-                                p.createConnection();
-
-                            //current folder = "/" + q.fsListing.fullPath.Substring(0,q.fsListing.fullPath.LastIndexOf("/"))
-                            p.downloadElement(q.fsListing.fullPath, q.fsListing);
-
-                            break;
-                        }
-                }
-
-                
-            });
-            t2.IsBackground = true;
-            t2.Name = "Search download trigger thread";
-            t2.Start();
-        }
-    }
-    class SearchThingy
-    {
-        public Model.Commands.FSListing fsListing;
-        public ulong userId;
-
-    }
+  final FSListing fsListing;
+  final int userId;
 }
 
-*/
+class SearchRow {
+  const SearchRow({required this.entry, required this.username});
+
+  final SearchThingy entry;
+  final String username;
+}
+
+abstract class SearchPanelBackend {
+  Future<void> beginSearch(String keyword);
+
+  String usernameForPeer(int peerId);
+
+  Future<void> downloadElement({required int peerId, required FSListing listing});
+}
+
+class SearchPanelController {
+  SearchPanelController({required SearchPanelBackend backend}) : _backend = backend;
+
+  final SearchPanelBackend _backend;
+
+  String? _keyword;
+  final List<SearchRow> _rows = <SearchRow>[];
+
+  List<SearchRow> get rows => List<SearchRow>.unmodifiable(_rows);
+
+  Future<void> doSearch(String keyword) async {
+    _rows.clear();
+    _keyword = keyword;
+    await _backend.beginSearch(keyword);
+  }
+
+  /// C# compatibility shim.
+  Future<void> DoSearch(String keyword) => doSearch(keyword);
+
+  void searchCallback(SearchResultCommand command) {
+    if (command.keyword != _keyword) {
+      return;
+    }
+
+    final username = _backend.usernameForPeer(command.myId);
+    for (final folder in command.folders) {
+      _rows.add(
+        SearchRow(
+          entry: SearchThingy(fsListing: folder, userId: command.myId),
+          username: username,
+        ),
+      );
+    }
+    for (final file in command.files) {
+      _rows.add(
+        SearchRow(
+          entry: SearchThingy(fsListing: file, userId: command.myId),
+          username: username,
+        ),
+      );
+    }
+  }
+
+  /// C# compatibility shim.
+  void SearchCallback(SearchResultCommand command) => searchCallback(command);
+
+  Future<void> downloadSelections(Iterable<SearchThingy> selections) async {
+    for (final selection in selections) {
+      await _backend.downloadElement(
+        peerId: selection.userId,
+        listing: selection.fsListing,
+      );
+    }
+  }
+
+  /// C# compatibility shim.
+  Future<void> DownloadSelections(Iterable<SearchThingy> selections) =>
+      downloadSelections(selections);
+}
+
+class SearchPanel extends StatefulWidget {
+  const SearchPanel({super.key, required this.controller});
+
+  final SearchPanelController controller;
+
+  @override
+  State<SearchPanel> createState() => _SearchPanelState();
+}
+
+class _SearchPanelState extends State<SearchPanel> {
+  late final TextEditingController _searchController;
+  final Set<SearchThingy> _selection = <SearchThingy>{};
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _runSearch() async {
+    await widget.controller.doSearch(_searchController.text);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _downloadSelected() async {
+    await widget.controller.downloadSelections(_selection);
+    _selection.clear();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                key: const Key('search.input'),
+                controller: _searchController,
+                onSubmitted: (_) => _runSearch(),
+                decoration: const InputDecoration(labelText: 'Keyword'),
+              ),
+            ),
+            const SizedBox(width: 8),
+            FilledButton(
+              key: const Key('search.submit'),
+              onPressed: _runSearch,
+              child: const Text('Search'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: ListView.builder(
+            itemCount: widget.controller.rows.length,
+            itemBuilder: (context, index) {
+              final row = widget.controller.rows[index];
+              final selected = _selection.contains(row.entry);
+              return ListTile(
+                key: Key('search.row.$index'),
+                selected: selected,
+                onTap: () {
+                  setState(() {
+                    if (!selected) {
+                      _selection.add(row.entry);
+                    } else {
+                      _selection.remove(row.entry);
+                    }
+                  });
+                },
+                title: Text(row.entry.fsListing.name),
+                subtitle: Text(
+                  '${ByteFormatter.formatBytes(row.entry.fsListing.size)} • ${row.username}',
+                ),
+                trailing: row.entry.fsListing.isFolder
+                    ? const Icon(Icons.folder)
+                    : const Icon(Icons.description),
+              );
+            },
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: FilledButton.tonal(
+            key: const Key('search.downloadSelected'),
+            onPressed: _selection.isEmpty ? null : _downloadSelected,
+            child: const Text('Download selected'),
+          ),
+        ),
+      ],
+    );
+  }
+}

@@ -691,10 +691,12 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/SearchPanel.cs`
 
-- [ ] Port `SearchPanel.cs` to Dart
+- [x] Port `SearchPanel.cs` to Dart
   - **Classes**:
-    - [ ] `class SearchPanel`
-    - [ ] `class SearchThingy`
+    - [x] `class SearchPanel`
+    - [x] `class SearchThingy`
+  - **TODO**:
+    - [ ] Wire `SearchPanelController` to live `Core` search streams and peer download hooks once `MainForm` orchestration is fully ported.
 
 ## File: `./Dimension/UI/NetworkStatusPanel.cs`
 
@@ -719,9 +721,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/FinishedTransfersPanel.cs`
 
-- [ ] Port `FinishedTransfersPanel.cs` to Dart
+- [x] Port `FinishedTransfersPanel.cs` to Dart
   - **Classes**:
-    - [ ] `class FinishedTransfersPanel`
+    - [x] `class FinishedTransfersPanel`
+  - **TODO**:
+    - [ ] Replace temporary status strings with transfer-history data sourced from the finalized transfer domain adapters.
 
 ## File: `./Dimension/UI/UserPanel.cs`
 
@@ -736,11 +740,13 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/JoinCircleForm.cs`
 
-- [ ] Port `JoinCircleForm.cs` to Dart
+- [x] Port `JoinCircleForm.cs` to Dart
   - **Classes**:
-    - [ ] `class JoinCircleForm`
+    - [x] `class JoinCircleForm`
   - **Public Methods**:
-    - [ ] `joinCircle()`
+    - [x] `joinCircle()`
+  - **TODO**:
+    - [ ] Surface bootstrap-join validation errors in the app-wide notification/translation system when `MainForm` UX wiring is ported.
 
 ## File: `./Dimension/UI/MainForm.cs`
 
