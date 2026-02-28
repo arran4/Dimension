@@ -6,7 +6,7 @@ import 'commands/command.dart';
 
 // Note: Dart does not have a native UDT library equivalent to the C# Udt.Socket out of the box.
 // These are stub classes that outline the structure.
-// If actual UDT is required, a Dart package or FFI wrapper will be needed.
+// TODO: Implement UDT protocol via dart:ffi wrapping a C/C++ library, or natively via RawDatagramSocket.
 // For now, these throw UnimplementedError.
 
 class UdtIncomingConnection extends IncomingConnection {
