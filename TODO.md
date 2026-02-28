@@ -22,11 +22,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/ReliableIncomingConnection.cs`
 
-- [ ] Port `ReliableIncomingConnection.cs` to Dart
+- [x] Port `ReliableIncomingConnection.cs` to Dart
   - **Classes**:
-    - [ ] `class ReliableIncomingConnection`
+    - [x] `class ReliableIncomingConnection`
   - **Public Methods**:
-    - [ ] `send()`
+    - [x] `send()`
 
 ## File: `./DimensionLib/Model/UdtOutgoingConnection.cs`
 
@@ -134,12 +134,12 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/LoopbackIncomingConnection.cs`
 
-- [ ] Port `LoopbackIncomingConnection.cs` to Dart
+- [x] Port `LoopbackIncomingConnection.cs` to Dart
   - **Classes**:
-    - [ ] `class LoopbackIncomingConnection`
+    - [x] `class LoopbackIncomingConnection`
   - **Public Methods**:
-    - [ ] `send()`
-    - [ ] `received()`
+    - [x] `send()`
+    - [x] `received()`
 
 ## File: `./DimensionLib/Model/Settings.cs`
 
@@ -205,13 +205,13 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/GlobalSpeedLimiter.cs`
 
-- [ ] Port `GlobalSpeedLimiter.cs` to Dart
+- [x] Port `GlobalSpeedLimiter.cs` to Dart
   - **Classes**:
-    - [ ] `class GlobalSpeedLimiter`
+    - [x] `class GlobalSpeedLimiter`
   - **Public Methods**:
-    - [ ] `Dispose()`
-    - [ ] `limitUpload()`
-    - [ ] `limitDownload()`
+    - [x] `Dispose()`
+    - [x] `limitUpload()`
+    - [x] `limitDownload()`
 
 ## File: `./DimensionLib/Model/Folder.cs`
 
@@ -247,11 +247,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/ReliableOutgoingConnection.cs`
 
-- [ ] Port `ReliableOutgoingConnection.cs` to Dart
+- [x] Port `ReliableOutgoingConnection.cs` to Dart
   - **Classes**:
-    - [ ] `class ReliableOutgoingConnection`
+    - [x] `class ReliableOutgoingConnection`
   - **Public Methods**:
-    - [ ] `send()`
+    - [x] `send()`
 
 ## File: `./DimensionLib/Model/Kademlia.cs`
 
@@ -266,12 +266,12 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/LoopbackOutgoingConnection.cs`
 
-- [ ] Port `LoopbackOutgoingConnection.cs` to Dart
+- [x] Port `LoopbackOutgoingConnection.cs` to Dart
   - **Classes**:
-    - [ ] `class LoopbackOutgoingConnection`
+    - [x] `class LoopbackOutgoingConnection`
   - **Public Methods**:
-    - [ ] `send()`
-    - [ ] `received()`
+    - [x] `send()`
+    - [x] `received()`
 
 ## File: `./DimensionLib/Model/RootShare.cs`
 
@@ -281,12 +281,12 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/ByteCounter.cs`
 
-- [ ] Port `ByteCounter.cs` to Dart
+- [x] Port `ByteCounter.cs` to Dart
   - **Classes**:
-    - [ ] `class ByteCounter`
+    - [x] `class ByteCounter`
   - **Public Methods**:
-    - [ ] `addBytes()`
-    - [ ] `addBytes()`
+    - [x] `addBytes()`
+    - [x] `addBytes()`
 
 ## File: `./DimensionLib/Model/File.cs`
 
