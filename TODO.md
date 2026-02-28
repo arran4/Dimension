@@ -272,8 +272,8 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `class Peer`
   - **Public Methods**:
     - [ ] `downloadElement()`
-    - [ ] `endpointIsInHistory()`
-    - [ ] `addEndpointToHistory()`
+    - [x] `endpointIsInHistory()`
+    - [x] `addEndpointToHistory()`
     - [ ] `downloadFilePath()`
     - [ ] `commandReceived()`
     - [ ] `updateTransfers()`
@@ -284,18 +284,18 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `releasePunch()`
     - [x] `chatReceived()`
   - **Public Properties**:
-    - [ ] `maybeDead`
-    - [ ] `probablyDead`
-    - [ ] `assumingDead`
-    - [ ] `isLocal`
+    - [x] `maybeDead`
+    - [x] `probablyDead`
+    - [x] `assumingDead`
+    - [x] `isLocal`
 
 ## File: `./DimensionLib/Model/SystemLog.cs`
 
-- [ ] Port `SystemLog.cs` to Dart
+- [x] Port `SystemLog.cs` to Dart
   - **Classes**:
-    - [ ] `class SystemLog`
+    - [x] `class SystemLog`
   - **Public Methods**:
-    - [ ] `addEntry()`
+    - [x] `addEntry()`
 
 ## File: `./DimensionLib/Model/GlobalSpeedLimiter.cs`
 
@@ -349,14 +349,18 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Kademlia.cs`
 
-- [ ] Port `Kademlia.cs` to Dart
+- [x] Port `Kademlia.cs` to Dart
   - **Classes**:
-    - [ ] `class Kademlia`
+    - [x] `class Kademlia`
   - **Public Methods**:
     - [x] `Dispose()`
-    - [ ] `initialize()`
-    - [ ] `announce()`
-    - [ ] `doLookup()`
+    - [x] `initialize()`
+    - [x] `announce()`
+    - [x] `doLookup()`
+
+
+  - **TODO**:
+    - [ ] Wire `Kademlia` backend to a production DHT transport during app bootstrap (current implementation is pure-Dart and constructor-injected for testability).
 
 ## File: `./DimensionLib/Model/LoopbackOutgoingConnection.cs`
 

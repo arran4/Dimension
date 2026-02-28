@@ -1,135 +1,63 @@
-/*
- * Original C# Source File: DimensionLib/Model/Kademlia.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
+import 'dart:convert';
+import 'dart:io';
 
-namespace Dimension.Model
-{
-    public class Kademlia
-    {
+import 'package:crypto/crypto.dart';
 
-        public void Dispose()
-        {
-            dht.Stop();
-            dht.Dispose();
-        }
-        
-        OctoTorrent.Dht.DhtEngine dht;
-        System.Threading.Semaphore dhtWait = new System.Threading.Semaphore(0, 1);
-        string peerCachePath = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dimension"),"DHT Peer Cache.bin");
-        public void initialize()
-        {
-            OctoTorrent.Client.ClientEngine client = new OctoTorrent.Client.ClientEngine(new OctoTorrent.Client.EngineSettings(), App.theCore.id.ToString());
-             OctoTorrent.Dht.Listeners.DhtListener dhtl = new OctoTorrent.Dht.Listeners.DhtListener(new IPEndPoint(IPAddress.Any, App.bootstrap.internalDHTPort));
-             dht = new OctoTorrent.Dht.DhtEngine(dhtl);
-
-             dht.PeersFound += peersFound;
-             dht.StateChanged += stateChanged;
-             dhtl.Start();
-             
-            /*if (System.IO.File.Exists(peerCachePath))
-                dht.Start(System.IO.File.ReadAllBytes(peerCachePath));
-            else*/
-            dht.Start();
-            
-            dhtWait.WaitOne();
-
-            
-            System.IO.File.WriteAllBytes(peerCachePath, dht.SaveNodes());
-            
-        }
-
-        public bool ready = false;
-        void stateChanged(object sender, EventArgs a)
-        {
-            if (dht.State == OctoTorrent.DhtState.Ready && !ready)
-            {
-                try
-                {
-                    dhtWait.Release();
-                }
-                catch
-                {
-                }
-                ready = true;
-            }
-        }
-        object lookupLock = new object();
-        Dictionary<string, List<IPEndPoint>> results = new Dictionary<string, List<IPEndPoint>>();
-
-        byte[] doHash(string s)
-        {
-            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
-            byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(s.ToLower()));
-            byte[] output = new byte[20];
-            Array.Copy(hash, output, output.Length);
-            return output;
-        }
-        public void announce(string key)
-        {
-            lock (lookupLock)
-            {
-                try
-                {
-                    byte[] hash = doHash(key);
-                    dht.Announce(new OctoTorrent.InfoHash(hash), App.bootstrap.publicControlEndPoint.Port);
-                }
-                catch (ObjectDisposedException)
-                {
-                }
-            }
-            
-        }
-        public IPEndPoint[] doLookup(string key)
-        {
-            return new IPEndPoint[] { };
-            lock (lookupLock)
-            {
-                byte[] hash = doHash(key);
-
-                dht.GetPeers(new OctoTorrent.InfoHash(hash));
-                
-                dhtWait.WaitOne(30000);
-
-                if (!results.ContainsKey(hash.ToString()))
-                    return new IPEndPoint[] { };
-                IPEndPoint[] output = results[hash.ToString()].ToArray();
-
-                return output;
-            }
-        }
-        void peersFound(object sender, OctoTorrent.PeersFoundEventArgs results)
-        {
-            IPEndPoint[] output = new IPEndPoint[results.Peers.Count];
-            for (int i = 0; i < output.Length; i++)
-                output[i] = new IPEndPoint(IPAddress.Parse(results.Peers[i].ConnectionUri.Host), results.Peers[i].ConnectionUri.Port);
-            if (!this.results.ContainsKey(results.InfoHash.ToArray().ToString()))
-                this.results[results.InfoHash.ToArray().ToString()] = new List<IPEndPoint>();
-            foreach (IPEndPoint z in output)
-            {
-                bool already = false;
-                foreach (IPEndPoint w in this.results[results.InfoHash.ToArray().ToString()])
-                    if (w.Address.ToString() == z.Address.ToString() && w.Port == z.Port)
-                        already = true;
-                if (!already)
-                    this.results[results.InfoHash.ToArray().ToString()].AddRange(output);
-            }
-            try
-            {
-                dhtWait.Release();
-            }
-            catch
-            {
-                //do nothing
-            }
-            
-        }
-    }
+abstract class KademliaBackend {
+  Future<void> initialize();
+  Future<void> dispose();
+  Future<void> announce({required List<int> keyHash, required int port});
+  Future<List<InternetAddressEndpoint>> lookup({required List<int> keyHash});
 }
 
-*/
+class Kademlia {
+  Kademlia({required KademliaBackend backend}) : _backend = backend;
+
+  final KademliaBackend _backend;
+  bool ready = false;
+  bool _disposed = false;
+
+  Future<void> initialize() async {
+    if (_disposed) {
+      return;
+    }
+    await _backend.initialize();
+    ready = true;
+  }
+
+  Future<void> announce(String key, {required int publicControlPort}) async {
+    if (_disposed) {
+      return;
+    }
+    await _backend.announce(
+      keyHash: _hashKey(key),
+      port: publicControlPort,
+    );
+  }
+
+  Future<List<InternetAddressEndpoint>> doLookup(String key) async {
+    if (_disposed) {
+      return const [];
+    }
+
+    final results = await _backend.lookup(keyHash: _hashKey(key));
+    final deduped = <String, InternetAddressEndpoint>{};
+    for (final endpoint in results) {
+      deduped['${endpoint.address.address}:${endpoint.port}'] = endpoint;
+    }
+    return deduped.values.toList(growable: false);
+  }
+
+  Future<void> dispose() async {
+    if (_disposed) {
+      return;
+    }
+    _disposed = true;
+    await _backend.dispose();
+  }
+
+  List<int> _hashKey(String key) {
+    final hash = sha512.convert(utf8.encode(key.toLowerCase()));
+    return hash.bytes.sublist(0, 20);
+  }
+}
