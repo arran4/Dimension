@@ -1,17 +1,4 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/KeepAlive.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    class KeepAlive : Command
-    {
-    }
+class KeepAlive extends Command {
 }
-
-*/

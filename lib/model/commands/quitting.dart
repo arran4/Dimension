@@ -1,18 +1,5 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/Quitting.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    class Quitting : Command
-    {
-        public ulong id;
-    }
+class Quitting extends Command {
+  int id = 0;
 }
-
-*/

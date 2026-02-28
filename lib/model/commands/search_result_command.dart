@@ -1,21 +1,9 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/SearchResultCommand.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'fs_listing.dart';
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class SearchResultCommand : Command
-    {
-        public ulong myId;
-        public string keyword;
-        public FSListing[] files = new FSListing[] { };
-        public FSListing[] folders = new FSListing[] { };
-    }
+class SearchResultCommand extends Command {
+  int myId = 0;
+  String keyword = '';
+  List<FSListing> files = [];
+  List<FSListing> folders = [];
 }
-
-*/

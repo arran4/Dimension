@@ -1,18 +1,5 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/CancelCommand.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class CancelCommand : Command
-    {
-        public string path;
-    }
+class CancelCommand extends Command {
+  String path = '';
 }
-
-*/

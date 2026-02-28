@@ -1,26 +1,5 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/GetFileListing.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class GetFileListing : Command
-    {
-        public string path = "/";
-        public GetFileListing(string path)
-        {
-            this.path = path;
-        }
-        public GetFileListing()
-        {
-            path = "/";
-        }
-    }
+class GetFileListing extends Command {
+  String path = '/';
 }
-
-*/
