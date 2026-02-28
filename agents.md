@@ -22,3 +22,7 @@ This file contains instructions and context for agents working on this repositor
 - Temporary follow-up: command codec registration is intentionally externalized; wire all command types during app bootstrap once `App`/startup flow is fully Dart-native.
 - `lib/model/settings.dart` is now a pure-Dart implementation with an injected `StringKeyValueStore`, deterministic in-memory defaults, and explicit JSON handling for string-array settings.
 - Temporary follow-up: `Settings.save()` only persists when the injected backend implements `SavableStringKeyValueStore`; wire a disk-backed implementation during app bootstrap.
+
+- `lib/model/udt_connection.dart` now uses a pure-Dart `UdtTransport` abstraction plus injected `Serializer`, replacing throw-only stubs and enabling deterministic unit tests with in-memory/mock transports.
+- `lib/model/global_speed_limiter.dart` now supports injected settings lookup (`SpeedLimitProvider`) and configurable tick intervals so throttling behavior can be tested without filesystem/network dependencies.
+- Temporary follow-up: wire a production `UdtTransport` implementation (FFI or `RawDatagramSocket`) during bootstrap; current implementation intentionally focuses on command framing/callback behavior.

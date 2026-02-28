@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-// Note: In C#, App.settings was referenced. We'll need a way to get settings here,
-// perhaps injecting it or importing an App class once that's ported.
-// For now, we mock the retrieval of limits.
+typedef SpeedLimitProvider = int Function(String key, int defaultValue);
 
 class GlobalSpeedLimiter {
   bool _disposed = false;
@@ -15,7 +13,14 @@ class GlobalSpeedLimiter {
   int _currentDownloadLimit = 0;
   int _currentUploadLimit = 0;
 
-  GlobalSpeedLimiter() {
+  final SpeedLimitProvider _getInt;
+  final Duration _tickInterval;
+
+  GlobalSpeedLimiter({
+    SpeedLimitProvider? getInt,
+    Duration tickInterval = const Duration(milliseconds: 100),
+  }) : _getInt = getInt ?? _defaultGetInt,
+       _tickInterval = tickInterval {
     _startUpdateLoop();
   }
 
@@ -25,7 +30,7 @@ class GlobalSpeedLimiter {
   }
 
   void _startUpdateLoop() {
-    _updateTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
+    _updateTimer = Timer.periodic(_tickInterval, (_) {
       if (_disposed) {
         _updateTimer?.cancel();
         return;
@@ -34,11 +39,8 @@ class GlobalSpeedLimiter {
       _totalDownload = 0;
       _totalUpload = 0;
 
-      // TODO: Replace with actual settings retrieval
-      // _currentDownloadLimit = App.settings.getInt("Global Download Rate Limit", 0);
-      // _currentUploadLimit = App.settings.getInt("Global Upload Rate Limit", 0);
-      _currentDownloadLimit = 0;
-      _currentUploadLimit = 0;
+      _currentDownloadLimit = _getInt('Global Download Rate Limit', 0);
+      _currentUploadLimit = _getInt('Global Upload Rate Limit', 0);
     });
   }
 
@@ -82,3 +84,5 @@ class GlobalSpeedLimiter {
     }
   }
 }
+
+int _defaultGetInt(String _, int defaultValue) => defaultValue;
