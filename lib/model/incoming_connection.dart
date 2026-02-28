@@ -1,27 +1,13 @@
-/*
- * Original C# Source File: DimensionLib/Model/IncomingConnection.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'connection.dart';
+import 'commands/command.dart';
+import 'commands/hello_command.dart';
 
-namespace Dimension.Model
-{
-    public abstract class IncomingConnection : Connection
-    {
-        public bool rateLimiterDisabled = false;
-        public Commands.HelloCommand hello;
-        public string lastFolder;
-        public delegate void CommandReceived(Commands.Command c, IncomingConnection con);
-        public abstract event CommandReceived commandReceived;
-        public abstract void send(Commands.Command c);
-        public abstract bool connected
-        {
-            get;
-        }
-    }
+abstract class IncomingConnection extends Connection {
+  bool rateLimiterDisabled = false;
+  HelloCommand? hello;
+  String? lastFolder;
+
+  void Function(Command c, IncomingConnection con)? commandReceived;
+  void send(Command c);
+  bool get connected;
 }
-
-*/

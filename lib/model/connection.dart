@@ -1,18 +1,5 @@
-/*
- * Original C# Source File: DimensionLib/Model/Connection.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'commands/command.dart';
 
-namespace Dimension.Model
-{
-    public interface Connection
-    {
-        void send(Commands.Command c);
-    }
+abstract class Connection {
+  void send(Command c);
 }
-
-*/

@@ -1,21 +1,7 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/DataCommand.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'dart:typed_data';
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class DataCommand : Command
-    {
-        [Newtonsoft.Json.JsonIgnore]
-        public byte[] data;
-
-        public int dataLength;
-    }
+class DataCommand extends Command {
+  Uint8List data = Uint8List(0);
+  int dataLength = 0;
 }
-
-*/
