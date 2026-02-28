@@ -26,3 +26,7 @@ This file contains instructions and context for agents working on this repositor
 - `lib/model/udt_connection.dart` now uses a pure-Dart `UdtTransport` abstraction plus injected `Serializer`, replacing throw-only stubs and enabling deterministic unit tests with in-memory/mock transports.
 - `lib/model/global_speed_limiter.dart` now supports injected settings lookup (`SpeedLimitProvider`) and configurable tick intervals so throttling behavior can be tested without filesystem/network dependencies.
 - Temporary follow-up: wire a production `UdtTransport` implementation (FFI or `RawDatagramSocket`) during bootstrap; current implementation intentionally focuses on command framing/callback behavior.
+- `lib/ui/flash_window.dart` is now a pure-Dart façade over an injectable `FlashWindowDriver`, so flash behavior can be mocked in tests without Win32 bindings.
+- Temporary follow-up: add a production desktop `FlashWindowDriver` (via platform channels or FFI) when the Flutter desktop shell is connected.
+- `lib/ui/limit_change_dialog.dart` is now a Flutter `AlertDialog` backed by pure-Dart conversion logic (`LimitChangeLogic`) and an injected `SpeedLimitSettings` abstraction for deterministic widget/unit tests.
+- Temporary follow-up: replace temporary in-memory settings wiring with real app settings once `MainForm`/`SettingsForm` Flutter ports are in place.
