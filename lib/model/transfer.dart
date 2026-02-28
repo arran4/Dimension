@@ -1,33 +1,21 @@
-/*
- * Original C# Source File: DimensionLib/Model/Transfer.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'peer.dart';
+import 'connection.dart';
 
-namespace Dimension.Model
-{
-    public class Transfer
-    {
-        public string originalPath;
-        public string path;
-        public Peer thePeer;
-        public Connection con;
-        public bool download;
-        public string protocol;
-        public string filename;
-        public ulong size;
-        public ulong startingByte;
-        public ulong completed;
-        public string username = "";
-        public ulong rate;
-        public ulong userId;
-        public DateTime timeCreated = DateTime.Now;
+class Transfer {
+  String originalPath = "";
+  String path = "";
+  Peer? thePeer;
+  Connection? con;
+  bool download = false;
+  String protocol = "";
+  String filename = "";
+  int size = 0;
+  int startingByte = 0;
+  int completed = 0;
+  String username = "";
+  int rate = 0;
+  int userId = 0;
+  DateTime timeCreated = DateTime.now();
 
-        public static List<Transfer> transfers = new List<Transfer>();
-    }
+  static List<Transfer> transfers = [];
 }
-
-*/
