@@ -2,6 +2,10 @@
 
 This document outlines the tasks required to port the C# application to a Dart/Flutter application.
 
+## Environment / Tooling Follow-ups
+
+- [ ] Install or provision Flutter/Dart SDK in CI/dev container so `flutter analyze` and widget tests can run during porting PRs.
+
 ## UI Port Plan (Flutter: Mobile, Desktop, Web)
 
 - [ ] Build and track the Flutter UI port as a first-class stream alongside backend model parity.
@@ -102,16 +106,16 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/UdtOutgoingConnection.cs`
 
-- [ ] Port `UdtOutgoingConnection.cs` to Dart
+- [x] Port `UdtOutgoingConnection.cs` to Dart
   - **Classes**:
-    - [ ] `class UdtOutgoingConnection`
+    - [x] `class UdtOutgoingConnection`
   - **Public Methods**:
-    - [ ] `send()`
+    - [x] `send()`
   - **Public Properties**:
-    - [ ] `connecting`
+    - [x] `connecting`
   - **TODO**:
     - [ ] Implement UDT via Dart FFI (wrapping C/C++ library) or rewrite using `RawDatagramSocket`. Currently, Dart implementations are stubs.
-    - [ ] Currently porting `dart-udt`; in the meantime, use a mock transport or mark related behavior as not implemented until the port is ready. Additional details will be added later.
+    - [x] Added a temporary pure-Dart `UdtTransport` abstraction and serializer-driven command flow so behavior can be unit tested with mocks while FFI/native transport is pending.
 
 ## File: `./DimensionLib/Model/OutgoingConnection.cs`
 

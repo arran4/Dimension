@@ -1,75 +1,98 @@
-import 'dart:io';
+import 'dart:async';
+import 'dart:typed_data';
 
+import 'commands/command.dart';
 import 'incoming_connection.dart';
 import 'outgoing_connection.dart';
-import 'commands/command.dart';
+import 'serializer.dart';
 
-// Note: Dart does not have a native UDT library equivalent to the C# Udt.Socket out of the box.
-// These are stub classes that outline the structure.
-// TODO: Implement UDT protocol via dart:ffi wrapping a C/C++ library, or natively via RawDatagramSocket.
-// For now, these throw UnimplementedError.
+/// Temporary Dart-native UDT bridge that keeps command flow testable while the
+/// real UDT transport is still being ported.
+abstract class UdtTransport {
+  Stream<Uint8List> get incomingPackets;
+
+  Future<void> send(Uint8List packet);
+
+  bool get isConnecting;
+
+  bool get isConnected;
+
+  Future<void> close();
+}
 
 class UdtIncomingConnection extends IncomingConnection {
-  // ignore: unused_field
-  final dynamic _socket; // Replace with actual UDT Socket type if available
-  // ignore: unused_field
-  final Socket _underlying;
-
-  UdtIncomingConnection(this._socket, this._underlying) {
-    _startReceiveLoop();
+  UdtIncomingConnection({
+    required UdtTransport transport,
+    required Serializer serializer,
+  }) : _transport = transport,
+       _serializer = serializer {
+    _subscription = _transport.incomingPackets.listen(_onPacket);
   }
 
-  void _startReceiveLoop() {
-    // Stub: Would listen to the UDT socket in a loop
-    throw UnimplementedError("UDT not implemented in Dart yet");
-  }
+  final UdtTransport _transport;
+  final Serializer _serializer;
+  StreamSubscription<Uint8List>? _subscription;
 
-  @override
-  Future<void> send(Command c) async {
-    throw UnimplementedError("UDT not implemented in Dart yet");
-  }
-
-  bool get connecting {
-    // try { return socket.State == Udt.SocketState.Connecting; }
-    throw UnimplementedError("UDT not implemented in Dart yet");
+  void _onPacket(Uint8List packet) {
+    final command = _serializer.deserialize(packet);
+    if (command == null) {
+      return;
+    }
+    commandReceived?.call(command, this);
   }
 
   @override
-  bool get connected {
-    // try { return socket.State != Udt.SocketState.Closed; }
-    return false;
+  Future<void> send(Command c) {
+    return _transport.send(_serializer.serialize(c));
+  }
+
+  bool get connecting => _transport.isConnecting;
+
+  @override
+  bool get connected => _transport.isConnected;
+
+  Future<void> dispose() async {
+    await _subscription?.cancel();
+    await _transport.close();
   }
 }
 
-
 class UdtOutgoingConnection extends OutgoingConnection {
   static int successfulConnections = 0;
-  // ignore: unused_field
-  final dynamic _socket; // Replace with actual UDT Socket type
-  // ignore: unused_field
-  final Socket _underlying;
 
-  UdtOutgoingConnection(this._socket, this._underlying) {
-    // send(App.theCore.generateHello());
+  UdtOutgoingConnection({
+    required UdtTransport transport,
+    required Serializer serializer,
+  }) : _transport = transport,
+       _serializer = serializer {
     successfulConnections++;
-    _startReceiveLoop();
+    _subscription = _transport.incomingPackets.listen(_onPacket);
   }
 
-  void _startReceiveLoop() {
-    throw UnimplementedError("UDT not implemented in Dart yet");
+  final UdtTransport _transport;
+  final Serializer _serializer;
+  StreamSubscription<Uint8List>? _subscription;
+
+  void _onPacket(Uint8List packet) {
+    final command = _serializer.deserialize(packet);
+    if (command == null) {
+      return;
+    }
+    commandReceived?.call(command);
   }
 
   @override
-  Future<void> send(Command c) async {
-    throw UnimplementedError("UDT not implemented in Dart yet");
+  Future<void> send(Command c) {
+    return _transport.send(_serializer.serialize(c));
   }
 
-  bool get connecting {
-    throw UnimplementedError("UDT not implemented in Dart yet");
-  }
+  bool get connecting => _transport.isConnecting;
 
   @override
-  bool get connected {
-    return false;
+  bool get connected => _transport.isConnected;
+
+  Future<void> dispose() async {
+    await _subscription?.cancel();
+    await _transport.close();
   }
 }
