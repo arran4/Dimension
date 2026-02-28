@@ -1,153 +1,152 @@
-/*
- * Original C# Source File: Dimension/UI/JoinCircleForm.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+import 'package:dimension/model/bootstrap.dart';
+import 'package:flutter/material.dart';
 
-namespace Dimension.UI
-{
-    public partial class JoinCircleForm : Form
-    {
-        public enum CircleType
-        {
-            bootstrap,
-            kademlia,
-            LAN
-        }
-        CircleType circleType;
-        public JoinCircleForm(CircleType circleType)
-        {
-            this.circleType = circleType;
-            InitializeComponent();
-            if (circleType == CircleType.kademlia)
-            {
+enum CircleType { bootstrap, kademlia, lan }
 
-                urlBox.Text = "#Test";
-                if (!App.kademlia.ready)
-                {
-                    joinButton.Enabled = false;
-                    kadInitLabel.Visible = true;
-                }
-            }
-        }
+abstract class JoinCircleService {
+  Future<List<InternetAddressEndpoint>> joinBootstrap(String address);
 
-        private void joinButton_Click(object sender, EventArgs e2)
-        {
-            doJoin();
-        }
+  Future<List<InternetAddressEndpoint>> lookupKademlia(String query);
 
-        public static void joinCircle(string s, CircleType circleType)
-        {
-            System.Net.IPEndPoint[] e;
-            if (s.ToLower().StartsWith("http://lan"))
-                s = "LAN";
-            if (circleType == CircleType.bootstrap && s != "LAN")
-            {
-                     e = App.bootstrap.join(s);
-                    if (e.Length == 0)
-                    {
-                        MessageBox.Show("Invalid bootstrap URL.");
-                    }
-            }
-            else
-            {
-                e = new System.Net.IPEndPoint[] { };
-                //takes too long, display the thing later
-                //e = App.kademlia.doLookup(s.ToLower().Trim());
-            }
-            if (App.mainForm.InvokeRequired)
-            {
-                App.mainForm.Invoke(new Action(delegate ()
-                {
-                    ((MainForm)App.mainForm).addInternetCircle(e, s, circleType);
-                }));
-            }
-            else
-            {
-                ((MainForm)App.mainForm).addInternetCircle(e, s, circleType);
-            }
-        }
-
-        void doJoin()
-        {
-            joinButton.Enabled = false;
-            string s = urlBox.Text;
-            var t = new System.Threading.Thread(delegate ()
-            {
-                try
-                {
-                    joinCircle(s, circleType);
-                }
-                catch (System.Net.WebException e3)
-                {
-                    MessageBox.Show("Error connecting to bootstrap - " + e3.Message);
-
-                    try
-                    {
-                        this.Invoke(new Action(delegate ()
-                        {
-                            this.Close();
-                        }));
-                    }
-                    catch (InvalidOperationException)
-                    {
-                    }
-                    return;
-                }
-                try
-                {
-                    this.Invoke(new Action(delegate ()
-                    {
-                        this.Close();
-                    }));
-                }
-                catch (InvalidOperationException)
-                {
-                }
-            })
-            {
-                Name = "Bootstrap join thread",
-                IsBackground = true
-            };
-            t.Start();
-        }
-        private void cancelButton_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void kadInitLabelTimer_Tick(object sender, EventArgs e)
-        {
-            if (circleType == CircleType.kademlia)
-            {
-                
-                if (App.kademlia.ready)
-                {
-                    joinButton.Enabled =true;
-                    kadInitLabel.Visible = false;
-                }
-            }
-        }
-
-        private void urlBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                if (joinButton.Enabled)
-                {
-                    e.SuppressKeyPress = true;
-                    doJoin();
-                }
-            }
-        }
-    }
+  bool get isKademliaReady;
 }
 
-*/
+typedef AddInternetCircle = void Function(
+  List<InternetAddressEndpoint> endpoints,
+  String input,
+  CircleType circleType,
+);
+
+class JoinCircleController {
+  JoinCircleController({required JoinCircleService service, required AddInternetCircle addInternetCircle})
+      : _service = service,
+        _addInternetCircle = addInternetCircle;
+
+  final JoinCircleService _service;
+  final AddInternetCircle _addInternetCircle;
+
+  bool get kademliaReady => _service.isKademliaReady;
+
+  Future<void> joinCircle(String input, CircleType circleType) async {
+    var normalizedInput = input.trim();
+    if (normalizedInput.toLowerCase().startsWith('http://lan')) {
+      normalizedInput = 'LAN';
+    }
+
+    List<InternetAddressEndpoint> endpoints;
+    if (circleType == CircleType.bootstrap && normalizedInput != 'LAN') {
+      endpoints = await _service.joinBootstrap(normalizedInput);
+    } else if (circleType == CircleType.kademlia) {
+      endpoints = await _service.lookupKademlia(normalizedInput.toLowerCase());
+    } else {
+      endpoints = const <InternetAddressEndpoint>[];
+    }
+
+    _addInternetCircle(endpoints, normalizedInput, circleType);
+  }
+
+  /// C# compatibility shim.
+  Future<void> JoinCircle(String input, CircleType circleType) =>
+      joinCircle(input, circleType);
+}
+
+class JoinCircleForm extends StatefulWidget {
+  const JoinCircleForm({
+    super.key,
+    required this.controller,
+    required this.circleType,
+    this.initialValue,
+    this.onError,
+  });
+
+  final JoinCircleController controller;
+  final CircleType circleType;
+  final String? initialValue;
+  final ValueChanged<Object>? onError;
+
+  @override
+  State<JoinCircleForm> createState() => _JoinCircleFormState();
+}
+
+class _JoinCircleFormState extends State<JoinCircleForm> {
+  late final TextEditingController _urlController;
+  var _busy = false;
+
+  bool get _kademliaBlocked =>
+      widget.circleType == CircleType.kademlia && !widget.controller.kademliaReady;
+
+  @override
+  void initState() {
+    super.initState();
+    _urlController = TextEditingController(
+      text: widget.initialValue ??
+          (widget.circleType == CircleType.kademlia ? '#Test' : ''),
+    );
+  }
+
+  @override
+  void dispose() {
+    _urlController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _join() async {
+    if (_busy || _kademliaBlocked) {
+      return;
+    }
+
+    setState(() {
+      _busy = true;
+    });
+
+    try {
+      await widget.controller.joinCircle(_urlController.text, widget.circleType);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (error) {
+      widget.onError?.call(error);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Join circle'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            key: const Key('joinCircle.url'),
+            controller: _urlController,
+            onSubmitted: (_) => _join(),
+            decoration: const InputDecoration(labelText: 'Bootstrap URL / circle id'),
+          ),
+          if (_kademliaBlocked)
+            const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text('Kademlia is still initializing...'),
+            ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: _busy ? null : () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          key: const Key('joinCircle.submit'),
+          onPressed: _busy || _kademliaBlocked ? null : _join,
+          child: Text(_busy ? 'Joining...' : 'Join'),
+        ),
+      ],
+    );
+  }
+}
