@@ -548,24 +548,30 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Updater/UpdatingForm.cs`
 
-- [ ] Port `UpdatingForm.cs` to Dart
+- [x] Port `UpdatingForm.cs` to Dart
   - **Classes**:
-    - [ ] `class UpdatingForm`
+    - [x] `class UpdatingForm`
+  - **TODO**:
+    - [ ] Current updater implementation is an injectable pure-Dart controller (`UpdatingFormController`) without direct filesystem/network access; wire concrete downloader/installer adapters during app bootstrap.
 
 ## File: `./Updater/Program.cs`
 
-- [ ] Port `Program.cs` to Dart
+- [x] Port `Program.cs` to Dart
   - **Classes**:
-    - [ ] `class Program`
+    - [x] `class Program`
   - **Public Methods**:
-    - [ ] `needsUpdate()`
-    - [ ] `downloadPath()`
+    - [x] `needsUpdate()`
+    - [x] `downloadPath()`
+  - **TODO**:
+    - [ ] `Program` is now represented by a pure-Dart startup orchestrator with injected update gate and single-instance guard; add production adapters for OS mutex and updater endpoints.
 
 ## File: `./Dimension/Program.cs`
 
-- [ ] Port `Program.cs` to Dart
+- [x] Port `Program.cs` to Dart
   - **Classes**:
-    - [ ] `class Program`
+    - [x] `class Program`
+  - **TODO**:
+    - [ ] Integrate the pure-Dart startup `Program` with real Flutter app shell entrypoints (`runApp` + loading/main route orchestration).
 
 ## File: `./Dimension/UI/AboutForm.cs`
 
@@ -645,23 +651,27 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/SettingsForm.cs`
 
-- [ ] Port `SettingsForm.cs` to Dart
+- [x] Port `SettingsForm.cs` to Dart
   - **Classes**:
-    - [ ] `class SettingsForm`
+    - [x] `class SettingsForm`
+  - **TODO**:
+    - [ ] Expand the current Flutter `SettingsForm` coverage beyond username/description/play-sounds controls as additional settings flows are ported.
 
 ## File: `./Dimension/UI/HashProgressForm.cs`
 
-- [ ] Port `HashProgressForm.cs` to Dart
+- [x] Port `HashProgressForm.cs` to Dart
   - **Classes**:
-    - [ ] `class HashProgressForm`
+    - [x] `class HashProgressForm`
 
 ## File: `./Dimension/UI/IconReader.cs`
 
-- [ ] Port `IconReader.cs` to Dart
+- [x] Port `IconReader.cs` to Dart
   - **Classes**:
-    - [ ] `class IconReader`
-    - [ ] `class Shell32`
-    - [ ] `class User32`
+    - [x] `class IconReader`
+    - [x] `class Shell32`
+    - [x] `class User32`
+  - **TODO**:
+    - [ ] Desktop shell parity currently uses a pure-Dart icon descriptor/fallback mapper; add optional platform-channel icon extraction if exact native icons are required.
 
 ## File: `./Dimension/UI/TransfersPanel.cs`
 
