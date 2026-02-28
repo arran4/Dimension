@@ -1,4 +1,7 @@
 import 'package:dimension/ui/about_form.dart';
+import 'package:dimension/ui/download_queue_panel.dart';
+import 'package:dimension/ui/html_panel.dart';
+import 'package:dimension/ui/rename_share_form.dart';
 import 'package:dimension/ui/loading_form.dart';
 import 'package:dimension/ui/network_status_panel.dart';
 import 'package:flutter/material.dart';
@@ -133,4 +136,87 @@ void main() {
     expect(find.text('System Log'), findsOneWidget);
     expect(find.textContaining('system ok'), findsOneWidget);
   });
+
+  test('parseDimensionJoinLink converts known schemes', () {
+    final bootstrap = parseDimensionJoinLink(
+      'DimensionBootstrap://www.example.com/bootstrap.php',
+    );
+    expect(bootstrap, isNotNull);
+    expect(bootstrap!.url, 'http://www.example.com/bootstrap.php');
+    expect(bootstrap.type, JoinCircleType.bootstrap);
+
+    final lan = parseDimensionJoinLink('DimensionLAN://LAN');
+    expect(lan, isNotNull);
+    expect(lan!.url, 'http://LAN');
+    expect(lan.type, JoinCircleType.lan);
+
+    expect(parseDimensionJoinLink('https://example.com'), isNull);
+  });
+
+  testWidgets('html panel forwards join requests when links are tapped', (tester) async {
+    JoinCircleRequest? request;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: HTMLPanel(
+            onJoinCircle: (value) {
+              request = value;
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Your local network'));
+    await tester.pump();
+
+    expect(request, isNotNull);
+    expect(request!.type, JoinCircleType.lan);
+    expect(request!.url, 'http://LAN');
+  });
+
+  testWidgets('rename share form returns entered value', (tester) async {
+    String? result;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: Center(
+              child: FilledButton(
+                onPressed: () async {
+                  result = await RenameShareForm.show(
+                    context,
+                    initialName: 'Old Name',
+                  );
+                },
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'New Name');
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    expect(result, 'New Name');
+  });
+
+  testWidgets('download queue panel shows empty message', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(body: DownloadQueuePanel()),
+      ),
+    );
+
+    expect(find.text('No queued downloads.'), findsOneWidget);
+  });
+
 }
