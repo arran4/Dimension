@@ -579,15 +579,17 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/FlashWindow.cs`
 
-- [ ] Port `FlashWindow.cs` to Dart
+- [x] Port `FlashWindow.cs` to Dart
   - **Classes**:
-    - [ ] `class FlashWindow`
+    - [x] `class FlashWindow`
   - **Public Methods**:
-    - [ ] `Flash()`
-    - [ ] `Flash()`
-    - [ ] `Start()`
-    - [ ] `Stop()`
-    - [ ] `ApplicationIsActivated()`
+    - [x] `Flash()`
+    - [x] `Flash()`
+    - [x] `Start()`
+    - [x] `Stop()`
+    - [x] `ApplicationIsActivated()`
+  - **TODO**:
+    - [ ] Hook a production `FlashWindowDriver` implementation into the Flutter desktop shell once `MainForm` is fully ported.
 
 ## File: `./Dimension/UI/DownloadQueuePanel.cs`
 
@@ -611,9 +613,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/LimitChangeDialog.cs`
 
-- [ ] Port `LimitChangeDialog.cs` to Dart
+- [x] Port `LimitChangeDialog.cs` to Dart
   - **Classes**:
-    - [ ] `class LimitChangeDialog`
+    - [x] `class LimitChangeDialog`
+  - **TODO**:
+    - [ ] Replace temporary `InMemorySpeedLimitSettings` usage with app-wide settings wiring when `SettingsForm` and `MainForm` are ported.
 
 ## File: `./Dimension/UI/DateFormatter.cs`
 
