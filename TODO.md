@@ -567,9 +567,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/AboutForm.cs`
 
-- [ ] Port `AboutForm.cs` to Dart
+- [x] Port `AboutForm.cs` to Dart
   - **Classes**:
-    - [ ] `class AboutForm`
+    - [x] `class AboutForm`
 
 ## File: `./Dimension/UI/DoubleBufferedListView.cs`
 
@@ -599,9 +599,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/LoadingForm.cs`
 
-- [ ] Port `LoadingForm.cs` to Dart
+- [x] Port `LoadingForm.cs` to Dart
   - **Classes**:
-    - [ ] `class LoadingForm`
+    - [x] `class LoadingForm`
+  - **TODO**:
+    - [ ] Wire `LoadingForm` to the final app bootstrap lifecycle once `App`/`MainForm` startup orchestration is fully ported.
 
 ## File: `./Dimension/UI/ByteFormatter.cs`
 
@@ -678,9 +680,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/NetworkStatusPanel.cs`
 
-- [ ] Port `NetworkStatusPanel.cs` to Dart
+- [x] Port `NetworkStatusPanel.cs` to Dart
   - **Classes**:
-    - [ ] `class NetworkStatusPanel`
+    - [x] `class NetworkStatusPanel`
+  - **TODO**:
+    - [ ] Replace temporary snapshot provider wiring with live `Core`/`Bootstrap` adapters when those Flutter-first surfaces are stabilized.
 
 ## File: `./Dimension/UI/CirclePanel.cs`
 

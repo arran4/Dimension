@@ -30,3 +30,7 @@ This file contains instructions and context for agents working on this repositor
 - Temporary follow-up: add a production desktop `FlashWindowDriver` (via platform channels or FFI) when the Flutter desktop shell is connected.
 - `lib/ui/limit_change_dialog.dart` is now a Flutter `AlertDialog` backed by pure-Dart conversion logic (`LimitChangeLogic`) and an injected `SpeedLimitSettings` abstraction for deterministic widget/unit tests.
 - Temporary follow-up: replace temporary in-memory settings wiring with real app settings once `MainForm`/`SettingsForm` Flutter ports are in place.
+- `lib/ui/about_form.dart` is now a Flutter `AlertDialog`-based implementation with injectable app/version/description content so UI behavior stays testable without native resources.
+- `lib/ui/loading_form.dart` is now a pure-Dart/Flutter loading widget driven by an injected `LoadingStatusSource`, enabling deterministic polling/startup tests with mocks.
+- `lib/ui/network_status_panel.dart` is now a Flutter panel backed by injectable snapshot/provider abstractions plus pure formatter helpers for deterministic unit/widget tests.
+- Temporary follow-up: connect `LoadingStatusSource` and `NetworkStatusProvider` to real app bootstrap/core adapters once `App` and `MainForm` orchestration is fully ported.
