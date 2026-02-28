@@ -66,9 +66,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/NetConstants.cs`
 
-- [ ] Port `NetConstants.cs` to Dart
+- [x] Port `NetConstants.cs` to Dart
   - **Classes**:
-    - [ ] `class NetConstants`
+    - [x] `class NetConstants`
 
 ## File: `./DimensionLib/Model/Core.cs`
 
@@ -519,11 +519,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/ByteFormatter.cs`
 
-- [ ] Port `ByteFormatter.cs` to Dart
+- [x] Port `ByteFormatter.cs` to Dart
   - **Classes**:
-    - [ ] `class ByteFormatter`
+    - [x] `class ByteFormatter`
   - **Public Methods**:
-    - [ ] `formatBytes()`
+    - [x] `formatBytes()`
 
 ## File: `./Dimension/UI/LimitChangeDialog.cs`
 
@@ -533,11 +533,11 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/DateFormatter.cs`
 
-- [ ] Port `DateFormatter.cs` to Dart
+- [x] Port `DateFormatter.cs` to Dart
   - **Classes**:
-    - [ ] `class DateFormatter`
+    - [x] `class DateFormatter`
   - **Public Methods**:
-    - [ ] `formatDate()`
+    - [x] `formatDate()`
 
 ## File: `./Dimension/UI/HTMLPanel.cs`
 
