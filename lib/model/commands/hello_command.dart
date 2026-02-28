@@ -1,37 +1,24 @@
-/*
- * Original C# Source File: DimensionLib/Model/Commands/HelloCommand.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'command.dart';
 
-namespace Dimension.Model.Commands
-{
-    public class HelloCommand : Command
-    {
-        public bool? debugBuild;
-        public bool? afk;
-        public ulong id;
-        public ulong myShare;
-        public string username;
-        public string description;
-        public Dictionary<ulong, int> peerCount;
-        public int externalControlPort;
-        public int externalDataPort;
-        public int internalControlPort;
-        public int internalDataPort;
-        public int internalUdtPort;
-        public string externalIP;
-        public ulong[] myCircles;
-        public bool useUDT;
-        public string[] internalIPs;
-        public int buildNumber;
-        public bool behindDoubleNAT;
-        public bool requestingHelloBack = false;
-        public string[] extensions = new string[] { };
-    }
+class HelloCommand extends Command {
+  bool? debugBuild;
+  bool? afk;
+  int id = 0;
+  int myShare = 0;
+  String username = '';
+  String description = '';
+  Map<int, int> peerCount = {};
+  int externalControlPort = 0;
+  int externalDataPort = 0;
+  int internalControlPort = 0;
+  int internalDataPort = 0;
+  int internalUdtPort = 0;
+  String externalIP = '';
+  List<int> myCircles = [];
+  bool useUDT = false;
+  List<String> internalIPs = [];
+  int buildNumber = 0;
+  bool behindDoubleNAT = false;
+  bool requestingHelloBack = false;
+  List<String> extensions = [];
 }
-
-*/

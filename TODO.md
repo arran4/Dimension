@@ -40,9 +40,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/OutgoingConnection.cs`
 
-- [ ] Port `OutgoingConnection.cs` to Dart
+- [x] Port `OutgoingConnection.cs` to Dart
   - **Classes**:
-    - [ ] `class OutgoingConnection`
+    - [x] `class OutgoingConnection`
 
 ## File: `./DimensionLib/Model/FileListDatabase.cs`
 
@@ -118,9 +118,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/IncomingConnection.cs`
 
-- [ ] Port `IncomingConnection.cs` to Dart
+- [x] Port `IncomingConnection.cs` to Dart
   - **Classes**:
-    - [ ] `class IncomingConnection`
+    - [x] `class IncomingConnection`
 
 ## File: `./DimensionLib/Model/Serializer.cs`
 
