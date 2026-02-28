@@ -5,6 +5,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
 ## Environment / Tooling Follow-ups
 
 - [ ] Install or provision Flutter/Dart SDK in CI/dev container so `flutter analyze` and widget tests can run during porting PRs.
+  - Current container check (2026-02-28): `flutter` and `dart` CLIs are unavailable (`command not found`), so analysis/test commands remain blocked in this environment.
 
 ## UI Port Plan (Flutter: Mobile, Desktop, Web)
 
@@ -258,7 +259,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **TODO**:
     - [ ] Implement UDT via Dart FFI (wrapping C/C++ library) or rewrite using `RawDatagramSocket`. Currently, Dart implementations are stubs.
     - [ ] Currently porting `dart-udt`; in the meantime, use a mock transport or mark related behavior as not implemented until the port is ready. Additional details will be added later.
-    - [ ] Remove temporary compatibility shim exports once all imports have been consolidated on `lib/model/udt_connection.dart`.
+    - [x] Remove temporary compatibility shim exports once all imports have been consolidated on `lib/model/udt_connection.dart`.
 
 ## File: `./DimensionLib/Model/Peer.cs`
 
