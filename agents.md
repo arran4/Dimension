@@ -20,3 +20,5 @@ This file contains instructions and context for agents working on this repositor
 - Temporary bridge: `FileListDatabase` includes a `settingsStore` until `Settings` is fully ported and wired.
 - `lib/model/serializer.dart` is now a pure-Dart packet serializer with an explicit codec registry (`register<T>`), so command serialization/deserialization can be tested with mocks and does not rely on reflection.
 - Temporary follow-up: command codec registration is intentionally externalized; wire all command types during app bootstrap once `App`/startup flow is fully Dart-native.
+- `lib/model/settings.dart` is now a pure-Dart implementation with an injected `StringKeyValueStore`, deterministic in-memory defaults, and explicit JSON handling for string-array settings.
+- Temporary follow-up: `Settings.save()` only persists when the injected backend implements `SavableStringKeyValueStore`; wire a disk-backed implementation during app bootstrap.
