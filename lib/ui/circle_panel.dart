@@ -1,546 +1,249 @@
-/*
- * Original C# Source File: Dimension/UI/CirclePanel.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Text.RegularExpressions;
+import 'dart:io' show Platform;
 
-namespace Dimension.UI
-{
-    public partial class CirclePanel : UserControl, Model.ClosableTab, UI.SelectableTab
-    {
-        public void close()
-        {
-            App.theCore.leaveCircle(url);
-            if (url == "LAN")
-                App.settings.setBool("Joined LAN Circle", false);
-            if (circleType == JoinCircleForm.CircleType.bootstrap)
-                App.settings.removeStringToArrayNoDup("Bootstrap Circles Open", url);
-            if (circleType == JoinCircleForm.CircleType.kademlia)
-                App.settings.removeStringToArrayNoDup("Kademlia Circles Open", url);
-        }
-        List<string> haveAdded = new List<string>();
-        void joinLoop()
-        {
-            while (true)
-            {
-                System.Net.IPEndPoint[] e = null;
+import 'package:flutter/material.dart';
 
-                if (circleType == JoinCircleForm.CircleType.bootstrap)
-                {
-                    e = App.bootstrap.join(url);
+import '../model/closable_tab.dart';
+import '../model/commands/file_listing.dart';
+import '../model/commands/fs_listing.dart';
+import '../model/commands/private_chat_command.dart';
+import 'date_formatter.dart';
+import 'selectable_tab.dart';
 
-                }
-                else if (circleType == JoinCircleForm.CircleType.kademlia)
-                {
-                    App.kademlia.announce(url.ToLower().Trim());
-                    System.Threading.Thread.Sleep(10000);
-                    e = App.kademlia.doLookup(url.ToLower().Trim());
-                }
-                foreach (var z in e)
-                {
-                    if (z != null)
-                    {
-                        string s = z.Address.ToString() + ":" + z.Port;
-                        if (!haveAdded.Contains(s))
-                        {
-                            haveAdded.Add(s);
-                            App.theCore.addPeer(z);
+class CirclePanelController extends ChangeNotifier
+    implements ClosableTab, SelectableTab {
+  CirclePanelController({required this.circleName, this.displayName = ''});
 
-                        }
-                    }
-                }
+  final String circleName;
+  final String displayName;
 
-                System.Threading.Thread.Sleep(10000);
-            }
-        }
-        public string url;
-        UI.JoinCircleForm.CircleType circleType;
-        public CirclePanel(string url, UI.JoinCircleForm.CircleType circleType)
-        {
-            InitializeComponent();
-            setupUserList();
+  bool connected = false;
+  bool _selected = false;
+  bool _closed = false;
+  String currentPath = '/';
 
-            if (url.ToLower() == "http://lan/" || circleType == JoinCircleForm.CircleType.LAN)
-            {
-                initLAN();
-                return;
-            }
-            this.circleType = circleType;
-            this.url = url;
+  final List<String> chatLines = <String>[];
+  List<FSListing> folders = <FSListing>[];
+  List<FSListing> files = <FSListing>[];
 
-            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
+  bool get isSelected => _selected;
+  bool get isClosed => _closed;
 
-            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url.ToLower())), 0);
-            App.theCore.joinCircle(url);
-            App.theCore.chatReceivedEvent += chatReceived;
-            MainForm.colorChange += colorChanged;
-            ((MainForm)App.mainForm).setColors();
+  void chatReceived(PrivateChatCommand command, {required String username}) {
+    final now = DateTime.now();
+    final hh = now.hour.toString().padLeft(2, '0');
+    final mm = now.minute.toString().padLeft(2, '0');
 
-
-            System.Threading.Thread t = new System.Threading.Thread(joinLoop);
-            t.IsBackground = true;
-            t.Name = "Circle join loop";
-            t.Start();
-
-            if (circleType == JoinCircleForm.CircleType.bootstrap)
-            {
-                App.settings.addStringToArrayNoDup("Bootstrap Circles Open", url);
-            }
-            else if (circleType == JoinCircleForm.CircleType.kademlia)
-            {
-                App.settings.addStringToArrayNoDup("Kademlia Circles Open", url);
-            }
-            if (isMono)
-            {
-                userListView.OwnerDraw = true;
-            }
-        }
-        public bool isMono
-        {
-            get
-            {
-                return Type.GetType("Mono.Runtime") != null;
-            }
-        }
-        public CirclePanel()
-        {
-            InitializeComponent();
-            setupUserList();
-            initLAN();
-        }
-        void initLAN()
-        {
-            url = "LAN";
-            App.theCore.joinCircle(url);
-            System.Security.Cryptography.SHA512Managed sha = new System.Security.Cryptography.SHA512Managed();
-
-            circleHash = BitConverter.ToUInt64(sha.ComputeHash(Encoding.UTF8.GetBytes(url.ToLower())), 0);
-            App.theCore.chatReceivedEvent += chatReceived;
-            MainForm.colorChange += colorChanged;
-            ((MainForm)App.mainForm).setColors();
-
-            App.settings.setBool("Joined LAN Circle", true);
-        }
-        ulong circleHash;
-        Model.Peer[] allPeersInCircle
-        {
-            get
-            {
-                return App.theCore.peerManager.allPeersInCircle(circleHash);
-            }
-        }
-        void doUpdateUserList()
-        {
-            var items = allPeersInCircle;
-
-            userListView.BeginUpdate();
-            while (userListView.Items.Count < items.Length)
-            {
-                ListViewItem i = new ListViewItem();
-                i.SubItems.Add("");
-                i.SubItems.Add("");
-                i.SubItems.Add("");
-                userListView.Items.Add(i);
-            }
-            while (userListView.Items.Count > items.Length)
-                userListView.Items.RemoveAt(0);
-            for (int i = 0; i < items.Length; i++)
-            {
-                userListView.Items[i].Tag = items[i];
-
-                /* string s1 = items[i].username;
-                 string s2 = "";
-
-                 for (int i2 = 0; i2 < s1.Length; i2++)
-                     if (char.IsLetterOrDigit(s1[i2]) || s1[i2] == ' ' || s1[i2] == '_')
-                         s2 += s1[i2];*/
-
-                string s2 = items[i].username;
-
-                if (items[i].maybeDead)
-                    userListView.Items[i].ForeColor = SystemColors.GrayText;
-                else
-                    userListView.Items[i].ForeColor = SystemColors.WindowText;
-                Font b = userListView.Font;
-                if (items[i].behindDoubleNAT)
-                    b = new Font("Comic Sans MS", b.SizeInPoints);
-                
-                if (items[i].probablyDead)
-                    userListView.Items[i].Font = new Font(b, FontStyle.Italic);
-                else
-                    userListView.Items[i].Font = new Font(b, FontStyle.Regular);
-               
-
-                if (items[i].afk.HasValue)
-                    userListView.Items[i].Text = s2 + (items[i].afk.Value ? " (AFK)" : "");
-                else
-                    userListView.Items[i].Text = s2;
-                userListView.Items[i].SubItems[1].Text = (items[i].buildNumber.ToString());
-                userListView.Items[i].SubItems[2].Text = (ByteFormatter.formatBytes(items[i].share));
-                userListView.Items[i].SubItems[3].Text = (items[i].description);
-            }
-            userListView.EndUpdate();
-        }
-        bool addedEvent = false;
-        string lastFingerprint = "";
-        void updateUserList(Model.Peer p, ulong channel)
-        {
-            updateUserList(p);
-
-        }
-        void updateUserList(Model.Peer p)
-        {
-            var items = allPeersInCircle;
-            if (items.Length == 0)
-                return;
-            string fingerprint = "";
-            foreach (Model.Peer p2 in items)
-                if (!p2.quit)
-                    fingerprint += p2.username + p2.share.ToString() + p2.buildNumber.ToString() + p2.afk.ToString() + p2.probablyDead.ToString() + p2.maybeDead.ToString()+p2.description + p2.behindDoubleNAT + p2.quit + p2.timeQuit;
-            if (lastFingerprint == fingerprint)
-                return;
-            lastFingerprint = fingerprint;
-            if (this.InvokeRequired)
-            {
-                try
-                {
-                    Invoke(new Action(delegate ()
-                    {
-                        doUpdateUserList();
-                    }));
-                }
-                catch (InvalidOperationException)
-                {
-                }
-            }
-            else
-            {
-                doUpdateUserList();
-            }
-        }
-        void colorChanged(bool invert)
-        {
-            if (invert)
-            {
-                historyBox.BackColor = Color.Black;
-                historyBox.ForeColor = Color.Gray;
-
-                inputBox.BackColor = Color.Black;
-                inputBox.ForeColor = Color.Gray;
-
-                userListView.BackColor = Color.Black;
-                userListView.ForeColor = Color.Gray;
-            }
-            else
-            {
-                historyBox.BackColor = SystemColors.Window;
-                historyBox.ForeColor = SystemColors.WindowText;
-
-                inputBox.BackColor = SystemColors.Window;
-                inputBox.ForeColor = SystemColors.WindowText;
-
-                userListView.BackColor = SystemColors.Window;
-                userListView.ForeColor = SystemColors.WindowText;
-
-            }
-
-        }
-        void setupUserList()
-        {
-            updateUserList(null, circleHash);
-            App.theCore.peerManager.peerRemoved += peerLeft;
-            App.theCore.peerManager.peerAdded += peerJoined;
-            App.theCore.peerManager.peerUpdated += peerUpdated;
-            App.theCore.peerManager.peerRenamed += peerRenamed;
-        }
-        void peerRenamed(string oldName, Model.Peer p)
-        {
-            if(p.circles.Contains(circleHash))
-                chatReceived("*** " + oldName + " changed name to " + p.username + " at " + DateTime.Now.ToShortTimeString(), circleHash,p);
-            updateUserList(null, circleHash);
-        }
-        void peerLeft(Model.Peer p, ulong channelId, bool notify)
-        {
-            if(channelId == circleHash && notify)
-                chatReceived("*** " + p.username + " left at " + DateTime.Now.ToShortTimeString(), circleHash,p);
-            updateUserList(null, circleHash);
-
-        }
-        void peerUpdated(Model.Peer p)
-        {
-            updateUserList(null, circleHash);
-        }
-        void peerJoined(Model.Peer p, ulong channelId, bool notify)
-        {
-            if (channelId == circleHash)
-                chatReceived("*** " + p.username + " joined at " + DateTime.Now.ToShortTimeString(), circleHash,p);
-
-            updateUserList(null, circleHash);
-        }
-        List<string> chatHistory = new List<string>();
-        int chatHistorySelection = 0;
-        public void chatReceived(string s, ulong roomId, Model.Peer p)
-        {
-            if (Parent != null && Parent.Parent != null && !addedEvent)
-            {
-                addedEvent = true;
-                
-            }
-            if (roomId != this.circleHash)
-                return;
-            if (IsDisposed)
-            {
-                App.theCore.chatReceivedEvent -= chatReceived;
-                return;
-            }
-            bool highlight = false;
-
-
-            int count = new Regex(Regex.Escape(App.settings.getString("Username", "Username").ToLower())).Matches(s.ToLower()).Count;
-            
-            if (p?.id == App.theCore.id)
-            {
-                if (count > 1)
-                    highlight = true;
-            }
-            else
-            {
-                if (count > 0)
-                    highlight = true;
-            }
-
-
-            try
-            {
-                this.Invoke(new Action(delegate ()
-                {
-                    if (!focused && addedEvent && changeEventReceived)
-                    {
-                        TabPage p2 = (TabPage)Parent;
-                        if (!p2.Text.StartsWith("(!) "))
-                            p2.Text = "(!) " + p2.Text;
-                    }
-                    historyBox.AppendText(s + Environment.NewLine);
-                    if (highlight)
-                    {
-                        historyBox.SelectionStart = historyBox.Text.Length - (s.Length + 1);
-                        historyBox.SelectionLength = s.Length;
-                        historyBox.SelectionBackColor = SystemColors.Highlight;
-                        historyBox.SelectionColor = SystemColors.HighlightText;
-                        App.doFlash();
-                    }
-
-                    historyBox.SelectionStart = historyBox.Text.Length - (s.Length + 1);
-                    historyBox.SelectionLength = s.Length + 1;
-                    historyBox.SelectionFont = App.getFont();
-                    
-                    if (p != null)
-                        if (p.behindDoubleNAT)
-                        {
-                            historyBox.SelectionStart = historyBox.Text.Length - (s.Length + 1);
-                            historyBox.SelectionLength = s.Length + 1;
-                            historyBox.SelectionFont = new Font("Comic Sans MS", historyBox.Font.SizeInPoints);
-                        }
-                    if (selected)
-                    {
-                        historyBox.SelectionStart = historyBox.Text.Length;
-                        historyBox.SelectionLength = 0;
-                        historyBox.ScrollToCaret();
-                    }
-
-                }));
-            }
-            catch (ObjectDisposedException)
-            {
-
-            }
-            catch (InvalidOperationException)
-            {
-            }
-        }
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Tab && inputBox.Focused)
-            {
-                //e.SuppressKeyPress = true;
-                string s = inputBox.Text.Substring(0,inputBox.SelectionStart);
-                string rest = inputBox.Text.Substring(s.Length);
-                if (s.Contains(' ')) s = s.Substring(s.LastIndexOf(' ')+1);
-                if (s.Contains('\t')) s = s.Substring(s.LastIndexOf('\t') + 1);
-                if (s.Contains('\n')) s = s.Substring(s.LastIndexOf('\n') + 1);
-
-                foreach (Model.Peer p in App.theCore.peerManager.allPeersInCircle(circleHash))
-                {
-                    if (p.username.ToLower().StartsWith(s.ToLower()) && s.Trim() != "" && p.username.Trim() != "")
-                    {
-                        inputBox.Text = inputBox.Text.Substring(0, inputBox.SelectionStart - s.Length) + p.username + " " + rest;
-                        inputBox.SelectionStart = inputBox.Text.Length - (rest.Length + 1);
-                        return true;
-                    }
-
-                }
-                if (App.settings.getBool("Play sounds", true))
-                {
-                    System.Media.SoundPlayer p = new System.Media.SoundPlayer(Properties.Resources.Bell);
-                    p.Play();
-                }
-                return true;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-        private void inputBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (fontHeight == -1)
-                fontHeight = inputBox.Font.Height;
-            int h = Math.Min(100, fontHeight * (inputBox.Text.Split('\n').Length + 1));
-            if (lastInputBoxHeight != h)
-            {
-                inputBox.Height = h;
-                lastInputBoxHeight = h;
-            }
-            if (inputBox.Lines.Length <= 1 && !((e.Modifiers & Keys.Shift) != Keys.None) ) {
-                if (e.KeyCode == Keys.Up)
-                {
-                    int n = chatHistorySelection + 1;
-                    if (n > 0 && n <= chatHistory.Count)
-                    {
-                        string s = chatHistory[chatHistory.Count - n];
-                        inputBox.Text = s;
-                        chatHistorySelection = n;
-                    }
-                    else
-                    {
-                        inputBox.Text = "";
-                        chatHistorySelection = chatHistory.Count;
-                    }
-                }
-                if (e.KeyCode == Keys.Down)
-                {
-                    int n = chatHistorySelection - 1;
-                    if (n > 0 && n <= chatHistory.Count)
-                    {
-                        string s = chatHistory[(chatHistory.Count) - n];
-                        inputBox.Text = s;
-                        chatHistorySelection = n;
-                    }
-                    else
-                    {
-                        inputBox.Text = "";
-                        chatHistorySelection = 0;
-                    }
-                }
-            }
-            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
-            {
-                if (e.Modifiers != Keys.Shift)
-                {
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    if (inputBox.Text.Trim() != "")
-                    {
-                        chatHistorySelection = 0;
-                        chatHistory.Add(inputBox.Text);
-                        while (chatHistory.Count > 10)
-                            chatHistory.RemoveAt(0);
-                        App.theCore.sendChat(inputBox.Text, circleHash);
-                        inputBox.Text = "";
-                        inputBox.Height = 22;
-                    }
-                }
-
-            }
-            
-        }
-        private void userListView_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            foreach (int i in userListView.SelectedIndices)
-            {
-                Model.Peer z = allPeersInCircle[i];
-                UserPanel b = new UserPanel(z);
-                b.Dock = DockStyle.Fill;
-
-                ((MainForm)App.mainForm).addOrSelectPanel(z.username, b, "(!) Files for " + z.id.ToString());
-            }
-        }
-
-        int lastInputBoxHeight = 0;
-        int fontHeight = -1;
-        
-        private void CirclePanel_ParentChanged(object sender, EventArgs e)
-        {
-        }
-        bool changeEventReceived = false;
-        public bool focused = false;
-
-        private void historyBox_LinkClicked(object sender, LinkClickedEventArgs e)
-        {
-            try
-            {
-                System.Diagnostics.Process.Start(e.LinkText);
-            }
-            catch (Win32Exception)
-            {
-                //WINE throws this sometimes, doesn't actually do anything
-            }
-        }
-        bool selected = false;
-        public void select()
-        {
-            selected = true;
-            
-
-            historyBox.Visible = true;
-            historyBox.SelectionStart = historyBox.Text.Length;
-            historyBox.SelectionLength = 0;
-            historyBox.ScrollToCaret();
-            historyBox.Refresh();
-        }
-        public void unselect()
-        {
-            selected = false;
-            historyBox.Visible = false;
-        }
-        private void userListView_DrawItem(object sender, DrawListViewItemEventArgs e)
-        {
-            if (!selected)
-                return;
-            if (e.Bounds.Left > userListView.Width)
-                return;
-            e.Graphics.DrawString(e.Item.Text, userListView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
-
-        }
-
-        private void userListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
-        {
-            if (!selected)
-                return;
-            if (e.Bounds.Left > userListView.Width)
-                return;
-
-            int width = e.Bounds.Width;
-            if (e.Bounds.Right > userListView.Width)
-                width = userListView.Width;
-            e.Graphics.FillRectangle(new SolidBrush(SystemColors.Control), new RectangleF(e.Bounds.Left, e.Bounds.Top, width, e.Bounds.Height) );
-            e.Graphics.DrawString(e.Header.Text, userListView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
-        }
-
-        private void userListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
-        {
-            if (!selected)
-                return;
-            if (e.Bounds.Left > userListView.Width)
-                return;
-            e.Graphics.DrawString(e.SubItem.Text, userListView.Font, new SolidBrush(SystemColors.ControlText), e.Bounds.Location);
-        }
+    for (final line in command.content.split('\n')) {
+      if (line.trim().isEmpty) {
+        continue;
+      }
+      chatLines.add('$hh:$mm $username: $line');
     }
+    notifyListeners();
+  }
+
+  void applyFileListing(FileListing listing) {
+    connected = true;
+    currentPath = listing.path;
+    folders = List<FSListing>.from(listing.folders);
+    files = List<FSListing>.from(listing.files);
+    notifyListeners();
+  }
+
+  void navigateUp() {
+    if (currentPath == '/') {
+      return;
+    }
+
+    final parts = currentPath.split('/')..removeWhere((part) => part.isEmpty);
+    if (parts.isNotEmpty) {
+      parts.removeLast();
+    }
+
+    currentPath = parts.isEmpty ? '/' : '/${parts.join('/')}';
+    notifyListeners();
+  }
+
+  @override
+  void select() {
+    _selected = true;
+    notifyListeners();
+  }
+
+  @override
+  void unselect() {
+    _selected = false;
+    notifyListeners();
+  }
+
+  @override
+  void close() {
+    _closed = true;
+    notifyListeners();
+  }
 }
 
-*/
+class CirclePanel extends StatelessWidget {
+  const CirclePanel({
+    super.key,
+    required this.controller,
+    this.onTapFolder,
+    this.onTapFile,
+    this.onClose,
+    bool? isMono,
+  }) : _isMonoOverride = isMono;
+
+  final CirclePanelController controller;
+  final Future<void> Function(String path)? onTapFolder;
+  final Future<void> Function(FSListing file)? onTapFile;
+  final VoidCallback? onClose;
+  final bool? _isMonoOverride;
+
+  bool get isMono => _isMonoOverride ?? _platformIsMono();
+
+  static bool _platformIsMono() {
+    return Platform.environment.containsKey('MONO_ENV_OPTIONS') ||
+        Platform.environment.containsKey('MONO_PATH');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ListTile(
+              dense: !isMono,
+              title: Text(controller.circleName),
+              subtitle: Text(controller.currentPath),
+              trailing: IconButton(
+                onPressed: () {
+                  controller.close();
+                  onClose?.call();
+                },
+                icon: const Icon(Icons.close),
+              ),
+            ),
+            Wrap(
+              spacing: 8,
+              children: [
+                FilterChip(
+                  selected: controller.isSelected,
+                  onSelected: (selected) {
+                    if (selected) {
+                      controller.select();
+                    } else {
+                      controller.unselect();
+                    }
+                  },
+                  label: const Text('Selected'),
+                ),
+                ActionChip(
+                  onPressed: controller.currentPath == '/'
+                      ? null
+                      : () {
+                          controller.navigateUp();
+                          onTapFolder?.call(controller.currentPath);
+                        },
+                  label: const Text('Up'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _FilesPane(
+                      folders: controller.folders,
+                      files: controller.files,
+                      onTapFolder: (folder) async {
+                        final nextPath = controller.currentPath == '/'
+                            ? '/${folder.name}'
+                            : '${controller.currentPath}/${folder.name}';
+                        await onTapFolder?.call(nextPath);
+                      },
+                      onTapFile: onTapFile,
+                    ),
+                  ),
+                  const VerticalDivider(width: 1),
+                  Expanded(
+                    child: _ChatPane(lines: controller.chatLines),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _FilesPane extends StatelessWidget {
+  const _FilesPane({
+    required this.folders,
+    required this.files,
+    required this.onTapFolder,
+    required this.onTapFile,
+  });
+
+  final List<FSListing> folders;
+  final List<FSListing> files;
+  final Future<void> Function(FSListing folder) onTapFolder;
+  final Future<void> Function(FSListing file)? onTapFile;
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = <FSListing>[...folders, ...files];
+
+    if (entries.isEmpty) {
+      return const Center(child: Text('No files in this folder.'));
+    }
+
+    return ListView.separated(
+      itemCount: entries.length,
+      separatorBuilder: (_, _) => const Divider(height: 1),
+      itemBuilder: (context, index) {
+        final item = entries[index];
+        return ListTile(
+          leading: Icon(item.isFolder ? Icons.folder : Icons.description),
+          title: Text(item.name),
+          subtitle: Text(
+            '${item.size} bytes • ${DateFormatter.formatDate(item.updated)}',
+          ),
+          onTap: () async {
+            if (item.isFolder) {
+              await onTapFolder(item);
+            } else {
+              await onTapFile?.call(item);
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
+class _ChatPane extends StatelessWidget {
+  const _ChatPane({required this.lines});
+
+  final List<String> lines;
+
+  @override
+  Widget build(BuildContext context) {
+    if (lines.isEmpty) {
+      return const Center(child: Text('No messages yet.'));
+    }
+
+    return ListView.builder(
+      itemCount: lines.length,
+      itemBuilder: (context, index) => ListTile(
+        dense: true,
+        title: Text(lines[index]),
+      ),
+    );
+  }
+}

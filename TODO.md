@@ -94,7 +94,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `doPrivateChatReceived()`
     - [ ] `doFlash()`
   - **Public Properties**:
-    - [ ] `isMono`
+    - [x] `isMono`
     - [ ] `comicSansOnly`
 
 ## File: `./DimensionLib/Model/ReliableIncomingConnection.cs`
@@ -162,10 +162,12 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `sendChat()`
     - [ ] `addIncomingConnection()`
     - [ ] `removeIncomingConnection()`
-    - [ ] `chatReceived()`
+    - [x] `chatReceived()`
     - [ ] `getIdleTime()`
   - **Public Properties**:
-    - [ ] `isMono`
+    - [x] `isMono`
+  - **TODO**:
+    - [ ] Wire `TransfersPanel` row actions (cancel/retry/open) to finalized transfer commands once `MainForm` command routing is fully ported.
 
 ## File: `./DimensionLib/Model/FileList.cs`
 
@@ -280,7 +282,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `createConnection()`
     - [ ] `endPunch()`
     - [ ] `releasePunch()`
-    - [ ] `chatReceived()`
+    - [x] `chatReceived()`
   - **Public Properties**:
     - [ ] `maybeDead`
     - [ ] `probablyDead`
@@ -649,6 +651,8 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - **Public Properties**:
     - [x] `isMono`
   - **TODO**:
+    - [ ] Wire `TransfersPanel` row actions (cancel/retry/open) to finalized transfer commands once `MainForm` command routing is fully ported.
+  - **TODO**:
     - [ ] Hook `HTMLPanel` join-circle callbacks into the final `JoinCircleForm`/`MainForm` flow once those Flutter ports are in place.
 
 ## File: `./Dimension/UI/SettingsForm.cs`
@@ -677,11 +681,13 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/TransfersPanel.cs`
 
-- [ ] Port `TransfersPanel.cs` to Dart
+- [x] Port `TransfersPanel.cs` to Dart
   - **Classes**:
-    - [ ] `class TransfersPanel`
+    - [x] `class TransfersPanel`
   - **Public Properties**:
-    - [ ] `isMono`
+    - [x] `isMono`
+  - **TODO**:
+    - [ ] Wire `TransfersPanel` row actions (cancel/retry/open) to finalized transfer commands once `MainForm` command routing is fully ported.
 
 ## File: `./Dimension/UI/RenameShareForm.cs`
 
@@ -708,16 +714,18 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/CirclePanel.cs`
 
-- [ ] Port `CirclePanel.cs` to Dart
+- [x] Port `CirclePanel.cs` to Dart
   - **Classes**:
-    - [ ] `class CirclePanel`
+    - [x] `class CirclePanel`
   - **Public Methods**:
     - [x] `close()`
-    - [ ] `chatReceived()`
-    - [ ] `select()`
-    - [ ] `unselect()`
+    - [x] `chatReceived()`
+    - [x] `select()`
+    - [x] `unselect()`
   - **Public Properties**:
-    - [ ] `isMono`
+    - [x] `isMono`
+  - **TODO**:
+    - [ ] Wire `CirclePanel` file browsing actions to live `Peer.controlConnection` (`GetFileListing`) and download commands when `MainForm` orchestration is finalized.
 
 ## File: `./Dimension/UI/FinishedTransfersPanel.cs`
 
@@ -729,14 +737,16 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./Dimension/UI/UserPanel.cs`
 
-- [ ] Port `UserPanel.cs` to Dart
+- [x] Port `UserPanel.cs` to Dart
   - **Classes**:
-    - [ ] `class UserPanel`
+    - [x] `class UserPanel`
   - **Public Methods**:
     - [x] `close()`
-    - [ ] `selectChat()`
-    - [ ] `displayMessage()`
-    - [ ] `addLine()`
+    - [x] `selectChat()`
+    - [x] `displayMessage()`
+    - [x] `addLine()`
+  - **TODO**:
+    - [ ] Wire `UserPanel` send-message/reconnect actions to live peer control/data connections when `MainForm` command routing is ported.
 
 ## File: `./Dimension/UI/JoinCircleForm.cs`
 
@@ -761,4 +771,6 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [ ] `addInternetCircle()`
     - [ ] `setColors()`
   - **Public Properties**:
-    - [ ] `isMono`
+    - [x] `isMono`
+  - **TODO**:
+    - [ ] Wire `TransfersPanel` row actions (cancel/retry/open) to finalized transfer commands once `MainForm` command routing is fully ported.

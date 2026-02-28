@@ -44,3 +44,8 @@ This file contains instructions and context for agents working on this repositor
 - `lib/ui/hash_progress_form.dart`, `lib/ui/settings_form.dart`, and `lib/ui/icon_reader.dart` now provide Flutter/Dart-native implementations with injectable adapters and deterministic fallback behavior (no Win32 interop required).
 - Temporary follow-up: wire production platform adapters for startup mutex/updater installation and optional native icon extraction once desktop shell integration is finalized.
 
+- `lib/ui/transfers_panel.dart` is now a Flutter-native port with pure-Dart `TransfersPanelLogic` and injected `TransferLimitProvider`, so row formatting and limiter behavior are unit-testable without filesystem/network access.
+- Temporary follow-up: wire cancel/retry/open transfer row actions from `TransfersPanel` into finalized `MainForm` command routing once that orchestration is fully ported.
+- `lib/ui/circle_panel.dart` is now a Flutter-native `CirclePanel` + `CirclePanelController` port with pure-Dart state for chat/file listings and explicit `select`/`unselect`/`close` behavior, enabling deterministic tests without network calls.
+- `lib/ui/user_panel.dart` is now a Flutter-native `UserPanel` + `UserPanelController` with pure-Dart chat transcript behavior (`selectChat`, `displayMessage`, `addLine`, `close`) for mock-driven unit/widget testing.
+- Temporary follow-up: wire `CirclePanel` and `UserPanel` actions into live `Peer`/`MainForm` command routing once the larger orchestration port is complete.
