@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'commands/command.dart';
 
 abstract class Connection {
-  void send(Command c);
+  Future<void> send(Command c);
 }

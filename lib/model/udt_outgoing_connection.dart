@@ -45,7 +45,7 @@ namespace Dimension.Model
                     pos = 0;
                     App.globalDownCounter.addBytes((ulong)lenByte.Length);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
-                    
+
                     if (dataByte.Length > 0)
                     {
                         while (pos < dataByte.Length)
@@ -67,7 +67,7 @@ namespace Dimension.Model
                     read = 1;
                     System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                     sw.Start();
-                    
+
                     byte[] chunk = new byte[((Commands.DataCommand)c).dataLength];
                     while (pos < chunk.Length)
                     {

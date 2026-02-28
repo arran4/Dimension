@@ -1,92 +1,84 @@
-/*
- * Original C# Source File: DimensionLib/Model/GlobalSpeedLimiter.cs
- *
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+import 'dart:async';
+import 'dart:math';
 
-namespace Dimension.Model
-{
-    public class GlobalSpeedLimiter : IDisposable
-    {
-        bool disposed = false;
-        public void Dispose()
-        {
-            disposed = true;
-        }
-        public GlobalSpeedLimiter()
-        {
-            System.Threading.Thread t = new System.Threading.Thread(updateLoop);
-            t.Name = "Global speed limit manager";
-            t.IsBackground = true;
-            t.Start();
-        }
+// Note: In C#, App.settings was referenced. We'll need a way to get settings here,
+// perhaps injecting it or importing an App class once that's ported.
+// For now, we mock the retrieval of limits.
 
-        ulong totalUpload;
-        ulong totalDownload;
+class GlobalSpeedLimiter {
+  bool _disposed = false;
+  Timer? _updateTimer;
 
-        ulong currentDownloadLimit;
-        ulong currentUploadLimit;
-        void updateLoop()
-        {
-            while (App.settings == null)
-                System.Threading.Thread.Sleep(100);
-            while (!disposed)
-            {
-                totalDownload = 0;
-                totalUpload = 0;
+  int _totalUpload = 0;
+  int _totalDownload = 0;
 
-                currentDownloadLimit = App.settings.getULong("Global Download Rate Limit", 0);
-                currentUploadLimit = App.settings.getULong("Global Upload Rate Limit", 0);
+  int _currentDownloadLimit = 0;
+  int _currentUploadLimit = 0;
 
+  GlobalSpeedLimiter() {
+    _startUpdateLoop();
+  }
 
-                System.Threading.Thread.Sleep(100);
-            }
-        }
-        public ulong limitUpload(ulong amount, bool disabled = false)
-        {
-            if (disabled)
-                return amount;
-            if (currentUploadLimit > 0)
-            {
-                while (totalUpload*10 > currentUploadLimit && currentUploadLimit > 0)
-                    System.Threading.Thread.Sleep(1);
-                while (Math.Min(amount, currentUploadLimit - totalUpload) <= 0 && currentUploadLimit > 0)
-                    System.Threading.Thread.Sleep(1);
+  void dispose() {
+    _disposed = true;
+    _updateTimer?.cancel();
+  }
 
-                if (currentUploadLimit == 0)
-                    return amount;
-                totalUpload += amount;
-                return Math.Min(amount, (currentUploadLimit - (totalUpload-amount))/10);
+  void _startUpdateLoop() {
+    _updateTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
+      if (_disposed) {
+        _updateTimer?.cancel();
+        return;
+      }
 
-            }
-            else
-                return amount;
+      _totalDownload = 0;
+      _totalUpload = 0;
 
-        }
-        public ulong limitDownload(ulong amount, bool disabled = false)
-        {
-            if (disabled)
-                return amount;
-            if (currentDownloadLimit > 0)
-            {
-                while (totalDownload*10 > currentDownloadLimit && currentDownloadLimit > 0)
-                    System.Threading.Thread.Sleep(1);
-                while(Math.Min(amount, currentDownloadLimit - totalDownload) <= 0 && currentDownloadLimit > 0)
-                    System.Threading.Thread.Sleep(1);
+      // TODO: Replace with actual settings retrieval
+      // _currentDownloadLimit = App.settings.getInt("Global Download Rate Limit", 0);
+      // _currentUploadLimit = App.settings.getInt("Global Upload Rate Limit", 0);
+      _currentDownloadLimit = 0;
+      _currentUploadLimit = 0;
+    });
+  }
 
-                if (currentDownloadLimit == 0)
-                    return amount;
-                totalDownload += amount;
-                return Math.Min(amount, (currentDownloadLimit - (totalDownload - amount))/10);
-            }
-            else
-                return amount;
+  Future<int> limitUpload(int amount, {bool disabled = false}) async {
+    if (disabled) return amount;
 
-        }
+    if (_currentUploadLimit > 0) {
+      while (_totalUpload * 10 > _currentUploadLimit && _currentUploadLimit > 0) {
+        await Future.delayed(const Duration(milliseconds: 1));
+      }
+      while (min(amount, _currentUploadLimit - _totalUpload) <= 0 && _currentUploadLimit > 0) {
+        await Future.delayed(const Duration(milliseconds: 1));
+      }
+
+      if (_currentUploadLimit == 0) return amount;
+
+      _totalUpload += amount;
+      return min(amount, ((_currentUploadLimit - (_totalUpload - amount)) / 10).floor());
+    } else {
+      return amount;
     }
-}
+  }
 
-*/
+  Future<int> limitDownload(int amount, {bool disabled = false}) async {
+    if (disabled) return amount;
+
+    if (_currentDownloadLimit > 0) {
+      while (_totalDownload * 10 > _currentDownloadLimit && _currentDownloadLimit > 0) {
+        await Future.delayed(const Duration(milliseconds: 1));
+      }
+      while (min(amount, _currentDownloadLimit - _totalDownload) <= 0 && _currentDownloadLimit > 0) {
+        await Future.delayed(const Duration(milliseconds: 1));
+      }
+
+      if (_currentDownloadLimit == 0) return amount;
+
+      _totalDownload += amount;
+      return min(amount, ((_currentDownloadLimit - (_totalDownload - amount)) / 10).floor());
+    } else {
+      return amount;
+    }
+  }
+}

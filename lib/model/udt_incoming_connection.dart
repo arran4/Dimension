@@ -43,7 +43,7 @@ namespace Dimension.Model
                     pos = 0;
                     App.globalDownCounter.addBytes(4);
                     dataByte = new byte[BitConverter.ToInt32(lenByte, 0)];
-                    
+
                     if (dataByte.Length > 0)
                     {
                         while (pos < dataByte.Length)

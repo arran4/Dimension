@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'connection.dart';
 import 'commands/command.dart';
 import 'commands/hello_command.dart';
@@ -8,6 +9,6 @@ abstract class IncomingConnection extends Connection {
   String? lastFolder;
 
   void Function(Command c, IncomingConnection con)? commandReceived;
-  void send(Command c);
+  Future<void> send(Command c);
   bool get connected;
 }
