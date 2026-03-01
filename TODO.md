@@ -29,8 +29,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - [x] Settings / preferences
   - [x] System log / diagnostics panel
 - [x] Create loading, empty, and error states for every major screen.
-- [ ] Add optimistic UI updates and status feedback for long-running network operations.
-  - [ ] `CoreScreensView` currently provides section scaffolding + loading/empty/error states; wire live backend-backed actions and optimistic transitions as core command flows are finalized.
+- [x] Add optimistic UI updates and status feedback for long-running network operations.
+  - [x] `CoreScreensView` now includes notifier-driven optimistic section actions (`joinCircle`, `runSearch`, `queueDownload`) and per-section status feedback banners/progress indicators for mock-driven flows.
+  - [ ] Replace temporary mock action wiring with live `Core`/transport-backed operations as command routing is finalized.
 
 ### 3) Mobile Plan (Android/iOS)
 - [ ] Implement compact mobile layouts for portrait and landscape orientations.
