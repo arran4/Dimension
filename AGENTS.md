@@ -34,3 +34,4 @@
 - `lib/ui/adaptive_workspace.dart` now wires desktop shell/context/window scaffolds into rail/split workspaces (status bar + section menu + geometry label) and adds resizable peer/search/transfer columns so desktop UX parity can progress before live backend wiring.
 - `lib/ui/adaptive_workspace.dart` now adds compact/mobile SafeArea + keyboard-inset padding, pull-to-refresh section gestures, and a quick-refresh FAB while keeping notifier-driven section actions injectable for mock-based testing.
 - `lib/ui/platform_plan_infra.dart` now supports height-aware, touch-device compact fallback so phone landscape bounds stay on bottom-tab navigation instead of switching to desktop rail/split patterns.
+- `lib/ui/adaptive_workspace.dart` now exposes a keyed compact-mode keyboard-inset animated padding container and has widget coverage for keyboard inset + small-height overflow safety to validate mobile behavior.

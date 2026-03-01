@@ -39,8 +39,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - [x] Replace multi-pane desktop layouts with tabbed or stacked navigation flows (shared compact workspace now remains tab-based for portrait + touch-landscape phone bounds through height-aware layout inference).
   - [x] Ensure touch targets meet accessibility guidance (mobile bottom tabs now use a 56px target height and are covered by widget assertions).
   - [x] Add pull-to-refresh and platform-appropriate gestures where helpful (compact workspace sections now use `RefreshIndicator`, plus quick-refresh FAB wiring per active tab).
-- [ ] Validate safe-area handling, keyboard avoidance, and small-screen overflow behavior.
+- [x] Validate safe-area handling, keyboard avoidance, and small-screen overflow behavior.
   - [x] Added `SafeArea` + keyboard `viewInsets` padding in compact workspace to keep content visible during soft-keyboard transitions.
+  - [x] Added widget assertions for keyboard-inset animated padding and very small-height compact rendering to guard against mobile overflow regressions.
 - [ ] Add mobile-specific QA checklist (low-memory behavior, background/foreground transitions, intermittent network).
 
 ### 4) Desktop Plan (Windows/macOS/Linux)

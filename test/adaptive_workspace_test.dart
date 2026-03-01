@@ -80,6 +80,53 @@ void main() {
     expect(find.byKey(const Key('mobileRefreshFab')), findsOneWidget);
   });
 
+
+  testWidgets('mobile keyboard inset updates animated padding', (tester) async {
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(viewInsets: EdgeInsets.only(bottom: 180)),
+        child: MaterialApp(
+          home: SizedBox(
+            width: 420,
+            child: AdaptiveWorkspace(
+              planController: PlatformPlanController(),
+              screensController: seededController(),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final animatedPadding = tester.widget<AnimatedPadding>(
+      find.byKey(const Key('mobileKeyboardInsetPadding')),
+    );
+    expect(animatedPadding.padding, const EdgeInsets.only(bottom: 180));
+  });
+
+  testWidgets('mobile compact workspace does not overflow at very small height', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 320,
+          height: 420,
+          child: AdaptiveWorkspace(
+            planController: PlatformPlanController(
+              targetPlatformOverride: TargetPlatform.android,
+              isWebOverride: false,
+            ),
+            screensController: seededController(),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.byType(TabBar), findsOneWidget);
+  });
+
   testWidgets('mobile bottom tabs meet minimum touch target height', (
     tester,
   ) async {

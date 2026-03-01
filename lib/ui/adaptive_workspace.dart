@@ -90,6 +90,7 @@ class _BottomTabsWorkspace extends StatelessWidget {
             ),
             body: SafeArea(
               child: AnimatedPadding(
+                key: const Key('mobileKeyboardInsetPadding'),
                 duration: const Duration(milliseconds: 120),
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
