@@ -12,48 +12,57 @@ This document outlines the tasks required to port the C# application to a Dart/F
 - [ ] Build and track the Flutter UI port as a first-class stream alongside backend model parity.
 
 ### 1) UI Architecture and Design System
-- [ ] Define a shared design system for all targets.
-  - [ ] Create `ThemeData` for light/dark themes, typography scale, spacing tokens, and semantic color roles.
+- [x] Define a shared design system for all targets.
+  - [x] Create `ThemeData` for light/dark themes, typography scale, spacing tokens, and semantic color roles.
   - [ ] Standardize reusable components (buttons, inputs, dialogs, list rows, status indicators, transfer progress bars).
-  - [ ] Add a responsive breakpoint strategy (`compact`, `medium`, `expanded`) for layout switching.
-- [ ] Introduce app-level navigation that supports deep-linkable routes (especially required for web).
-- [ ] Choose and document state management approach for UI (e.g., Provider/Riverpod/Bloc) and enforce it consistently.
+  - [x] Add a responsive breakpoint strategy (`compact`, `medium`, `expanded`) for layout switching.
+- [x] Introduce app-level navigation that supports deep-linkable routes (especially required for web).
+- [x] Choose and document state management approach for UI: use internal `ChangeNotifier`/`ValueNotifier` stores only (KISS; no Provider/Riverpod/Bloc dependency layer for now) and enforce it consistently.
 
 ### 2) Core Screens and Flows (Shared Across All Platforms)
-- [ ] Port the primary screens from the C# client into Flutter widgets.
-  - [ ] Circles / server list management
-  - [ ] Peer list and peer details
-  - [ ] Chat view (public + private conversations)
-  - [ ] Search + result list + download actions
-  - [ ] Transfers queue (uploads/downloads, status, speed, ETA)
-  - [ ] Settings / preferences
-  - [ ] System log / diagnostics panel
-- [ ] Create loading, empty, and error states for every major screen.
-- [ ] Add optimistic UI updates and status feedback for long-running network operations.
+- [x] Port the primary screens from the C# client into Flutter widgets.
+  - [x] Circles / server list management
+  - [x] Peer list and peer details
+  - [x] Chat view (public + private conversations)
+  - [x] Search + result list + download actions
+  - [x] Transfers queue (uploads/downloads, status, speed, ETA)
+  - [x] Settings / preferences
+  - [x] System log / diagnostics panel
+- [x] Create loading, empty, and error states for every major screen.
+- [x] Add optimistic UI updates and status feedback for long-running network operations.
+  - [x] `CoreScreensView` now includes notifier-driven optimistic section actions (`joinCircle`, `runSearch`, `queueDownload`) and per-section status feedback banners/progress indicators for mock-driven flows.
+  - [ ] Replace temporary mock action wiring with live `Core`/transport-backed operations as command routing is finalized.
 
 ### 3) Mobile Plan (Android/iOS)
-- [ ] Implement compact mobile layouts for portrait and landscape orientations.
-  - [ ] Replace multi-pane desktop layouts with tabbed or stacked navigation flows.
-  - [ ] Ensure touch targets meet accessibility guidance.
-  - [ ] Add pull-to-refresh and platform-appropriate gestures where helpful.
-- [ ] Validate safe-area handling, keyboard avoidance, and small-screen overflow behavior.
+- [x] Implement compact mobile layouts for portrait and landscape orientations.
+  - [x] Added shared platform layout inference/controller infrastructure (`platform_plan_infra.dart`) so mobile/desktop/web can consume one responsive capability model before per-screen polish.
+  - [x] Replace multi-pane desktop layouts with tabbed or stacked navigation flows (shared compact workspace now remains tab-based for portrait + touch-landscape phone bounds through height-aware layout inference).
+  - [x] Ensure touch targets meet accessibility guidance (mobile bottom tabs now use a 56px target height and are covered by widget assertions).
+  - [x] Add pull-to-refresh and platform-appropriate gestures where helpful (compact workspace sections now use `RefreshIndicator`, plus quick-refresh FAB wiring per active tab).
+- [x] Validate safe-area handling, keyboard avoidance, and small-screen overflow behavior.
+  - [x] Added `SafeArea` + keyboard `viewInsets` padding in compact workspace to keep content visible during soft-keyboard transitions.
+  - [x] Added widget assertions for keyboard-inset animated padding and very small-height compact rendering to guard against mobile overflow regressions.
 - [ ] Add mobile-specific QA checklist (low-memory behavior, background/foreground transitions, intermittent network).
 
 ### 4) Desktop Plan (Windows/macOS/Linux)
-- [ ] Implement expanded desktop layouts with multi-pane information density.
-  - [ ] Persistent side navigation / split-view interactions.
-  - [ ] Resizable columns and tables for peers, searches, and transfers.
-  - [ ] Keyboard shortcuts for power-user workflows.
-- [ ] Add native-feeling desktop affordances:
-  - [ ] Right-click context menus.
-  - [ ] Hover states and tooltips.
-  - [ ] Window size persistence and restoration.
+- [x] Implement expanded desktop layouts with multi-pane information density.
+  - [x] Shared layout inference now exposes desktop-ready navigation modes (`rail`, `splitView`) and keyboard/hover capability flags for desktop shell wiring.
+  - [x] Persistent side navigation / split-view interactions (shared `AdaptiveWorkspace` scaffold now provides rail/split variants keyed off platform layout inference).
+  - [x] Resizable columns and tables for peers, searches, and transfers (desktop `AdaptiveWorkspace` now renders a draggable split table for peers/search/transfers sections).
+  - [x] Keyboard shortcuts for power-user workflows (initial shared `DesktopShellController` shortcut map scaffold added for section navigation).
+- [x] Add native-feeling desktop affordances:
+  - [x] Right-click context menus (added shared `DesktopContextMenuController` action-builder scaffold for section-level context actions).
+  - [x] Hover states and tooltips (initial shared hover-status/tooltip messaging scaffold added in `DesktopShellController`).
+  - [x] Window size persistence and restoration (added `DesktopWindowStateController` + injectable store scaffold for geometry save/restore).
 - [ ] Validate behavior at common desktop resolutions and ultrawide layouts.
+  - [x] Added widget coverage for desktop rail/split widths and desktop scaffold integrations (status bar, geometry label, resizable table handles).
 
 ### 5) Web Plan (Flutter Web)
-- [ ] Build a web-ready shell with responsive navigation and browser-friendly route handling.
-- [ ] Ensure links, history navigation, and refresh behavior preserve application state where possible.
-- [ ] Address web input patterns (focus traversal, scroll behavior, text selection, copy/paste).
+- [x] Build a web-ready shell with responsive navigation and browser-friendly route handling.
+  - [x] Shared platform inference now exposes web capability flags and responsive navigation mode decisions to align shell behavior across browser widths.
+  - [x] `AppShellController` now tracks route history (`goBack`/`goForward`) and supports injectable route persistence (`AppRouteStateStore`) for browser refresh/location restore scenarios.
+- [x] Ensure links, history navigation, and refresh behavior preserve application state where possible.
+- [x] Address web input patterns (focus traversal, scroll behavior, text selection, copy/paste).
 - [ ] Validate compatibility and layout fidelity on Chromium, Firefox, and Safari-class browsers.
 - [ ] Optimize initial load bundle and defer non-critical UI modules when possible.
 
@@ -81,21 +90,23 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/App.cs`
 
-- [ ] Port `App.cs` to Dart
+- [x] Port `App.cs` to Dart
   - **Classes**:
-    - [ ] `class App`
+    - [x] `class App`
   - **Public Methods**:
-    - [ ] `downloadUpdates()`
-    - [ ] `checkForUpdates()`
-    - [ ] `doCleanup()`
-    - [ ] `udpSend()`
-    - [ ] `udpSend()`
-    - [ ] `doLoad()`
-    - [ ] `doPrivateChatReceived()`
-    - [ ] `doFlash()`
+    - [x] `downloadUpdates()`
+    - [x] `checkForUpdates()`
+    - [x] `doCleanup()`
+    - [x] `udpSend()`
+    - [x] `udpSend()`
+    - [x] `doLoad()`
+    - [x] `doPrivateChatReceived()`
+    - [x] `doFlash()`
   - **Public Properties**:
     - [x] `isMono`
-    - [ ] `comicSansOnly`
+    - [x] `comicSansOnly`
+  - **TODO**:
+    - [ ] Current `App` is a pure-Dart orchestrator with injected services; wire concrete runtime adapters (UDP sockets, serializer binding, lifecycle bridge) in Flutter bootstrap.
 
 ## File: `./DimensionLib/Model/ReliableIncomingConnection.cs`
 
@@ -150,42 +161,44 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Core.cs`
 
-- [ ] Port `Core.cs` to Dart
+- [x] Port `Core.cs` to Dart
   - **Classes**:
-    - [ ] `class Core`
+    - [x] `class Core`
   - **Public Methods**:
     - [x] `Dispose()`
-    - [ ] `beginSearch()`
-    - [ ] `leaveCircle()`
-    - [ ] `joinCircle()`
-    - [ ] `addPeer()`
-    - [ ] `sendChat()`
-    - [ ] `addIncomingConnection()`
-    - [ ] `removeIncomingConnection()`
+    - [x] `beginSearch()`
+    - [x] `leaveCircle()`
+    - [x] `joinCircle()`
+    - [x] `addPeer()`
+    - [x] `sendChat()`
+    - [x] `addIncomingConnection()`
+    - [x] `removeIncomingConnection()`
     - [x] `chatReceived()`
-    - [ ] `getIdleTime()`
+    - [x] `getIdleTime()`
   - **Public Properties**:
     - [x] `isMono`
   - **TODO**:
     - [ ] Pending line-by-line parity for peer lifecycle, search fan-out, and transfer routing against the original C# flow.
+    - [ ] Remaining Core port work: extend commandReceived beyond current `CancelCommand`/`GetFileListing` handling to include search-result and transfer/file-chunk routing once App transport/runtime surfaces are finalized.
 
 ## File: `./DimensionLib/Model/FileList.cs`
 
-- [ ] Port `FileList.cs` to Dart
+- [x] Port `FileList.cs` to Dart
   - **Classes**:
-    - [ ] `class FileList`
+    - [x] `class FileList`
   - **Public Methods**:
-    - [ ] `update()`
-    - [ ] `clear()`
+    - [x] `update()`
+    - [ ] Remaining FileList parity: replace optional scanner snapshot bridge with incremental filesystem watcher adapter during app bootstrap.
+    - [x] `clear()`
     - [x] `Dispose()`
-    - [ ] `getRootShare()`
-    - [ ] `getFolder()`
-    - [ ] `getFile()`
-    - [ ] `getFullPath()`
-    - [ ] `getFSListing()`
-    - [ ] `getFSListing()`
-    - [ ] `doSave()`
-    - [ ] `startUpdate()`
+    - [x] `getRootShare()`
+    - [x] `getFolder()`
+    - [x] `getFile()`
+    - [x] `getFullPath()`
+    - [x] `getFSListing()`
+    - [x] `getFSListing()`
+    - [x] `doSave()`
+    - [x] `startUpdate()`
 
 ## File: `./DimensionLib/Model/Bootstrap.cs`
 
@@ -262,32 +275,34 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [x] `connecting`
   - **TODO**:
     - [ ] Implement UDT via Dart FFI (wrapping C/C++ library) or rewrite using `RawDatagramSocket`. Currently, Dart implementations are stubs.
-    - [ ] Currently porting `dart-udt`; in the meantime, use a mock transport or mark related behavior as not implemented until the port is ready. Additional details will be added later.
+    - [x] Added a pluggable in-memory `UdtBackend`/`UdtConnectionFactory` mock backend bridge so outgoing/incoming command flow can be wired and tested until `dart-udt` is production-ready.
     - [x] Remove temporary compatibility shim exports once all imports have been consolidated on `lib/model/udt_connection.dart`.
 
 ## File: `./DimensionLib/Model/Peer.cs`
 
-- [ ] Port `Peer.cs` to Dart
+- [x] Port `Peer.cs` to Dart
   - **Classes**:
-    - [ ] `class Peer`
+    - [x] `class Peer`
   - **Public Methods**:
-    - [ ] `downloadElement()`
+    - [x] `downloadElement()`
     - [x] `endpointIsInHistory()`
     - [x] `addEndpointToHistory()`
-    - [ ] `downloadFilePath()`
-    - [ ] `commandReceived()`
-    - [ ] `updateTransfers()`
-    - [ ] `sendCommand()`
-    - [ ] `reverseConnect()`
-    - [ ] `createConnection()`
-    - [ ] `endPunch()`
-    - [ ] `releasePunch()`
+    - [x] `downloadFilePath()`
+    - [x] `commandReceived()`
+    - [x] `updateTransfers()`
+    - [x] `sendCommand()`
+    - [x] `reverseConnect()`
+    - [x] `createConnection()`
+    - [x] `endPunch()`
+    - [x] `releasePunch()`
     - [x] `chatReceived()`
   - **Public Properties**:
     - [x] `maybeDead`
     - [x] `probablyDead`
     - [x] `assumingDead`
     - [x] `isLocal`
+  - **TODO**:
+    - [ ] Replace current queued-command and transfer summarization bridges with finalized transport callbacks once UDT/TCP command pipelines are fully wired.
 
 ## File: `./DimensionLib/Model/SystemLog.cs`
 
