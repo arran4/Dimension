@@ -271,27 +271,29 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/Model/Peer.cs`
 
-- [ ] Port `Peer.cs` to Dart
+- [x] Port `Peer.cs` to Dart
   - **Classes**:
-    - [ ] `class Peer`
+    - [x] `class Peer`
   - **Public Methods**:
-    - [ ] `downloadElement()`
+    - [x] `downloadElement()`
     - [x] `endpointIsInHistory()`
     - [x] `addEndpointToHistory()`
-    - [ ] `downloadFilePath()`
-    - [ ] `commandReceived()`
-    - [ ] `updateTransfers()`
-    - [ ] `sendCommand()`
-    - [ ] `reverseConnect()`
-    - [ ] `createConnection()`
-    - [ ] `endPunch()`
-    - [ ] `releasePunch()`
+    - [x] `downloadFilePath()`
+    - [x] `commandReceived()`
+    - [x] `updateTransfers()`
+    - [x] `sendCommand()`
+    - [x] `reverseConnect()`
+    - [x] `createConnection()`
+    - [x] `endPunch()`
+    - [x] `releasePunch()`
     - [x] `chatReceived()`
   - **Public Properties**:
     - [x] `maybeDead`
     - [x] `probablyDead`
     - [x] `assumingDead`
     - [x] `isLocal`
+  - **TODO**:
+    - [ ] Replace current queued-command and transfer summarization bridges with finalized transport callbacks once UDT/TCP command pipelines are fully wired.
 
 ## File: `./DimensionLib/Model/SystemLog.cs`
 
