@@ -20,16 +20,17 @@ This document outlines the tasks required to port the C# application to a Dart/F
 - [x] Choose and document state management approach for UI: use internal `ChangeNotifier`/`ValueNotifier` stores only (KISS; no Provider/Riverpod/Bloc dependency layer for now) and enforce it consistently.
 
 ### 2) Core Screens and Flows (Shared Across All Platforms)
-- [ ] Port the primary screens from the C# client into Flutter widgets.
-  - [ ] Circles / server list management
-  - [ ] Peer list and peer details
-  - [ ] Chat view (public + private conversations)
-  - [ ] Search + result list + download actions
-  - [ ] Transfers queue (uploads/downloads, status, speed, ETA)
-  - [ ] Settings / preferences
-  - [ ] System log / diagnostics panel
-- [ ] Create loading, empty, and error states for every major screen.
+- [x] Port the primary screens from the C# client into Flutter widgets.
+  - [x] Circles / server list management
+  - [x] Peer list and peer details
+  - [x] Chat view (public + private conversations)
+  - [x] Search + result list + download actions
+  - [x] Transfers queue (uploads/downloads, status, speed, ETA)
+  - [x] Settings / preferences
+  - [x] System log / diagnostics panel
+- [x] Create loading, empty, and error states for every major screen.
 - [ ] Add optimistic UI updates and status feedback for long-running network operations.
+  - [ ] `CoreScreensView` currently provides section scaffolding + loading/empty/error states; wire live backend-backed actions and optimistic transitions as core command flows are finalized.
 
 ### 3) Mobile Plan (Android/iOS)
 - [ ] Implement compact mobile layouts for portrait and landscape orientations.
