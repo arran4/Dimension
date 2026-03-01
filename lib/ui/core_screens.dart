@@ -173,6 +173,34 @@ class CoreScreensController extends ChangeNotifier {
   }
 }
 
+Map<ShortcutActivator, VoidCallback> _buildSectionShortcutBindings(
+  TabController tabController,
+) {
+  return <ShortcutActivator, VoidCallback>{
+    const SingleActivator(LogicalKeyboardKey.digit1, control: true): () {
+      tabController.animateTo(0);
+    },
+    const SingleActivator(LogicalKeyboardKey.digit2, control: true): () {
+      tabController.animateTo(1);
+    },
+    const SingleActivator(LogicalKeyboardKey.digit3, control: true): () {
+      tabController.animateTo(2);
+    },
+    const SingleActivator(LogicalKeyboardKey.digit4, control: true): () {
+      tabController.animateTo(3);
+    },
+    const SingleActivator(LogicalKeyboardKey.digit5, control: true): () {
+      tabController.animateTo(4);
+    },
+    const SingleActivator(LogicalKeyboardKey.digit6, control: true): () {
+      tabController.animateTo(5);
+    },
+    const SingleActivator(LogicalKeyboardKey.digit7, control: true): () {
+      tabController.animateTo(6);
+    },
+  };
+}
+
 class CoreScreensView extends StatelessWidget {
   const CoreScreensView({super.key, required this.controller});
 
@@ -185,24 +213,33 @@ class CoreScreensView extends StatelessWidget {
       builder: (context, _) {
         return DefaultTabController(
           length: CoreScreenSection.values.length,
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Dimension'),
-              bottom: TabBar(
-                isScrollable: true,
-                tabs: const [
-                  Tab(text: 'Circles'),
-                  Tab(text: 'Peers'),
-                  Tab(text: 'Chat'),
-                  Tab(text: 'Search'),
-                  Tab(text: 'Transfers'),
-                  Tab(text: 'Settings'),
-                  Tab(text: 'Diagnostics'),
-                ],
-              ),
-            ),
-            body: TabBarView(
-              children: [
+          child: Builder(
+            builder: (context) {
+              final tabController = DefaultTabController.of(context);
+              final shortcuts = _buildSectionShortcutBindings(tabController);
+              return CallbackShortcuts(
+                bindings: shortcuts,
+                child: FocusTraversalGroup(
+                  child: Focus(
+                    autofocus: true,
+                    child: Scaffold(
+                      appBar: AppBar(
+                        title: const Text('Dimension'),
+                        bottom: TabBar(
+                          isScrollable: true,
+                          tabs: const [
+                            Tab(text: 'Circles'),
+                            Tab(text: 'Peers'),
+                            Tab(text: 'Chat'),
+                            Tab(text: 'Search'),
+                            Tab(text: 'Transfers'),
+                            Tab(text: 'Settings'),
+                            Tab(text: 'Diagnostics'),
+                          ],
+                        ),
+                      ),
+                      body: TabBarView(
+                        children: [
                 _SectionPane(
                   title: 'Circles',
                   state: controller.stateFor(CoreScreenSection.circles),
@@ -288,8 +325,13 @@ class CoreScreensView extends StatelessWidget {
                   ),
                   busy: controller.sectionBusy(CoreScreenSection.diagnostics),
                 ),
-              ],
-            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         );
       },

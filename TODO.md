@@ -70,7 +70,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
 - [ ] Accessibility
   - [x] Semantic labels for interactive controls (core screen actions now expose explicit semantics labels/tooltips with widget coverage).
   - [ ] High-contrast compliance and scalable text support.
-  - [ ] Keyboard-only navigation and focus indicators.
+  - [x] Keyboard-only navigation and focus indicators (core screens now support Ctrl+1..7 tab shortcuts and focus-visible action outlines with widget coverage).
 - [ ] Performance
   - [ ] Profile and optimize list-heavy screens (chat, search results, transfers) using lazy builders and pagination.
   - [ ] Reduce unnecessary widget rebuilds and monitor frame timing on low-end devices.

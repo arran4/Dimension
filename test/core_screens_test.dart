@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dimension/ui/core_screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _Backend implements CoreScreensBackend {
@@ -113,6 +114,34 @@ void main() {
     expect(controller.stateFor(CoreScreenSection.search).items, <String>['movie.bin']);
   });
 
+
+
+  testWidgets('ctrl-digit shortcuts switch tabs for keyboard-only navigation', (
+    tester,
+  ) async {
+    final controller = CoreScreensController();
+    controller.setItems(CoreScreenSection.circles, const <String>['circles-item']);
+    controller.setItems(CoreScreenSection.peers, const <String>['peers-item']);
+    controller.setItems(CoreScreenSection.chat, const <String>['chat-item']);
+    controller.setItems(CoreScreenSection.search, const <String>['search-item']);
+    controller.setItems(CoreScreenSection.transfers, const <String>['transfers-item']);
+    controller.setItems(CoreScreenSection.settings, const <String>['settings-item']);
+    controller.setItems(CoreScreenSection.diagnostics, const <String>['diagnostics-item']);
+
+    await tester.pumpWidget(
+      MaterialApp(home: CoreScreensView(controller: controller)),
+    );
+
+    expect(find.text('circles-item'), findsOneWidget);
+
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.digit2);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.digit2);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+    await tester.pumpAndSettle();
+
+    expect(find.text('peers-item'), findsOneWidget);
+  });
 
   testWidgets('actions expose semantic labels for accessibility', (tester) async {
     final semantics = tester.ensureSemantics();
