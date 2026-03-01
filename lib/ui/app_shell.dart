@@ -55,36 +55,134 @@ AppBreakpoint breakpointForWidth(double width) {
 }
 
 class AppRouteState {
-  const AppRouteState({required this.path});
+  const AppRouteState({
+    required this.path,
+    this.queryParameters = const <String, String>{},
+    this.fragment,
+  });
 
   final String path;
+  final Map<String, String> queryParameters;
+  final String? fragment;
 
   static const AppRouteState home = AppRouteState(path: '/');
 
   factory AppRouteState.fromLocation(String location) {
-    if (location.trim().isEmpty) {
+    final trimmed = location.trim();
+    if (trimmed.isEmpty) {
       return home;
     }
-    final normalized = location.startsWith('/') ? location : '/$location';
-    return AppRouteState(path: normalized);
+
+    final normalized = trimmed.startsWith('/') ? trimmed : '/$trimmed';
+    final uri = Uri.parse(normalized);
+    return AppRouteState(
+      path: uri.path.isEmpty ? '/' : uri.path,
+      queryParameters: Map<String, String>.unmodifiable(uri.queryParameters),
+      fragment: uri.fragment.isEmpty ? null : uri.fragment,
+    );
+  }
+
+  String toLocation() {
+    final uri = Uri(
+      path: path,
+      queryParameters: queryParameters.isEmpty ? null : queryParameters,
+      fragment: fragment,
+    );
+    return uri.toString();
+  }
+}
+
+abstract class AppRouteStateStore {
+  Future<void> saveLocation(String location);
+
+  Future<String?> loadLocation();
+}
+
+class InMemoryAppRouteStateStore implements AppRouteStateStore {
+  String? _location;
+
+  @override
+  Future<String?> loadLocation() async => _location;
+
+  @override
+  Future<void> saveLocation(String location) async {
+    _location = location;
   }
 }
 
 class AppShellController extends ChangeNotifier {
-  AppShellController({AppRouteState initialRoute = AppRouteState.home})
-    : _route = initialRoute;
+  AppShellController({
+    AppRouteState initialRoute = AppRouteState.home,
+    this.routeStateStore,
+  }) : _history = <AppRouteState>[initialRoute],
+       _index = 0;
 
-  AppRouteState _route;
+  final AppRouteStateStore? routeStateStore;
 
-  AppRouteState get route => _route;
+  final List<AppRouteState> _history;
+  int _index;
+
+  AppRouteState get route => _history[_index];
+
+  bool get canGoBack => _index > 0;
+
+  bool get canGoForward => _index < _history.length - 1;
+
+  Future<void> restoreRouteState() async {
+    final location = await routeStateStore?.loadLocation();
+    if (location == null || location.trim().isEmpty) {
+      return;
+    }
+    navigateTo(location);
+  }
 
   void navigateTo(String path) {
     final next = AppRouteState.fromLocation(path);
-    if (next.path == _route.path) {
+    if (_isSameRoute(route, next)) {
       return;
     }
-    _route = next;
+
+    if (canGoForward) {
+      _history.removeRange(_index + 1, _history.length);
+    }
+
+    _history.add(next);
+    _index = _history.length - 1;
+    routeStateStore?.saveLocation(next.toLocation());
     notifyListeners();
+  }
+
+  void goBack() {
+    if (!canGoBack) {
+      return;
+    }
+    _index -= 1;
+    routeStateStore?.saveLocation(route.toLocation());
+    notifyListeners();
+  }
+
+  void goForward() {
+    if (!canGoForward) {
+      return;
+    }
+    _index += 1;
+    routeStateStore?.saveLocation(route.toLocation());
+    notifyListeners();
+  }
+
+  bool _isSameRoute(AppRouteState left, AppRouteState right) {
+    if (left.path != right.path || left.fragment != right.fragment) {
+      return false;
+    }
+    if (left.queryParameters.length != right.queryParameters.length) {
+      return false;
+    }
+    for (final entry in left.queryParameters.entries) {
+      if (right.queryParameters[entry.key] != entry.value) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

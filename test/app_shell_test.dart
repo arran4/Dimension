@@ -14,6 +14,43 @@ void main() {
     expect(route.path, '/settings/profile');
   });
 
+  test('AppRouteState parses query and fragment and serializes location', () {
+    final route = AppRouteState.fromLocation('/search?q=dimension#results');
+
+    expect(route.path, '/search');
+    expect(route.queryParameters['q'], 'dimension');
+    expect(route.fragment, 'results');
+    expect(route.toLocation(), '/search?q=dimension#results');
+  });
+
+  test('AppShellController keeps history for back/forward navigation', () {
+    final controller = AppShellController();
+
+    controller.navigateTo('/search?q=abc');
+    controller.navigateTo('/transfers');
+
+    expect(controller.route.path, '/transfers');
+    expect(controller.canGoBack, isTrue);
+
+    controller.goBack();
+    expect(controller.route.path, '/search');
+    expect(controller.route.queryParameters['q'], 'abc');
+
+    controller.goForward();
+    expect(controller.route.path, '/transfers');
+  });
+
+  test('AppShellController can restore persisted location from route store', () async {
+    final store = InMemoryAppRouteStateStore();
+    await store.saveLocation('/settings?tab=network');
+    final controller = AppShellController(routeStateStore: store);
+
+    await controller.restoreRouteState();
+
+    expect(controller.route.path, '/settings');
+    expect(controller.route.queryParameters['tab'], 'network');
+  });
+
   testWidgets('AppShell rebuilds for route and layout changes', (tester) async {
     final controller = AppShellController();
 

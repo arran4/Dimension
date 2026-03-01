@@ -35,3 +35,4 @@
 - `lib/ui/adaptive_workspace.dart` now adds compact/mobile SafeArea + keyboard-inset padding, pull-to-refresh section gestures, and a quick-refresh FAB while keeping notifier-driven section actions injectable for mock-based testing.
 - `lib/ui/platform_plan_infra.dart` now supports height-aware, touch-device compact fallback so phone landscape bounds stay on bottom-tab navigation instead of switching to desktop rail/split patterns.
 - `lib/ui/adaptive_workspace.dart` now exposes a keyed compact-mode keyboard-inset animated padding container and has widget coverage for keyboard inset + small-height overflow safety to validate mobile behavior.
+- `lib/ui/app_shell.dart` now includes web-friendly route parsing/serialization (path + query + fragment), in-controller back/forward history, and injectable `AppRouteStateStore` restoration so browser refresh/location state can be replayed in tests without platform globals.
