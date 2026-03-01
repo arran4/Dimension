@@ -62,7 +62,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - [x] Shared platform inference now exposes web capability flags and responsive navigation mode decisions to align shell behavior across browser widths.
   - [x] `AppShellController` now tracks route history (`goBack`/`goForward`) and supports injectable route persistence (`AppRouteStateStore`) for browser refresh/location restore scenarios.
 - [x] Ensure links, history navigation, and refresh behavior preserve application state where possible.
-- [ ] Address web input patterns (focus traversal, scroll behavior, text selection, copy/paste).
+- [x] Address web input patterns (focus traversal, scroll behavior, text selection, copy/paste).
 - [ ] Validate compatibility and layout fidelity on Chromium, Firefox, and Safari-class browsers.
 - [ ] Optimize initial load bundle and defer non-critical UI modules when possible.
 

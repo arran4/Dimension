@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 /// UI state-management approach for the current port: keep things simple with
@@ -192,6 +193,31 @@ typedef AppShellContentBuilder = Widget Function(
   AppRouteState route,
 );
 
+class AppShellWebInputWrapper extends StatelessWidget {
+  const AppShellWebInputWrapper({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ScrollConfiguration(
+      behavior: const MaterialScrollBehavior().copyWith(
+        dragDevices: const <PointerDeviceKind>{
+          PointerDeviceKind.touch,
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.trackpad,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.unknown,
+        },
+      ),
+      child: FocusTraversalGroup(
+        policy: OrderedTraversalPolicy(),
+        child: SelectionArea(child: child),
+      ),
+    );
+  }
+}
+
 class AppShell extends StatelessWidget {
   const AppShell({
     super.key,
@@ -210,7 +236,9 @@ class AppShell extends StatelessWidget {
         return LayoutBuilder(
           builder: (context, constraints) {
             final breakpoint = breakpointForWidth(constraints.maxWidth);
-            return contentBuilder(context, breakpoint, controller.route);
+            return AppShellWebInputWrapper(
+              child: contentBuilder(context, breakpoint, controller.route),
+            );
           },
         );
       },

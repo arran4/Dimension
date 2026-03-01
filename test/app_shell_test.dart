@@ -51,6 +51,36 @@ void main() {
     expect(controller.route.queryParameters['tab'], 'network');
   });
 
+
+  testWidgets('AppShell applies web input wrappers for focus/scroll/selection', (
+    tester,
+  ) async {
+    final controller = AppShellController();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 1000,
+          child: AppShell(
+            controller: controller,
+            contentBuilder: (context, breakpoint, route) {
+              return TextField(
+                key: const Key('webInputField'),
+                controller: TextEditingController(text: 'copy me'),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(AppShellWebInputWrapper), findsOneWidget);
+    expect(find.byType(FocusTraversalGroup), findsOneWidget);
+    expect(find.byType(SelectionArea), findsOneWidget);
+    expect(find.byType(ScrollConfiguration), findsWidgets);
+    expect(find.byKey(const Key('webInputField')), findsOneWidget);
+  });
+
   testWidgets('AppShell rebuilds for route and layout changes', (tester) async {
     final controller = AppShellController();
 

@@ -36,3 +36,4 @@
 - `lib/ui/platform_plan_infra.dart` now supports height-aware, touch-device compact fallback so phone landscape bounds stay on bottom-tab navigation instead of switching to desktop rail/split patterns.
 - `lib/ui/adaptive_workspace.dart` now exposes a keyed compact-mode keyboard-inset animated padding container and has widget coverage for keyboard inset + small-height overflow safety to validate mobile behavior.
 - `lib/ui/app_shell.dart` now includes web-friendly route parsing/serialization (path + query + fragment), in-controller back/forward history, and injectable `AppRouteStateStore` restoration so browser refresh/location state can be replayed in tests without platform globals.
+- `lib/ui/app_shell.dart` now wraps shell content with web-input affordances (`FocusTraversalGroup`, `SelectionArea`, and permissive `ScrollConfiguration`) so keyboard traversal, wheel/trackpad scroll, and text selection/copy flows are available across web targets.
