@@ -162,6 +162,36 @@ void main() {
     semantics.dispose();
   });
 
+
+  testWidgets('high-contrast + large text keeps status visible without overflow', (
+    tester,
+  ) async {
+    final controller = CoreScreensController(backend: _Backend());
+    for (final section in CoreScreenSection.values) {
+      controller.setItems(section, const <String>[]);
+    }
+
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(
+          highContrast: true,
+          textScaler: TextScaler.linear(1.8),
+        ),
+        child: MaterialApp(home: CoreScreensView(controller: controller)),
+      ),
+    );
+
+    await tester.tap(find.text('Join LAN'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+
+    final statusText = tester.widget<Text>(
+      find.byKey(const Key('core-screen-status.Circles')),
+    );
+    expect(statusText.style?.fontWeight, FontWeight.w700);
+  });
+
   testWidgets('status feedback is shown in UI after action', (tester) async {
     final controller = CoreScreensController(backend: _Backend());
     for (final section in CoreScreenSection.values) {

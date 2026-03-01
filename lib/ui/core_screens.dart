@@ -401,20 +401,40 @@ class _SectionPane extends StatelessWidget {
             ),
     };
 
+    final highContrast = MediaQuery.highContrastOf(context);
+    final statusStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      fontWeight: highContrast ? FontWeight.w700 : FontWeight.w400,
+      color: highContrast
+          ? Theme.of(context).colorScheme.onSurface
+          : Theme.of(context).textTheme.bodyMedium?.color,
+    );
+
     return Column(
       children: [
         if (actions.isNotEmpty || statusMessage != null || busy)
-          Padding(
+          Container(
+            width: double.infinity,
+            color: highContrast
+                ? Theme.of(context).colorScheme.surfaceContainerHighest
+                : null,
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ...actions,
+                if (actions.isNotEmpty)
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: actions,
+                  ),
                 if (statusMessage != null)
-                  Expanded(
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       statusMessage!,
                       key: Key('core-screen-status.$title'),
                       textAlign: TextAlign.end,
+                      style: statusStyle,
                     ),
                   ),
               ],

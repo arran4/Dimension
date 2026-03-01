@@ -67,9 +67,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
 - [ ] Optimize initial load bundle and defer non-critical UI modules when possible.
 
 ### 6) Cross-Platform Accessibility, Performance, and Quality
-- [ ] Accessibility
+- [x] Accessibility
   - [x] Semantic labels for interactive controls (core screen actions now expose explicit semantics labels/tooltips with widget coverage).
-  - [ ] High-contrast compliance and scalable text support.
+  - [x] High-contrast compliance and scalable text support (core screen status/actions now adapt to high-contrast surfaces and large text with overflow-safe layout + widget coverage).
   - [x] Keyboard-only navigation and focus indicators (core screens now support Ctrl+1..7 tab shortcuts and focus-visible action outlines with widget coverage).
 - [ ] Performance
   - [ ] Profile and optimize list-heavy screens (chat, search results, transfers) using lazy builders and pagination.
