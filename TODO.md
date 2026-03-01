@@ -68,14 +68,14 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ### 6) Cross-Platform Accessibility, Performance, and Quality
 - [ ] Accessibility
-  - [ ] Semantic labels for interactive controls.
+  - [x] Semantic labels for interactive controls (core screen actions now expose explicit semantics labels/tooltips with widget coverage).
   - [ ] High-contrast compliance and scalable text support.
   - [ ] Keyboard-only navigation and focus indicators.
 - [ ] Performance
   - [ ] Profile and optimize list-heavy screens (chat, search results, transfers) using lazy builders and pagination.
   - [ ] Reduce unnecessary widget rebuilds and monitor frame timing on low-end devices.
 - [ ] Quality and testing
-  - [ ] Add widget tests for core UI components and screen states.
+  - [x] Add widget tests for core UI components and screen states.
   - [ ] Add golden tests for major breakpoints (mobile, desktop, web widths).
   - [ ] Add integration tests covering critical user journeys end-to-end.
 

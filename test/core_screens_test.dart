@@ -113,6 +113,26 @@ void main() {
     expect(controller.stateFor(CoreScreenSection.search).items, <String>['movie.bin']);
   });
 
+
+  testWidgets('actions expose semantic labels for accessibility', (tester) async {
+    final semantics = tester.ensureSemantics();
+    final controller = CoreScreensController();
+    for (final section in CoreScreenSection.values) {
+      controller.setItems(section, const <String>[]);
+    }
+
+    await tester.pumpWidget(
+      MaterialApp(home: CoreScreensView(controller: controller)),
+    );
+
+    expect(find.bySemanticsLabel('Join LAN circle'), findsOneWidget);
+    await tester.tap(find.text('Peers'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Refresh peers'), findsOneWidget);
+
+    semantics.dispose();
+  });
+
   testWidgets('status feedback is shown in UI after action', (tester) async {
     final controller = CoreScreensController(backend: _Backend());
     for (final section in CoreScreenSection.values) {

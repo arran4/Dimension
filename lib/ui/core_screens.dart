@@ -212,9 +212,10 @@ class CoreScreensView extends StatelessWidget {
                   ),
                   busy: controller.sectionBusy(CoreScreenSection.circles),
                   actions: [
-                    TextButton(
+                    _sectionActionButton(
+                      label: 'Join LAN',
+                      semanticsLabel: 'Join LAN circle',
                       onPressed: () => controller.joinCircle('LAN'),
-                      child: const Text('Join LAN'),
                     ),
                   ],
                 ),
@@ -225,9 +226,10 @@ class CoreScreensView extends StatelessWidget {
                   statusMessage: controller.sectionMessage(CoreScreenSection.peers),
                   busy: controller.sectionBusy(CoreScreenSection.peers),
                   actions: [
-                    TextButton(
+                    _sectionActionButton(
+                      label: 'Refresh',
+                      semanticsLabel: 'Refresh peers',
                       onPressed: controller.refreshPeers,
-                      child: const Text('Refresh'),
                     ),
                   ],
                 ),
@@ -245,9 +247,10 @@ class CoreScreensView extends StatelessWidget {
                   statusMessage: controller.sectionMessage(CoreScreenSection.search),
                   busy: controller.sectionBusy(CoreScreenSection.search),
                   actions: [
-                    TextButton(
+                    _sectionActionButton(
+                      label: 'Search',
+                      semanticsLabel: 'Run search',
                       onPressed: () => controller.runSearch('example'),
-                      child: const Text('Search'),
                     ),
                   ],
                 ),
@@ -260,9 +263,10 @@ class CoreScreensView extends StatelessWidget {
                   ),
                   busy: controller.sectionBusy(CoreScreenSection.transfers),
                   actions: [
-                    TextButton(
+                    _sectionActionButton(
+                      label: 'Queue Download',
+                      semanticsLabel: 'Queue download for example file',
                       onPressed: () => controller.queueDownload('example.bin'),
-                      child: const Text('Queue Download'),
                     ),
                   ],
                 ),
@@ -291,6 +295,35 @@ class CoreScreensView extends StatelessWidget {
       },
     );
   }
+}
+
+Widget _sectionActionButton({
+  required String label,
+  required String semanticsLabel,
+  required VoidCallback onPressed,
+}) {
+  return Padding(
+    padding: const EdgeInsets.only(right: 8),
+    child: Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Tooltip(
+        message: semanticsLabel,
+        child: TextButton(
+          onPressed: onPressed,
+          style: ButtonStyle(
+            side: WidgetStateProperty.resolveWith<BorderSide?>((states) {
+              if (states.contains(WidgetState.focused)) {
+                return const BorderSide(width: 2);
+              }
+              return null;
+            }),
+          ),
+          child: Text(label),
+        ),
+      ),
+    ),
+  );
 }
 
 class _SectionPane extends StatelessWidget {
