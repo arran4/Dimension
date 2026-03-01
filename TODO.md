@@ -81,21 +81,23 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ## File: `./DimensionLib/App.cs`
 
-- [ ] Port `App.cs` to Dart
+- [x] Port `App.cs` to Dart
   - **Classes**:
-    - [ ] `class App`
+    - [x] `class App`
   - **Public Methods**:
-    - [ ] `downloadUpdates()`
-    - [ ] `checkForUpdates()`
-    - [ ] `doCleanup()`
-    - [ ] `udpSend()`
-    - [ ] `udpSend()`
-    - [ ] `doLoad()`
-    - [ ] `doPrivateChatReceived()`
-    - [ ] `doFlash()`
+    - [x] `downloadUpdates()`
+    - [x] `checkForUpdates()`
+    - [x] `doCleanup()`
+    - [x] `udpSend()`
+    - [x] `udpSend()`
+    - [x] `doLoad()`
+    - [x] `doPrivateChatReceived()`
+    - [x] `doFlash()`
   - **Public Properties**:
     - [x] `isMono`
-    - [ ] `comicSansOnly`
+    - [x] `comicSansOnly`
+  - **TODO**:
+    - [ ] Current `App` is a pure-Dart orchestrator with injected services; wire concrete runtime adapters (UDP sockets, serializer binding, lifecycle bridge) in Flutter bootstrap.
 
 ## File: `./DimensionLib/Model/ReliableIncomingConnection.cs`
 
