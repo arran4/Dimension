@@ -1,0 +1,212 @@
+import 'dart:async';
+
+import 'package:dimension/ui/core_screens.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+class _Backend implements CoreScreensBackend {
+  bool failJoin = false;
+  bool failQueue = false;
+
+  @override
+  Future<void> joinCircle(String name) async {
+    if (failJoin) {
+      throw StateError('join failed');
+    }
+  }
+
+  @override
+  Future<void> queueDownload(String itemName) async {
+    if (failQueue) {
+      throw StateError('queue failed');
+    }
+  }
+
+  @override
+  Future<List<String>> refreshPeers() async => const <String>['alice', 'bob'];
+
+  @override
+  Future<List<String>> runSearch(String query) async => <String>['$query.bin'];
+}
+
+void main() {
+  testWidgets('renders all primary tabs', (tester) async {
+    final controller = CoreScreensController();
+    for (final section in CoreScreenSection.values) {
+      controller.setItems(section, const <String>[]);
+    }
+
+    await tester.pumpWidget(
+      MaterialApp(home: CoreScreensView(controller: controller)),
+    );
+
+    expect(find.text('Circles'), findsOneWidget);
+    expect(find.text('Peers'), findsOneWidget);
+    expect(find.text('Chat'), findsOneWidget);
+    expect(find.text('Search'), findsOneWidget);
+    expect(find.text('Transfers'), findsOneWidget);
+    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('Diagnostics'), findsOneWidget);
+  });
+
+  testWidgets('shows loading/empty/error states across sections', (tester) async {
+    final controller = CoreScreensController();
+    controller.setLoading(CoreScreenSection.circles);
+    controller.setItems(CoreScreenSection.peers, const <String>[]);
+    controller.setError(CoreScreenSection.chat, 'chat failed');
+
+    for (final section in CoreScreenSection.values) {
+      if (section != CoreScreenSection.circles &&
+          section != CoreScreenSection.peers &&
+          section != CoreScreenSection.chat) {
+        controller.setItems(section, const <String>['item']);
+      }
+    }
+
+    await tester.pumpWidget(
+      MaterialApp(home: CoreScreensView(controller: controller)),
+    );
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    await tester.tap(find.text('Peers'));
+    await tester.pumpAndSettle();
+    expect(find.text('No peers connected.'), findsOneWidget);
+
+    await tester.tap(find.text('Chat'));
+    await tester.pumpAndSettle();
+    expect(find.text('chat failed'), findsOneWidget);
+  });
+
+  test('optimistic circle join succeeds and keeps item', () async {
+    final controller = CoreScreensController(backend: _Backend());
+    controller.setItems(CoreScreenSection.circles, const <String>[]);
+
+    await controller.joinCircle('LAN');
+
+    expect(controller.stateFor(CoreScreenSection.circles).items, contains('LAN'));
+    expect(controller.sectionMessage(CoreScreenSection.circles), 'Joined LAN');
+    expect(controller.sectionBusy(CoreScreenSection.circles), isFalse);
+  });
+
+  test('optimistic circle join rolls back on failure', () async {
+    final backend = _Backend()..failJoin = true;
+    final controller = CoreScreensController(backend: backend);
+    controller.setItems(CoreScreenSection.circles, const <String>['Existing']);
+
+    await controller.joinCircle('LAN');
+
+    expect(controller.stateFor(CoreScreenSection.circles).items, <String>['Existing']);
+    expect(
+      controller.sectionMessage(CoreScreenSection.circles),
+      'Failed to join LAN',
+    );
+  });
+
+  test('search and peer refresh use backend results', () async {
+    final controller = CoreScreensController(backend: _Backend());
+
+    await controller.refreshPeers();
+    await controller.runSearch('movie');
+
+    expect(controller.stateFor(CoreScreenSection.peers).items, <String>['alice', 'bob']);
+    expect(controller.stateFor(CoreScreenSection.search).items, <String>['movie.bin']);
+  });
+
+
+
+  testWidgets('ctrl-digit shortcuts switch tabs for keyboard-only navigation', (
+    tester,
+  ) async {
+    final controller = CoreScreensController();
+    controller.setItems(CoreScreenSection.circles, const <String>['circles-item']);
+    controller.setItems(CoreScreenSection.peers, const <String>['peers-item']);
+    controller.setItems(CoreScreenSection.chat, const <String>['chat-item']);
+    controller.setItems(CoreScreenSection.search, const <String>['search-item']);
+    controller.setItems(CoreScreenSection.transfers, const <String>['transfers-item']);
+    controller.setItems(CoreScreenSection.settings, const <String>['settings-item']);
+    controller.setItems(CoreScreenSection.diagnostics, const <String>['diagnostics-item']);
+
+    await tester.pumpWidget(
+      MaterialApp(home: CoreScreensView(controller: controller)),
+    );
+
+    expect(find.text('circles-item'), findsOneWidget);
+
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.digit2);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.digit2);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+    await tester.pumpAndSettle();
+
+    expect(find.text('peers-item'), findsOneWidget);
+  });
+
+  testWidgets('actions expose semantic labels for accessibility', (tester) async {
+    final semantics = tester.ensureSemantics();
+    final controller = CoreScreensController();
+    for (final section in CoreScreenSection.values) {
+      controller.setItems(section, const <String>[]);
+    }
+
+    await tester.pumpWidget(
+      MaterialApp(home: CoreScreensView(controller: controller)),
+    );
+
+    expect(find.bySemanticsLabel('Join LAN circle'), findsOneWidget);
+    await tester.tap(find.text('Peers'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Refresh peers'), findsOneWidget);
+
+    semantics.dispose();
+  });
+
+
+  testWidgets('high-contrast + large text keeps status visible without overflow', (
+    tester,
+  ) async {
+    final controller = CoreScreensController(backend: _Backend());
+    for (final section in CoreScreenSection.values) {
+      controller.setItems(section, const <String>[]);
+    }
+
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(
+          highContrast: true,
+          textScaler: TextScaler.linear(1.8),
+        ),
+        child: MaterialApp(home: CoreScreensView(controller: controller)),
+      ),
+    );
+
+    await tester.tap(find.text('Join LAN'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+
+    final statusText = tester.widget<Text>(
+      find.byKey(const Key('core-screen-status.Circles')),
+    );
+    expect(statusText.style?.fontWeight, FontWeight.w700);
+  });
+
+  testWidgets('status feedback is shown in UI after action', (tester) async {
+    final controller = CoreScreensController(backend: _Backend());
+    for (final section in CoreScreenSection.values) {
+      controller.setItems(section, const <String>[]);
+    }
+
+    await tester.pumpWidget(
+      MaterialApp(home: CoreScreensView(controller: controller)),
+    );
+
+    await tester.tap(find.text('Join LAN'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('core-screen-status.Circles')), findsOneWidget);
+    expect(find.text('Joined LAN'), findsOneWidget);
+    expect(find.text('LAN'), findsOneWidget);
+  });
+}
