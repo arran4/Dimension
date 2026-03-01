@@ -35,6 +35,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ### 3) Mobile Plan (Android/iOS)
 - [ ] Implement compact mobile layouts for portrait and landscape orientations.
+  - [x] Added shared platform layout inference/controller infrastructure (`platform_plan_infra.dart`) so mobile/desktop/web can consume one responsive capability model before per-screen polish.
   - [ ] Replace multi-pane desktop layouts with tabbed or stacked navigation flows.
   - [ ] Ensure touch targets meet accessibility guidance.
   - [ ] Add pull-to-refresh and platform-appropriate gestures where helpful.
@@ -43,6 +44,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ### 4) Desktop Plan (Windows/macOS/Linux)
 - [ ] Implement expanded desktop layouts with multi-pane information density.
+  - [x] Shared layout inference now exposes desktop-ready navigation modes (`rail`, `splitView`) and keyboard/hover capability flags for desktop shell wiring.
   - [ ] Persistent side navigation / split-view interactions.
   - [ ] Resizable columns and tables for peers, searches, and transfers.
   - [ ] Keyboard shortcuts for power-user workflows.
@@ -54,6 +56,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
 
 ### 5) Web Plan (Flutter Web)
 - [ ] Build a web-ready shell with responsive navigation and browser-friendly route handling.
+  - [x] Shared platform inference now exposes web capability flags and responsive navigation mode decisions to align shell behavior across browser widths.
 - [ ] Ensure links, history navigation, and refresh behavior preserve application state where possible.
 - [ ] Address web input patterns (focus traversal, scroll behavior, text selection, copy/paste).
 - [ ] Validate compatibility and layout fidelity on Chromium, Firefox, and Safari-class browsers.
