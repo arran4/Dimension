@@ -37,9 +37,10 @@ This document outlines the tasks required to port the C# application to a Dart/F
 - [ ] Implement compact mobile layouts for portrait and landscape orientations.
   - [x] Added shared platform layout inference/controller infrastructure (`platform_plan_infra.dart`) so mobile/desktop/web can consume one responsive capability model before per-screen polish.
   - [x] Replace multi-pane desktop layouts with tabbed or stacked navigation flows (initial shared `AdaptiveWorkspace` scaffold now maps compact layouts to tab-based navigation).
-  - [ ] Ensure touch targets meet accessibility guidance.
-  - [ ] Add pull-to-refresh and platform-appropriate gestures where helpful.
+  - [x] Ensure touch targets meet accessibility guidance (mobile bottom tabs now use a 56px target height and are covered by widget assertions).
+  - [x] Add pull-to-refresh and platform-appropriate gestures where helpful (compact workspace sections now use `RefreshIndicator`, plus quick-refresh FAB wiring per active tab).
 - [ ] Validate safe-area handling, keyboard avoidance, and small-screen overflow behavior.
+  - [x] Added `SafeArea` + keyboard `viewInsets` padding in compact workspace to keep content visible during soft-keyboard transitions.
 - [ ] Add mobile-specific QA checklist (low-memory behavior, background/foreground transitions, intermittent network).
 
 ### 4) Desktop Plan (Windows/macOS/Linux)

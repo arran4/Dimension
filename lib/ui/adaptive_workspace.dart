@@ -74,26 +74,69 @@ class _BottomTabsWorkspace extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: sections.length,
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Dimension Mobile')),
-        body: TabBarView(
-          children: [
-            for (final section in sections)
-              _SectionPreview(
-                section: section,
-                state: screensController.stateFor(section),
+      child: Builder(
+        builder: (context) {
+          final tabController = DefaultTabController.of(context);
+          return Scaffold(
+            appBar: AppBar(title: const Text('Dimension Mobile')),
+            body: SafeArea(
+              child: AnimatedPadding(
+                duration: const Duration(milliseconds: 120),
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: TabBarView(
+                  children: [
+                    for (final section in sections)
+                      _SectionPreview(
+                        section: section,
+                        state: screensController.stateFor(section),
+                        refreshable: true,
+                        onRefresh: () => _refreshSection(section, screensController),
+                      ),
+                  ],
+                ),
               ),
-          ],
-        ),
-        bottomNavigationBar: Material(
-          color: Theme.of(context).colorScheme.surface,
-          child: TabBar(
-            isScrollable: true,
-            tabs: [for (final section in sections) Tab(text: _label(section))],
-          ),
-        ),
+            ),
+            bottomNavigationBar: Material(
+              color: Theme.of(context).colorScheme.surface,
+              child: TabBar(
+                isScrollable: true,
+                tabs: [
+                  for (final section in sections)
+                    Tab(height: 56, text: _label(section)),
+                ],
+              ),
+            ),
+            floatingActionButton: FloatingActionButton.extended(
+              key: const Key('mobileRefreshFab'),
+              onPressed: () {
+                final index = tabController.index;
+                final section = sections[index];
+                _refreshSection(section, screensController);
+              },
+              label: const Text('Refresh'),
+              icon: const Icon(Icons.refresh),
+            ),
+          );
+        },
       ),
     );
+  }
+
+  Future<void> _refreshSection(
+    CoreScreenSection section,
+    CoreScreensController controller,
+  ) {
+    return switch (section) {
+      CoreScreenSection.circles => controller.joinCircle('LAN'),
+      CoreScreenSection.peers => controller.refreshPeers(),
+      CoreScreenSection.search => controller.runSearch('mobile'),
+      CoreScreenSection.transfers => controller.queueDownload('mobile.bin'),
+      CoreScreenSection.chat ||
+      CoreScreenSection.settings ||
+      CoreScreenSection.diagnostics => Future<void>.value(),
+    };
   }
 }
 
@@ -348,11 +391,15 @@ class _SectionPreview extends StatelessWidget {
     required this.section,
     required this.state,
     this.desktopDense = false,
+    this.refreshable = false,
+    this.onRefresh,
   });
 
   final CoreScreenSection section;
   final CoreScreensState state;
   final bool desktopDense;
+  final bool refreshable;
+  final Future<void> Function()? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -364,28 +411,46 @@ class _SectionPreview extends StatelessWidget {
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
           child: Text('Section: ${_label(section)}'),
         ),
-        Expanded(
-          child: switch (state.status) {
-            CoreScreenStatus.loading => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            CoreScreenStatus.error => Center(
-              child: Text(state.errorMessage ?? 'Unable to load section'),
-            ),
-            CoreScreenStatus.ready => state.items.isEmpty
-                ? const Center(child: Text('No items'))
-                : desktopDense && _supportsDesktopTable(section)
-                ? _ResizableDesktopTable(section: section, rows: state.items)
-                : ListView.builder(
-                    itemCount: state.items.length,
-                    itemBuilder: (_, index) => ListTile(
-                      title: Text(state.items[index]),
-                    ),
-                  ),
-          },
-        ),
+        Expanded(child: _buildContent()),
       ],
     );
+  }
+
+  Widget _buildContent() {
+    final content = switch (state.status) {
+      CoreScreenStatus.loading => const Center(child: CircularProgressIndicator()),
+      CoreScreenStatus.error => Center(
+        child: Text(state.errorMessage ?? 'Unable to load section'),
+      ),
+      CoreScreenStatus.ready => state.items.isEmpty
+          ? const Center(child: Text('No items'))
+          : desktopDense && _supportsDesktopTable(section)
+          ? _ResizableDesktopTable(section: section, rows: state.items)
+          : ListView.builder(
+              itemCount: state.items.length,
+              itemBuilder: (_, index) => ListTile(
+                title: Text(state.items[index]),
+              ),
+            ),
+    };
+
+    if (!refreshable || onRefresh == null) {
+      return content;
+    }
+
+    final scrollable = content is ListView
+        ? content
+        : ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              SizedBox(
+                height: 280,
+                child: Center(child: content),
+              ),
+            ],
+          );
+
+    return RefreshIndicator(onRefresh: onRefresh!, child: scrollable);
   }
 
   static bool _supportsDesktopTable(CoreScreenSection section) {

@@ -32,6 +32,47 @@ void main() {
     expect(find.byType(TabBar), findsOneWidget);
   });
 
+
+  testWidgets('mobile workspace applies safe-area and refresh affordances', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 420,
+          child: AdaptiveWorkspace(
+            planController: PlatformPlanController(),
+            screensController: seededController(),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(SafeArea), findsOneWidget);
+    expect(find.byType(RefreshIndicator), findsWidgets);
+    expect(find.byKey(const Key('mobileRefreshFab')), findsOneWidget);
+  });
+
+  testWidgets('mobile bottom tabs meet minimum touch target height', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 420,
+          child: AdaptiveWorkspace(
+            planController: PlatformPlanController(),
+            screensController: seededController(),
+          ),
+        ),
+      ),
+    );
+
+    final circlesFinder = find.text('Circles').last;
+    final circlesSize = tester.getSize(circlesFinder);
+    expect(circlesSize.height, greaterThanOrEqualTo(48));
+  });
+
   testWidgets('renders medium rail workspace', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
