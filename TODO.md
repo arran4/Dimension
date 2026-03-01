@@ -47,10 +47,10 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - [x] Shared layout inference now exposes desktop-ready navigation modes (`rail`, `splitView`) and keyboard/hover capability flags for desktop shell wiring.
   - [x] Persistent side navigation / split-view interactions (shared `AdaptiveWorkspace` scaffold now provides rail/split variants keyed off platform layout inference).
   - [ ] Resizable columns and tables for peers, searches, and transfers.
-  - [ ] Keyboard shortcuts for power-user workflows.
+  - [x] Keyboard shortcuts for power-user workflows (initial shared `DesktopShellController` shortcut map scaffold added for section navigation).
 - [ ] Add native-feeling desktop affordances:
   - [ ] Right-click context menus.
-  - [ ] Hover states and tooltips.
+  - [x] Hover states and tooltips (initial shared hover-status/tooltip messaging scaffold added in `DesktopShellController`).
   - [ ] Window size persistence and restoration.
 - [ ] Validate behavior at common desktop resolutions and ultrawide layouts.
 
