@@ -1,6 +1,10 @@
 import 'package:dimension/model/commands/command.dart';
+import 'package:dimension/model/commands/cancel_command.dart';
+import 'package:dimension/model/commands/file_listing.dart';
+import 'package:dimension/model/commands/get_file_listing.dart';
 import 'package:dimension/model/commands/search_command.dart';
 import 'package:dimension/model/core.dart';
+import 'package:dimension/model/incoming_connection.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _Settings implements CoreSettingsStore {
@@ -61,6 +65,29 @@ class _PeerDirectory implements CorePeerMutableDirectory {
 
 class _SearchCommand extends SearchCommand {}
 
+
+
+class _FileListingProvider implements CoreFileListingProvider {
+  String? requestedPath;
+
+  @override
+  Future<FileListing?> generateFileListing(String path) async {
+    requestedPath = path;
+    return FileListing()..path = path;
+  }
+}
+
+class _Incoming extends IncomingConnection {
+  final List<Command> sent = <Command>[];
+
+  @override
+  bool get connected => true;
+
+  @override
+  Future<void> send(Command c) async {
+    sent.add(c);
+  }
+}
 
 class _ReadOnlyPeerDirectory implements CorePeerDirectory {
   _ReadOnlyPeerDirectory(this._peers);
@@ -147,6 +174,42 @@ void main() {
 
     expect(peerIn.sentCommands.length, 1);
     expect(peerOut.sentCommands, isEmpty);
+  });
+
+  test('commandReceived handles CancelCommand cancellation tracking', () async {
+    final incoming = _Incoming();
+    final core = Core(
+      peerDirectory: _PeerDirectory([]),
+      settings: _Settings(),
+      localPeerId: 1,
+    );
+
+    core.addIncomingConnection(incoming);
+    incoming.commandReceived?.call(CancelCommand()..path = '/x.bin', incoming);
+
+    expect(core.isPathCancelled('/x.bin'), isTrue);
+    expect(core.clearCancelledPath('/x.bin'), isTrue);
+    expect(core.isPathCancelled('/x.bin'), isFalse);
+  });
+
+  test('commandReceived handles GetFileListing via injected provider', () async {
+    final incoming = _Incoming();
+    final provider = _FileListingProvider();
+    final core = Core(
+      peerDirectory: _PeerDirectory([]),
+      settings: _Settings(),
+      localPeerId: 1,
+      fileListingProvider: provider,
+    );
+
+    core.addIncomingConnection(incoming);
+    incoming.commandReceived?.call(GetFileListing()..path = '/Public', incoming);
+    await Future<void>.delayed(Duration.zero);
+
+    expect(provider.requestedPath, '/Public');
+    expect(incoming.lastFolder, '/Public');
+    expect(incoming.sent.single, isA<FileListing>());
+    expect((incoming.sent.single as FileListing).path, '/Public');
   });
 
   test('chatReceived invokes listeners and getIdleTime uses injected provider', () {

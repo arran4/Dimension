@@ -170,7 +170,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [x] `isMono`
   - **TODO**:
     - [ ] Pending line-by-line parity for peer lifecycle, search fan-out, and transfer routing against the original C# flow.
-    - [ ] Remaining Core port work: wire commandReceived routing for file listing/search result handling once App transport/runtime surfaces are finalized.
+    - [ ] Remaining Core port work: extend commandReceived beyond current `CancelCommand`/`GetFileListing` handling to include search-result and transfer/file-chunk routing once App transport/runtime surfaces are finalized.
 
 ## File: `./DimensionLib/Model/FileList.cs`
 

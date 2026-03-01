@@ -1,6 +1,9 @@
 import 'dart:collection';
 
 import 'commands/command.dart';
+import 'commands/cancel_command.dart';
+import 'commands/file_listing.dart';
+import 'commands/get_file_listing.dart';
 import 'commands/room_chat_command.dart';
 import 'commands/search_command.dart';
 import 'incoming_connection.dart';
@@ -31,6 +34,11 @@ abstract class CorePeerMutableDirectory implements CorePeerDirectory {
   bool addPeer(CorePeer peer);
 }
 
+
+abstract class CoreFileListingProvider {
+  Future<FileListing?> generateFileListing(String path);
+}
+
 typedef CoreIdleTimeProvider = Duration Function();
 typedef CoreChatReceivedHandler = void Function(
   String message,
@@ -44,15 +52,20 @@ class Core {
     required CoreSettingsStore settings,
     required int localPeerId,
     CoreIdleTimeProvider? idleTimeProvider,
+    CoreFileListingProvider? fileListingProvider,
   }) : _peerDirectory = peerDirectory,
        _settings = settings,
        _localPeerId = localPeerId,
-       _idleTimeProvider = idleTimeProvider ?? (() => Duration.zero);
+       _idleTimeProvider = idleTimeProvider ?? (() => Duration.zero),
+       _fileListingProvider = fileListingProvider;
 
   final CorePeerDirectory _peerDirectory;
   final CoreSettingsStore _settings;
   final int _localPeerId;
   final CoreIdleTimeProvider _idleTimeProvider;
+  final CoreFileListingProvider? _fileListingProvider;
+
+  final Set<String> _cancelledPaths = <String>{};
 
   bool disposed = false;
   int incomingTcpConnections = 0;
@@ -189,7 +202,32 @@ class Core {
   void removeIncomingConnectionCompat(IncomingConnection connection) =>
       removeIncomingConnection(connection);
 
+
+  bool isPathCancelled(String path) => _cancelledPaths.contains(path);
+
+  bool clearCancelledPath(String path) => _cancelledPaths.remove(path);
+
   void _commandReceived(Command command, IncomingConnection connection) {
+    if (command is CancelCommand) {
+      _cancelledPaths.add(command.path);
+      return;
+    }
+
+    if (command is GetFileListing) {
+      connection.lastFolder = command.path;
+      final provider = _fileListingProvider;
+      if (provider == null) {
+        return;
+      }
+
+      provider.generateFileListing(command.path).then((listing) {
+        if (listing != null) {
+          connection.send(listing);
+        }
+      });
+      return;
+    }
+
     // Remaining parity work: command routing/search result handling/file sharing
     // flow will be ported as App/Core orchestration is completed.
   }
