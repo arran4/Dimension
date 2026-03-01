@@ -43,16 +43,17 @@ This document outlines the tasks required to port the C# application to a Dart/F
 - [ ] Add mobile-specific QA checklist (low-memory behavior, background/foreground transitions, intermittent network).
 
 ### 4) Desktop Plan (Windows/macOS/Linux)
-- [ ] Implement expanded desktop layouts with multi-pane information density.
+- [x] Implement expanded desktop layouts with multi-pane information density.
   - [x] Shared layout inference now exposes desktop-ready navigation modes (`rail`, `splitView`) and keyboard/hover capability flags for desktop shell wiring.
   - [x] Persistent side navigation / split-view interactions (shared `AdaptiveWorkspace` scaffold now provides rail/split variants keyed off platform layout inference).
-  - [ ] Resizable columns and tables for peers, searches, and transfers.
+  - [x] Resizable columns and tables for peers, searches, and transfers (desktop `AdaptiveWorkspace` now renders a draggable split table for peers/search/transfers sections).
   - [x] Keyboard shortcuts for power-user workflows (initial shared `DesktopShellController` shortcut map scaffold added for section navigation).
-- [ ] Add native-feeling desktop affordances:
+- [x] Add native-feeling desktop affordances:
   - [x] Right-click context menus (added shared `DesktopContextMenuController` action-builder scaffold for section-level context actions).
   - [x] Hover states and tooltips (initial shared hover-status/tooltip messaging scaffold added in `DesktopShellController`).
   - [x] Window size persistence and restoration (added `DesktopWindowStateController` + injectable store scaffold for geometry save/restore).
 - [ ] Validate behavior at common desktop resolutions and ultrawide layouts.
+  - [x] Added widget coverage for desktop rail/split widths and desktop scaffold integrations (status bar, geometry label, resizable table handles).
 
 ### 5) Web Plan (Flutter Web)
 - [ ] Build a web-ready shell with responsive navigation and browser-friendly route handling.

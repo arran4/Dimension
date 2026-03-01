@@ -31,3 +31,4 @@
 - `lib/ui/desktop_shell_infra.dart` now provides shared desktop affordance scaffolding (keyboard shortcut map + hover/tooltip status modeling) so desktop-specific UX can be wired incrementally without introducing external state dependencies.
 - `lib/ui/desktop_context_menu.dart` now provides shared desktop context-menu action scaffolding so right-click workflows can be wired consistently without coupling UI state to transport code.
 - `lib/ui/desktop_window_state.dart` now provides injectable desktop window geometry persistence scaffolding (save/restore defaults) so desktop shell state can be tested without platform channel dependencies.
+- `lib/ui/adaptive_workspace.dart` now wires desktop shell/context/window scaffolds into rail/split workspaces (status bar + section menu + geometry label) and adds resizable peer/search/transfer columns so desktop UX parity can progress before live backend wiring.
