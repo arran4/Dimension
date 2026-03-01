@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// UI state-management approach for the current port: keep things simple with
+/// framework-native notifiers only (`ChangeNotifier` / `ValueNotifier`) and
+/// avoid external state packages until a concrete need appears.
 enum AppBreakpoint { compact, medium, expanded }
 
 class AppSpacingTokens {

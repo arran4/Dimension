@@ -17,7 +17,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - [ ] Standardize reusable components (buttons, inputs, dialogs, list rows, status indicators, transfer progress bars).
   - [x] Add a responsive breakpoint strategy (`compact`, `medium`, `expanded`) for layout switching.
 - [x] Introduce app-level navigation that supports deep-linkable routes (especially required for web).
-- [ ] Choose and document state management approach for UI (e.g., Provider/Riverpod/Bloc) and enforce it consistently.
+- [x] Choose and document state management approach for UI: use internal `ChangeNotifier`/`ValueNotifier` stores only (KISS; no Provider/Riverpod/Bloc dependency layer for now) and enforce it consistently.
 
 ### 2) Core Screens and Flows (Shared Across All Platforms)
 - [ ] Port the primary screens from the C# client into Flutter widgets.
