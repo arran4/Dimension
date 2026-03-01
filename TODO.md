@@ -49,9 +49,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - [ ] Resizable columns and tables for peers, searches, and transfers.
   - [x] Keyboard shortcuts for power-user workflows (initial shared `DesktopShellController` shortcut map scaffold added for section navigation).
 - [ ] Add native-feeling desktop affordances:
-  - [ ] Right-click context menus.
+  - [x] Right-click context menus (added shared `DesktopContextMenuController` action-builder scaffold for section-level context actions).
   - [x] Hover states and tooltips (initial shared hover-status/tooltip messaging scaffold added in `DesktopShellController`).
-  - [ ] Window size persistence and restoration.
+  - [x] Window size persistence and restoration (added `DesktopWindowStateController` + injectable store scaffold for geometry save/restore).
 - [ ] Validate behavior at common desktop resolutions and ultrawide layouts.
 
 ### 5) Web Plan (Flutter Web)
