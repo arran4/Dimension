@@ -75,9 +75,9 @@ This document outlines the tasks required to port the C# application to a Dart/F
   - [ ] Profile and optimize list-heavy screens (chat, search results, transfers) using lazy builders and pagination.
   - [ ] Reduce unnecessary widget rebuilds and monitor frame timing on low-end devices.
 - [ ] Quality and testing
-  - [x] Add widget tests for core UI components and screen states.
-  - [ ] Add golden tests for major breakpoints (mobile, desktop, web widths).
-  - [ ] Add integration tests covering critical user journeys end-to-end.
+  - [x] Add CI-enforced formatting + analysis gates (Flutter workflow now runs `dart format --set-exit-if-changed` and `flutter analyze` on PRs/merges).
+  - [x] Run model-focused automated tests in CI (`app/core/file_list/peer/udt_backend/platform_plan_infra`) while UI verification remains manual for this phase.
+  - [ ] Keep a lightweight manual UI QA checklist per milestone (mobile/desktop/web smoke pass for navigation, accessibility, and core flows).
 
 ### 7) Release Readiness by Platform
 - [ ] Mobile release readiness

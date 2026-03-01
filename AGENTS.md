@@ -40,3 +40,4 @@
 - `lib/ui/core_screens.dart` now applies explicit semantics labels + tooltips to section action controls and focus-visible button outlines, with widget tests ensuring action accessibility metadata is exposed across tabs.
 - `lib/ui/core_screens.dart` now wires keyboard-only tab shortcuts (`Ctrl+1..7`) through `CallbackShortcuts` + `FocusTraversalGroup`, so section navigation can be performed without pointer input while preserving notifier-driven state flow.
 - `lib/ui/core_screens.dart` now adapts section status/action header presentation for high-contrast + large-text environments (contrast-aware styling + wrap layout), with widget coverage ensuring no overflow and visible status feedback under accessibility scaling.
+- `.github/workflows/flutter.yml` now enforces formatting + analysis in CI and runs a model-focused automated test suite; UI verification remains manual during this porting phase to prioritize release readiness and adapter wiring.
