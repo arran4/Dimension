@@ -28,7 +28,10 @@ class AdaptiveWorkspace extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        planController.recompute(width: constraints.maxWidth);
+        planController.recompute(
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+        );
         return AnimatedBuilder(
           animation: planController,
           builder: (context, _) {
@@ -78,7 +81,13 @@ class _BottomTabsWorkspace extends StatelessWidget {
         builder: (context) {
           final tabController = DefaultTabController.of(context);
           return Scaffold(
-            appBar: AppBar(title: const Text('Dimension Mobile')),
+            appBar: AppBar(
+              title: Text(
+                MediaQuery.of(context).orientation == Orientation.landscape
+                    ? 'Dimension Mobile Landscape'
+                    : 'Dimension Mobile',
+              ),
+            ),
             body: SafeArea(
               child: AnimatedPadding(
                 duration: const Duration(milliseconds: 120),

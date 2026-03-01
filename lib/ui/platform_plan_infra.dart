@@ -32,20 +32,27 @@ class PlatformLayoutSnapshot {
 
 PlatformLayoutSnapshot inferPlatformLayout({
   required double width,
+  double? height,
   bool? isWebOverride,
   TargetPlatform? targetPlatformOverride,
 }) {
   final isWeb = isWebOverride ?? kIsWeb;
   final platform = targetPlatformOverride ?? defaultTargetPlatform;
 
-  final mode = width < 700
+  final prefersTouch =
+      platform == TargetPlatform.android || platform == TargetPlatform.iOS;
+
+  final shortestSide = height == null ? width : (width < height ? width : height);
+
+  final baseMode = shortestSide < 700
       ? PlatformLayoutMode.compact
-      : width < 1100
+      : shortestSide < 1100
       ? PlatformLayoutMode.medium
       : PlatformLayoutMode.expanded;
 
-  final prefersTouch =
-      platform == TargetPlatform.android || platform == TargetPlatform.iOS;
+  final mode = prefersTouch && height != null && width >= 700 && height < 500
+      ? PlatformLayoutMode.compact
+      : baseMode;
 
   final supportsHover = isWeb ||
       platform == TargetPlatform.macOS ||
@@ -74,10 +81,20 @@ PlatformLayoutSnapshot inferPlatformLayout({
 }
 
 class PlatformPlanController extends ChangeNotifier {
-  PlatformPlanController({PlatformLayoutSnapshot? initialSnapshot})
-    : _snapshot =
-          initialSnapshot ??
-          inferPlatformLayout(width: 1024, isWebOverride: false);
+  PlatformPlanController({
+    PlatformLayoutSnapshot? initialSnapshot,
+    this.isWebOverride,
+    this.targetPlatformOverride,
+  }) : _snapshot =
+           initialSnapshot ??
+           inferPlatformLayout(
+             width: 1024,
+             isWebOverride: isWebOverride ?? false,
+             targetPlatformOverride: targetPlatformOverride,
+           );
+
+  final bool? isWebOverride;
+  final TargetPlatform? targetPlatformOverride;
 
   PlatformLayoutSnapshot _snapshot;
 
@@ -85,13 +102,15 @@ class PlatformPlanController extends ChangeNotifier {
 
   void recompute({
     required double width,
+    double? height,
     bool? isWebOverride,
     TargetPlatform? targetPlatformOverride,
   }) {
     _snapshot = inferPlatformLayout(
       width: width,
-      isWebOverride: isWebOverride,
-      targetPlatformOverride: targetPlatformOverride,
+      height: height,
+      isWebOverride: isWebOverride ?? this.isWebOverride,
+      targetPlatformOverride: targetPlatformOverride ?? this.targetPlatformOverride,
     );
     notifyListeners();
   }

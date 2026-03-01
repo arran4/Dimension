@@ -16,6 +16,19 @@ void main() {
     expect(snapshot.capabilities.supportsHover, isFalse);
   });
 
+
+  test('keeps touch layouts compact for landscape phone bounds', () {
+    final snapshot = inferPlatformLayout(
+      width: 844,
+      height: 390,
+      isWebOverride: false,
+      targetPlatformOverride: TargetPlatform.iOS,
+    );
+
+    expect(snapshot.mode, PlatformLayoutMode.compact);
+    expect(snapshot.navigationPattern, NavigationPattern.bottomTabs);
+  });
+
   test('infers medium/expanded desktop capabilities', () {
     final medium = inferPlatformLayout(
       width: 900,
@@ -48,12 +61,12 @@ void main() {
   });
 
   test('controller recompute updates snapshot', () {
-    final controller = PlatformPlanController();
+    final controller = PlatformPlanController(targetPlatformOverride: TargetPlatform.iOS);
 
     controller.recompute(
       width: 460,
+      height: 844,
       isWebOverride: false,
-      targetPlatformOverride: TargetPlatform.iOS,
     );
 
     expect(controller.snapshot.mode, PlatformLayoutMode.compact);

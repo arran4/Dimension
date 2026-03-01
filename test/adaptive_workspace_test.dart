@@ -33,6 +33,33 @@ void main() {
   });
 
 
+
+  testWidgets('compact landscape touch snapshot still renders mobile tabs', (
+    tester,
+  ) async {
+    final plan = PlatformPlanController(
+      targetPlatformOverride: TargetPlatform.iOS,
+      isWebOverride: false,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SizedBox(
+          width: 844,
+          height: 390,
+          child: AdaptiveWorkspace(
+            planController: plan,
+            screensController: seededController(),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.textContaining('Dimension Mobile'), findsOneWidget);
+    expect(find.byType(TabBar), findsOneWidget);
+    expect(find.byType(NavigationRail), findsNothing);
+  });
+
   testWidgets('mobile workspace applies safe-area and refresh affordances', (
     tester,
   ) async {
