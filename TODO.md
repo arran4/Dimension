@@ -160,7 +160,7 @@ This document outlines the tasks required to port the C# application to a Dart/F
     - [x] `beginSearch()`
     - [x] `leaveCircle()`
     - [x] `joinCircle()`
-    - [ ] `addPeer()`
+    - [x] `addPeer()`
     - [x] `sendChat()`
     - [x] `addIncomingConnection()`
     - [x] `removeIncomingConnection()`

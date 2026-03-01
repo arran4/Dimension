@@ -36,7 +36,7 @@ class _Peer implements CorePeer {
   }
 }
 
-class _PeerDirectory implements CorePeerDirectory {
+class _PeerDirectory implements CorePeerMutableDirectory {
   _PeerDirectory(this._peers);
 
   final List<_Peer> _peers;
@@ -48,9 +48,33 @@ class _PeerDirectory implements CorePeerDirectory {
   Iterable<CorePeer> peersInCircle(int circleId) {
     return _peers.where((peer) => peer.circles.contains(circleId));
   }
+
+  @override
+  bool addPeer(CorePeer peer) {
+    if (peer is! _Peer || _peers.any((existing) => existing.id == peer.id)) {
+      return false;
+    }
+    _peers.add(peer);
+    return true;
+  }
 }
 
 class _SearchCommand extends SearchCommand {}
+
+
+class _ReadOnlyPeerDirectory implements CorePeerDirectory {
+  _ReadOnlyPeerDirectory(this._peers);
+
+  final List<_Peer> _peers;
+
+  @override
+  Iterable<CorePeer> get allPeers => _peers;
+
+  @override
+  Iterable<CorePeer> peersInCircle(int circleId) {
+    return _peers.where((peer) => peer.circles.contains(circleId));
+  }
+}
 
 void main() {
   test('beginSearch broadcasts only to non-quit peers', () {
@@ -67,6 +91,32 @@ void main() {
 
     expect(peer1.sentCommands.length, 1);
     expect(peer2.sentCommands, isEmpty);
+  });
+
+  test('addPeer delegates to mutable directories and deduplicates ids', () {
+    final directory = _PeerDirectory([_Peer(id: 1, quit: false, circles: {7})]);
+    final core = Core(
+      peerDirectory: directory,
+      settings: _Settings(),
+      localPeerId: 9,
+    );
+
+    final added = core.addPeer(_Peer(id: 2, quit: false, circles: {7}));
+    final duplicate = core.addPeer(_Peer(id: 1, quit: false, circles: {7}));
+
+    expect(added, isTrue);
+    expect(duplicate, isFalse);
+    expect(directory.allPeers.length, 2);
+  });
+
+  test('addPeer returns false when directory is read-only', () {
+    final core = Core(
+      peerDirectory: _ReadOnlyPeerDirectory([_Peer(id: 1, quit: false, circles: {7})]),
+      settings: _Settings(),
+      localPeerId: 9,
+    );
+
+    expect(core.addPeer(_Peer(id: 2, quit: false, circles: {7})), isFalse);
   });
 
   test('sendChat handles /nick locally and clips username', () {

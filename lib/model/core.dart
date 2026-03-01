@@ -27,6 +27,10 @@ abstract class CorePeerDirectory {
   Iterable<CorePeer> peersInCircle(int circleId);
 }
 
+abstract class CorePeerMutableDirectory implements CorePeerDirectory {
+  bool addPeer(CorePeer peer);
+}
+
 typedef CoreIdleTimeProvider = Duration Function();
 typedef CoreChatReceivedHandler = void Function(
   String message,
@@ -97,6 +101,20 @@ class Core {
 
   // Temporary compatibility shim for line-by-line migration parity.
   void leaveCircleCompat(String name) => leaveCircle(name);
+
+
+  bool addPeer(CorePeer peer) {
+    final directory = _peerDirectory;
+    if (directory is CorePeerMutableDirectory) {
+      return directory.addPeer(peer);
+    }
+
+    // If the active peer directory is read-only, treat this as a no-op for now.
+    return false;
+  }
+
+  // Temporary compatibility shim for line-by-line migration parity.
+  bool addPeerCompat(CorePeer peer) => addPeer(peer);
 
   void sendChat(String content, int roomId) {
     if (_handleSlashCommand(content)) {
