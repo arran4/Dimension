@@ -55,14 +55,14 @@ void main() {
     test('launch uses STUN/public address and detects double NAT mismatch', () async {
       final bootstrap = Bootstrap(
         natAdapter: _NatAdapter(
-          const BootstrapNatProbeResult(
+          BootstrapNatProbeResult(
             upnpActive: true,
             externalIp: InternetAddress('10.0.0.5'),
             publicControlPort: 1111,
           ),
         ),
         stunClient: _StunClient(
-          const BootstrapStunResult(
+          BootstrapStunResult(
             publicAddress: InternetAddress('203.0.113.20'),
             publicControlPort: 2222,
           ),
@@ -81,7 +81,7 @@ void main() {
     test('launch falls back to UPnP address when STUN unavailable', () async {
       final bootstrap = Bootstrap(
         natAdapter: _NatAdapter(
-          const BootstrapNatProbeResult(
+          BootstrapNatProbeResult(
             upnpActive: true,
             externalIp: InternetAddress('198.51.100.10'),
             publicControlPort: 3333,

@@ -2,6 +2,7 @@ import 'package:dimension/model/commands/command.dart';
 import 'package:dimension/model/commands/hello_command.dart';
 import 'package:dimension/model/commands/search_result_command.dart';
 import 'package:dimension/model/core.dart';
+import 'package:dimension/model/commands/fs_listing.dart' as commands;
 import 'package:dimension/model/fs_listing.dart';
 import 'package:dimension/model/incoming_connection.dart';
 import 'package:dimension/ui/core_screens_live_backend.dart';
@@ -106,8 +107,8 @@ void main() {
     );
 
     final result = SearchResultCommand()..keyword = 'song';
-    result.folders.add(Folder()..name = 'Albums');
-    result.files.add(File()..name = 'song.mp3');
+    result.folders.add(commands.FSListing()..name = 'Albums');
+    result.files.add(commands.FSListing()..name = 'song.mp3');
 
     final incoming = _FakeIncoming();
     core.addIncomingConnection(incoming);

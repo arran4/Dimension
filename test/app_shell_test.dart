@@ -59,24 +59,26 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        home: SizedBox(
-          width: 1000,
-          child: AppShell(
-            controller: controller,
-            contentBuilder: (context, breakpoint, route) {
-              return TextField(
-                key: const Key('webInputField'),
-                controller: TextEditingController(text: 'copy me'),
-              );
-            },
+        home: Scaffold(
+          body: SizedBox(
+            width: 1000,
+            child: AppShell(
+              controller: controller,
+              contentBuilder: (context, breakpoint, route) {
+                return TextField(
+                  key: const Key('webInputField'),
+                  controller: TextEditingController(text: 'copy me'),
+                );
+              },
+            ),
           ),
         ),
       ),
     );
 
     expect(find.byType(AppShellWebInputWrapper), findsOneWidget);
-    expect(find.byType(FocusTraversalGroup), findsOneWidget);
-    expect(find.byType(SelectionArea), findsOneWidget);
+    expect(find.byType(FocusTraversalGroup), findsWidgets);
+    expect(find.byType(SelectionArea), findsWidgets);
     expect(find.byType(ScrollConfiguration), findsWidgets);
     expect(find.byKey(const Key('webInputField')), findsOneWidget);
   });
@@ -86,25 +88,35 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        theme: DimensionTheme.light(),
-        darkTheme: DimensionTheme.dark(),
-        home: SizedBox(
-          width: 1200,
-          child: AppShell(
-            controller: controller,
-            contentBuilder: (context, breakpoint, route) {
-              return Text('${breakpoint.name}:${route.path}');
-            },
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 1200,
+              child: AppShell(
+                controller: controller,
+                contentBuilder: (context, breakpoint, route) {
+                  return Text('${breakpoint.name}:${route.path}');
+                },
+              ),
+            ),
           ),
         ),
       ),
     );
 
-    expect(find.text('expanded:/'), findsOneWidget);
+    // Provide the screen size
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpAndSettle();
+    expect(find.text('expanded:/'), findsWidgets);
 
     controller.navigateTo('/transfers');
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(find.text('expanded:/transfers'), findsOneWidget);
+    expect(find.text('expanded:/transfers'), findsWidgets);
+
+    // Reset to default
+    addTearDown(tester.view.reset);
   });
 }

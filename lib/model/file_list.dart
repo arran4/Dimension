@@ -64,7 +64,7 @@ class FileList {
 
     if (_scanner != null) {
       for (final share in shares) {
-        final snapshot = await _scanner.scanRootShare(share, urgent: urgent);
+        final snapshot = await _scanner?.scanRootShare(share, urgent: urgent);
         if (snapshot != null) {
           _applySnapshot(snapshot);
         }

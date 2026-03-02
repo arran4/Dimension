@@ -102,7 +102,7 @@ class FileListDatabase {
       final share = getObject<RootShare>(
         settingsStore,
         'Root Share $i',
-        RootShare.fromJson,
+        RootShareExtension.fromJsonLocal,
       );
       if (share != null) {
         shares.add(share);
@@ -167,8 +167,8 @@ class FileListDatabase {
   }
 }
 
-extension on RootShare {
-  static RootShare fromJson(Map<String, dynamic> json) {
+extension RootShareExtension on RootShare {
+  static RootShare fromJsonLocal(Map<String, dynamic> json) {
     final output = RootShare();
     output.id = json['id'] as int? ?? 0;
     output.parentId = json['parentId'] as int? ?? 0;

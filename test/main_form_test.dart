@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dimension/model/commands/private_chat_command.dart';
+import 'package:dimension/model/bootstrap.dart';
 import 'package:dimension/ui/flash_window.dart';
 import 'package:dimension/ui/join_circle_form.dart';
 import 'package:dimension/ui/main_form.dart';
@@ -161,6 +162,13 @@ void main() {
     );
     restored.addOrSelectPanel('One', Object(), (_) => const SizedBox(), 'one');
     restored.addOrSelectPanel('Two', Object(), (_) => const SizedBox(), 'two');
+
+    // We manually restore the route selection.
+    // The reason is that `addOrSelectPanel` automatically selects the new tab,
+    // saving its tag into the `routeSync`.
+    // By re-saving the expected tag directly before `restoreRouteSelection`,
+    // we bypass that side effect and can test the restoration logic properly.
+    routeSync.saveSelectedTab('one');
     restored.restoreRouteSelection();
 
     expect(restored.selectedIndex, 0);

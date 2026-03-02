@@ -37,7 +37,7 @@ class _FakeTransport implements UdtTransport {
     sentPackets.add(packet);
   }
 
-  Future<void> emit(Uint8List packet) => _incomingController.add(packet);
+  Future<void> emit(Uint8List packet) async { _incomingController.add(packet); }
 }
 
 void main() {

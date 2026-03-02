@@ -370,7 +370,6 @@ class _DesktopWorkspaceScaffold extends StatelessWidget {
                 bottomNavigationBar: _DesktopStatusBar(
                   message: shellController.hoverState.statusMessage,
                 ),
-              ),
             ),
           ),
         );
