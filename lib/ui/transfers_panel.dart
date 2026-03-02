@@ -182,7 +182,7 @@ class TransfersPanel extends StatelessWidget {
 
     return ListView.separated(
       itemCount: rows.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
+      separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final row = rows[index];
         return ListTile(
