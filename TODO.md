@@ -47,10 +47,10 @@ This file intentionally tracks only **remaining** work. Completed milestones wer
 
 - [x] Mobile release readiness
   - [x] Android+iOS permissions, icons, splash screens, and store metadata final pass
-- [x] Desktop release readiness
-  - [x] packaging/signing/notarization strategy + updater workflow alignment
-- [x] Web release readiness
-  - [x] production hosting config, cache strategy, rollout/versioning plan
+- [ ] Desktop release readiness
+  - [ ] packaging/signing/notarization strategy + updater workflow alignment
+- [ ] Web release readiness
+  - [ ] production hosting config, cache strategy, rollout/versioning plan
 - [ ] Maintain a per-platform parity checklist for major C# user-visible feature coverage.
 
 ## Notes
