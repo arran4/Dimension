@@ -205,7 +205,7 @@ class _FilesPane extends StatelessWidget {
 
     return ListView.separated(
       itemCount: entries.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
+      separatorBuilder: (context, index) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final item = entries[index];
         return ListTile(

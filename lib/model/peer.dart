@@ -1,3 +1,4 @@
+import 'package:dimension/model/bootstrap.dart';
 import 'dart:io';
 
 import 'commands/command.dart';
