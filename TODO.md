@@ -45,8 +45,8 @@ This file intentionally tracks only **remaining** work. Completed milestones wer
 
 ## 4) Release readiness
 
-- [ ] Mobile release readiness
-  - [ ] Android+iOS permissions, icons, splash screens, and store metadata final pass
+- [x] Mobile release readiness
+  - [x] Android+iOS permissions, icons, splash screens, and store metadata final pass
 - [ ] Desktop release readiness
   - [ ] packaging/signing/notarization strategy + updater workflow alignment
 - [ ] Web release readiness
