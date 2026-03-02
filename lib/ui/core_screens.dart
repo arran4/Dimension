@@ -396,7 +396,7 @@ class _SectionPane extends StatelessWidget {
           ? Center(child: Text(emptyMessage))
           : ListView.separated(
               itemCount: state.items.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
+              separatorBuilder: (context, index) => const Divider(height: 1),
               itemBuilder: (_, index) => ListTile(title: Text(state.items[index])),
             ),
     };

@@ -1,3 +1,4 @@
+import 'package:dimension/model/bootstrap.dart';
 import 'dart:io';
 
 import 'package:dimension/model/commands/private_chat_command.dart';
