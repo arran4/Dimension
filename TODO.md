@@ -53,6 +53,11 @@ This file intentionally tracks only **remaining** work. Completed milestones wer
   - [ ] production hosting config, cache strategy, rollout/versioning plan
 - [ ] Maintain a per-platform parity checklist for major C# user-visible feature coverage.
 
+## 5) dart_udt integration bug reports / feature requests
+
+To make `dart_udt` fully usable as a drop-in replacement for the `Dimension` app's networking layer, the following issues/feature requests have been identified:
+- [ ] **Full end-to-end socket/session parity**: The `dart_udt` package currently only provides building blocks (planners, codecs, etc.). It needs a high-level API for binding, connecting, listening, and sending/receiving streams of reliable bytes that manages the entire UDT state machine over UDP.
+
 ## Notes
 
 - Model layer remains pure-Dart first; networking/filesystem/platform concerns continue behind constructor-injected interfaces.
