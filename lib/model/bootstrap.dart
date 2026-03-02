@@ -111,7 +111,6 @@ class Bootstrap {
     }
   }
 
-
   /// C# compatibility shim.
   void WriteLine(String message) => writeLine(message);
 

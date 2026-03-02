@@ -16,7 +16,6 @@ void main() {
     expect(snapshot.capabilities.supportsHover, isFalse);
   });
 
-
   test('keeps touch layouts compact for landscape phone bounds', () {
     final snapshot = inferPlatformLayout(
       width: 844,
@@ -61,7 +60,8 @@ void main() {
   });
 
   test('controller recompute updates snapshot', () {
-    final controller = PlatformPlanController(targetPlatformOverride: TargetPlatform.iOS);
+    final controller =
+        PlatformPlanController(targetPlatformOverride: TargetPlatform.iOS);
 
     controller.recompute(
       width: 460,

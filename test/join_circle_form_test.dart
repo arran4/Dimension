@@ -27,7 +27,8 @@ class _Service implements JoinCircleService {
 }
 
 void main() {
-  test('joinCircle uses bootstrap service and forwards normalized LAN input', () async {
+  test('joinCircle uses bootstrap service and forwards normalized LAN input',
+      () async {
     final service = _Service();
     List<InternetAddressEndpoint>? addedEndpoints;
     String? addedInput;

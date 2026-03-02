@@ -21,7 +21,8 @@ void main() {
     );
 
     await tester.pumpWidget(
-      const MaterialApp(home: Scaffold(body: HashProgressForm(snapshot: snapshot))),
+      const MaterialApp(
+          home: Scaffold(body: HashProgressForm(snapshot: snapshot))),
     );
 
     expect(find.text('Hashing progress'), findsOneWidget);

@@ -1,4 +1,3 @@
 import 'command.dart';
 
-abstract class SearchCommand extends Command {
-}
+abstract class SearchCommand extends Command {}

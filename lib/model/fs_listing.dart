@@ -28,4 +28,23 @@ class RootShare extends Folder {
   int totalBytes = 0;
   int quickHashedBytes = 0;
   int fullHashedBytes = 0;
+
+  static RootShare fromJson(Map<String, dynamic> json) {
+    return RootShare()
+      ..index = json['index'] as int? ?? 0
+      ..fullPath = json['fullPath'] as String? ?? ''
+      ..totalBytes = json['totalBytes'] as int? ?? 0
+      ..quickHashedBytes = json['quickHashedBytes'] as int? ?? 0
+      ..fullHashedBytes = json['fullHashedBytes'] as int? ?? 0;
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'index': index,
+      'fullPath': fullPath,
+      'totalBytes': totalBytes,
+      'quickHashedBytes': quickHashedBytes,
+      'fullHashedBytes': fullHashedBytes,
+    };
+  }
 }

@@ -1,4 +1,3 @@
 import 'punch_command.dart';
 
-class EndPunchCommand extends PunchCommand {
-}
+class EndPunchCommand extends PunchCommand {}

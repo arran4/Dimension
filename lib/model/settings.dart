@@ -85,7 +85,8 @@ class Settings {
     }
 
     final raw = _store.get(key);
-    final normalized = raw == null || raw.isEmpty ? defaultValue.toString() : raw;
+    final normalized =
+        raw == null || raw.isEmpty ? defaultValue.toString() : raw;
     _cache[key] = normalized;
     return _parseBool(normalized, defaultValue);
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'component_primitives.dart';
 
@@ -43,9 +44,9 @@ class CoreScreensController extends ChangeNotifier {
 
   final Map<CoreScreenSection, CoreScreensState> _sections =
       <CoreScreenSection, CoreScreensState>{
-        for (final section in CoreScreenSection.values)
-          section: const CoreScreensState(status: CoreScreenStatus.loading),
-      };
+    for (final section in CoreScreenSection.values)
+      section: const CoreScreensState(status: CoreScreenStatus.loading),
+  };
 
   final Set<CoreScreenSection> _busySections = <CoreScreenSection>{};
   final Map<CoreScreenSection, String> _statusMessages =
@@ -59,7 +60,8 @@ class CoreScreensController extends ChangeNotifier {
     return _sections[section]!;
   }
 
-  bool sectionBusy(CoreScreenSection section) => _busySections.contains(section);
+  bool sectionBusy(CoreScreenSection section) =>
+      _busySections.contains(section);
 
   String? sectionMessage(CoreScreenSection section) => _statusMessages[section];
 
@@ -79,7 +81,8 @@ class CoreScreensController extends ChangeNotifier {
   }
 
   void setLoading(CoreScreenSection section) {
-    _sections[section] = const CoreScreensState(status: CoreScreenStatus.loading);
+    _sections[section] =
+        const CoreScreensState(status: CoreScreenStatus.loading);
     notifyListeners();
   }
 
@@ -261,115 +264,137 @@ class CoreScreensView extends StatelessWidget {
                       ),
                       body: TabBarView(
                         children: [
-                _SectionPane(
-                  title: 'Circles',
-                  state: controller.stateFor(CoreScreenSection.circles),
-                  emptyMessage: 'No circles joined.',
-                  statusMessage: controller.sectionMessage(
-                    CoreScreenSection.circles,
-                  ),
-                  busy: controller.sectionBusy(CoreScreenSection.circles),
-                  actions: [
-                    SizedBox(
-                      width: 220,
-                      child: TextField(
-                        key: const Key('joinCircleInput'),
-                        decoration: const InputDecoration(labelText: 'Circle'),
-                        onChanged: controller.setJoinCircleTarget,
-                      ),
-                    ),
-                    _sectionActionButton(
-                      label: 'Join',
-                      semanticsLabel: 'Join circle',
-                      onPressed: () => controller.joinCircle(controller.joinCircleTarget),
-                    ),
-                  ],
-                ),
-                _SectionPane(
-                  title: 'Peers',
-                  state: controller.stateFor(CoreScreenSection.peers),
-                  emptyMessage: 'No peers connected.',
-                  statusMessage: controller.sectionMessage(CoreScreenSection.peers),
-                  busy: controller.sectionBusy(CoreScreenSection.peers),
-                  actions: [
-                    _sectionActionButton(
-                      label: 'Refresh',
-                      semanticsLabel: 'Refresh peers',
-                      onPressed: controller.refreshPeers,
-                    ),
-                  ],
-                ),
-                _SectionPane(
-                  title: 'Chat',
-                  state: controller.stateFor(CoreScreenSection.chat),
-                  emptyMessage: 'No chat messages yet.',
-                  statusMessage: controller.sectionMessage(CoreScreenSection.chat),
-                  busy: controller.sectionBusy(CoreScreenSection.chat),
-                ),
-                _SectionPane(
-                  title: 'Search',
-                  state: controller.stateFor(CoreScreenSection.search),
-                  emptyMessage: 'No search results.',
-                  statusMessage: controller.sectionMessage(CoreScreenSection.search),
-                  busy: controller.sectionBusy(CoreScreenSection.search),
-                  actions: [
-                    SizedBox(
-                      width: 260,
-                      child: TextField(
-                        key: const Key('searchQueryInput'),
-                        decoration: const InputDecoration(labelText: 'Search'),
-                        onChanged: controller.setSearchQuery,
-                      ),
-                    ),
-                    _sectionActionButton(
-                      label: 'Search',
-                      semanticsLabel: 'Run search',
-                      onPressed: () => controller.runSearch(controller.searchQuery),
-                    ),
-                  ],
-                ),
-                _SectionPane(
-                  title: 'Transfers',
-                  state: controller.stateFor(CoreScreenSection.transfers),
-                  emptyMessage: 'No active transfers.',
-                  statusMessage: controller.sectionMessage(
-                    CoreScreenSection.transfers,
-                  ),
-                  busy: controller.sectionBusy(CoreScreenSection.transfers),
-                  actions: [
-                    SizedBox(
-                      width: 260,
-                      child: TextField(
-                        key: const Key('downloadTargetInput'),
-                        decoration: const InputDecoration(labelText: 'Transfer'),
-                        onChanged: controller.setDownloadTarget,
-                      ),
-                    ),
-                    _sectionActionButton(
-                      label: 'Queue Download',
-                      semanticsLabel: 'Queue download for transfer target',
-                      onPressed: () => controller.queueDownload(controller.downloadTarget),
-                    ),
-                  ],
-                ),
-                _SectionPane(
-                  title: 'Settings',
-                  state: controller.stateFor(CoreScreenSection.settings),
-                  emptyMessage: 'No settings options available.',
-                  statusMessage: controller.sectionMessage(
-                    CoreScreenSection.settings,
-                  ),
-                  busy: controller.sectionBusy(CoreScreenSection.settings),
-                ),
-                _SectionPane(
-                  title: 'Diagnostics',
-                  state: controller.stateFor(CoreScreenSection.diagnostics),
-                  emptyMessage: 'No diagnostics entries.',
-                  statusMessage: controller.sectionMessage(
-                    CoreScreenSection.diagnostics,
-                  ),
-                  busy: controller.sectionBusy(CoreScreenSection.diagnostics),
-                ),
+                          _SectionPane(
+                            title: 'Circles',
+                            state:
+                                controller.stateFor(CoreScreenSection.circles),
+                            emptyMessage: 'No circles joined.',
+                            statusMessage: controller.sectionMessage(
+                              CoreScreenSection.circles,
+                            ),
+                            busy: controller
+                                .sectionBusy(CoreScreenSection.circles),
+                            actions: [
+                              SizedBox(
+                                width: 220,
+                                child: TextField(
+                                  key: const Key('joinCircleInput'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Circle'),
+                                  onChanged: controller.setJoinCircleTarget,
+                                ),
+                              ),
+                              _sectionActionButton(
+                                label: 'Join',
+                                semanticsLabel: 'Join circle',
+                                onPressed: () => controller
+                                    .joinCircle(controller.joinCircleTarget),
+                              ),
+                            ],
+                          ),
+                          _SectionPane(
+                            title: 'Peers',
+                            state: controller.stateFor(CoreScreenSection.peers),
+                            emptyMessage: 'No peers connected.',
+                            statusMessage: controller
+                                .sectionMessage(CoreScreenSection.peers),
+                            busy:
+                                controller.sectionBusy(CoreScreenSection.peers),
+                            actions: [
+                              _sectionActionButton(
+                                label: 'Refresh',
+                                semanticsLabel: 'Refresh peers',
+                                onPressed: controller.refreshPeers,
+                              ),
+                            ],
+                          ),
+                          _SectionPane(
+                            title: 'Chat',
+                            state: controller.stateFor(CoreScreenSection.chat),
+                            emptyMessage: 'No chat messages yet.',
+                            statusMessage: controller
+                                .sectionMessage(CoreScreenSection.chat),
+                            busy:
+                                controller.sectionBusy(CoreScreenSection.chat),
+                          ),
+                          _SectionPane(
+                            title: 'Search',
+                            state:
+                                controller.stateFor(CoreScreenSection.search),
+                            emptyMessage: 'No search results.',
+                            statusMessage: controller
+                                .sectionMessage(CoreScreenSection.search),
+                            busy: controller
+                                .sectionBusy(CoreScreenSection.search),
+                            actions: [
+                              SizedBox(
+                                width: 260,
+                                child: TextField(
+                                  key: const Key('searchQueryInput'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Search'),
+                                  onChanged: controller.setSearchQuery,
+                                ),
+                              ),
+                              _sectionActionButton(
+                                label: 'Search',
+                                semanticsLabel: 'Run search',
+                                onPressed: () => controller
+                                    .runSearch(controller.searchQuery),
+                              ),
+                            ],
+                          ),
+                          _SectionPane(
+                            title: 'Transfers',
+                            state: controller
+                                .stateFor(CoreScreenSection.transfers),
+                            emptyMessage: 'No active transfers.',
+                            statusMessage: controller.sectionMessage(
+                              CoreScreenSection.transfers,
+                            ),
+                            busy: controller
+                                .sectionBusy(CoreScreenSection.transfers),
+                            actions: [
+                              SizedBox(
+                                width: 260,
+                                child: TextField(
+                                  key: const Key('downloadTargetInput'),
+                                  decoration: const InputDecoration(
+                                      labelText: 'Transfer'),
+                                  onChanged: controller.setDownloadTarget,
+                                ),
+                              ),
+                              _sectionActionButton(
+                                label: 'Queue Download',
+                                semanticsLabel:
+                                    'Queue download for transfer target',
+                                onPressed: () => controller
+                                    .queueDownload(controller.downloadTarget),
+                              ),
+                            ],
+                          ),
+                          _SectionPane(
+                            title: 'Settings',
+                            state:
+                                controller.stateFor(CoreScreenSection.settings),
+                            emptyMessage: 'No settings options available.',
+                            statusMessage: controller.sectionMessage(
+                              CoreScreenSection.settings,
+                            ),
+                            busy: controller
+                                .sectionBusy(CoreScreenSection.settings),
+                          ),
+                          _SectionPane(
+                            title: 'Diagnostics',
+                            state: controller
+                                .stateFor(CoreScreenSection.diagnostics),
+                            emptyMessage: 'No diagnostics entries.',
+                            statusMessage: controller.sectionMessage(
+                              CoreScreenSection.diagnostics,
+                            ),
+                            busy: controller
+                                .sectionBusy(CoreScreenSection.diagnostics),
+                          ),
                         ],
                       ),
                     ),
@@ -416,16 +441,18 @@ class _SectionPane extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget content = switch (state.status) {
-      CoreScreenStatus.loading => const Center(child: CircularProgressIndicator()),
+      CoreScreenStatus.loading =>
+        const Center(child: CircularProgressIndicator()),
       CoreScreenStatus.error => Center(
-        child: Text(state.errorMessage ?? 'Failed to load $title.'),
-      ),
+          child: Text(state.errorMessage ?? 'Failed to load $title.'),
+        ),
       CoreScreenStatus.ready => state.items.isEmpty
           ? Center(child: Text(emptyMessage))
           : ListView.separated(
               itemCount: state.items.length,
               separatorBuilder: (context, index) => const Divider(height: 1),
-              itemBuilder: (_, index) => ListTile(title: Text(state.items[index])),
+              itemBuilder: (_, index) =>
+                  ListTile(title: Text(state.items[index])),
             ),
     };
 

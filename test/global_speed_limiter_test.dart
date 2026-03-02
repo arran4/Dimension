@@ -15,7 +15,8 @@ void main() {
     limiter.dispose();
   });
 
-  test('uses injected settings getter for upload and download limits', () async {
+  test('uses injected settings getter for upload and download limits',
+      () async {
     final values = <String, int>{
       'Global Upload Rate Limit': 100,
       'Global Download Rate Limit': 80,
@@ -36,4 +37,3 @@ void main() {
     limiter.dispose();
   });
 }
-

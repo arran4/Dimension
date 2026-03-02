@@ -31,13 +31,15 @@ void main() {
     expect(clientTransport.isConnected, isTrue);
   });
 
-  test('connection factory sends command through in-memory transports', () async {
+  test('connection factory sends command through in-memory transports',
+      () async {
     final backend = InMemoryUdtBackend();
     final serializer = _buildSerializer();
     final endpoint = const UdtEndpoint(host: 'localhost', port: 7001);
     final listenerTransport = backend.registerListener(endpoint);
 
-    final factory = UdtConnectionFactory(backend: backend, serializer: serializer);
+    final factory =
+        UdtConnectionFactory(backend: backend, serializer: serializer);
     final incoming = factory.createIncoming(listenerTransport);
     final outgoing = await factory.createOutgoing(endpoint);
 

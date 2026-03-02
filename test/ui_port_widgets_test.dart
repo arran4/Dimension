@@ -26,8 +26,7 @@ class _FakeLoadingStatusSource implements LoadingStatusSource {
 
 class _FakeNetworkStatusProvider implements NetworkStatusProvider {
   @override
-  NetworkStatusSnapshot get snapshot =>
-      const NetworkStatusSnapshot(
+  NetworkStatusSnapshot get snapshot => const NetworkStatusSnapshot(
         ports: NetworkPortsInfo(
           internalIpAddresses: ['192.168.1.10'],
           externalIpAddress: '44.55.66.77',
@@ -153,7 +152,8 @@ void main() {
     expect(parseDimensionJoinLink('https://example.com'), isNull);
   });
 
-  testWidgets('html panel forwards join requests when links are tapped', (tester) async {
+  testWidgets('html panel forwards join requests when links are tapped',
+      (tester) async {
     JoinCircleRequest? request;
 
     await tester.pumpWidget(
@@ -218,5 +218,4 @@ void main() {
 
     expect(find.text('No queued downloads.'), findsOneWidget);
   });
-
 }

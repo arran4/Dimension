@@ -15,9 +15,10 @@ class AdaptiveWorkspace extends StatelessWidget {
     DesktopShellController? desktopShellController,
     DesktopContextMenuController? desktopContextMenuController,
     this.desktopWindowStateController,
-  }) : desktopShellController = desktopShellController ?? DesktopShellController(),
-       desktopContextMenuController =
-           desktopContextMenuController ?? const DesktopContextMenuController();
+  })  : desktopShellController =
+            desktopShellController ?? DesktopShellController(),
+        desktopContextMenuController = desktopContextMenuController ??
+            const DesktopContextMenuController();
 
   final PlatformPlanController planController;
   final CoreScreensController screensController;
@@ -40,23 +41,23 @@ class AdaptiveWorkspace extends StatelessWidget {
             final tabs = CoreScreenSection.values;
             return switch (snapshot.navigationPattern) {
               NavigationPattern.bottomTabs => _BottomTabsWorkspace(
-                sections: tabs,
-                screensController: screensController,
-              ),
+                  sections: tabs,
+                  screensController: screensController,
+                ),
               NavigationPattern.rail => _RailWorkspace(
-                sections: tabs,
-                screensController: screensController,
-                desktopShellController: desktopShellController,
-                desktopContextMenuController: desktopContextMenuController,
-                desktopWindowStateController: desktopWindowStateController,
-              ),
+                  sections: tabs,
+                  screensController: screensController,
+                  desktopShellController: desktopShellController,
+                  desktopContextMenuController: desktopContextMenuController,
+                  desktopWindowStateController: desktopWindowStateController,
+                ),
               NavigationPattern.splitView => _SplitViewWorkspace(
-                sections: tabs,
-                screensController: screensController,
-                desktopShellController: desktopShellController,
-                desktopContextMenuController: desktopContextMenuController,
-                desktopWindowStateController: desktopWindowStateController,
-              ),
+                  sections: tabs,
+                  screensController: screensController,
+                  desktopShellController: desktopShellController,
+                  desktopContextMenuController: desktopContextMenuController,
+                  desktopWindowStateController: desktopWindowStateController,
+                ),
             };
           },
         );
@@ -103,7 +104,8 @@ class _BottomTabsWorkspace extends StatelessWidget {
                         section: section,
                         state: screensController.stateFor(section),
                         refreshable: true,
-                        onRefresh: () => _refreshSection(section, screensController),
+                        onRefresh: () =>
+                            _refreshSection(section, screensController),
                       ),
                   ],
                 ),
@@ -146,7 +148,8 @@ class _BottomTabsWorkspace extends StatelessWidget {
       CoreScreenSection.transfers => controller.queueDownload('mobile.bin'),
       CoreScreenSection.chat ||
       CoreScreenSection.settings ||
-      CoreScreenSection.diagnostics => Future<void>.value(),
+      CoreScreenSection.diagnostics =>
+        Future<void>.value(),
     };
   }
 }
@@ -197,8 +200,10 @@ class _RailWorkspaceState extends State<_RailWorkspace> {
           for (final entry in widget.sections)
             NavigationRailDestination(
               icon: MouseRegion(
-                onEnter: (_) => widget.desktopShellController.onSectionHover(entry),
-                onExit: (_) => widget.desktopShellController.onSectionHover(null),
+                onEnter: (_) =>
+                    widget.desktopShellController.onSectionHover(entry),
+                onExit: (_) =>
+                    widget.desktopShellController.onSectionHover(null),
                 child: const Icon(Icons.circle_outlined),
               ),
               selectedIcon: const Icon(Icons.circle),
@@ -257,15 +262,17 @@ class _SplitViewWorkspaceState extends State<_SplitViewWorkspace> {
           children: [
             for (var i = 0; i < widget.sections.length; i++)
               MouseRegion(
-                onEnter: (_) =>
-                    widget.desktopShellController.onSectionHover(widget.sections[i]),
-                onExit: (_) => widget.desktopShellController.onSectionHover(null),
+                onEnter: (_) => widget.desktopShellController
+                    .onSectionHover(widget.sections[i]),
+                onExit: (_) =>
+                    widget.desktopShellController.onSectionHover(null),
                 child: ListTile(
                   title: Text(_label(widget.sections[i])),
                   selected: i == _selected,
                   onTap: () {
                     setState(() => _selected = i);
-                    widget.desktopShellController.activateSection(widget.sections[i]);
+                    widget.desktopShellController
+                        .activateSection(widget.sections[i]);
                   },
                 ),
               ),
@@ -323,53 +330,52 @@ class _DesktopWorkspaceScaffold extends StatelessWidget {
           child: Focus(
             autofocus: true,
             child: Scaffold(
-                appBar: AppBar(
-                  title: Text(title),
-                  actions: [
-                    FutureBuilder<DesktopWindowGeometry>(
-                      future: windowStateController?.restoreOrDefault(),
-                      builder: (context, snapshot) {
-                        final geometry = snapshot.data;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Center(
-                            child: Text(
-                              geometry == null
-                                  ? 'Window: default'
-                                  : 'Window: ${geometry.width.toInt()}×${geometry.height.toInt()}',
-                              key: const Key('desktopWindowGeometryLabel'),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
+              appBar: AppBar(
+                title: Text(title),
+                actions: [
+                  FutureBuilder<DesktopWindowGeometry>(
+                    future: windowStateController?.restoreOrDefault(),
+                    builder: (context, snapshot) {
+                      final geometry = snapshot.data;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Center(
+                          child: Text(
+                            geometry == null
+                                ? 'Window: default'
+                                : 'Window: ${geometry.width.toInt()}×${geometry.height.toInt()}',
+                            key: const Key('desktopWindowGeometryLabel'),
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
-                        );
-                      },
-                    ),
-                    PopupMenuButton<DesktopMenuAction>(
-                      key: const Key('desktopContextMenuButton'),
-                      icon: const Icon(Icons.more_vert),
-                      onSelected: (action) => action.onSelected(),
-                      itemBuilder: (context) {
-                        return [
-                          for (final action in actions)
-                            PopupMenuItem<DesktopMenuAction>(
-                              value: action,
-                              child: Text(action.label),
-                            ),
-                        ];
-                      },
-                    ),
-                  ],
-                ),
-                body: Row(
-                  children: [
-                    navigation,
-                    const VerticalDivider(width: 1),
-                    Expanded(child: child),
-                  ],
-                ),
-                bottomNavigationBar: _DesktopStatusBar(
-                  message: shellController.hoverState.statusMessage,
-                ),
+                        ),
+                      );
+                    },
+                  ),
+                  PopupMenuButton<DesktopMenuAction>(
+                    key: const Key('desktopContextMenuButton'),
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: (action) => action.onSelected(),
+                    itemBuilder: (context) {
+                      return [
+                        for (final action in actions)
+                          PopupMenuItem<DesktopMenuAction>(
+                            value: action,
+                            child: Text(action.label),
+                          ),
+                      ];
+                    },
+                  ),
+                ],
+              ),
+              body: Row(
+                children: [
+                  navigation,
+                  const VerticalDivider(width: 1),
+                  Expanded(child: child),
+                ],
+              ),
+              bottomNavigationBar: _DesktopStatusBar(
+                message: shellController.hoverState.statusMessage,
               ),
             ),
           ),
@@ -392,7 +398,8 @@ class _DesktopStatusBar extends StatelessWidget {
       alignment: Alignment.centerLeft,
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Text(message ?? 'Ready', style: Theme.of(context).textTheme.bodySmall),
+      child: Text(message ?? 'Ready',
+          style: Theme.of(context).textTheme.bodySmall),
     );
   }
 }
@@ -434,20 +441,21 @@ class _SectionPreview extends StatelessWidget {
 
   Widget _buildContent() {
     final content = switch (state.status) {
-      CoreScreenStatus.loading => const Center(child: CircularProgressIndicator()),
+      CoreScreenStatus.loading =>
+        const Center(child: CircularProgressIndicator()),
       CoreScreenStatus.error => Center(
-        child: Text(state.errorMessage ?? 'Unable to load section'),
-      ),
+          child: Text(state.errorMessage ?? 'Unable to load section'),
+        ),
       CoreScreenStatus.ready => state.items.isEmpty
           ? const Center(child: Text('No items'))
           : desktopDense && _supportsDesktopTable(section)
-          ? _ResizableDesktopTable(section: section, rows: state.items)
-          : ListView.builder(
-              itemCount: state.items.length,
-              itemBuilder: (_, index) => ListTile(
-                title: Text(state.items[index]),
-              ),
-            ),
+              ? _ResizableDesktopTable(section: section, rows: state.items)
+              : ListView.builder(
+                  itemCount: state.items.length,
+                  itemBuilder: (_, index) => ListTile(
+                    title: Text(state.items[index]),
+                  ),
+                ),
     };
 
     if (!refreshable || onRefresh == null) {
@@ -508,8 +516,8 @@ class _ResizableDesktopTableState extends State<_ResizableDesktopTable> {
               key: const Key('desktopColumnResizer'),
               behavior: HitTestBehavior.translucent,
               onHorizontalDragUpdate: (details) {
-                final next =
-                    _leftPaneFraction + (details.delta.dx / constraints.maxWidth);
+                final next = _leftPaneFraction +
+                    (details.delta.dx / constraints.maxWidth);
                 setState(() {
                   _leftPaneFraction = next.clamp(0.3, 0.8);
                 });

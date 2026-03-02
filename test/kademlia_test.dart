@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dimension/model/bootstrap.dart';
 import 'package:dimension/model/kademlia.dart';
 import 'package:flutter_test/flutter_test.dart';
 

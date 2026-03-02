@@ -12,7 +12,7 @@ class InMemorySpeedLimitSettings extends SpeedLimitSettings {
   final Map<WhichLimit, int> _values;
 
   InMemorySpeedLimitSettings({Map<WhichLimit, int>? initialValues})
-    : _values = Map<WhichLimit, int>.from(initialValues ?? const {});
+      : _values = Map<WhichLimit, int>.from(initialValues ?? const {});
 
   @override
   int getLimitBytesPerSecond(WhichLimit whichLimit) => _values[whichLimit] ?? 0;

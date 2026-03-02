@@ -69,12 +69,12 @@ class MainFormController extends ChangeNotifier {
     MainFormRouteSync? routeSync,
     MainFormTransferDispatcher? transferDispatcher,
     DateTime Function()? clock,
-  }) : _settings = settings,
-       _flashDriver = flashDriver,
-       _soundPlayer = soundPlayer,
-       _routeSync = routeSync,
-       _transferDispatcher = transferDispatcher,
-       _clock = clock ?? DateTime.now;
+  })  : _settings = settings,
+        _flashDriver = flashDriver,
+        _soundPlayer = soundPlayer,
+        _routeSync = routeSync,
+        _transferDispatcher = transferDispatcher,
+        _clock = clock ?? DateTime.now;
 
   final MainFormSettings _settings;
   final FlashWindowDriver _flashDriver;

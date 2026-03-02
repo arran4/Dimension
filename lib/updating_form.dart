@@ -21,10 +21,14 @@ class UpdaterStatus {
 
   final String message;
 
-  static const waitingForClose = UpdaterStatus('Waiting for Dimension to close...');
-  static const downloading = UpdaterStatus('Downloading new version of Dimension...');
-  static const installing = UpdaterStatus('Installing new version of Dimension...');
-  static const launching = UpdaterStatus('Launching new version of Dimension...');
+  static const waitingForClose =
+      UpdaterStatus('Waiting for Dimension to close...');
+  static const downloading =
+      UpdaterStatus('Downloading new version of Dimension...');
+  static const installing =
+      UpdaterStatus('Installing new version of Dimension...');
+  static const launching =
+      UpdaterStatus('Launching new version of Dimension...');
   static const done = UpdaterStatus('Done.');
 }
 

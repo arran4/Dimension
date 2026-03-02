@@ -42,7 +42,6 @@ class _Logger implements ProgramLogger {
   void addEntry(String message) => entries.add(message);
 }
 
-
 class _LatestBuildProvider implements LatestBuildProvider {
   _LatestBuildProvider(this.value);
   final int? value;

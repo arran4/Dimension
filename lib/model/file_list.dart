@@ -6,7 +6,8 @@ import 'fs_listing.dart';
 typedef FileListUpdateCompleteHandler = void Function();
 
 abstract class FileListShareScanner {
-  FutureOr<ShareSnapshot?> scanRootShare(RootShare share, {required bool urgent});
+  FutureOr<ShareSnapshot?> scanRootShare(RootShare share,
+      {required bool urgent});
 }
 
 abstract class FileListIncrementalWatcher {
@@ -35,9 +36,9 @@ class FileList {
     required FileListDatabase database,
     FileListShareScanner? scanner,
     FileListIncrementalWatcher? incrementalWatcher,
-  }) : _database = database,
-       _scanner = scanner,
-       _incrementalWatcher = incrementalWatcher;
+  })  : _database = database,
+        _scanner = scanner,
+        _incrementalWatcher = incrementalWatcher;
 
   final FileListDatabase _database;
   final FileListShareScanner? _scanner;
@@ -64,7 +65,7 @@ class FileList {
 
     if (_scanner != null) {
       for (final share in shares) {
-        final snapshot = await _scanner.scanRootShare(share, urgent: urgent);
+        final snapshot = await _scanner!.scanRootShare(share, urgent: urgent);
         if (snapshot != null) {
           _applySnapshot(snapshot);
         }
@@ -233,19 +234,20 @@ class FileList {
   }
 
   void _ensureIncrementalWatch(List<RootShare> shares, {required bool urgent}) {
-    if (_incrementalWatcher == null || _watchSubscription != null || _disposed) {
+    if (_incrementalWatcher == null ||
+        _watchSubscription != null ||
+        _disposed) {
       return;
     }
 
-    _watchSubscription = _incrementalWatcher
-        ?.watch(shares, urgent: urgent)
-        .listen((snapshot) {
-          if (_disposed) {
-            return;
-          }
-          _applySnapshot(snapshot);
-          _notifyUpdateComplete();
-        });
+    _watchSubscription =
+        _incrementalWatcher?.watch(shares, urgent: urgent).listen((snapshot) {
+      if (_disposed) {
+        return;
+      }
+      _applySnapshot(snapshot);
+      _notifyUpdateComplete();
+    });
   }
 
   void _notifyUpdateComplete() {
@@ -308,12 +310,10 @@ class FileList {
     snapshot.root.totalBytes = totalBytes;
     final previousQuick = previousRoot?.quickHashedBytes ?? 0;
     final previousFull = previousRoot?.fullHashedBytes ?? 0;
-    snapshot.root.quickHashedBytes =
-        snapshot.root.quickHashedBytes > 0
+    snapshot.root.quickHashedBytes = snapshot.root.quickHashedBytes > 0
         ? snapshot.root.quickHashedBytes.clamp(0, totalBytes)
         : previousQuick.clamp(0, totalBytes);
-    snapshot.root.fullHashedBytes =
-        snapshot.root.fullHashedBytes > 0
+    snapshot.root.fullHashedBytes = snapshot.root.fullHashedBytes > 0
         ? snapshot.root.fullHashedBytes.clamp(0, totalBytes)
         : previousFull.clamp(0, totalBytes);
 
@@ -333,7 +333,8 @@ class FileList {
       }
     }
 
-    final current = _database.getULong(_database.fileList, 'Current FSListing ID', 0);
+    final current =
+        _database.getULong(_database.fileList, 'Current FSListing ID', 0);
     if (maxId > current) {
       _database.setULong(_database.fileList, 'Current FSListing ID', maxId);
     }

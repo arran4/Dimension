@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dimension/model/bootstrap.dart';
 import 'package:dimension/model/commands/private_chat_command.dart';
 import 'package:dimension/ui/flash_window.dart';
 import 'package:dimension/ui/join_circle_form.dart';
@@ -71,13 +72,15 @@ void main() {
       (_) => const SizedBox(),
       'welcome',
     );
-    controller.addOrSelectPanel('Again', Object(), (_) => const SizedBox(), 'welcome');
+    controller.addOrSelectPanel(
+        'Again', Object(), (_) => const SizedBox(), 'welcome');
 
     expect(controller.tabs, hasLength(1));
     expect(controller.selectedIndex, 0);
   });
 
-  test('privateChatReceived creates user panel and appends timestamped lines', () {
+  test('privateChatReceived creates user panel and appends timestamped lines',
+      () {
     final controller = MainFormController(
       settings: _Settings({'Flash on Name Drop': false, 'Play sounds': false}),
       flashDriver: _FlashDriver(activated: false),
@@ -93,7 +96,8 @@ void main() {
     );
 
     expect(controller.tabs.single.text, 'alice');
-    final userController = controller.tabs.single.controller as UserPanelController;
+    final userController =
+        controller.tabs.single.controller as UserPanelController;
     expect(userController.lines, ['03:04 alice: hello', '03:04 alice: there']);
   });
 
@@ -147,8 +151,10 @@ void main() {
       routeSync: routeSync,
     );
 
-    controller.addOrSelectPanel('One', Object(), (_) => const SizedBox(), 'one');
-    controller.addOrSelectPanel('Two', Object(), (_) => const SizedBox(), 'two');
+    controller.addOrSelectPanel(
+        'One', Object(), (_) => const SizedBox(), 'one');
+    controller.addOrSelectPanel(
+        'Two', Object(), (_) => const SizedBox(), 'two');
     controller.selectIndex(0);
 
     expect(routeSync.loadSelectedTab(), 'one');
@@ -166,7 +172,8 @@ void main() {
     expect(restored.selectedIndex, 0);
   });
 
-  test('queueTransferDownload uses injected dispatcher and trims values', () async {
+  test('queueTransferDownload uses injected dispatcher and trims values',
+      () async {
     final dispatcher = _TransferDispatcher();
     final controller = MainFormController(
       settings: _Settings({}),
@@ -181,7 +188,8 @@ void main() {
     expect(dispatcher.queued, <String>['song.mp3']);
   });
 
-  testWidgets('MainForm renders rail destinations and selected panel', (tester) async {
+  testWidgets('MainForm renders rail destinations and selected panel',
+      (tester) async {
     final controller = MainFormController(
       settings: _Settings({'Invert Colors': true}),
       flashDriver: _FlashDriver(activated: true),
@@ -195,7 +203,8 @@ void main() {
       'welcome',
     );
 
-    await tester.pumpWidget(MaterialApp(home: MainForm(controller: controller)));
+    await tester
+        .pumpWidget(MaterialApp(home: MainForm(controller: controller)));
 
     expect(find.text('Welcome'), findsOneWidget);
     expect(find.text('Welcome Body'), findsOneWidget);

@@ -149,13 +149,16 @@ void main() {
     await Future<void>.delayed(Duration.zero);
 
     expect(watcher.watchCalls, 1);
-    expect(fileList.getFSListing('/Public/music/track.mp3', false), isA<File>());
+    expect(
+        fileList.getFSListing('/Public/music/track.mp3', false), isA<File>());
     expect(updates, isNotEmpty);
 
     fileList.dispose();
   });
 
-  test('snapshot reconcile removes stale entries and keeps hash progress bounded', () async {
+  test(
+      'snapshot reconcile removes stale entries and keeps hash progress bounded',
+      () async {
     final db = FileListDatabase();
     final root = RootShare()
       ..id = 1
@@ -178,7 +181,8 @@ void main() {
     );
 
     await fileList.update(false);
-    expect(fileList.getFSListing('/Public/docs/readme.txt', false), isA<File>());
+    expect(
+        fileList.getFSListing('/Public/docs/readme.txt', false), isA<File>());
 
     final newerRoot = RootShare()
       ..id = root.id
@@ -207,7 +211,8 @@ void main() {
     await Future<void>.delayed(Duration.zero);
 
     expect(fileList.getFSListing('/Public/docs/readme.txt', false), isNull);
-    expect(fileList.getFSListing('/Public/media/movie.mkv', false), isA<File>());
+    expect(
+        fileList.getFSListing('/Public/media/movie.mkv', false), isA<File>());
 
     final updatedRoot = fileList.getRootShare(1)!;
     expect(updatedRoot.totalBytes, 100);

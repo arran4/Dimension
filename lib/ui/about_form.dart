@@ -5,8 +5,7 @@ class AboutForm extends StatelessWidget {
     super.key,
     this.applicationName = 'Dimension',
     this.versionLabel = '',
-    this.description =
-        'A Flutter port of the Dimension peer-to-peer client.',
+    this.description = 'A Flutter port of the Dimension peer-to-peer client.',
   });
 
   final String applicationName;
@@ -17,8 +16,7 @@ class AboutForm extends StatelessWidget {
     BuildContext context, {
     String applicationName = 'Dimension',
     String versionLabel = '',
-    String description =
-        'A Flutter port of the Dimension peer-to-peer client.',
+    String description = 'A Flutter port of the Dimension peer-to-peer client.',
   }) {
     return showDialog<void>(
       context: context,

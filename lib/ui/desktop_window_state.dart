@@ -14,11 +14,11 @@ class DesktopWindowGeometry {
   final double offsetY;
 
   Map<String, double> toJson() => <String, double>{
-    'width': width,
-    'height': height,
-    'offsetX': offsetX,
-    'offsetY': offsetY,
-  };
+        'width': width,
+        'height': height,
+        'offsetX': offsetX,
+        'offsetY': offsetY,
+      };
 
   static DesktopWindowGeometry fromJson(Map<String, Object?> json) {
     return DesktopWindowGeometry(
@@ -50,7 +50,7 @@ class InMemoryDesktopWindowStateStore implements DesktopWindowStateStore {
 
 class DesktopWindowStateController {
   DesktopWindowStateController({required DesktopWindowStateStore store})
-    : _store = store;
+      : _store = store;
 
   final DesktopWindowStateStore _store;
 

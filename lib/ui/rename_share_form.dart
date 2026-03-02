@@ -5,7 +5,8 @@ class RenameShareForm extends StatefulWidget {
 
   final String initialName;
 
-  static Future<String?> show(BuildContext context, {required String initialName}) {
+  static Future<String?> show(BuildContext context,
+      {required String initialName}) {
     return showDialog<String>(
       context: context,
       builder: (_) => RenameShareForm(initialName: initialName),

@@ -39,7 +39,8 @@ class ExtensionFileIconResolver implements FileIconResolver {
     if (_imageExtensions.contains(extension)) {
       return const IconData(0xe3f4, fontFamily: 'MaterialIcons'); // image
     }
-    return const IconData(0xe24d, fontFamily: 'MaterialIcons'); // insert_drive_file
+    return const IconData(0xe24d,
+        fontFamily: 'MaterialIcons'); // insert_drive_file
   }
 
   String _extractExtension(String path) {
@@ -53,7 +54,7 @@ class ExtensionFileIconResolver implements FileIconResolver {
 
 class IconReader {
   IconReader({FileIconResolver? fileIconResolver})
-    : _fileIconResolver = fileIconResolver ?? ExtensionFileIconResolver();
+      : _fileIconResolver = fileIconResolver ?? ExtensionFileIconResolver();
 
   final FileIconResolver _fileIconResolver;
 

@@ -67,7 +67,8 @@ void main() {
             ..size = 2048,
         ],
     );
-    controller.chatReceived(PrivateChatCommand()..content = 'hi', username: 'bob');
+    controller.chatReceived(PrivateChatCommand()..content = 'hi',
+        username: 'bob');
 
     await tester.pumpWidget(
       MaterialApp(

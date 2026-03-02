@@ -24,8 +24,8 @@ class UdtIncomingConnection extends IncomingConnection {
   UdtIncomingConnection({
     required UdtTransport transport,
     required Serializer serializer,
-  }) : _transport = transport,
-       _serializer = serializer {
+  })  : _transport = transport,
+        _serializer = serializer {
     _subscription = _transport.incomingPackets.listen(_onPacket);
   }
 
@@ -63,8 +63,8 @@ class UdtOutgoingConnection extends OutgoingConnection {
   UdtOutgoingConnection({
     required UdtTransport transport,
     required Serializer serializer,
-  }) : _transport = transport,
-       _serializer = serializer {
+  })  : _transport = transport,
+        _serializer = serializer {
     successfulConnections++;
     _subscription = _transport.incomingPackets.listen(_onPacket);
   }
