@@ -27,7 +27,8 @@ class LoopbackIncomingConnection extends IncomingConnection {
       LoopbackDummyGlobal.globalUpCounter.addBytes(len);
       upCounter.addBytes(len);
       if (LoopbackDummyGlobal.speedLimiter != null) {
-        await LoopbackDummyGlobal.speedLimiter.limitUpload(len, disabled: rateLimiterDisabled);
+        await LoopbackDummyGlobal.speedLimiter
+            .limitUpload(len, disabled: rateLimiterDisabled);
       }
     }
     _outgoing.received(c);
@@ -49,7 +50,6 @@ class LoopbackIncomingConnection extends IncomingConnection {
   bool get connected => true;
 }
 
-
 class LoopbackOutgoingConnection extends OutgoingConnection {
   final ByteCounter upCounter = ByteCounter();
   final ByteCounter downCounter = ByteCounter();
@@ -70,7 +70,8 @@ class LoopbackOutgoingConnection extends OutgoingConnection {
       LoopbackDummyGlobal.globalUpCounter.addBytes(len);
       upCounter.addBytes(len);
       if (LoopbackDummyGlobal.speedLimiter != null) {
-        await LoopbackDummyGlobal.speedLimiter.limitUpload(len, disabled: rateLimiterDisabled);
+        await LoopbackDummyGlobal.speedLimiter
+            .limitUpload(len, disabled: rateLimiterDisabled);
       }
     }
     _incoming.received(c);

@@ -1,8 +1,8 @@
 import 'package:dimension/model/commands/command.dart';
 import 'package:dimension/model/commands/hello_command.dart';
 import 'package:dimension/model/commands/search_result_command.dart';
+import 'package:dimension/model/commands/fs_listing.dart' as command_fs_listing;
 import 'package:dimension/model/core.dart';
-import 'package:dimension/model/fs_listing.dart';
 import 'package:dimension/model/incoming_connection.dart';
 import 'package:dimension/ui/core_screens_live_backend.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -74,7 +74,8 @@ class _FakeIncoming extends IncomingConnection {
 }
 
 void main() {
-  test('live backend joins circle, refreshes peers, and dispatches queue', () async {
+  test('live backend joins circle, refreshes peers, and dispatches queue',
+      () async {
     final peers = <_Peer>[_Peer(1, false), _Peer(2, true), _Peer(3, false)];
     final core = Core(
       peerDirectory: _PeerDirectory(peers),
@@ -106,8 +107,8 @@ void main() {
     );
 
     final result = SearchResultCommand()..keyword = 'song';
-    result.folders.add(Folder()..name = 'Albums');
-    result.files.add(File()..name = 'song.mp3');
+    result.folders.add(command_fs_listing.FSListing()..name = 'Albums');
+    result.files.add(command_fs_listing.FSListing()..name = 'song.mp3');
 
     final incoming = _FakeIncoming();
     core.addIncomingConnection(incoming);

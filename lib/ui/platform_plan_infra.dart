@@ -42,13 +42,14 @@ PlatformLayoutSnapshot inferPlatformLayout({
   final prefersTouch =
       platform == TargetPlatform.android || platform == TargetPlatform.iOS;
 
-  final shortestSide = height == null ? width : (width < height ? width : height);
+  final shortestSide =
+      height == null ? width : (width < height ? width : height);
 
   final baseMode = shortestSide < 700
       ? PlatformLayoutMode.compact
       : shortestSide < 1100
-      ? PlatformLayoutMode.medium
-      : PlatformLayoutMode.expanded;
+          ? PlatformLayoutMode.medium
+          : PlatformLayoutMode.expanded;
 
   final mode = prefersTouch && height != null && width >= 700 && height < 500
       ? PlatformLayoutMode.compact
@@ -85,13 +86,12 @@ class PlatformPlanController extends ChangeNotifier {
     PlatformLayoutSnapshot? initialSnapshot,
     this.isWebOverride,
     this.targetPlatformOverride,
-  }) : _snapshot =
-           initialSnapshot ??
-           inferPlatformLayout(
-             width: 1024,
-             isWebOverride: isWebOverride ?? false,
-             targetPlatformOverride: targetPlatformOverride,
-           );
+  }) : _snapshot = initialSnapshot ??
+            inferPlatformLayout(
+              width: 1024,
+              isWebOverride: isWebOverride ?? false,
+              targetPlatformOverride: targetPlatformOverride,
+            );
 
   final bool? isWebOverride;
   final TargetPlatform? targetPlatformOverride;
@@ -110,7 +110,8 @@ class PlatformPlanController extends ChangeNotifier {
       width: width,
       height: height,
       isWebOverride: isWebOverride ?? this.isWebOverride,
-      targetPlatformOverride: targetPlatformOverride ?? this.targetPlatformOverride,
+      targetPlatformOverride:
+          targetPlatformOverride ?? this.targetPlatformOverride,
     );
     notifyListeners();
   }

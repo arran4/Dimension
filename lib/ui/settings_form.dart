@@ -31,7 +31,8 @@ class _SettingsFormState extends State<SettingsForm> {
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController(text: widget.controller.username);
+    _usernameController =
+        TextEditingController(text: widget.controller.username);
     _descriptionController = TextEditingController(
       text: widget.controller.description,
     );

@@ -27,28 +27,28 @@ class DesktopHoverState {
 
 class DesktopShellController extends ChangeNotifier {
   DesktopShellController()
-    : _shortcuts = const <DesktopShortcutAction>[
-        DesktopShortcutAction(
-          label: 'Circles',
-          shortcut: SingleActivator(LogicalKeyboardKey.digit1, control: true),
-          section: CoreScreenSection.circles,
-        ),
-        DesktopShortcutAction(
-          label: 'Peers',
-          shortcut: SingleActivator(LogicalKeyboardKey.digit2, control: true),
-          section: CoreScreenSection.peers,
-        ),
-        DesktopShortcutAction(
-          label: 'Search',
-          shortcut: SingleActivator(LogicalKeyboardKey.digit3, control: true),
-          section: CoreScreenSection.search,
-        ),
-        DesktopShortcutAction(
-          label: 'Transfers',
-          shortcut: SingleActivator(LogicalKeyboardKey.digit4, control: true),
-          section: CoreScreenSection.transfers,
-        ),
-      ];
+      : _shortcuts = const <DesktopShortcutAction>[
+          DesktopShortcutAction(
+            label: 'Circles',
+            shortcut: SingleActivator(LogicalKeyboardKey.digit1, control: true),
+            section: CoreScreenSection.circles,
+          ),
+          DesktopShortcutAction(
+            label: 'Peers',
+            shortcut: SingleActivator(LogicalKeyboardKey.digit2, control: true),
+            section: CoreScreenSection.peers,
+          ),
+          DesktopShortcutAction(
+            label: 'Search',
+            shortcut: SingleActivator(LogicalKeyboardKey.digit3, control: true),
+            section: CoreScreenSection.search,
+          ),
+          DesktopShortcutAction(
+            label: 'Transfers',
+            shortcut: SingleActivator(LogicalKeyboardKey.digit4, control: true),
+            section: CoreScreenSection.transfers,
+          ),
+        ];
 
   final List<DesktopShortcutAction> _shortcuts;
   CoreScreenSection _activeSection = CoreScreenSection.circles;

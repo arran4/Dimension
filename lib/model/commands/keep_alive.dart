@@ -1,4 +1,3 @@
 import 'command.dart';
 
-class KeepAlive extends Command {
-}
+class KeepAlive extends Command {}

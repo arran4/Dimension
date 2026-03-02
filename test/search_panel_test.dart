@@ -13,7 +13,8 @@ class _Backend implements SearchPanelBackend {
   }
 
   @override
-  Future<void> downloadElement({required int peerId, required FSListing listing}) async {
+  Future<void> downloadElement(
+      {required int peerId, required FSListing listing}) async {
     downloaded.add('$peerId:${listing.fullPath}');
   }
 

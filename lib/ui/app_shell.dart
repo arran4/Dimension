@@ -115,8 +115,8 @@ class AppShellController extends ChangeNotifier {
   AppShellController({
     AppRouteState initialRoute = AppRouteState.home,
     this.routeStateStore,
-  }) : _history = <AppRouteState>[initialRoute],
-       _index = 0;
+  })  : _history = <AppRouteState>[initialRoute],
+        _index = 0;
 
   final AppRouteStateStore? routeStateStore;
 

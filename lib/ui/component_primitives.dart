@@ -63,11 +63,11 @@ class DimensionSectionHeader extends StatelessWidget {
 
     final highContrast = MediaQuery.highContrastOf(context);
     final statusStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      fontWeight: highContrast ? FontWeight.w700 : FontWeight.w400,
-      color: highContrast
-          ? Theme.of(context).colorScheme.onSurface
-          : Theme.of(context).textTheme.bodyMedium?.color,
-    );
+          fontWeight: highContrast ? FontWeight.w700 : FontWeight.w400,
+          color: highContrast
+              ? Theme.of(context).colorScheme.onSurface
+              : Theme.of(context).textTheme.bodyMedium?.color,
+        );
 
     return Column(
       children: [

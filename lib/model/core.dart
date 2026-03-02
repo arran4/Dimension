@@ -37,17 +37,18 @@ abstract class CorePeerMutableDirectory implements CorePeerDirectory {
   bool addPeer(CorePeer peer);
 }
 
-
 abstract class CoreFileListingProvider {
   Future<FileListing?> generateFileListing(String path);
 }
 
 abstract class CoreSearchResultSink {
-  void addSearchResult(SearchResultCommand command, IncomingConnection connection);
+  void addSearchResult(
+      SearchResultCommand command, IncomingConnection connection);
 }
 
 abstract class CoreTransferRouter {
-  Future<void> handleFileChunk(FileChunk command, IncomingConnection connection);
+  Future<void> handleFileChunk(
+      FileChunk command, IncomingConnection connection);
 
   Future<void> handleRequestChunks(
     RequestChunks command,
@@ -89,13 +90,13 @@ class Core {
     CoreFileListingProvider? fileListingProvider,
     CoreSearchResultSink? searchResultSink,
     CoreTransferRouter? transferRouter,
-  }) : _peerDirectory = peerDirectory,
-       _settings = settings,
-       _localPeerId = localPeerId,
-       _idleTimeProvider = idleTimeProvider ?? (() => Duration.zero),
-       _fileListingProvider = fileListingProvider,
-       _searchResultSink = searchResultSink,
-       _transferRouter = transferRouter;
+  })  : _peerDirectory = peerDirectory,
+        _settings = settings,
+        _localPeerId = localPeerId,
+        _idleTimeProvider = idleTimeProvider ?? (() => Duration.zero),
+        _fileListingProvider = fileListingProvider,
+        _searchResultSink = searchResultSink,
+        _transferRouter = transferRouter;
 
   final CorePeerDirectory _peerDirectory;
   final CoreSettingsStore _settings;
@@ -118,7 +119,8 @@ class Core {
 
   final Set<String> _circles = <String>{};
   final List<IncomingConnection> _incomings = <IncomingConnection>[];
-  final List<CoreChatReceivedHandler> _chatListeners = <CoreChatReceivedHandler>[];
+  final List<CoreChatReceivedHandler> _chatListeners =
+      <CoreChatReceivedHandler>[];
 
   int _lastSequenceId = 0;
 
@@ -159,7 +161,6 @@ class Core {
 
   // Temporary compatibility shim for line-by-line migration parity.
   void leaveCircleCompat(String name) => leaveCircle(name);
-
 
   bool addPeer(CorePeer peer) {
     final directory = _peerDirectory;
@@ -246,7 +247,6 @@ class Core {
   // Temporary compatibility shim for line-by-line migration parity.
   void removeIncomingConnectionCompat(IncomingConnection connection) =>
       removeIncomingConnection(connection);
-
 
   bool isPathCancelled(String path) => _cancelledPaths.contains(path);
 

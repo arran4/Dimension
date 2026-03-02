@@ -53,7 +53,8 @@ void main() {
     );
   });
 
-  test('sendCommand queues when not connected and flushes on createConnection', () async {
+  test('sendCommand queues when not connected and flushes on createConnection',
+      () async {
     final peer = Peer();
     final queued = RequestChunks()..path = '/queued.bin';
 
@@ -67,7 +68,8 @@ void main() {
     expect(control.sent.single, queued);
   });
 
-  test('downloadElement sends request commands based on listing type', () async {
+  test('downloadElement sends request commands based on listing type',
+      () async {
     final peer = Peer();
     final control = _FakeOutgoingConnection();
     await peer.createConnection(control: control);

@@ -20,9 +20,9 @@ class FileSystemIncrementalWatcher implements FileListIncrementalWatcher {
     required FileListShareScanner scanner,
     FileSystemEventSource? eventSource,
     Duration debounce = const Duration(milliseconds: 300),
-  }) : _scanner = scanner,
-       _eventSource = eventSource ?? IoFileSystemEventSource(),
-       _debounce = debounce;
+  })  : _scanner = scanner,
+        _eventSource = eventSource ?? IoFileSystemEventSource(),
+        _debounce = debounce;
 
   final FileListShareScanner _scanner;
   final FileSystemEventSource _eventSource;

@@ -37,7 +37,7 @@ class _FakeTransport implements UdtTransport {
     sentPackets.add(packet);
   }
 
-  Future<void> emit(Uint8List packet) => _incomingController.add(packet);
+  void emit(Uint8List packet) => _incomingController.add(packet);
 }
 
 void main() {
@@ -81,7 +81,7 @@ void main() {
       }
     };
 
-    await transport.emit(serializer.serialize(_TestCommand('inbound')));
+    transport.emit(serializer.serialize(_TestCommand('inbound')));
 
     final received = await completer.future;
     expect(received.value, 'inbound');
@@ -102,10 +102,9 @@ void main() {
       }
     };
 
-    await transport.emit(serializer.serialize(_TestCommand('hello')));
+    transport.emit(serializer.serialize(_TestCommand('hello')));
 
     final received = await completer.future;
     expect(received.value, 'hello');
   });
 }
-

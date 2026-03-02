@@ -31,7 +31,8 @@ class _RecordingDriver extends FlashWindowDriver {
 }
 
 void main() {
-  test('delegates flash/start/stop and activation queries to configured driver', () {
+  test('delegates flash/start/stop and activation queries to configured driver',
+      () {
     final previousDriver = FlashWindow.driver;
     final driver = _RecordingDriver();
     FlashWindow.driver = driver;

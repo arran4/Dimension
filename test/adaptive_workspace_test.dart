@@ -32,8 +32,6 @@ void main() {
     expect(find.byType(TabBar), findsOneWidget);
   });
 
-
-
   testWidgets('compact landscape touch snapshot still renders mobile tabs', (
     tester,
   ) async {
@@ -80,7 +78,6 @@ void main() {
     expect(find.byKey(const Key('mobileRefreshFab')), findsOneWidget);
   });
 
-
   testWidgets('mobile keyboard inset updates animated padding', (tester) async {
     await tester.pumpWidget(
       MediaQuery(
@@ -103,7 +100,8 @@ void main() {
     expect(animatedPadding.padding, const EdgeInsets.only(bottom: 180));
   });
 
-  testWidgets('mobile compact workspace does not overflow at very small height', (
+  testWidgets('mobile compact workspace does not overflow at very small height',
+      (
     tester,
   ) async {
     await tester.pumpWidget(

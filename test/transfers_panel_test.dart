@@ -61,7 +61,8 @@ void main() {
     expect(rows.first.limit, 'Bypassed');
   });
 
-  testWidgets('panel shows empty message and then list content', (tester) async {
+  testWidgets('panel shows empty message and then list content',
+      (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(

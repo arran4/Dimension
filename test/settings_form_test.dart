@@ -36,8 +36,10 @@ void main() {
       MaterialApp(home: Scaffold(body: SettingsForm(controller: controller))),
     );
 
-    await tester.enterText(find.byKey(const Key('settings.username')), 'new-name');
-    await tester.enterText(find.byKey(const Key('settings.description')), 'new-desc');
+    await tester.enterText(
+        find.byKey(const Key('settings.username')), 'new-name');
+    await tester.enterText(
+        find.byKey(const Key('settings.description')), 'new-desc');
     await tester.tap(find.byKey(const Key('settings.playSounds')));
     await tester.pumpAndSettle();
 

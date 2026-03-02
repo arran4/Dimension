@@ -122,7 +122,8 @@ class App {
   bool _updateDeclined = false;
 
   final List<void Function(PrivateChatCommand command, Object? peer)>
-  _privateChatHandlers = <void Function(PrivateChatCommand command, Object? peer)>[];
+      _privateChatHandlers =
+      <void Function(PrivateChatCommand command, Object? peer)>[];
   final List<void Function()> _flashHandlers = <void Function()>[];
 
   bool get isMono =>

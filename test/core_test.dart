@@ -21,7 +21,7 @@ class _Settings implements CoreSettingsStore {
 
 class _Peer implements CorePeer {
   _Peer({required this.id, required this.quit, required Set<int> circles})
-    : circles = circles;
+      : circles = circles;
 
   @override
   final int id;
@@ -79,7 +79,8 @@ class _SearchSink implements CoreSearchResultSink {
   final List<SearchResultCommand> received = <SearchResultCommand>[];
 
   @override
-  void addSearchResult(SearchResultCommand command, IncomingConnection connection) {
+  void addSearchResult(
+      SearchResultCommand command, IncomingConnection connection) {
     received.add(command);
   }
 }
@@ -149,7 +150,9 @@ void main() {
   });
 
   test('addPeer delegates to mutable directories and deduplicates ids', () {
-    final directory = _PeerDirectory([_Peer(id: 1, quit: false, circles: {7})]);
+    final directory = _PeerDirectory([
+      _Peer(id: 1, quit: false, circles: {7})
+    ]);
     final core = Core(
       peerDirectory: directory,
       settings: _Settings(),
@@ -222,7 +225,8 @@ void main() {
     expect(core.isPathCancelled('/x.bin'), isFalse);
   });
 
-  test('commandReceived handles GetFileListing via injected provider', () async {
+  test('commandReceived handles GetFileListing via injected provider',
+      () async {
     final incoming = _Incoming();
     final provider = _FileListingProvider();
     final core = Core(
@@ -233,7 +237,8 @@ void main() {
     );
 
     core.addIncomingConnection(incoming);
-    incoming.commandReceived?.call(GetFileListing()..path = '/Public', incoming);
+    incoming.commandReceived
+        ?.call(GetFileListing()..path = '/Public', incoming);
     await Future<void>.delayed(Duration.zero);
 
     expect(provider.requestedPath, '/Public');
@@ -242,7 +247,8 @@ void main() {
     expect((incoming.sent.single as FileListing).path, '/Public');
   });
 
-  test('commandReceived routes SearchResultCommand to sink and records history', () {
+  test('commandReceived routes SearchResultCommand to sink and records history',
+      () {
     final incoming = _Incoming();
     final sink = _SearchSink();
     final core = Core(
@@ -260,7 +266,6 @@ void main() {
     expect(core.searchResults.single.keyword, 'movie');
     expect(core.searchResultForKeyword(' movie '), same(command));
   });
-
 
   test('search result index keeps latest command per keyword', () {
     final incoming = _Incoming();
@@ -283,7 +288,8 @@ void main() {
     expect(core.searchResultForKeyword('TRACK'), same(second));
   });
 
-  test('commandReceived routes chunk and request commands to transfer router', () async {
+  test('commandReceived routes chunk and request commands to transfer router',
+      () async {
     final incoming = _Incoming();
     final router = _TransferRouter();
     final core = Core(
@@ -310,7 +316,8 @@ void main() {
     expect(latest.start, 0);
   });
 
-  test('chatReceived invokes listeners and getIdleTime uses injected provider', () {
+  test('chatReceived invokes listeners and getIdleTime uses injected provider',
+      () {
     final core = Core(
       peerDirectory: _PeerDirectory([]),
       settings: _Settings(),

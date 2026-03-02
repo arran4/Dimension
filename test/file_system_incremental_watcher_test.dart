@@ -15,7 +15,8 @@ class _Scanner implements FileListShareScanner {
     required bool urgent,
   }) async {
     lastRoot = share.fullPath;
-    return ShareSnapshot(root: share, folders: const <Folder>[], files: const <File>[]);
+    return ShareSnapshot(
+        root: share, folders: const <Folder>[], files: const <File>[]);
   }
 }
 

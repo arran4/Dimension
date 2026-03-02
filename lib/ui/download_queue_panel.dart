@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DownloadQueuePanel extends StatelessWidget {
-  const DownloadQueuePanel({super.key, this.emptyMessage = 'No queued downloads.'});
+  const DownloadQueuePanel(
+      {super.key, this.emptyMessage = 'No queued downloads.'});
 
   final String emptyMessage;
 

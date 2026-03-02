@@ -5,7 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Bootstrap.join', () {
-    test('appends control port query parameter and parses valid rows', () async {
+    test('appends control port query parameter and parses valid rows',
+        () async {
       final fakeHttpClient = _FakeBootstrapHttpClient(
         body: '203.0.113.10 1234\n203.0.113.10 1234\n198.51.100.7 99\n',
       );
@@ -52,17 +53,18 @@ void main() {
   });
 
   group('Bootstrap NAT launch', () {
-    test('launch uses STUN/public address and detects double NAT mismatch', () async {
+    test('launch uses STUN/public address and detects double NAT mismatch',
+        () async {
       final bootstrap = Bootstrap(
         natAdapter: _NatAdapter(
-          const BootstrapNatProbeResult(
+          BootstrapNatProbeResult(
             upnpActive: true,
             externalIp: InternetAddress('10.0.0.5'),
             publicControlPort: 1111,
           ),
         ),
         stunClient: _StunClient(
-          const BootstrapStunResult(
+          BootstrapStunResult(
             publicAddress: InternetAddress('203.0.113.20'),
             publicControlPort: 2222,
           ),
@@ -81,7 +83,7 @@ void main() {
     test('launch falls back to UPnP address when STUN unavailable', () async {
       final bootstrap = Bootstrap(
         natAdapter: _NatAdapter(
-          const BootstrapNatProbeResult(
+          BootstrapNatProbeResult(
             upnpActive: true,
             externalIp: InternetAddress('198.51.100.10'),
             publicControlPort: 3333,
@@ -99,7 +101,8 @@ void main() {
   });
 
   group('Bootstrap logging and disposal shims', () {
-    test('Write and WriteLine delegate to logger and Dispose marks disposed', () {
+    test('Write and WriteLine delegate to logger and Dispose marks disposed',
+        () {
       final messages = <String>[];
       final bootstrap = Bootstrap(logger: messages.add);
 

@@ -163,7 +163,8 @@ class PeerManager {
     bool added = false;
 
     if (peers.containsKey(h.id)) {
-      if (DateTime.now().difference(peers[h.id]!.timeQuit).inSeconds < 3) return;
+      if (DateTime.now().difference(peers[h.id]!.timeQuit).inSeconds < 3)
+        return;
       wasQuit = peers[h.id]!.quit;
 
       peers[h.id]!.internalAddress = h.internalIPs;
@@ -238,7 +239,8 @@ class PeerManager {
         lanHash |= (hashBytes[i] << (8 * i));
       }
 
-      if (!peers[h.id]!.quit || DateTime.now().difference(peers[h.id]!.timeQuit).inSeconds > 3) {
+      if (!peers[h.id]!.quit ||
+          DateTime.now().difference(peers[h.id]!.timeQuit).inSeconds > 3) {
         for (int u in channels) {
           if (u == lanHash) {
             if (!oldChannels.contains(u) && peers[h.id]!.isLocal) {

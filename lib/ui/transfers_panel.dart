@@ -102,8 +102,7 @@ class TransfersPanelLogic {
     }
 
     final timeElapsed = now.difference(transfer.timeCreated);
-    final proportionateFraction =
-        (transfer.completed - transfer.startingByte) /
+    final proportionateFraction = (transfer.completed - transfer.startingByte) /
         (transfer.size - transfer.startingByte);
 
     if (proportionateFraction <= 0) {
@@ -112,9 +111,9 @@ class TransfersPanelLogic {
 
     final estimatedTotalSeconds =
         timeElapsed.inSeconds * (1.0 / proportionateFraction);
-    final remainingSeconds =
-        (estimatedTotalSeconds - timeElapsed.inSeconds).round().clamp(0, 1 << 31)
-            as int;
+    final remainingSeconds = (estimatedTotalSeconds - timeElapsed.inSeconds)
+        .round()
+        .clamp(0, 1 << 31) as int;
 
     final hours = (remainingSeconds ~/ 3600).toString().padLeft(2, '0');
     final minutes =

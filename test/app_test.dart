@@ -286,7 +286,8 @@ void main() {
       udp: udp,
     );
 
-    await app.udpSend(Uint8List.fromList([1, 2, 3]), const UdpTarget(host: 'x', port: 1));
+    await app.udpSend(
+        Uint8List.fromList([1, 2, 3]), const UdpTarget(host: 'x', port: 1));
     await app.udpSendWithLength(
       Uint8List.fromList([1, 2, 3, 4]),
       2,

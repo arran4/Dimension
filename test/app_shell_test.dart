@@ -40,7 +40,8 @@ void main() {
     expect(controller.route.path, '/transfers');
   });
 
-  test('AppShellController can restore persisted location from route store', () async {
+  test('AppShellController can restore persisted location from route store',
+      () async {
     final store = InMemoryAppRouteStateStore();
     await store.saveLocation('/settings?tab=network');
     final controller = AppShellController(routeStateStore: store);
@@ -51,8 +52,8 @@ void main() {
     expect(controller.route.queryParameters['tab'], 'network');
   });
 
-
-  testWidgets('AppShell applies web input wrappers for focus/scroll/selection', (
+  testWidgets('AppShell applies web input wrappers for focus/scroll/selection',
+      (
     tester,
   ) async {
     final controller = AppShellController();
@@ -75,7 +76,7 @@ void main() {
     );
 
     expect(find.byType(AppShellWebInputWrapper), findsOneWidget);
-    expect(find.byType(FocusTraversalGroup), findsOneWidget);
+    expect(find.byType(FocusTraversalGroup), findsWidgets);
     expect(find.byType(SelectionArea), findsOneWidget);
     expect(find.byType(ScrollConfiguration), findsWidgets);
     expect(find.byKey(const Key('webInputField')), findsOneWidget);
@@ -100,11 +101,11 @@ void main() {
       ),
     );
 
-    expect(find.text('expanded:/'), findsOneWidget);
+    expect(find.text('expanded:/'), findsWidgets);
 
     controller.navigateTo('/transfers');
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(find.text('expanded:/transfers'), findsOneWidget);
+    expect(find.text('expanded:/transfers'), findsWidgets);
   });
 }

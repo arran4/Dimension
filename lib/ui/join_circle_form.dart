@@ -18,7 +18,9 @@ typedef AddInternetCircle = void Function(
 );
 
 class JoinCircleController {
-  JoinCircleController({required JoinCircleService service, required AddInternetCircle addInternetCircle})
+  JoinCircleController(
+      {required JoinCircleService service,
+      required AddInternetCircle addInternetCircle})
       : _service = service,
         _addInternetCircle = addInternetCircle;
 
@@ -73,7 +75,8 @@ class _JoinCircleFormState extends State<JoinCircleForm> {
   var _busy = false;
 
   bool get _kademliaBlocked =>
-      widget.circleType == CircleType.kademlia && !widget.controller.kademliaReady;
+      widget.circleType == CircleType.kademlia &&
+      !widget.controller.kademliaReady;
 
   @override
   void initState() {
@@ -100,7 +103,8 @@ class _JoinCircleFormState extends State<JoinCircleForm> {
     });
 
     try {
-      await widget.controller.joinCircle(_urlController.text, widget.circleType);
+      await widget.controller
+          .joinCircle(_urlController.text, widget.circleType);
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -127,7 +131,8 @@ class _JoinCircleFormState extends State<JoinCircleForm> {
             key: const Key('joinCircle.url'),
             controller: _urlController,
             onSubmitted: (_) => _join(),
-            decoration: const InputDecoration(labelText: 'Bootstrap URL / circle id'),
+            decoration:
+                const InputDecoration(labelText: 'Bootstrap URL / circle id'),
           ),
           if (_kademliaBlocked)
             const Padding(

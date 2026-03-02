@@ -83,7 +83,8 @@ class Peer {
   }
 
   Future<void> downloadElement(FSListing listing, {int startingByte = 0}) {
-    final path = listing.name.startsWith('/') ? listing.name : '/${listing.name}';
+    final path =
+        listing.name.startsWith('/') ? listing.name : '/${listing.name}';
     if (listing.isFolder) {
       final request = RequestFolderContents()..path = path;
       return sendCommand(request);
@@ -188,7 +189,8 @@ class Peer {
     }
 
     if (endpoint is InternetAddressEndpoint) {
-      return PeerEndpoint(address: endpoint.address.address, port: endpoint.port);
+      return PeerEndpoint(
+          address: endpoint.address.address, port: endpoint.port);
     }
 
     try {

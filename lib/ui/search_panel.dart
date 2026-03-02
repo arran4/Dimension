@@ -22,11 +22,13 @@ abstract class SearchPanelBackend {
 
   String usernameForPeer(int peerId);
 
-  Future<void> downloadElement({required int peerId, required FSListing listing});
+  Future<void> downloadElement(
+      {required int peerId, required FSListing listing});
 }
 
 class SearchPanelController {
-  SearchPanelController({required SearchPanelBackend backend}) : _backend = backend;
+  SearchPanelController({required SearchPanelBackend backend})
+      : _backend = backend;
 
   final SearchPanelBackend _backend;
 

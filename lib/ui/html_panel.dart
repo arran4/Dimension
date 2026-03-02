@@ -41,7 +41,8 @@ class HTMLPanel extends StatelessWidget {
 
   final ValueChanged<JoinCircleRequest>? onJoinCircle;
 
-  static bool get isMono => !kIsWeb && (defaultTargetPlatform == TargetPlatform.linux);
+  static bool get isMono =>
+      !kIsWeb && (defaultTargetPlatform == TargetPlatform.linux);
 
   static const bootstrapPrimaryLink =
       'DimensionBootstrap://www.9thcircle.net/Projects/Dimension/bootstrap.php';
@@ -64,13 +65,15 @@ class HTMLPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Welcome to Dimension!', style: Theme.of(context).textTheme.headlineSmall),
+            Text('Welcome to Dimension!',
+                style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
             const Text(
               "It's still young, so there aren't many networks to join. Check these ones out:",
             ),
             const SizedBox(height: 16),
-            Text('List of Bootstraps', style: Theme.of(context).textTheme.titleMedium),
+            Text('List of Bootstraps',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             _JoinLinkRow(
               label: '9th Circle Test Bootstrap',

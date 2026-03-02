@@ -50,7 +50,8 @@ void main() {
     expect(find.text('Diagnostics'), findsOneWidget);
   });
 
-  testWidgets('shows loading/empty/error states across sections', (tester) async {
+  testWidgets('shows loading/empty/error states across sections',
+      (tester) async {
     final controller = CoreScreensController();
     controller.setLoading(CoreScreenSection.circles);
     controller.setItems(CoreScreenSection.peers, const <String>[]);
@@ -85,7 +86,8 @@ void main() {
 
     await controller.joinCircle('LAN');
 
-    expect(controller.stateFor(CoreScreenSection.circles).items, contains('LAN'));
+    expect(
+        controller.stateFor(CoreScreenSection.circles).items, contains('LAN'));
     expect(controller.sectionMessage(CoreScreenSection.circles), 'Joined LAN');
     expect(controller.sectionBusy(CoreScreenSection.circles), isFalse);
   });
@@ -97,7 +99,8 @@ void main() {
 
     await controller.joinCircle('LAN');
 
-    expect(controller.stateFor(CoreScreenSection.circles).items, <String>['Existing']);
+    expect(controller.stateFor(CoreScreenSection.circles).items,
+        <String>['Existing']);
     expect(
       controller.sectionMessage(CoreScreenSection.circles),
       'Failed to join LAN',
@@ -110,12 +113,11 @@ void main() {
     await controller.refreshPeers();
     await controller.runSearch('movie');
 
-    expect(controller.stateFor(CoreScreenSection.peers).items, <String>['alice', 'bob']);
-    expect(controller.stateFor(CoreScreenSection.search).items, <String>['movie.bin']);
+    expect(controller.stateFor(CoreScreenSection.peers).items,
+        <String>['alice', 'bob']);
+    expect(controller.stateFor(CoreScreenSection.search).items,
+        <String>['movie.bin']);
   });
-
-
-
 
   test('search and queue actions use controller input values', () async {
     final backend = _Backend();
@@ -126,21 +128,28 @@ void main() {
     await controller.runSearch('alpha');
     await controller.queueDownload('beta.bin');
 
-    expect(controller.stateFor(CoreScreenSection.search).items, <String>['alpha.bin']);
-    expect(controller.stateFor(CoreScreenSection.transfers).items, contains('Queued: beta.bin'));
+    expect(controller.stateFor(CoreScreenSection.search).items,
+        <String>['alpha.bin']);
+    expect(controller.stateFor(CoreScreenSection.transfers).items,
+        contains('Queued: beta.bin'));
   });
 
   testWidgets('ctrl-digit shortcuts switch tabs for keyboard-only navigation', (
     tester,
   ) async {
     final controller = CoreScreensController();
-    controller.setItems(CoreScreenSection.circles, const <String>['circles-item']);
+    controller
+        .setItems(CoreScreenSection.circles, const <String>['circles-item']);
     controller.setItems(CoreScreenSection.peers, const <String>['peers-item']);
     controller.setItems(CoreScreenSection.chat, const <String>['chat-item']);
-    controller.setItems(CoreScreenSection.search, const <String>['search-item']);
-    controller.setItems(CoreScreenSection.transfers, const <String>['transfers-item']);
-    controller.setItems(CoreScreenSection.settings, const <String>['settings-item']);
-    controller.setItems(CoreScreenSection.diagnostics, const <String>['diagnostics-item']);
+    controller
+        .setItems(CoreScreenSection.search, const <String>['search-item']);
+    controller.setItems(
+        CoreScreenSection.transfers, const <String>['transfers-item']);
+    controller
+        .setItems(CoreScreenSection.settings, const <String>['settings-item']);
+    controller.setItems(
+        CoreScreenSection.diagnostics, const <String>['diagnostics-item']);
 
     await tester.pumpWidget(
       MaterialApp(home: CoreScreensView(controller: controller)),
@@ -157,7 +166,8 @@ void main() {
     expect(find.text('peers-item'), findsOneWidget);
   });
 
-  testWidgets('actions expose semantic labels for accessibility', (tester) async {
+  testWidgets('actions expose semantic labels for accessibility',
+      (tester) async {
     final semantics = tester.ensureSemantics();
     final controller = CoreScreensController();
     for (final section in CoreScreenSection.values) {
@@ -176,8 +186,8 @@ void main() {
     semantics.dispose();
   });
 
-
-  testWidgets('high-contrast + large text keeps status visible without overflow', (
+  testWidgets(
+      'high-contrast + large text keeps status visible without overflow', (
     tester,
   ) async {
     final controller = CoreScreensController(backend: _Backend());

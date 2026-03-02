@@ -46,9 +46,11 @@ class ReliableIncomingConnection extends IncomingConnection {
 
       while (true) {
         if (_pendingDataCommand != null) {
-          int expectedDataLength = (_pendingDataCommand as DataCommand).dataLength;
+          int expectedDataLength =
+              (_pendingDataCommand as DataCommand).dataLength;
           if (_buffer.length >= expectedDataLength) {
-            final rawData = Uint8List.fromList(_buffer.sublist(0, expectedDataLength));
+            final rawData =
+                Uint8List.fromList(_buffer.sublist(0, expectedDataLength));
             _buffer.removeRange(0, expectedDataLength);
             DummyGlobal.globalDownCounter.addBytes(expectedDataLength);
 
@@ -65,7 +67,8 @@ class ReliableIncomingConnection extends IncomingConnection {
           if (_expectedLength == null) {
             if (_buffer.length >= 4) {
               final lenBytes = Uint8List.fromList(_buffer.sublist(0, 4));
-              _expectedLength = ByteData.view(lenBytes.buffer).getInt32(0, Endian.little);
+              _expectedLength =
+                  ByteData.view(lenBytes.buffer).getInt32(0, Endian.little);
               _buffer.removeRange(0, 4);
               DummyGlobal.globalDownCounter.addBytes(4);
             } else {
@@ -74,18 +77,19 @@ class ReliableIncomingConnection extends IncomingConnection {
           }
 
           if (_expectedLength != null && _buffer.length >= _expectedLength!) {
-            final packetData = Uint8List.fromList(_buffer.sublist(0, _expectedLength!));
+            final packetData =
+                Uint8List.fromList(_buffer.sublist(0, _expectedLength!));
             _buffer.removeRange(0, _expectedLength!);
             DummyGlobal.globalDownCounter.addBytes(_expectedLength!);
 
             _processCommandData(packetData, (cmd) {
-               if (cmd is DataCommand) {
-                 _pendingDataCommand = cmd;
-               } else {
-                 if (commandReceived != null) {
-                   commandReceived!(cmd, this);
-                 }
-               }
+              if (cmd is DataCommand) {
+                _pendingDataCommand = cmd;
+              } else {
+                if (commandReceived != null) {
+                  commandReceived!(cmd, this);
+                }
+              }
             });
             _expectedLength = null; // Reset for next message
           } else {
@@ -93,11 +97,9 @@ class ReliableIncomingConnection extends IncomingConnection {
           }
         }
       }
-    },
-    onDone: () {
+    }, onDone: () {
       _cleanup();
-    },
-    onError: (e) {
+    }, onError: (e) {
       _cleanup();
     });
   }
@@ -107,13 +109,15 @@ class ReliableIncomingConnection extends IncomingConnection {
     rateCounter.dispose();
   }
 
-  void _processCommandData(Uint8List dataByte, void Function(Command) onCommandParsed) {
+  void _processCommandData(
+      Uint8List dataByte, void Function(Command) onCommandParsed) {
     if (DummyGlobal.serializer == null) return;
     try {
       Command c = DummyGlobal.serializer.deserialize(dataByte);
 
       if (c is ReverseConnectionType) {
-        if (DummyGlobal.theCore != null && DummyGlobal.theCore.peerManager != null) {
+        if (DummyGlobal.theCore != null &&
+            DummyGlobal.theCore.peerManager != null) {
           for (var p in DummyGlobal.theCore.peerManager.allPeers) {
             if (p.id == c.id) {
               if (c.makeControl) {
@@ -165,7 +169,8 @@ class ReliableIncomingConnection extends IncomingConnection {
         while (pos < c.data.length) {
           int amt = c.data.length - pos;
           if (DummyGlobal.speedLimiter != null) {
-            amt = await DummyGlobal.speedLimiter.limitUpload(amt, disabled: rateLimiterDisabled);
+            amt = await DummyGlobal.speedLimiter
+                .limitUpload(amt, disabled: rateLimiterDisabled);
           }
           if (amt <= 0) {
             await Future.delayed(const Duration(milliseconds: 10));
@@ -173,7 +178,8 @@ class ReliableIncomingConnection extends IncomingConnection {
           }
 
           rateCounter.addBytes(amt);
-          _internalRate = (_internalRate * 0.9) + (rateCounter.frontBuffer * 0.1);
+          _internalRate =
+              (_internalRate * 0.9) + (rateCounter.frontBuffer * 0.1);
           rate = _internalRate.toInt();
 
           _client.add(c.data.sublist(pos, pos + amt));
@@ -187,9 +193,9 @@ class ReliableIncomingConnection extends IncomingConnection {
   }
 
   @override
-  bool get connected => true; // Simplified, in Dart Socket doesn't have a direct 'connected' boolean without checking state.
+  bool get connected =>
+      true; // Simplified, in Dart Socket doesn't have a direct 'connected' boolean without checking state.
 }
-
 
 class ReliableOutgoingConnection extends OutgoingConnection {
   static int successfulConnections = 0;
@@ -204,7 +210,8 @@ class ReliableOutgoingConnection extends OutgoingConnection {
     _init();
   }
 
-  static Future<ReliableOutgoingConnection> connect(String host, int port) async {
+  static Future<ReliableOutgoingConnection> connect(
+      String host, int port) async {
     Socket socket = await Socket.connect(host, port);
     successfulConnections++;
     return ReliableOutgoingConnection(socket);
@@ -229,9 +236,11 @@ class ReliableOutgoingConnection extends OutgoingConnection {
 
       while (true) {
         if (_pendingDataCommand != null) {
-          int expectedDataLength = (_pendingDataCommand as DataCommand).dataLength;
+          int expectedDataLength =
+              (_pendingDataCommand as DataCommand).dataLength;
           if (_buffer.length >= expectedDataLength) {
-            final rawData = Uint8List.fromList(_buffer.sublist(0, expectedDataLength));
+            final rawData =
+                Uint8List.fromList(_buffer.sublist(0, expectedDataLength));
             _buffer.removeRange(0, expectedDataLength);
             DummyGlobal.globalDownCounter.addBytes(expectedDataLength);
 
@@ -239,7 +248,8 @@ class ReliableOutgoingConnection extends OutgoingConnection {
 
             int amt = expectedDataLength;
             downCounter.addBytes(amt);
-            _currentRate = (_currentRate * 0.9) + (downCounter.frontBuffer * 0.1);
+            _currentRate =
+                (_currentRate * 0.9) + (downCounter.frontBuffer * 0.1);
             rate = _currentRate.toInt();
 
             if (commandReceived != null) {
@@ -253,7 +263,8 @@ class ReliableOutgoingConnection extends OutgoingConnection {
           if (_expectedLength == null) {
             if (_buffer.length >= 4) {
               final lenBytes = Uint8List.fromList(_buffer.sublist(0, 4));
-              _expectedLength = ByteData.view(lenBytes.buffer).getInt32(0, Endian.little);
+              _expectedLength =
+                  ByteData.view(lenBytes.buffer).getInt32(0, Endian.little);
               _buffer.removeRange(0, 4);
               DummyGlobal.globalDownCounter.addBytes(4);
             } else {
@@ -262,18 +273,19 @@ class ReliableOutgoingConnection extends OutgoingConnection {
           }
 
           if (_expectedLength != null && _buffer.length >= _expectedLength!) {
-            final packetData = Uint8List.fromList(_buffer.sublist(0, _expectedLength!));
+            final packetData =
+                Uint8List.fromList(_buffer.sublist(0, _expectedLength!));
             _buffer.removeRange(0, _expectedLength!);
             DummyGlobal.globalDownCounter.addBytes(_expectedLength!);
 
             _processCommandData(packetData, (cmd) {
-               if (cmd is DataCommand) {
-                 _pendingDataCommand = cmd;
-               } else {
-                 if (commandReceived != null) {
-                   commandReceived!(cmd);
-                 }
-               }
+              if (cmd is DataCommand) {
+                _pendingDataCommand = cmd;
+              } else {
+                if (commandReceived != null) {
+                  commandReceived!(cmd);
+                }
+              }
             });
             _expectedLength = null;
           } else {
@@ -281,11 +293,9 @@ class ReliableOutgoingConnection extends OutgoingConnection {
           }
         }
       }
-    },
-    onDone: () {
+    }, onDone: () {
       _cleanup();
-    },
-    onError: (e) {
+    }, onError: (e) {
       _cleanup();
     });
   }
@@ -295,7 +305,8 @@ class ReliableOutgoingConnection extends OutgoingConnection {
     downCounter.dispose();
   }
 
-  void _processCommandData(Uint8List dataByte, void Function(Command) onCommandParsed) {
+  void _processCommandData(
+      Uint8List dataByte, void Function(Command) onCommandParsed) {
     if (DummyGlobal.serializer == null) return;
     try {
       Command c = DummyGlobal.serializer.deserialize(dataByte);
@@ -329,7 +340,8 @@ class ReliableOutgoingConnection extends OutgoingConnection {
         while (pos < c.data.length) {
           int amt = c.data.length - pos;
           if (DummyGlobal.speedLimiter != null) {
-            amt = await DummyGlobal.speedLimiter.limitUpload(amt, disabled: rateLimiterDisabled);
+            amt = await DummyGlobal.speedLimiter
+                .limitUpload(amt, disabled: rateLimiterDisabled);
           }
           if (amt <= 0) {
             await Future.delayed(const Duration(milliseconds: 10));

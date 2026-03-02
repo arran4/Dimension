@@ -3,8 +3,10 @@ import 'dart:typed_data';
 
 import 'commands/command.dart';
 
-typedef CommandEncoder<T extends Command> = Map<String, dynamic> Function(T command);
-typedef CommandDecoder<T extends Command> = T Function(Map<String, dynamic> json);
+typedef CommandEncoder<T extends Command> = Map<String, dynamic> Function(
+    T command);
+typedef CommandDecoder<T extends Command> = T Function(
+    Map<String, dynamic> json);
 
 class Serializer {
   final Map<String, _CodecEntry<Command>> _codecsByType =
@@ -26,7 +28,8 @@ class Serializer {
   Uint8List serialize(Command command) {
     final typeName = _typeNamesByCommandType[command.runtimeType];
     if (typeName == null) {
-      throw StateError('No command codec registered for ${command.runtimeType}.');
+      throw StateError(
+          'No command codec registered for ${command.runtimeType}.');
     }
 
     final codec = _codecsByType[typeName]!;

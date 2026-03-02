@@ -52,7 +52,8 @@ class Program {
 
   static String downloadPath({
     String baseUrl = 'http://www.9thcircle.net/projects/Dimension/latest',
-  }) => baseUrl;
+  }) =>
+      baseUrl;
 
   Future<ProgramRunResult> run() async {
     final gate = updateGate;
