@@ -57,9 +57,12 @@ jobs:
           test/app_test.dart
           test/core_test.dart
           test/file_list_test.dart
+          test/file_list_runtime_test.dart
+          test/file_system_incremental_watcher_test.dart
           test/peer_test.dart
           test/udt_backend_test.dart
           test/platform_plan_infra_test.dart
+          test/core_screens_live_backend_test.dart
 
   release:
     needs: model_tests

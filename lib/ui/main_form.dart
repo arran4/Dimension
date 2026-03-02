@@ -24,6 +24,28 @@ abstract class MainFormSoundPlayer {
   Future<void> playBell();
 }
 
+abstract class MainFormRouteSync {
+  void saveSelectedTab(String tag);
+
+  String? loadSelectedTab();
+}
+
+class InMemoryMainFormRouteSync implements MainFormRouteSync {
+  String? _selectedTag;
+
+  @override
+  String? loadSelectedTab() => _selectedTag;
+
+  @override
+  void saveSelectedTab(String tag) {
+    _selectedTag = tag;
+  }
+}
+
+abstract class MainFormTransferDispatcher {
+  Future<void> queueDownload(String target);
+}
+
 class MainFormTab {
   MainFormTab({
     required this.text,
@@ -43,15 +65,21 @@ class MainFormController extends ChangeNotifier {
     required MainFormSettings settings,
     required FlashWindowDriver flashDriver,
     required MainFormSoundPlayer soundPlayer,
+    MainFormRouteSync? routeSync,
+    MainFormTransferDispatcher? transferDispatcher,
     DateTime Function()? clock,
   }) : _settings = settings,
        _flashDriver = flashDriver,
        _soundPlayer = soundPlayer,
+       _routeSync = routeSync,
+       _transferDispatcher = transferDispatcher,
        _clock = clock ?? DateTime.now;
 
   final MainFormSettings _settings;
   final FlashWindowDriver _flashDriver;
   final MainFormSoundPlayer _soundPlayer;
+  final MainFormRouteSync? _routeSync;
+  final MainFormTransferDispatcher? _transferDispatcher;
   final DateTime Function() _clock;
 
   final List<MainFormTab> _tabs = <MainFormTab>[];
@@ -68,6 +96,17 @@ class MainFormController extends ChangeNotifier {
       Platform.environment.containsKey('MONO_ENV_OPTIONS') ||
       Platform.environment.containsKey('MONO_PATH');
 
+  void restoreRouteSelection() {
+    final selectedTag = _routeSync?.loadSelectedTab();
+    if (selectedTag == null || selectedTag.trim().isEmpty) {
+      return;
+    }
+    final index = _tabs.indexWhere((tab) => tab.tag == selectedTag);
+    if (index >= 0) {
+      selectIndex(index);
+    }
+  }
+
   void selectIndex(int index) {
     if (index < 0 || index >= _tabs.length || index == _selectedIndex) {
       return;
@@ -76,6 +115,7 @@ class MainFormController extends ChangeNotifier {
     _setSelectedState(false);
     _selectedIndex = index;
     _setSelectedState(true);
+    _routeSync?.saveSelectedTab(_tabs[index].tag);
     notifyListeners();
   }
 
@@ -102,6 +142,7 @@ class MainFormController extends ChangeNotifier {
     _tabs.add(tab);
     _selectedIndex = _tabs.length - 1;
     _setSelectedState(true);
+    _routeSync?.saveSelectedTab(tag);
     notifyListeners();
     return tab;
   }
@@ -124,6 +165,15 @@ class MainFormController extends ChangeNotifier {
       '(!) Files for ${peer.id}',
     );
     return controller;
+  }
+
+  Future<void> queueTransferDownload(String target) async {
+    final trimmed = target.trim();
+    if (trimmed.isEmpty) {
+      return;
+    }
+
+    await _transferDispatcher?.queueDownload(trimmed);
   }
 
   void privateChatReceived(PrivateChatCommand command, MainFormPeer peer) {

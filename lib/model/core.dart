@@ -2,10 +2,13 @@ import 'dart:collection';
 
 import 'commands/command.dart';
 import 'commands/cancel_command.dart';
+import 'commands/file_chunk.dart';
 import 'commands/file_listing.dart';
 import 'commands/get_file_listing.dart';
+import 'commands/request_chunks.dart';
 import 'commands/room_chat_command.dart';
 import 'commands/search_command.dart';
+import 'commands/search_result_command.dart';
 import 'incoming_connection.dart';
 import 'reliable_connection.dart';
 import 'udt_connection.dart';
@@ -39,12 +42,43 @@ abstract class CoreFileListingProvider {
   Future<FileListing?> generateFileListing(String path);
 }
 
+abstract class CoreSearchResultSink {
+  void addSearchResult(SearchResultCommand command, IncomingConnection connection);
+}
+
+abstract class CoreTransferRouter {
+  Future<void> handleFileChunk(FileChunk command, IncomingConnection connection);
+
+  Future<void> handleRequestChunks(
+    RequestChunks command,
+    IncomingConnection connection,
+  );
+}
+
 typedef CoreIdleTimeProvider = Duration Function();
 typedef CoreChatReceivedHandler = void Function(
   String message,
   int roomId,
   CorePeer? peer,
 );
+
+enum CoreTransferEventType { chunkReceived, chunkRequested }
+
+class CoreTransferEvent {
+  const CoreTransferEvent({
+    required this.type,
+    required this.path,
+    this.start,
+    this.totalSize,
+    this.allChunks,
+  });
+
+  final CoreTransferEventType type;
+  final String path;
+  final int? start;
+  final int? totalSize;
+  final bool? allChunks;
+}
 
 class Core {
   Core({
@@ -53,19 +87,30 @@ class Core {
     required int localPeerId,
     CoreIdleTimeProvider? idleTimeProvider,
     CoreFileListingProvider? fileListingProvider,
+    CoreSearchResultSink? searchResultSink,
+    CoreTransferRouter? transferRouter,
   }) : _peerDirectory = peerDirectory,
        _settings = settings,
        _localPeerId = localPeerId,
        _idleTimeProvider = idleTimeProvider ?? (() => Duration.zero),
-       _fileListingProvider = fileListingProvider;
+       _fileListingProvider = fileListingProvider,
+       _searchResultSink = searchResultSink,
+       _transferRouter = transferRouter;
 
   final CorePeerDirectory _peerDirectory;
   final CoreSettingsStore _settings;
   final int _localPeerId;
   final CoreIdleTimeProvider _idleTimeProvider;
   final CoreFileListingProvider? _fileListingProvider;
+  final CoreSearchResultSink? _searchResultSink;
+  final CoreTransferRouter? _transferRouter;
 
   final Set<String> _cancelledPaths = <String>{};
+  final List<SearchResultCommand> _searchResults = <SearchResultCommand>[];
+  final Map<String, SearchResultCommand> _searchResultsByKeyword =
+      <String, SearchResultCommand>{};
+  final Map<String, CoreTransferEvent> _latestTransferEvents =
+      <String, CoreTransferEvent>{};
 
   bool disposed = false;
   int incomingTcpConnections = 0;
@@ -207,6 +252,25 @@ class Core {
 
   bool clearCancelledPath(String path) => _cancelledPaths.remove(path);
 
+  UnmodifiableListView<SearchResultCommand> get searchResults =>
+      UnmodifiableListView<SearchResultCommand>(_searchResults);
+
+  SearchResultCommand? searchResultForKeyword(String keyword) {
+    final normalized = keyword.trim().toLowerCase();
+    if (normalized.isEmpty) {
+      return null;
+    }
+    return _searchResultsByKeyword[normalized];
+  }
+
+  CoreTransferEvent? latestTransferEventForPath(String path) {
+    final normalized = path.trim();
+    if (normalized.isEmpty) {
+      return null;
+    }
+    return _latestTransferEvents[normalized];
+  }
+
   void _commandReceived(Command command, IncomingConnection connection) {
     if (command is CancelCommand) {
       _cancelledPaths.add(command.path);
@@ -228,8 +292,46 @@ class Core {
       return;
     }
 
-    // Remaining parity work: command routing/search result handling/file sharing
-    // flow will be ported as App/Core orchestration is completed.
+    if (command is SearchResultCommand) {
+      _searchResults.add(command);
+      final normalizedKeyword = command.keyword.trim().toLowerCase();
+      if (normalizedKeyword.isNotEmpty) {
+        _searchResultsByKeyword[normalizedKeyword] = command;
+      }
+      _searchResultSink?.addSearchResult(command, connection);
+      return;
+    }
+
+    if (command is FileChunk) {
+      final event = CoreTransferEvent(
+        type: CoreTransferEventType.chunkReceived,
+        path: command.path.trim(),
+        start: command.start,
+        totalSize: command.totalSize,
+      );
+      if (event.path.isNotEmpty) {
+        _latestTransferEvents[event.path] = event;
+      }
+      _transferRouter?.handleFileChunk(command, connection);
+      return;
+    }
+
+    if (command is RequestChunks) {
+      final event = CoreTransferEvent(
+        type: CoreTransferEventType.chunkRequested,
+        path: command.path.trim(),
+        start: command.startingByte,
+        allChunks: command.allChunks,
+      );
+      if (event.path.isNotEmpty) {
+        _latestTransferEvents[event.path] = event;
+      }
+      _transferRouter?.handleRequestChunks(command, connection);
+      return;
+    }
+
+    // Remaining parity work: wire command-side effects to final transfer/search
+    // orchestration adapters when App/Core runtime bootstrap is completed.
   }
 
   void addChatReceivedListener(CoreChatReceivedHandler listener) {

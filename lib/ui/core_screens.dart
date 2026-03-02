@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'component_primitives.dart';
+
 enum CoreScreenSection {
   circles,
   peers,
@@ -49,6 +51,10 @@ class CoreScreensController extends ChangeNotifier {
   final Map<CoreScreenSection, String> _statusMessages =
       <CoreScreenSection, String>{};
 
+  String joinCircleTarget = 'LAN';
+  String searchQuery = '';
+  String downloadTarget = '';
+
   CoreScreensState stateFor(CoreScreenSection section) {
     return _sections[section]!;
   }
@@ -56,6 +62,21 @@ class CoreScreensController extends ChangeNotifier {
   bool sectionBusy(CoreScreenSection section) => _busySections.contains(section);
 
   String? sectionMessage(CoreScreenSection section) => _statusMessages[section];
+
+  void setJoinCircleTarget(String value) {
+    joinCircleTarget = value;
+    notifyListeners();
+  }
+
+  void setSearchQuery(String value) {
+    searchQuery = value;
+    notifyListeners();
+  }
+
+  void setDownloadTarget(String value) {
+    downloadTarget = value;
+    notifyListeners();
+  }
 
   void setLoading(CoreScreenSection section) {
     _sections[section] = const CoreScreensState(status: CoreScreenStatus.loading);
@@ -249,10 +270,18 @@ class CoreScreensView extends StatelessWidget {
                   ),
                   busy: controller.sectionBusy(CoreScreenSection.circles),
                   actions: [
+                    SizedBox(
+                      width: 220,
+                      child: TextField(
+                        key: const Key('joinCircleInput'),
+                        decoration: const InputDecoration(labelText: 'Circle'),
+                        onChanged: controller.setJoinCircleTarget,
+                      ),
+                    ),
                     _sectionActionButton(
-                      label: 'Join LAN',
-                      semanticsLabel: 'Join LAN circle',
-                      onPressed: () => controller.joinCircle('LAN'),
+                      label: 'Join',
+                      semanticsLabel: 'Join circle',
+                      onPressed: () => controller.joinCircle(controller.joinCircleTarget),
                     ),
                   ],
                 ),
@@ -284,10 +313,18 @@ class CoreScreensView extends StatelessWidget {
                   statusMessage: controller.sectionMessage(CoreScreenSection.search),
                   busy: controller.sectionBusy(CoreScreenSection.search),
                   actions: [
+                    SizedBox(
+                      width: 260,
+                      child: TextField(
+                        key: const Key('searchQueryInput'),
+                        decoration: const InputDecoration(labelText: 'Search'),
+                        onChanged: controller.setSearchQuery,
+                      ),
+                    ),
                     _sectionActionButton(
                       label: 'Search',
                       semanticsLabel: 'Run search',
-                      onPressed: () => controller.runSearch('example'),
+                      onPressed: () => controller.runSearch(controller.searchQuery),
                     ),
                   ],
                 ),
@@ -300,10 +337,18 @@ class CoreScreensView extends StatelessWidget {
                   ),
                   busy: controller.sectionBusy(CoreScreenSection.transfers),
                   actions: [
+                    SizedBox(
+                      width: 260,
+                      child: TextField(
+                        key: const Key('downloadTargetInput'),
+                        decoration: const InputDecoration(labelText: 'Transfer'),
+                        onChanged: controller.setDownloadTarget,
+                      ),
+                    ),
                     _sectionActionButton(
                       label: 'Queue Download',
-                      semanticsLabel: 'Queue download for example file',
-                      onPressed: () => controller.queueDownload('example.bin'),
+                      semanticsLabel: 'Queue download for transfer target',
+                      onPressed: () => controller.queueDownload(controller.downloadTarget),
                     ),
                   ],
                 ),
@@ -344,27 +389,10 @@ Widget _sectionActionButton({
   required String semanticsLabel,
   required VoidCallback onPressed,
 }) {
-  return Padding(
-    padding: const EdgeInsets.only(right: 8),
-    child: Semantics(
-      button: true,
-      label: semanticsLabel,
-      child: Tooltip(
-        message: semanticsLabel,
-        child: TextButton(
-          onPressed: onPressed,
-          style: ButtonStyle(
-            side: WidgetStateProperty.resolveWith<BorderSide?>((states) {
-              if (states.contains(WidgetState.focused)) {
-                return const BorderSide(width: 2);
-              }
-              return null;
-            }),
-          ),
-          child: Text(label),
-        ),
-      ),
-    ),
+  return DimensionSectionAction(
+    label: label,
+    semanticsLabel: semanticsLabel,
+    onPressed: onPressed,
   );
 }
 
@@ -401,46 +429,15 @@ class _SectionPane extends StatelessWidget {
             ),
     };
 
-    final highContrast = MediaQuery.highContrastOf(context);
-    final statusStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      fontWeight: highContrast ? FontWeight.w700 : FontWeight.w400,
-      color: highContrast
-          ? Theme.of(context).colorScheme.onSurface
-          : Theme.of(context).textTheme.bodyMedium?.color,
-    );
-
     return Column(
       children: [
-        if (actions.isNotEmpty || statusMessage != null || busy)
-          Container(
-            width: double.infinity,
-            color: highContrast
-                ? Theme.of(context).colorScheme.surfaceContainerHighest
-                : null,
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (actions.isNotEmpty)
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: actions,
-                  ),
-                if (statusMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      statusMessage!,
-                      key: Key('core-screen-status.$title'),
-                      textAlign: TextAlign.end,
-                      style: statusStyle,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        if (busy) const LinearProgressIndicator(),
+        DimensionSectionHeader(
+          title: title,
+          statusMessage: statusMessage,
+          actions: actions,
+          busy: busy,
+          containerKey: Key('core-screen-header.$title'),
+        ),
         Expanded(child: content),
       ],
     );
