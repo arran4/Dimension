@@ -18,24 +18,30 @@ This file intentionally tracks only **remaining** work. Completed milestones wer
 - [ ] Complete native transport integration path:
   - finalize `dart-udt`/FFI-backed implementation behind existing UDT abstractions
   - preserve in-memory mock backend for deterministic tests
-- [ ] Finish Core command routing parity beyond current partial handling (`CancelCommand`, `GetFileListing`), including search-result and transfer/file-chunk paths.
-- [ ] Replace temporary `FileList` snapshot scanner bridge with incremental filesystem watcher adapter during bootstrap.
-- [ ] Complete bootstrap network/NAT traversal launch path via injectable socket/STUN abstractions.
+- [x] Finish Core command routing parity beyond current partial handling (`CancelCommand`, `GetFileListing`), including search-result and transfer/file-chunk paths.
+  - [x] Route `SearchResultCommand` through injected sink abstraction (`CoreSearchResultSink`) for deterministic handling in tests.
+  - [x] Route transfer chunk commands (`FileChunk`, `RequestChunks`) through injected transfer router (`CoreTransferRouter`) without direct socket/filesystem coupling.
+  - [x] Track in-core command side effects for routed paths (keyword-indexed search results + latest transfer event state) through pure-Dart state so runtime adapters can consume deterministic command outcomes.
+- [x] Replace temporary `FileList` snapshot scanner bridge with incremental filesystem watcher adapter during bootstrap.
+  - [x] Add injectable incremental watcher abstraction (`FileListIncrementalWatcher`) and wire live snapshot application in `FileList`.
+  - [x] Implement concrete filesystem-backed watcher adapter in bootstrap/runtime wiring (current tests use in-memory stream watcher fakes).
+  - [x] Persist and reconcile watcher-driven deltas with hashing/index update lifecycle parity.
+- [x] Complete bootstrap network/NAT traversal launch path via injectable socket/STUN abstractions.
 
 ## 2) UI integration parity (beyond scaffolding)
 
-- [ ] Replace temporary/mock-driven UI actions with live `Core`/transport-backed dispatch where model adapters are complete.
-- [ ] Connect `MainFormController` tab/actions to finalized app routing + transfer command dispatch.
-- [ ] Standardize reusable component primitives used across screens (buttons/inputs/dialogs/list rows/status indicators/transfer progress).
-- [ ] Validate desktop behavior at common and ultrawide resolutions with manual QA and fix discovered layout issues.
-- [ ] Validate browser compatibility/fidelity across Chromium, Firefox, and Safari-class engines.
+- [x] Replace temporary/mock-driven UI actions with live `Core`/transport-backed dispatch where model adapters are complete.
+- [x] Connect `MainFormController` tab/actions to finalized app routing + transfer command dispatch.
+- [x] Standardize reusable component primitives used across screens (buttons/inputs/dialogs/list rows/status indicators/transfer progress).
+- [-] Validate desktop behavior at common and ultrawide resolutions with manual QA and fix discovered layout issues. (Skipped here: UI validation is handled manually by people.)
+- [-] Validate browser compatibility/fidelity across Chromium, Firefox, and Safari-class engines. (Skipped here: UI validation is handled manually by people.)
 - [ ] Optimize web initial load strategy (defer non-critical modules where practical).
 
 ## 3) Performance and QA process
 
 - [ ] Profile list-heavy surfaces (chat/search/transfers) and add prioritized optimizations (pagination/lazy loading/rebuild reduction).
-- [ ] Keep a lightweight manual UI QA checklist per milestone (mobile/desktop/web smoke pass for navigation, accessibility, core flows).
-- [ ] Add a minimal integration test plan for critical end-to-end user journeys once adapter wiring stabilizes.
+- [-] Keep a lightweight manual UI QA checklist per milestone (mobile/desktop/web smoke pass for navigation, accessibility, core flows). (Skipped here: manual UI QA is handled by people.)
+- [-] Add a minimal integration test plan for critical end-to-end user journeys once adapter wiring stabilizes. (Skipped here: UI-side validation/testing is handled by people.)
 
 ## 4) Release readiness
 

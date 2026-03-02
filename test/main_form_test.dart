@@ -48,6 +48,15 @@ class _FlashDriver extends FlashWindowDriver {
   bool stop() => true;
 }
 
+class _TransferDispatcher implements MainFormTransferDispatcher {
+  final List<String> queued = <String>[];
+
+  @override
+  Future<void> queueDownload(String target) async {
+    queued.add(target);
+  }
+}
+
 void main() {
   test('addOrSelectPanel deduplicates tags and tracks selection', () {
     final controller = MainFormController(
@@ -56,7 +65,12 @@ void main() {
       soundPlayer: _SoundPlayer(),
     );
 
-    controller.addOrSelectPanel('Welcome', Object(), (_) => const SizedBox(), 'welcome');
+    controller.addOrSelectPanel(
+      'Welcome',
+      Object(),
+      (_) => const SizedBox(),
+      'welcome',
+    );
     controller.addOrSelectPanel('Again', Object(), (_) => const SizedBox(), 'welcome');
 
     expect(controller.tabs, hasLength(1));
@@ -122,6 +136,49 @@ void main() {
     );
 
     expect(controller.tabs, hasLength(1));
+  });
+
+  test('route sync stores and restores selected tab tag', () {
+    final routeSync = InMemoryMainFormRouteSync();
+    final controller = MainFormController(
+      settings: _Settings({}),
+      flashDriver: _FlashDriver(activated: true),
+      soundPlayer: _SoundPlayer(),
+      routeSync: routeSync,
+    );
+
+    controller.addOrSelectPanel('One', Object(), (_) => const SizedBox(), 'one');
+    controller.addOrSelectPanel('Two', Object(), (_) => const SizedBox(), 'two');
+    controller.selectIndex(0);
+
+    expect(routeSync.loadSelectedTab(), 'one');
+
+    final restored = MainFormController(
+      settings: _Settings({}),
+      flashDriver: _FlashDriver(activated: true),
+      soundPlayer: _SoundPlayer(),
+      routeSync: routeSync,
+    );
+    restored.addOrSelectPanel('One', Object(), (_) => const SizedBox(), 'one');
+    restored.addOrSelectPanel('Two', Object(), (_) => const SizedBox(), 'two');
+    restored.restoreRouteSelection();
+
+    expect(restored.selectedIndex, 0);
+  });
+
+  test('queueTransferDownload uses injected dispatcher and trims values', () async {
+    final dispatcher = _TransferDispatcher();
+    final controller = MainFormController(
+      settings: _Settings({}),
+      flashDriver: _FlashDriver(activated: true),
+      soundPlayer: _SoundPlayer(),
+      transferDispatcher: dispatcher,
+    );
+
+    await controller.queueTransferDownload('  song.mp3  ');
+    await controller.queueTransferDownload('   ');
+
+    expect(dispatcher.queued, <String>['song.mp3']);
   });
 
   testWidgets('MainForm renders rail destinations and selected panel', (tester) async {

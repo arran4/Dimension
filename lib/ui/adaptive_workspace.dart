@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'component_primitives.dart';
 import 'core_screens.dart';
 import 'desktop_context_menu.dart';
 import 'desktop_shell_infra.dart';
@@ -413,13 +414,18 @@ class _SectionPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final title = _label(section);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          padding: const EdgeInsets.all(12),
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          child: Text('Section: ${_label(section)}'),
+          child: DimensionSectionHeader(
+            title: title,
+            statusMessage: 'Section: $title',
+            busy: state.status == CoreScreenStatus.loading,
+            containerKey: Key('workspace-header-$title'),
+          ),
         ),
         Expanded(child: _buildContent()),
       ],

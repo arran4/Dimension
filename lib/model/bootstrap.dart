@@ -6,19 +6,62 @@ import 'dart:io';
 /// That flow still needs to be ported. This implementation focuses on the
 /// completed tasks that are currently testable without real networking:
 /// logging plumbing and bootstrap endpoint retrieval/parsing.
+typedef BootstrapLogger = void Function(String message);
+typedef InternetAddressParser = InternetAddress? Function(String input);
+
+abstract class BootstrapHttpClient {
+  Future<String> get(Uri uri);
+}
+
+abstract class BootstrapNatAdapter {
+  Future<BootstrapNatProbeResult> probe();
+}
+
+class BootstrapNatProbeResult {
+  const BootstrapNatProbeResult({
+    required this.upnpActive,
+    this.externalIp,
+    this.publicControlPort,
+  });
+
+  final bool upnpActive;
+  final InternetAddress? externalIp;
+  final int? publicControlPort;
+}
+
+abstract class BootstrapStunClient {
+  Future<BootstrapStunResult?> probe();
+}
+
+class BootstrapStunResult {
+  const BootstrapStunResult({
+    required this.publicAddress,
+    required this.publicControlPort,
+  });
+
+  final InternetAddress publicAddress;
+  final int publicControlPort;
+}
+
 class Bootstrap {
   Bootstrap({
     BootstrapHttpClient? httpClient,
     BootstrapLogger? logger,
     InternetAddressParser? internetAddressParser,
+    BootstrapNatAdapter? natAdapter,
+    BootstrapStunClient? stunClient,
   })  : _httpClient = httpClient ?? IoBootstrapHttpClient(),
         _logger = logger,
         _internetAddressParser =
-            internetAddressParser ?? InternetAddress.tryParse;
+            internetAddressParser ?? InternetAddress.tryParse,
+        _natAdapter = natAdapter,
+        _stunClient = stunClient;
 
   final BootstrapHttpClient _httpClient;
   final BootstrapLogger? _logger;
   final InternetAddressParser _internetAddressParser;
+  final BootstrapNatAdapter? _natAdapter;
+  final BootstrapStunClient? _stunClient;
 
   bool upnpActive = true;
   bool lanMode = false;
@@ -38,6 +81,36 @@ class Bootstrap {
   void dispose() {
     _disposed = true;
   }
+
+  Future<void> launch() async {
+    final natProbe = await _natAdapter?.probe();
+    if (natProbe != null) {
+      upnpActive = natProbe.upnpActive;
+      externalIpFromUpnp = natProbe.externalIp;
+      if (natProbe.publicControlPort != null) {
+        publicControlPort = natProbe.publicControlPort;
+      }
+      if (natProbe.externalIp != null) {
+        publicAddress = natProbe.externalIp;
+      }
+    }
+
+    final stunProbe = await _stunClient?.probe();
+    if (stunProbe != null) {
+      final upnpIp = externalIpFromUpnp?.address;
+      final stunIp = stunProbe.publicAddress.address;
+      behindDoubleNAT = upnpIp != null && upnpIp != stunIp;
+      publicAddress = stunProbe.publicAddress;
+      publicControlPort = stunProbe.publicControlPort;
+    } else {
+      behindDoubleNAT = false;
+    }
+
+    if (publicAddress == null && externalIpFromUpnp != null) {
+      publicAddress = externalIpFromUpnp;
+    }
+  }
+
 
   /// C# compatibility shim.
   void WriteLine(String message) => writeLine(message);
@@ -92,13 +165,6 @@ class Bootstrap {
 
     return endpoints;
   }
-}
-
-typedef BootstrapLogger = void Function(String message);
-typedef InternetAddressParser = InternetAddress? Function(String input);
-
-abstract class BootstrapHttpClient {
-  Future<String> get(Uri uri);
 }
 
 class IoBootstrapHttpClient implements BootstrapHttpClient {

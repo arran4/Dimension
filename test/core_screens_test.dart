@@ -116,6 +116,20 @@ void main() {
 
 
 
+
+  test('search and queue actions use controller input values', () async {
+    final backend = _Backend();
+    final controller = CoreScreensController(backend: backend);
+    controller.setItems(CoreScreenSection.search, const <String>[]);
+    controller.setItems(CoreScreenSection.transfers, const <String>[]);
+
+    await controller.runSearch('alpha');
+    await controller.queueDownload('beta.bin');
+
+    expect(controller.stateFor(CoreScreenSection.search).items, <String>['alpha.bin']);
+    expect(controller.stateFor(CoreScreenSection.transfers).items, contains('Queued: beta.bin'));
+  });
+
   testWidgets('ctrl-digit shortcuts switch tabs for keyboard-only navigation', (
     tester,
   ) async {
@@ -154,7 +168,7 @@ void main() {
       MaterialApp(home: CoreScreensView(controller: controller)),
     );
 
-    expect(find.bySemanticsLabel('Join LAN circle'), findsOneWidget);
+    expect(find.bySemanticsLabel('Join circle'), findsOneWidget);
     await tester.tap(find.text('Peers'));
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Refresh peers'), findsOneWidget);
@@ -181,13 +195,14 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Join LAN'));
+    await tester.enterText(find.byKey(const Key('joinCircleInput')), 'LAN');
+    await tester.tap(find.text('Join'));
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
 
     final statusText = tester.widget<Text>(
-      find.byKey(const Key('core-screen-status.Circles')),
+      find.byKey(const Key('section-status.Circles')),
     );
     expect(statusText.style?.fontWeight, FontWeight.w700);
   });
@@ -202,10 +217,11 @@ void main() {
       MaterialApp(home: CoreScreensView(controller: controller)),
     );
 
-    await tester.tap(find.text('Join LAN'));
+    await tester.enterText(find.byKey(const Key('joinCircleInput')), 'LAN');
+    await tester.tap(find.text('Join'));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('core-screen-status.Circles')), findsOneWidget);
+    expect(find.byKey(const Key('section-status.Circles')), findsOneWidget);
     expect(find.text('Joined LAN'), findsOneWidget);
     expect(find.text('LAN'), findsOneWidget);
   });

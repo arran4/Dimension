@@ -51,6 +51,53 @@ void main() {
     });
   });
 
+  group('Bootstrap NAT launch', () {
+    test('launch uses STUN/public address and detects double NAT mismatch', () async {
+      final bootstrap = Bootstrap(
+        natAdapter: _NatAdapter(
+          const BootstrapNatProbeResult(
+            upnpActive: true,
+            externalIp: InternetAddress('10.0.0.5'),
+            publicControlPort: 1111,
+          ),
+        ),
+        stunClient: _StunClient(
+          const BootstrapStunResult(
+            publicAddress: InternetAddress('203.0.113.20'),
+            publicControlPort: 2222,
+          ),
+        ),
+      );
+
+      await bootstrap.launch();
+
+      expect(bootstrap.upnpActive, isTrue);
+      expect(bootstrap.externalIpFromUpnp?.address, '10.0.0.5');
+      expect(bootstrap.publicAddress?.address, '203.0.113.20');
+      expect(bootstrap.publicControlPort, 2222);
+      expect(bootstrap.behindDoubleNAT, isTrue);
+    });
+
+    test('launch falls back to UPnP address when STUN unavailable', () async {
+      final bootstrap = Bootstrap(
+        natAdapter: _NatAdapter(
+          const BootstrapNatProbeResult(
+            upnpActive: true,
+            externalIp: InternetAddress('198.51.100.10'),
+            publicControlPort: 3333,
+          ),
+        ),
+        stunClient: _StunClient(null),
+      );
+
+      await bootstrap.launch();
+
+      expect(bootstrap.publicAddress?.address, '198.51.100.10');
+      expect(bootstrap.publicControlPort, 3333);
+      expect(bootstrap.behindDoubleNAT, isFalse);
+    });
+  });
+
   group('Bootstrap logging and disposal shims', () {
     test('Write and WriteLine delegate to logger and Dispose marks disposed', () {
       final messages = <String>[];
@@ -77,4 +124,22 @@ class _FakeBootstrapHttpClient implements BootstrapHttpClient {
     requestedUris.add(uri);
     return body;
   }
+}
+
+class _NatAdapter implements BootstrapNatAdapter {
+  _NatAdapter(this.result);
+
+  final BootstrapNatProbeResult result;
+
+  @override
+  Future<BootstrapNatProbeResult> probe() async => result;
+}
+
+class _StunClient implements BootstrapStunClient {
+  _StunClient(this.result);
+
+  final BootstrapStunResult? result;
+
+  @override
+  Future<BootstrapStunResult?> probe() async => result;
 }

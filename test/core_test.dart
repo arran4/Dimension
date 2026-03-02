@@ -1,8 +1,11 @@
-import 'package:dimension/model/commands/command.dart';
 import 'package:dimension/model/commands/cancel_command.dart';
+import 'package:dimension/model/commands/command.dart';
+import 'package:dimension/model/commands/file_chunk.dart';
 import 'package:dimension/model/commands/file_listing.dart';
 import 'package:dimension/model/commands/get_file_listing.dart';
+import 'package:dimension/model/commands/request_chunks.dart';
 import 'package:dimension/model/commands/search_command.dart';
+import 'package:dimension/model/commands/search_result_command.dart';
 import 'package:dimension/model/core.dart';
 import 'package:dimension/model/incoming_connection.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,11 +20,8 @@ class _Settings implements CoreSettingsStore {
 }
 
 class _Peer implements CorePeer {
-  _Peer({
-    required this.id,
-    required this.quit,
-    required Set<int> circles,
-  }) : circles = circles;
+  _Peer({required this.id, required this.quit, required Set<int> circles})
+    : circles = circles;
 
   @override
   final int id;
@@ -65,8 +65,6 @@ class _PeerDirectory implements CorePeerMutableDirectory {
 
 class _SearchCommand extends SearchCommand {}
 
-
-
 class _FileListingProvider implements CoreFileListingProvider {
   String? requestedPath;
 
@@ -74,6 +72,36 @@ class _FileListingProvider implements CoreFileListingProvider {
   Future<FileListing?> generateFileListing(String path) async {
     requestedPath = path;
     return FileListing()..path = path;
+  }
+}
+
+class _SearchSink implements CoreSearchResultSink {
+  final List<SearchResultCommand> received = <SearchResultCommand>[];
+
+  @override
+  void addSearchResult(SearchResultCommand command, IncomingConnection connection) {
+    received.add(command);
+  }
+}
+
+class _TransferRouter implements CoreTransferRouter {
+  final List<FileChunk> chunks = <FileChunk>[];
+  final List<RequestChunks> requests = <RequestChunks>[];
+
+  @override
+  Future<void> handleFileChunk(
+    FileChunk command,
+    IncomingConnection connection,
+  ) async {
+    chunks.add(command);
+  }
+
+  @override
+  Future<void> handleRequestChunks(
+    RequestChunks command,
+    IncomingConnection connection,
+  ) async {
+    requests.add(command);
   }
 }
 
@@ -138,7 +166,9 @@ void main() {
 
   test('addPeer returns false when directory is read-only', () {
     final core = Core(
-      peerDirectory: _ReadOnlyPeerDirectory([_Peer(id: 1, quit: false, circles: {7})]),
+      peerDirectory: _ReadOnlyPeerDirectory([
+        _Peer(id: 1, quit: false, circles: {7}),
+      ]),
       settings: _Settings(),
       localPeerId: 9,
     );
@@ -210,6 +240,74 @@ void main() {
     expect(incoming.lastFolder, '/Public');
     expect(incoming.sent.single, isA<FileListing>());
     expect((incoming.sent.single as FileListing).path, '/Public');
+  });
+
+  test('commandReceived routes SearchResultCommand to sink and records history', () {
+    final incoming = _Incoming();
+    final sink = _SearchSink();
+    final core = Core(
+      peerDirectory: _PeerDirectory([]),
+      settings: _Settings(),
+      localPeerId: 1,
+      searchResultSink: sink,
+    );
+
+    final command = SearchResultCommand()..keyword = 'movie';
+    core.addIncomingConnection(incoming);
+    incoming.commandReceived?.call(command, incoming);
+
+    expect(sink.received.single.keyword, 'movie');
+    expect(core.searchResults.single.keyword, 'movie');
+    expect(core.searchResultForKeyword(' movie '), same(command));
+  });
+
+
+  test('search result index keeps latest command per keyword', () {
+    final incoming = _Incoming();
+    final sink = _SearchSink();
+    final core = Core(
+      peerDirectory: _PeerDirectory([]),
+      settings: _Settings(),
+      localPeerId: 1,
+      searchResultSink: sink,
+    );
+
+    final first = SearchResultCommand()..keyword = 'Track';
+    final second = SearchResultCommand()..keyword = 'track';
+
+    core.addIncomingConnection(incoming);
+    incoming.commandReceived?.call(first, incoming);
+    incoming.commandReceived?.call(second, incoming);
+
+    expect(core.searchResults, hasLength(2));
+    expect(core.searchResultForKeyword('TRACK'), same(second));
+  });
+
+  test('commandReceived routes chunk and request commands to transfer router', () async {
+    final incoming = _Incoming();
+    final router = _TransferRouter();
+    final core = Core(
+      peerDirectory: _PeerDirectory([]),
+      settings: _Settings(),
+      localPeerId: 1,
+      transferRouter: router,
+    );
+
+    final chunk = FileChunk()..path = '/x.bin';
+    final request = RequestChunks()..path = '/x.bin';
+
+    core.addIncomingConnection(incoming);
+    incoming.commandReceived?.call(chunk, incoming);
+    incoming.commandReceived?.call(request, incoming);
+    await Future<void>.delayed(Duration.zero);
+
+    expect(router.chunks.single.path, '/x.bin');
+    expect(router.requests.single.path, '/x.bin');
+
+    final latest = core.latestTransferEventForPath('/x.bin');
+    expect(latest, isNotNull);
+    expect(latest!.type, CoreTransferEventType.chunkRequested);
+    expect(latest.start, 0);
   });
 
   test('chatReceived invokes listeners and getIdleTime uses injected provider', () {
