@@ -16,6 +16,28 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "NewDimensionLogo.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "NewDimensionLogo.png"
+    background_color: "#ffffff"
+  windows:
+    generate: true
+    image_path: "NewDimensionLogo.png"
+    icon_size: 48
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: "NewDimensionLogo.png"
+  android_12:
+    image: "NewDimensionLogo.png"
 
 flutter:
   uses-material-design: true
