@@ -101,14 +101,14 @@ void main() {
   });
 
   group('Bootstrap logging and disposal shims', () {
-    test('Write and WriteLine delegate to logger and Dispose marks disposed',
+    test('write and writeLine delegate to logger and dispose marks disposed',
         () {
       final messages = <String>[];
       final bootstrap = Bootstrap(logger: messages.add);
 
-      bootstrap.Write('first');
-      bootstrap.WriteLine('second');
-      bootstrap.Dispose();
+      bootstrap.write('first');
+      bootstrap.writeLine('second');
+      bootstrap.dispose();
 
       expect(messages, <String>['first', 'second']);
       expect(bootstrap.disposed, isTrue);
