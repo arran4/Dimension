@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('buildActions creates refresh/detail menu entries', () {
-    final controller = DesktopContextMenuController();
+    const controller = DesktopContextMenuController();
     var refreshCalls = 0;
     var detailCalls = 0;
 
