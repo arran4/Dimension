@@ -1,6 +1,5 @@
 import 'package:dartobjectutils/dartobjectutils.dart';
 
-
 class FSListing {
   int id = 0;
   int parentId = 0;
