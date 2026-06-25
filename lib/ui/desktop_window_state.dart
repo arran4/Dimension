@@ -21,13 +21,12 @@ class DesktopWindowGeometry {
         'offsetY': offsetY,
       };
 
-  static DesktopWindowGeometry fromJson(Map<String, Object?> json) {
-    final jsonMap = json.cast<String, dynamic>();
+  static DesktopWindowGeometry fromJson(Map<String, dynamic> json) {
     return DesktopWindowGeometry(
-      width: getNumberPropOrDefault(jsonMap, 'width', 1200).toDouble(),
-      height: getNumberPropOrDefault(jsonMap, 'height', 800).toDouble(),
-      offsetX: getNumberPropOrDefault(jsonMap, 'offsetX', 100).toDouble(),
-      offsetY: getNumberPropOrDefault(jsonMap, 'offsetY', 80).toDouble(),
+      width: getNumberPropOrDefault(json, 'width', 1200).toDouble(),
+      height: getNumberPropOrDefault(json, 'height', 800).toDouble(),
+      offsetX: getNumberPropOrDefault(json, 'offsetX', 100).toDouble(),
+      offsetY: getNumberPropOrDefault(json, 'offsetY', 80).toDouble(),
     );
   }
 }
