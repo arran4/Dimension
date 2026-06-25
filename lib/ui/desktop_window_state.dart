@@ -1,3 +1,4 @@
+import 'package:dartobjectutils/dartobjectutils.dart';
 import 'dart:async';
 
 class DesktopWindowGeometry {
@@ -21,11 +22,12 @@ class DesktopWindowGeometry {
       };
 
   static DesktopWindowGeometry fromJson(Map<String, Object?> json) {
+    final jsonMap = json.cast<String, dynamic>();
     return DesktopWindowGeometry(
-      width: (json['width'] as num?)?.toDouble() ?? 1200,
-      height: (json['height'] as num?)?.toDouble() ?? 800,
-      offsetX: (json['offsetX'] as num?)?.toDouble() ?? 100,
-      offsetY: (json['offsetY'] as num?)?.toDouble() ?? 80,
+      width: getNumberPropOrDefault(jsonMap, 'width', 1200).toDouble(),
+      height: getNumberPropOrDefault(jsonMap, 'height', 800).toDouble(),
+      offsetX: getNumberPropOrDefault(jsonMap, 'offsetX', 100).toDouble(),
+      offsetY: getNumberPropOrDefault(jsonMap, 'offsetY', 80).toDouble(),
     );
   }
 }

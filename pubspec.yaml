@@ -12,6 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   crypto: ^3.0.7
   dart_udt: ^0.0.2
+  dartobjectutils: ^0.1.1
 
 dev_dependencies:
   flutter_test:
