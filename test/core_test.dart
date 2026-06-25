@@ -190,7 +190,7 @@ void main() {
 
     core.sendChat('/nick super-long-username-value', 77);
 
-    expect(settings.values['Username'], 'super-long-userna');
+    expect(settings.values['Username'], 'super-long-usern');
     expect(peer.sentCommands, isEmpty);
   });
 
