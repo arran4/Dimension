@@ -11,3 +11,11 @@ The automated test suite has 3 failing model layer tests existing on the default
    - *Issue*: Also fails to resolve the mock `File` structure during snapshot reconciliation due to incomplete index matching logic or root share ID linkages.
 
 These require codebase refactoring to properly address path traversal inside `FileList` which is outside the scope of CI migration.
+
+## Failures in `test/app_shell_test.dart`
+1. `AppShell applies web input wrappers for focus/scroll/selection`
+   - *Issue*: Fails with a layout error, likely due to a constraint mismatch in the test setup.
+2. `AppShell rebuilds for route and layout changes`
+   - *Issue*: Fails to find a Text widget with expected content.
+
+These require codebase refactoring in the test/UI layer which is outside the scope of CI migration.
