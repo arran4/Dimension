@@ -1,3 +1,5 @@
+import 'package:dartobjectutils/dartobjectutils.dart';
+
 class FSListing {
   int id = 0;
   int parentId = 0;
@@ -31,18 +33,24 @@ class RootShare extends Folder {
 
   static RootShare fromJson(Map<String, dynamic> json) {
     return RootShare()
-      ..id = json['id'] as int? ?? 0
-      ..parentId = json['parentId'] as int? ?? 0
-      ..name = json['name'] as String? ?? ''
-      ..size = json['size'] as int? ?? 0
-      ..lastModified = json['lastModified'] as int? ?? 0
-      ..index = json['index'] as int? ?? 0
-      ..fullPath = json['fullPath'] as String? ?? ''
-      ..totalBytes = json['totalBytes'] as int? ?? 0
-      ..quickHashedBytes = json['quickHashedBytes'] as int? ?? 0
-      ..fullHashedBytes = json['fullHashedBytes'] as int? ?? 0
-      ..folderIds = List<int>.from(json['folderIds'] as Iterable? ?? const [])
-      ..fileIds = List<int>.from(json['fileIds'] as Iterable? ?? const []);
+      ..id = getNumberPropOrDefault(json, 'id', 0).toInt()
+      ..parentId = getNumberPropOrDefault(json, 'parentId', 0).toInt()
+      ..name = getStringPropOrDefault(json, 'name', '')
+      ..size = getNumberPropOrDefault(json, 'size', 0).toInt()
+      ..lastModified = getNumberPropOrDefault(json, 'lastModified', 0).toInt()
+      ..index = getNumberPropOrDefault(json, 'index', 0).toInt()
+      ..fullPath = getStringPropOrDefault(json, 'fullPath', '')
+      ..totalBytes = getNumberPropOrDefault(json, 'totalBytes', 0).toInt()
+      ..quickHashedBytes =
+          getNumberPropOrDefault(json, 'quickHashedBytes', 0).toInt()
+      ..fullHashedBytes =
+          getNumberPropOrDefault(json, 'fullHashedBytes', 0).toInt()
+      ..folderIds = getNumberArrayPropOrDefault(json, 'folderIds', <num>[])
+          .map((e) => e.toInt())
+          .toList()
+      ..fileIds = getNumberArrayPropOrDefault(json, 'fileIds', <num>[])
+          .map((e) => e.toInt())
+          .toList();
   }
 
   Map<String, dynamic> toJson() {
