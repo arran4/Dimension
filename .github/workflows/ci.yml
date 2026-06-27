@@ -520,7 +520,7 @@ jobs:
 
   manual-gh-release:
     name: Manual release creation
-    needs: [prepare-release-tag]
+    needs: [prepare-release-tag, flutter-build-artifacts]
     if: ${{ github.event_name == 'workflow_dispatch' && startsWith(inputs.mode, 'release-') }}
     runs-on: ubuntu-latest
     permissions:
@@ -541,6 +541,11 @@ jobs:
           set -euo pipefail
           git tag "$TAG"
           git push origin "$TAG" || { sleep 2; git push origin "$TAG"; }
+      - name: Collect artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: flutter-release-bundles
+          path: dist-release
       - name: Create release with generated notes + discussion
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -554,23 +559,26 @@ jobs:
 
           discussion_arg="--discussion-category Announcements"
 
+          shopt -s globstar
+
           if [[ -n "$prerelease" ]]; then
-            gh release create "$TAG" --generate-notes $prerelease || true
+            gh release create "$TAG" --generate-notes $prerelease dist-release/**/* || true
           else
-            gh release create "$TAG" --generate-notes $discussion_arg || \
-              gh release create "$TAG" --generate-notes
+            gh release create "$TAG" --generate-notes $discussion_arg dist-release/**/* || \
+              gh release create "$TAG" --generate-notes dist-release/**/*
           fi
 
   publish-draft:
     name: Publish draft release assets
     needs:
       - flutter-build-artifacts
-    if: ${{ needs.route.outputs.run_release == 'true' }}
+    if: ${{ needs.route.outputs.run_release == 'true' && github.event_name != 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Collect artifacts
         uses: actions/download-artifact@v4
         with:
+          name: flutter-release-bundles
           path: dist-release
       - name: Publish draft GitHub release
         uses: softprops/action-gh-release@v2
