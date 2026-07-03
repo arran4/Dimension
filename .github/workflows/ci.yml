@@ -471,12 +471,18 @@ jobs:
       - run: flutter build linux --release
       - run: flutter build apk --release || true
 
+      - run: |
+          BUNDLE_DIR=$(find build/linux -type d -name "bundle" | head -n 1)
+          if [ -n "$BUNDLE_DIR" ]; then
+            tar -czf dimension-linux.tar.gz -C "$BUNDLE_DIR" .
+          fi
+
       - uses: actions/upload-artifact@v4
         with:
           name: flutter-release-bundles
           retention-days: 1
           path: |
-            build/linux/**
+            dimension-linux.tar.gz
             build/app/outputs/flutter-apk/*.apk
 
   flutter-build-web:
@@ -561,11 +567,18 @@ jobs:
 
           shopt -s globstar
 
+          files=()
+          for f in dist-release/**/*; do
+            if [[ -f "$f" ]]; then
+              files+=("$f")
+            fi
+          done
+
           if [[ -n "$prerelease" ]]; then
-            gh release create "$TAG" --generate-notes $prerelease dist-release/**/* || true
+            gh release create "$TAG" --generate-notes $prerelease "${files[@]}" || true
           else
-            gh release create "$TAG" --generate-notes $discussion_arg dist-release/**/* || \
-              gh release create "$TAG" --generate-notes dist-release/**/*
+            gh release create "$TAG" --generate-notes $discussion_arg "${files[@]}" || \
+              gh release create "$TAG" --generate-notes "${files[@]}"
           fi
 
   publish-draft:
